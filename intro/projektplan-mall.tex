@@ -3,8 +3,24 @@
 \usepackage[swedish]{babel}
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{array}
+
+\title{Projektplan DAT290 \\ \Large projekttitel och gruppnummer}
+\author{NN1, NN2, NN3,\\
+            NN4, NN5, NN6}
+\date{2017-08-24}
 
 \begin{document}
+\maketitle
+\pagenumbering{gobble}
+\newpage
+
+\tableofcontents
+\newpage
+
+\pagenumbering{arabic}
+
 Ni skriver all text i projektplanen med ett projektinternt perspektiv.
 Detta betyder att ingenstans ska det framgå att projektet drivs inom
 ramen för en kurs i utbildningssyfte, utan att detta är ett rent
@@ -16,7 +32,8 @@ att ägna ordentligt med tid åt dessa.
 
 
 
-SYFTE
+\section{SYFTE}
+\label{sec:syfte}
 
 
 Syftet beskriver koncist varför projektet ska genomföras och vad ett
@@ -33,7 +50,8 @@ eller hur vanligt det är med inbrott eller något.
 
 
 
-MÅL
+\section{MÅL}
+\label{sec:mål}
 
 
 I detta avsnitt beskrivs koncist samtliga övergripande tekniska mål med
@@ -55,7 +73,8 @@ konstruktion som redovisas i projektrapporten.
 
 
 
-BAKGRUND
+\section{BAKGRUND}
+\label{sec:bakgrund}
 
 
 Genom att det fyller i de kompetensluckor som en typisk läsare har,
@@ -77,7 +96,8 @@ stort sett, samma utbildning som rapportskribenten, men saknar
 specialistkunskap om projektets tillämpning.
 
 
-Referenser
+\subsection{Referenser}
+\label{sec:referenser}
 
 I regel använder bakgrundsavsnittet olika källor (eller referenser) för
 att bygga under resonemang som skribenten för. Man kan som sagt vilja
@@ -88,7 +108,7 @@ som jag ger nedan). Det finns flera olika system för hur referenser
 hanteras. Bland de mest kända återfinns Harvard och Oxford; medan det
 förra använder en referenslista i slutet av dokumentet, använder det
 senare sig av en not/fotnot per referens, löpande i texen. I DAT290
-använder vi referenssystemet som organisationen IEEE tagit fram . Detta
+använder vi referenssystemet som organisationen IEEE tagit fram \cite{hughen:2009}. Detta
 är ett Harvard-likt referenssystem där man samlar alla referenser i en
 avslutande numrerad förteckning till vilken man hänvisar med referensens
 nummer. Valet av detta referenssystem beror på att IEEE publicerar många
@@ -101,19 +121,21 @@ specifika påståenden. I bästa fall så ska alla påståenden som inte är
 helt uppenbara ha källhänvisningar.
 
 
-Tekniska förutsättningar
+\subsection{Tekniska förutsättningar}
+\label{sec:tekniskaf}
 
 När det gäller tekniska förutsättningar så behöver ni förtydliga vad som
 är givet i projektet: Beskriv övergripande vilken hårdvara och mjukvara
 som kan förutsättas och vad som ska nyutvecklas. Som ni senare kommer
 upptäcka överlappar denna beskrivning till viss del med resursplanen i
-avsnitt [sec:resurser]. I och med att detta sista avsnitt skiljer sig
+avsnitt~\ref{sec:resurs}. I och med att detta sista avsnitt skiljer sig
 ganska mycket från tillämpningsgenomgången ovan kan det här vara läge
 att använda sig av en underrubrik.
 
 
 
-SYSTEMÖVERSIKT
+\section{SYSTEMÖVERSIKT}
+\label{sec:systemö}
 
 
 För att konkretisera en struktur som ett datorsystem underlättar det
@@ -142,7 +164,8 @@ bort (en del) tekniska oklarheter.
 
 
 
-RESURSPLAN
+\section{RESURSPLAN}
+\label{sec:resurs}
 
 
 Gör en lista över gruppmedlemmarna och ange tydligt hur man kommunicerar
@@ -154,45 +177,47 @@ Ange vilka roller som de olika gruppmedlemmarna har. Det är lämpligt att
 en person är ansvarig för ett distinkt område; delat ansvar är
 komplicerat. Här är ett förslag på ansvarsområden inom gruppen. Andra
 områden är möjliga, till exempel kan man dela upp ansvaret för olika
-delar av projektet istället för olika (men var försiktig med det för det
+delar av projektet istället för olika (men var försiktig med det för det 
 kan leda till att gruppen blir splittrad). Notera att ansvaret inte
 innebär att man gör mer av det praktiska, snarare att övervakar gruppens
 arbete och uppmärksammar gruppen när något inte fungerar.
 
--   Gruppledare: Ansvarar för kommunikation med kursens lärare, ansvarar
-    för att kalla till och leda gruppmöten.
+\begin{itemize}
+    \item Gruppledare: Ansvarar för kommunikation med kursens lärare, 
+    ansvarar för att kalla till och leda gruppmöten.
 
--   Administrativt dokumentationsansvarig: Ansvarar för att
+    \item Administrativt dokumentationsansvarig: Ansvarar för att
     mötesprotokoll förs. Ansvarar för att gruppen i tid börjar på
     oppositionsrapport, planeringsrapport och så vidare och ansvarar för
     att dessa skickas in i tid.
 
--   Teknisk dokumentationsansvarig: Ser till att kod är väl kommenterad.
+    \item Teknisk dokumentationsansvarig: Ser till att kod är väl kommenterad.
     Uppmärksammar gruppen ifall det uppstår problem med kod som inte är
     tillräckligt dokumenterad.
 
--   Kodstandardansvarig: Kollar igenom att all kod som utvecklas följer
+    \item Kodstandardansvarig: Kollar igenom att all kod som utvecklas följer
     standarder för struktur, namn och så vidare som gruppen bestämt.
     Uppmärksammar gruppen ifall disciplinen behöver skärpas vad
     gäller kodkvalitet.
 
--   Testansvarig: Håller ordning på de olika test som behöver genomföras
+    \item Testansvarig: Håller ordning på de olika test som behöver genomföras
     på mjukvara och hårdvara, ser till att tillräcklig tid ägnas åt
     testning och att den dokumenteras väl. Uppmärksammar gruppen ifall
     testningen inte utförs eller dokumenteras tillräckligt.
 
--   Resursansvarig: Ser till att hårdvaran finns tillgänglig när den
+    \item Resursansvarig: Ser till att hårdvaran finns tillgänglig när den
     behövs, ansvarar för att olika verktyg ni använder för
     kommunikation, versionshantering och så vidare fungerar och
     används korrekt. Uppmärksammar gruppen ifall verktygen används fel
     eller inte fungerar väl.
 
--   Planeringsansvarig: Håller reda på de olika del-mål gruppen arbetar
+    \item Planeringsansvarig: Håller reda på de olika del-mål gruppen arbetar
     mot, kommunicerar med de andra gruppmedlemmarna om hur arbetet med
     dessa fortskrider och ger en rapport om det på veckomöten.
     Uppmärksammar gruppen så tidigt som möjligt om något mål inte gör
     framsteg så att gruppen kan planera om ifall det behövs eller så att
     arbetsinsatser kan omfördelas.
+\end{itemize}
 
 Ange vilka lokaler som kan disponeras, och när. Ange vilken hårdvara och
 vilken mjukvara som finns tillgänglig. I och med att en del hårdvara
@@ -203,7 +228,8 @@ Chalmers, beskriv hur man lämpligen går tillväga.
 
 
 
-MILSTOLPAR
+\section{MILSTOLPAR}
+\label{sec:milstolpar}
 
 
 Här ska ni ange ett urval av de mest signifikanta målen som stöd till
@@ -216,22 +242,31 @@ använda sig av “Grundsystem verifierat” eller “GUI-programmering
 avslutad”. De inlämningar ni behöver göra ska så klart ingå som
 milstolpar men det kan även vara bra att i gruppen besluta om att de ska
 vara i princip färdiga en viss tid innan deadline. Ett exempel på hur
-milstolparna kan presenteras ges i tabell [tab:milstolpar].
+milstolparna kan presenteras ges i tabell \ref{tab:milstolpar}.
+ 
+\begin{table}
+    \begin{tabular}{|c|l|c|}
+        \hline
+        Nr & BESKRIVNING & DATUM \\
+        \hline
+        \hline                       
+        1 & PROJEKTPLAN INLÄMNAD & 2018-09-16 \\
+        \hline          
+        .. & ... & ... \\
+        \hline                                 
+        .. & GRUNDSYSTEM VERIFIERAT & 2018-XX-XX \\    
+        \hline     
+        .. & GUI-PROGRAMMERING AVSLUTAD & 2018-XX-XX \\  
+        \hline  
+    \end{tabular}
+    \caption{Milstolpar för projektet}
+    \label{tab:milstolpar}
+\end{table}
 
-  ---- ---------------------------------------------- --
-  Nr   BESKRIVNING  DATUM                            
-       1  PROJEKTPLAN INLÄMNAD  2018-09-16          
-       ..  ...  ...                                 
-       ..  GRUNDSYSTEM VERIFIERAT  2018-XX-XX       
-       ..  GUI-PROGRAMMERING AVSLUTAD  2018-XX-XX   
-                                                      
-  ---- ---------------------------------------------- --
-
-  : Milstolpar för projektet
 
 
-
-AKTIVITETER
+\section{AKTIVITETER}
+\label{sec:sktiviteter}
 
 
 Här ger ni en detaljerad beskrivning av arbetspaket/arbetsuppgifter
@@ -245,7 +280,7 @@ aktiviteter.
 När ni sitter och skriver på denna lista vet ni ju exakt hur många
 timmar som redan använts (och ja, dessa timmar ska också skrivas ned!)
 men för veckorna framgent måste ni gissa. Ett exempel på de första
-raderna i en aktivitetslista ges i tabell [tab:aktiviteter].
+raderna i en aktivitetslista ges i tabell [tab:aktiviteter].
 
   ---- ----------------------------------------------------------- --
   Nr   BESKRIVNING  TIDSÅTGÅNG                                    
@@ -274,8 +309,8 @@ veckovisa projektgruppsmötena.
 
 
 
-TIDSPLAN
-
+\section{TIDSPLAN}
+\label{sec:tidsplan}
 
 Det kommer periodvis att finnas flera olika aktiviteter som löper
 parallellt. Ta till exempel läsvecka 7 och 8 där 1) en
@@ -283,11 +318,15 @@ oppositionskommentar för en annan grupps projektrapportsutkast ska
 skrivas, 2) en demonstration av slutprodukten ska förberedas och
 genomföras, och 3) en projektrapport v. 1 ska avslutas. Med en grupp om
 sju-åtta personer bör man planera så att dessa aktiviteter på ett
-smidigt sätt löper parallellt. Ett Ganttschema (se figur [fig:Gantt])
+smidigt sätt löper parallellt. Ett Ganttschema (se Figur \ref{fig:Gantt})
 kan illustrera de olika aktiviteterna (och möjligen även milstolparna)
 på en horisontell tidslinje.
 
-[En skiss på en Ganttbased tidsplan för de senare läsveckorna.]
+\begin{figure}[h]
+    \includegraphics[width=1\textwidth]{figurer/tidsplan.pdf}
+    \caption{En skiss på en Ganttbased tidsplan för de senare läsveckorna}
+    \label{fig:Gantt}
+\end{figure}
 
 Om man kan koppla de olika aktiviteterna till gruppmedlemmar (risken
 finns att Ganttschemat kan bli rörigt) finns det en möjlighet att
@@ -295,7 +334,8 @@ urskilja kritiska beroenden mellan olika delar av projektet.
 
 
 
-MÖTESPLAN
+\section{MÖTESPLAN}
+\label{sec:mötesplan}
 
 
 Ange datum, tid och lokal för de veckovisa projektmötena som involverar
@@ -304,13 +344,14 @@ tid och lokal för mer specialiserade arbetsmöten.
 
 
 
-KOMMUNIKATIONSPLAN
+\section{KOMMUNIKATIONSPLAN}
+\label{sec:komm}
 
 
 Det blir en hel del skrivande i ett projekt. För större projekt är
 kommunikationen så komplex att det är värt att tydligt definiera en plan
 över all skriftlig kommunikation. Man kan exempelvis presentera det som
-i tabell [tab:kommunikationsplan] (där PP står för PingPong, och Alla
+i tabell [tab:kommunikationsplan] (där PP står för PingPong, och Alla
 betyder grupp, mentor och lärarteam).
 
   --------------------------------------------------------------------- -- -- -- --
@@ -337,7 +378,9 @@ peer-to-peer-kommunikation.
 
 
 
-KVALITETSPLAN
+\section{KVALITETSPLAN}
+\label{sec:kval}
+
 
 
 Beskriv era rutiner för att verifiera respektive delsystem och, i
@@ -345,26 +388,23 @@ slutändan, hela systemet. Ni kan till exempel använda en enkel
 verifieringsmall som ska fyllas i samband med att en del av systemet
 verifieras: Här kan man tänka sig rubriker som
 
-Komponent
-
+\begin{description}
+    \item[Komponent]
     Vilken del av systemet ska testas?
 
-Testsyfte
-
+    \item[Testsyfte]
     Vad ska testet visa?
 
-Utförande
-
+    \item[Utförande]
     Hur ska testet utföras? Vilka scenarior testas?
 
-Resultat
-
+    \item[Resultat]
     Vad är testresultatet?
 
-Analys
-
+    \item[Analys]
     Vad innebär testets resultat? Behövs fler test av komponenten?
     Behöver andra komponenter testas ytterligare?
+\end{description}
 
 Tänk på att olika delar av systemet behöver olika verifieringsmetodik;
 medan mjukvara kan verifieras i det IDE (Integrated Design Environment)
@@ -372,7 +412,8 @@ som ni använder, behöver ni använda mätutrustning för elektronik.
 
 
 
-SPELREGLER
+\section{SPELREGLER}
+\label{sec:spelregler}
 
 
 Denna rubrik kring spelregler är helt frivillig eftersom den normalt
@@ -383,4 +424,7 @@ införstådd med dessa. Det kan handla om någonting så simpelt som vad
 konsekvensen är av att någon kommer för sent till ett möte. Men det kan
 också handla om mer allvarliga saker som att någon enskild medlem inte
 levererar material vid en tidpunkt som gruppen bestämt i projektplanen.
+
+\bibliographystyle{IEEEtran}
+\bibliography{referenser}
 \end{document}
