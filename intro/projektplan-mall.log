@@ -1,0 +1,108 @@
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (MiKTeX 2.9.7140 64-bit) (preloaded format=pdflatex 2019.9.5)  6 SEP 2019 09:53
+entering extended mode
+**c:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/intro/projektplan-mall.tex
+(c:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/intro/projektplan-mall.tex
+LaTeX2e <2018-12-01>
+("C:\Users\Adamt\AppData\Local\Programs\MiKTeX 2.9\tex/latex/base\article.cls"
+Document Class: article 2018/09/03 v1.4i Standard LaTeX document class
+("C:\Users\Adamt\AppData\Local\Programs\MiKTeX 2.9\tex/latex/base\size10.clo"
+File: size10.clo 2018/09/03 v1.4i Standard LaTeX file (size option)
+)
+\c@part=\count80
+\c@section=\count81
+\c@subsection=\count82
+\c@subsubsection=\count83
+\c@paragraph=\count84
+\c@subparagraph=\count85
+\c@figure=\count86
+\c@table=\count87
+\abovecaptionskip=\skip41
+\belowcaptionskip=\skip42
+\bibindent=\dimen102
+) ("C:\Users\Adamt\AppData\Local\Programs\MiKTeX 2.9\tex/generic/babel\babel.sty"
+Package: babel 2019/07/19 3.33 The Babel package
+ ("C:\Users\Adamt\AppData\Local\Programs\MiKTeX 2.9\tex/generic/babel\switch.def"
+File: switch.def 2019/07/19 3.33 Babel switching mechanism
+)
+*************************************
+* Local config file bblopts.cfg used
+*
+("C:\Users\Adamt\AppData\Local\Programs\MiKTeX 2.9\tex/latex/arabi\bblopts.cfg"
+File: bblopts.cfg 2005/09/08 v0.1 add Arabic and Farsi to "declared" options of babel
+) ("C:\Users\Adamt\AppData\Local\Programs\MiKTeX 2.9\tex/latex/babel-swedish\swedish.ldf"
+Language: swedish 2005/03/31 v2.3d Swedish support from the babel system
+ ("C:\Users\Adamt\AppData\Local\Programs\MiKTeX 2.9\tex/generic/babel\babel.def"
+File: babel.def 2019/07/19 3.33 Babel common definitions
+\babel@savecnt=\count88
+\U@D=\dimen103
+ ("C:\Users\Adamt\AppData\Local\Programs\MiKTeX 2.9\tex/generic/babel\txtbabel.def")
+\bbl@dirlevel=\count89
+)
+Package babel Info: Making " an active character on input line 90.
+)) ("C:\Users\Adamt\AppData\Local\Programs\MiKTeX 2.9\tex/latex/base\fontenc.sty"
+Package: fontenc 2018/08/11 v2.0j Standard LaTeX package
+ ("C:\Users\Adamt\AppData\Local\Programs\MiKTeX 2.9\tex/latex/base\t1enc.def"
+File: t1enc.def 2018/08/11 v2.0j Standard LaTeX file
+LaTeX Font Info:    Redeclaring font encoding T1 on input line 48.
+)) ("C:\Users\Adamt\AppData\Local\Programs\MiKTeX 2.9\tex/latex/base\inputenc.sty"
+Package: inputenc 2018/08/11 v1.3c Input encoding file
+\inpenc@prehook=\toks14
+\inpenc@posthook=\toks15
+) (c:/Users\Adamt\OneDrive\Dokument\GitHub\DAT290-Larmsystem\intro\projektplan-mall.aux)
+\openout1 = `projektplan-mall.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 7.
+LaTeX Font Info:    ... okay on input line 7.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 7.
+LaTeX Font Info:    ... okay on input line 7.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 7.
+LaTeX Font Info:    ... okay on input line 7.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 7.
+LaTeX Font Info:    ... okay on input line 7.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 7.
+LaTeX Font Info:    ... okay on input line 7.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 7.
+LaTeX Font Info:    ... okay on input line 7.
+ [1
+
+{C:/Users/Adamt/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map}] [2] [3]
+Overfull \hbox (19.17752pt too wide) in paragraph at lines 250--264
+[]\T1/cmr/m/n/10 ---- ----------------------------------------------------------- -- Nr BE-SKRIV-NING TIDSÅT-
+ []
+
+
+Overfull \hbox (37.19504pt too wide) in paragraph at lines 250--264
+\T1/cmr/m/n/10 (2H/VECKA, 8 VEC-KOR, 7 PER-SO-NER) 112 H 4 PRO-JEKT-LED-NING (3H/VECKA,
+ []
+
+
+Overfull \hbox (12.47665pt too wide) in paragraph at lines 250--264
+\T1/cmr/m/n/10 RED/GENOMFÖR DE-MON-STRA-TION 40 H .. AR-BE-TA MED PRO-JEKTRAP-
+ []
+
+
+Overfull \hbox (43.79395pt too wide) in paragraph at lines 310--315
+\T1/cmr/m/n/10 kom-mu-ni-ka-tion. Man kan ex-em-pel-vis pre-sen-te-ra det som i ta-bell [tab:kommunikationsplan]
+ []
+
+
+Overfull \hbox (2.69434pt too wide) in paragraph at lines 316--323
+[]\T1/cmr/m/n/10 --------------------------------------------------------------------- -- -- -- -- VAD NÄR TILL
+ []
+
+[4] [5] (c:/Users\Adamt\OneDrive\Dokument\GitHub\DAT290-Larmsystem\intro\projektplan-mall.aux) ) 
+Here is how much of TeX's memory you used:
+ 1045 strings out of 492895
+ 13653 string characters out of 3123736
+ 87075 words of memory out of 3000000
+ 5016 multiletter control sequences out of 15000+200000
+ 4403 words of font info for 15 fonts, out of 3000000 for 9000
+ 1141 hyphenation exceptions out of 8191
+ 23i,5n,23p,260b,127s stack positions out of 5000i,500n,10000p,200000b,50000s
+ <C:\Users\Adamt\AppData\Local\MiKTeX\2.9\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm1000.pk>
+Output written on c:/Users\Adamt\OneDrive\Dokument\GitHub\DAT290-Larmsystem\intro\projektplan-mall.pdf (5 pages, 41255 bytes).
+PDF statistics:
+ 103 PDF objects out of 1000 (max. 8388607)
+ 0 named destinations out of 1000 (max. 500000)
+ 1 words of extra memory for PDF output out of 10000 (max. 10000000)
+
