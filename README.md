@@ -1,4 +1,4 @@
-# DAT290 - Datatekniskt projekt
+# DAT290 - Datatekniskt projekt - Grupp 13
 
 Välkomna till DAT290! 
 
