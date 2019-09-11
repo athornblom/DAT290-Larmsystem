@@ -24,16 +24,17 @@
 
 \section{SYFTE}
 \label{sec:syfte}
-Ett larm 
-Syftet med ett larm är att
+
+Vi ska skapa ett larm för ett mindre företag. Syftet med larmet är att
 \begin{itemize}
-    \item Förhindra inbrott
-    \item Upptäcka inbrott så fort som möjligt
+    \item Larma ifall en dörr är öppen för länge
+    \item Upptäcka och förhindra inbrott
     \item Minimera inbrottets omfattning och kostnad
 
 \end{itemize}
 Rekomendationen enligt stöldskyddsföreningen är att ha ett larm
-som är uppkopplat till en larmcentral. Därför ska vi skapa ett larm som är kopplat till en centralenhet.
+som är uppkopplat till en larmcentral. Därför ska vi skapa ett larm som är kopplat till en centralenhet,
+ som övervakas dygnet runt.
 
 \section{MÅL}
 \label{sec:mål}
@@ -55,8 +56,14 @@ I mjukvaran kommer ett eget protokoll tas fram och implementeras för kommunikat
 
 \section{SYSTEMÖVERSIKT}
 \label{sec:systemö}
+En priliminär systemöversikt över hårdvaran finns i \ref{fig:hardware}.
 
-Ansvar - Ben
+Systemöversikten kommer med all sannolikhet förändras under projektets gång, den preliminära översikt är endast en utgångspunkt.
+\begin{figure}[b]
+	\includegraphics[width=1\textwidth]{figurer/Systemoversikt.jpg}
+	\caption{Systemöversikt över hårdvaran}
+	\label{fig:hardware}
+\end{figure}
 
 \section{RESURSPLAN}
 \label{sec:resurs}
@@ -120,8 +127,8 @@ I tabell \ref{tab:milstolpar} finns de stora milstolparna för projektet.
 		Nr & BESKRIVNING & LV & DATUM \\ \hline \hline
 
 		1 & Inlämning av projektplan & 2 & 2019-09-15 \\ \hline
-		2 & Första kodraden i C &	2 & \\ \hline
-		3 & Uppdelning av ansvarsområden Perferienheter, Störenhet, Centralenheten & 2 & \\ \hline
+		2 & Första kodraden i C & 2 & \\ \hline
+		3 & Uppdelning av ansvarsområden Perferienheter, Störenhet, Centralenheten & 3 & \\ \hline
 		4 & Till synes fungerande kommunikationsprotokoll & 3 & \\ \hline
 		5 & Fungerande prototyp & 4 & \\ \hline
 		6 & Påbörjande av Rapporten & 4 & \\ \hline
@@ -149,13 +156,15 @@ Gruppens totala arbetstid på 1400 timmar planeras läggas ner enligt \ref{tab:a
 \hline
 \multicolumn{2}{|c|}{\textbf{Aktiviteter}}                                   \\ \hline
 \textit{Arbetsmoment}                                     & \textit{Tid (h)} \\ \hline
+Föreläsningar                                             & 50               \\
 Genomläsning av uppgift                                   & 10               \\
-Initial-genomläsning av dokumentation för periferienheter & 15               \\
+Initial-genomläsning av dokumentation för periferienheter & 10               \\
 Framtagning av \LaTeX \,mallar                            & 5                \\
 Projektledning                                            & 10               \\
-Projektmöten                                              & 175              \\
+Projektmöten                                              & 145              \\
 Projektplan                                               & 35               \\
-Programmering (Totalt) (Bör vi dela upp i områden här?)   & 800              \\
+Kommunikationsprotokoll                                   & 30               \\
+Programmering                                             & 600              \\
 Kod-dokumentation granskning                              & 30               \\
 Funktiontestning                                          & 20               \\
 Prestandatestning                                         & 10               \\
@@ -165,8 +174,8 @@ Yttre dokumentation (Slutgiltig systembeskrivning)        & 25               \\
 Första utkast slutrapport                                 & 50               \\
 Oppositionsrapporter                                      & 20               \\
 Andra utkast slutrapport                                  & 20               \\
-Förbered demonstration                                    & 30               \\
-Demonstration                                             & 10               \\
+Förbered demonstration                                    & 20               \\
+Demonstration                                             & 5               \\
 Renskrivning slutrapport                                  & 30               \\
 Kamratuppskattning                                        & 5                \\
 Medverkansrapport                                         & 15               \\
@@ -190,28 +199,28 @@ Granskning medverkansrapport                              & 10               \\ 
 
 \textbf{Möten med handledare}
 \begin{itemize}
-	\item 2019-09-11 - Tid: 09-10, Plats EG3505
-	\item 2019-09-18 - Tid: 09-10, Plats EG3505
-	\item 2019-09-25 - Tid: 09-10, Plats EG3505
-	\item 2019-10-02 - Tid: 09-10, Plats EG3505
-	\item 2019-10-09 - Tid: 09-10, Plats EG3505
-	\item 2019-10-16 - Tid: 09-10, Plats EG3505
-	\item 2019-10-23 - Tid: 09-10, Plats EG3505
-	
+	\item 2019-09-11 - prel. Tid: 09-10, Plats EG3505
+	\item 2019-09-18 - prel. Tid: 09-10, Plats EG3505
+	\item 2019-09-25 - prel. Tid: 09-10, Plats EG3505
+	\item 2019-10-02 - prel. Tid: 09-10, Plats EG3505
+	\item 2019-10-09 - prel. Tid: 09-10, Plats EG3505
+	\item 2019-10-16 - prel. Tid: 09-10, Plats EG3505
+	\item 2019-10-23 - prel. Tid: 09-10, Plats EG3505
+
 \end{itemize}
 \noindent
 \textbf{Arbetsmöten}
 \begin{itemize}
-	\item 2019-09- TO BE ANOUNCED 
-	\item 2019-09- TO BE ANOUNCED 
-	\item 2019-09- TO BE ANOUNCED 
-	\item 2019-10- TO BE ANOUNCED 
-	\item 2019-10- TO BE ANOUNCED 
-	\item 2019-10- TO BE ANOUNCED 
-	\item 2019-10- TO BE ANOUNCED 
-	
+	\item 2019-09-11 - Tid 17:15-19:15, Plats EG3505
+	\item 2019-09-  Måndagar 09:00-11:30 Torsdagar 08:45 - 09:45
+	\item 2019-09-
+	\item 2019-10-
+	\item 2019-10-
+	\item 2019-10-
+	\item 2019-10-
+
 \end{itemize}
- 
+
 
 \section{KOMMUNIKATIONSPLAN}
 \label{sec:komm}
@@ -294,14 +303,19 @@ För förhindrande av misskötsel i projektgruppen införs ett straffsystem kall
 Punktlista över straff:
 \begin{itemize}
 	\item 5–10 min sen till möte, $k_{namn} = k_{namn} + 0.5$
-	\item 10+ min sen till möte, $k_{namn} = k_{namn} + 1$
-	\item Kommer ej till mötet, $k_{namn} = k_{namn} + 1.5$
+	\item 10-30 min sen till möte, $k_{namn} = k_{namn} + 1$
+	\item 30+ min sen till möte, $k_{namn} = k_{namn} + 1.5$
+	\item Kommer ej till mötet, $k_{namn} = k_{namn} + 2$
 	\item Ej klar med veckans uppgifter eller slarvigt gjorda, $k_{namn} = k_{namn} + 1$
 	\item Ej påbörjat veckans uppgifter eller icke klar och slarvigt gjorda uppgifter, \indent $k_{namn} = k_{namn} + 2$
-	\item Stavat fel i projektplan, $k_{namn} = k_{namn} + 1$
+	\item Ödeläggelse av git repository, $k_{namn} = k_{namn} + 3$
 \end{itemize}
 \par
+<<<<<<< HEAD
 Gruppmedlemmar kan benådas straff omm de har en ursäkt som godkänts av en annan gruppmedlem i förväg eller majoriteten av resterande medlemmar (3/5) godkänner en försenad ursäkt. $S_{namn}$ och $k_{namn}$ kan minskas, ej under 0, vid överlägsen majoritetröst (4/5) från resterande medlemmar
+=======
+Gruppmedlemmar kan benådas straff omm de har en ursäkt som godkänds av en annan gruppmedlem senast 30 minuter i förväg eller majoriteten av resterande medlemmar (3/5) godkänner en försenad ursäkt. $S_{namn}$ och $k_{namn}$ kan minskas, ej under 0, vid överlägsenmajoritetröst (4/5) från resterande medlemmar
+>>>>>>> 77ed44210ca3dde7cdfce265c49fdb7ea1d69e46
 
 
 
