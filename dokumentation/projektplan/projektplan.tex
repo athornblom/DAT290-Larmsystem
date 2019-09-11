@@ -38,7 +38,7 @@ som är uppkopplat till en larmcentral. Därför ska vi skapa ett larm som är k
 \section{MÅL}
 \label{sec:mål}
 
-Målet med detta projekt är att med hjälp av ett antal mikrokontrollrar och periferienheter konstruera ett larmsystem vars huvudsakliga uppgift är att varna när en dörr har varit öppen för länge. Varningen kommer att bestå i att en lysdiod tänds vid aktuell dörr efter en viss tid och att en signal, efter ytterligare en tid, sänds till centralenheten, varpå denna larmar med ljud. Från centralenheten skall användaren kunna ställa in ovan nämnda tidsfördröjningar samt larma och avlarma dörrarna.
+Målet med detta projekt är att med hjälp av ett antal mikrokontrollrar och periferienheter (bland annat rörelse- och vibrationssensor) konstruera ett larmsystem vars huvudsakliga uppgift är att varna när en dörr har varit öppen för länge. Varningen kommer att bestå i att en lysdiod tänds vid aktuell dörr efter en viss tid och att en signal, efter ytterligare en tid, sänds till centralenheten, varpå denna larmar med ljud. Från centralenheten skall användaren kunna ställa in ovan nämnda tidsfördröjningar samt larma och avlarma dörrarna. Systemet ska vara skalbart och således ha möjlighet att lägga till flera dörrar per enhet.
 
 \section{BAKGRUND}
 \label{sec:bakgrund}
@@ -48,7 +48,8 @@ Lämpliga åtgärder kan vara att tända en lysdiod, larma med ljud eller på an
 
 \subsection{Tekniska förutsättningar}
 \label{sec:tekniskaf}
-Larmsystemet kommer att konstrueras av tre enheter som kommunicerar med varandra via en CAN-buss. Varje enhet består av en mikrokontroller (MD-407) och ett antal periferienheter. En av enheterna kommer att vara centralenhet och styra de två andra. Dessa två kommer vara koppplade till ett antal dörrar med hjälp av olika sensorer.
+Larmsystemet kommer att konstrueras av tre enheter som kommunicerar med varandra via en CAN-buss. Varje enhet består av en mikrokontroller (MD-407) och ett antal periferienheter, däribland en sensor som anger huruvida varje dörr är öppen, en rörelsesensor och en vibrationssensor. En av enheterna kommer att vara centralenhet och styra de två andra. Dessa två kommer vara koppplade till ett antal dörrar vardera med hjälp av olika sensorer.
+I mjukvaran kommer ett eget protokoll tas fram och implementeras för kommunikation över CAN-bussen. Detta protokoll kommer styra hur enheter adresseras, anger sin prioritet och skickar meddelanden till varandra.
 
 
 
@@ -289,7 +290,7 @@ Målet med dessa protokoll är att man utan sakkunskap ska kunna skapa sig en ö
 \section{SPELREGLER}
 \label{sec:spelregler}
 
-För förhindring av misskötsel i projektgruppen införs ett straffsystem kallat ”Påföljdsfikan”. Påföljdsfikan fungerar så att efter en gruppmedlems misskötsel skall hen nästa sammankomst bjuda på fika för $S_{namn} = S_{namn} + k_{namn}*25$ kr omm $k_{namn}>1$, där $k_{namn}$ och $S_{namn}$ är varje individuella gruppmedlems kakfaktor, som ökas efter varje misskötsel men kan ej minskas utan benådning, respektive kakskuld som ackumuleras fram tills dess att gruppmedlemmen betalar tillbaka den. Initialvärdet för $S_{namn}$ och $k_{namn}$ är: $S_{namn}=k_{namn}=0.$\\ \par
+För förhindrande av misskötsel i projektgruppen införs ett straffsystem kallat ”Påföljdsfikan”. Påföljdsfikan fungerar så att efter en gruppmedlems misskötsel skall hen nästa sammankomst bjuda på fika för $S_{namn} = S_{namn} + k_{namn}*25$ kr omm $k_{namn}>1$, där $k_{namn}$ och $S_{namn}$ är varje individuella gruppmedlems kakfaktor, som ökas efter varje misskötsel men kan ej minskas utan benådning, respektive kakskuld som ackumuleras fram tills dess att gruppmedlemmen betalar tillbaka den. Initialvärdet för $S_{namn}$ och $k_{namn}$ är: $S_{namn}=k_{namn}=0.$\\ \par
 Punktlista över straff:
 \begin{itemize}
 	\item 5–10 min sen till möte, $k_{namn} = k_{namn} + 0.5$
@@ -300,7 +301,7 @@ Punktlista över straff:
 	\item Stavat fel i projektplan, $k_{namn} = k_{namn} + 1$
 \end{itemize}
 \par
-Gruppmedlemmar kan benådas straff omm de har en ursäkt som godkänds av en annan gruppmedlem i förväg eller majoriteten av resterande medlemmar (3/5) godkänner en försenad ursäkt. $S_{namn}$ och $k_{namn}$ kan minskas, ej under 0, vid överlägsenmajoritetröst (4/5) från resterande medlemmar
+Gruppmedlemmar kan benådas straff omm de har en ursäkt som godkänts av en annan gruppmedlem i förväg eller majoriteten av resterande medlemmar (3/5) godkänner en försenad ursäkt. $S_{namn}$ och $k_{namn}$ kan minskas, ej under 0, vid överlägsen majoritetröst (4/5) från resterande medlemmar
 
 
 
