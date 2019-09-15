@@ -26,27 +26,35 @@
 \section{SYFTE}
 \label{sec:syfte}
 
-Vi ska skapa ett larm för ett mindre företag. Syftet med larmet är att
+Projektet går ut på att konstruera ett larm för ett mindre företag. Syftet med larmet är att
 \begin{itemize}
     \item Larma ifall en dörr är öppen för länge
     \item Upptäcka och förhindra inbrott
     \item Minimera inbrottets omfattning och kostnad
 
 \end{itemize}
-Rekomendationen enligt stöldskyddsföreningen är att ha ett larm
-som är uppkopplat till en larmcentral. Därför ska vi skapa ett larm som är kopplat till en centralenhet,
- som övervakas dygnet runt.
+Rekomendationen enligt stöldskyddsföreningen är att ha ett larm som är uppkopplat till en larmcentral. Därför ska detta larm vara kopplat till en centralenhet som övervakas dygnet runt.
 
 \section{MÅL}
 \label{sec:mål}
 
 Målet med detta projekt är att med hjälp av ett antal mikrokontrollrar och periferienheter (bland annat rörelse- och vibrationssensor) konstruera ett larmsystem vars huvudsakliga uppgift är att varna när en dörr har varit öppen för länge. Varningen kommer att bestå i att en lysdiod tänds vid aktuell dörr efter en viss tid och att en signal, efter ytterligare en tid, sänds till centralenheten, varpå denna larmar med ljud. Från centralenheten skall användaren kunna ställa in ovan nämnda tidsfördröjningar samt larma och avlarma dörrarna. Systemet ska vara skalbart och således ha möjlighet att lägga till flera dörrar per enhet.
 
+Utöver ovan nämnda grundläggande system avses följande två tillägg göras om tiden räcker:
+\begin{itemize}
+	\item Möjliggöra att systemet sätts i testläge, vari periferienheterna kan köras utan centralenheten med hjälp av emulering.
+	\item Konstruera en enhet som hackar ett likartat system genom att lyssna på dess interna kommunikation och härma den samt att säkra det egna systemet mot sådana intrång
+\end{itemize}
+
 \section{BAKGRUND}
 \label{sec:bakgrund}
 
 Ett larmsystem av den typ som ska konstrueras använder olika typer av sensorer för att ta reda på om en dörr är öppen och om någon är i närheten. Denna information skickas till centralenheten för att vidta lämpliga åtgärder, alternativt hanteras lokalt vid varje dörrenhet.
 Lämpliga åtgärder kan vara att tända en lysdiod, larma med ljud eller på annat sätt göra användaren uppmärksam på vad som har uppmätts.
+
+\subsection{Referenser}
+\label{sec:referenser}
+För källhänvisning kommer IEEE:s standard användas.
 
 \subsection{Tekniska förutsättningar}
 \label{sec:tekniskaf}
@@ -59,7 +67,7 @@ I mjukvaran kommer ett eget protokoll tas fram och implementeras för kommunikat
 \label{sec:systemö}
 En priliminär systemöversikt över hårdvaran finns i Figur \ref{fig:hardware}.
 
-Systemöversikten kommer med all sannolikhet förändras under projektets gång, den preliminära översikt är endast en utgångspunkt.
+Systemöversikten kommer med all sannolikhet förändras under projektets gång. Den preliminära översikten nedan är alltså endast en utgångspunkt.
 \begin{figure}[!ht]
 	\includegraphics[width=1\textwidth]{figurer/Systemoversikt.jpg}
 	\caption{Systemöversikt över hårdvaran}
@@ -80,24 +88,22 @@ Systemöversikten kommer med all sannolikhet förändras under projektets gång,
 
     \item \textbf{Kodstandardansvarig:}
     \\
-    Josef Karlsson - (effektgubben@gmail.com)
+    Josef Karlsson - (josefka@student.chalmers.se)
 
     \item \textbf{Testansvarig:}
     \\
-    Filip Borg - (filipborg97@gmail.com) 
+    Filip Borg - (fborg@student.chalmers.se) 
 
     \item \textbf{Resursansvarig:} 
     \\
-    Ben Wooldridge - (benpontus17@gmail.com)
+    Ben Wooldridge - (benw@student.chalmers.se)
 
     \item \textbf{Planeringsansvarig:}
     \\
     Erik Nilsson - (ernilss@student.chalmers.se) 
 \end{itemize}
 
-Chalmers lokaler, och då främst diverse arbetsrum i EDIT-huset samt Idé-\\läran, kommer användas för gruppmöten och som arbetsyta.
-
-Hårdvaran för projektet kommer att förvaras i grupprum 4211 i EDIT-huset. Hårdvaran som ska finnas tillgänglig är:
+Chalmers lokaler, och då främst diverse arbetsrum i EDIT-huset samt Idé-\\läran, kommer användas för gruppmöten och som arbetsyta. Hårdvaran för projektet kommer att förvaras i grupprum 4211 i EDIT-huset. Hårdvaran som ska finnas tillgänglig är:
 \begin{itemize}
     \item 3x MD407 kort 
     \item 1x Avståndsmätare (ultraljud), HC-SR04 
@@ -115,7 +121,7 @@ Kopplingskablar finns i projektrummet, dvs rum 4211 i EDIT-huset. Dörrsensor f�
 
 Den nyaste fungerande versionen av mjukvaran som skrivs av gruppmedlemmarna fås tillgång till genom GIT där en gemensam repository för projektet har satts upp.
 
-Arbete som sker utanför Chalmers kommer också bedrivas, både i grupp och enskilt. Detta kommer vara helt mjukvaruorienterat, om frågor skulle uppstå som kräver andra gruppmedlemmars uppmärksamhet så kommer dessa kunna nås via mail, eller via den gemensamma Messenger-gruppen som satts upp.
+Arbete kommer också bedrivas utanför Chalmers, både i grupp och enskilt. Detta kommer vara helt mjukvaruorienterat. Om frågor skulle uppstå som kräver andra gruppmedlemmars uppmärksamhet så kommer dessa kunna nås via mail, eller via den gemensamma Messenger-gruppen som satts upp.
 
 \section{MILSTOLPAR}
 \label{sec:milstolpar}
@@ -148,7 +154,7 @@ I Tabell \ref{tab:milstolpar} finns de stora milstolparna för projektet.
 
 \section{AKTIVITETER}
 \label{sec:sktiviteter}
-Gruppens totala arbetstid på 1200 timmar planeras läggas ner enligt Tabell \ref{tab:aktiviteter}.
+Gruppens totala arbetstid på 1200 timmar planeras fördelas enligt Tabell \ref{tab:aktiviteter}.
 \newline
 
 \begin{table}[b]
@@ -188,7 +194,7 @@ Granskning medverkansrapport                              & 10               \\ 
 \section{TIDSPLAN}
 \label{sec:tidsplan}
 
-I Figur \ref{fig:Gantt} kan man övergripande följa hur arbetsuppgifterna i projektet fortskrider. Här kan man även se viktiga datum angående rapporten, oppositionsrapporten samt denomstartationen.
+I Figur \ref{fig:Gantt} kan man övergripande följa hur arbetsuppgifterna i projektet fortskrider. Här syns även viktiga datum angående rapporten, oppositionsrapporten samt demonstrationen.
 
 \begin{figure}[!ht]
 	\includegraphics[width=1\textwidth]{figurer/Gantt.png}
@@ -268,13 +274,13 @@ Projektrapport & 2019-11-03 & Lärarteam & Canvas loggbok \\ \hline
 
 \end{tabular}
 \\ \\
-Kommunikation kommer även ske internt via en gruppchatt på Messenger-appen, och via logsen på GitHub.
+Kommunikation kommer även ske internt via en gruppchatt på Messenger och via loggarna på GitHub.
 \\
 
 \section{KVALITETSPLAN}
 \label{sec:kval}
 
-För att säkerställa kvaliteten hos systemet ska tester kontinuerligt utföras och analyseras. Dessa tester ämnar att verifiera funktionalliteten hos mjukvara, hårdvara, delsystem samt det färdiga systemet. Vid utförande av test fylls mallen nedan i, det resulterar i ett protokoll som sedan sparas som verifikation. Målet med dessa protokoll är att man utan sakkunskap ska kunna skapa sig en överblick av att systemet fungerar som det ska.
+För att säkerställa kvaliteten hos systemet ska tester kontinuerligt utföras och analyseras. Dessa tester ämnar verifiera funktionaliteten hos mjukvara, hårdvara, delsystem samt det färdiga systemet. Vid utförande av test fylls mallen nedan i, vilket resulterar i ett protokoll som sedan sparas som verifikation. Målet med dessa protokoll är att man utan sakkunskap ska kunna skapa sig en överblick av att systemet fungerar som det ska.
 
 \begin{description}
 	\item[Utfört av] Namn på de involverade samt datum för testets utförande.
@@ -296,7 +302,7 @@ För att säkerställa kvaliteten hos systemet ska tester kontinuerligt utföras
 \section{SPELREGLER}
 \label{sec:spelregler}
 
-För förhindrande av misskötsel i projektgruppen införs ett straffsystem kallat ”Påföljdsfikan”. Påföljdsfikan fungerar så att efter en gruppmedlems misskötsel skall hen nästa sammankomst bjuda på fika för $S_{namn} = S_{namn} + k_{namn}*25$ kr omm $k_{namn}>1$, där $k_{namn}$ och $S_{namn}$ är varje individuella gruppmedlems kakfaktor, som ökas efter varje misskötsel men kan ej minskas utan benådning, respektive kakskuld som ackumuleras fram tills dess att gruppmedlemmen betalar tillbaka den. Initialvärdet för $S_{namn}$ och $k_{namn}$ är: $S_{namn}=k_{namn}=0.$\\ \par
+För förhindrande av misskötsel i projektgruppen införs ett straffsystem kallat ”Påföljdsfikan”. Påföljdsfikan fungerar så att efter en gruppmedlems misskötsel skall hen vid nästa sammankomst bjuda på fika för $S_{namn} = S_{namn} + k_{namn}*25$ kr omm $k_{namn}>1$, där $k_{namn}$ och $S_{namn}$ är varje individuella gruppmedlems kakfaktor, som ökas efter varje misskötsel men inte kan minskas utom vid benådning, respektive kakskuld som ackumuleras fram till dess att gruppmedlemmen betalar den. Initialvärdet för $S_{namn}$ och $k_{namn}$ är: $S_{namn}=k_{namn}=0.$\\ \par
 Punktlista över straff:
 \begin{itemize}
 	\item 5–10 min sen till möte, $k_{namn} = k_{namn} + 0.5$
