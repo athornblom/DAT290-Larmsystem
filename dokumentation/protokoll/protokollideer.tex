@@ -1,0 +1,86 @@
+\documentclass[a4paper]{article}
+
+\usepackage[swedish]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{float}
+\usepackage{titlesec}
+\usepackage{parskip}
+
+\begin{document}
+\pagenumbering{arabic}
+
+\section*{Grundide}
+\label{sec:grundide}
+
+Ett simpelt protokoll! Centralenheten sparar all status och datainformation, denna information kopieras regelbundet till perferienheterna. Centralenheten har 3 lägen.
+
+\begin{enumerate}
+	\item Standard running. Här lyssnar man på larm från periferienheterna. Dessutom skickar man regelbundet hela konfigurationen som ett meddelande till varje enskild ansluten enhet (hur bra går det att utöka detta om vi har många enheter?). Periferienheten svarar ok, om den inte svarar efter ett antal meddelande larmar man.
+	\item Sköter allt som beskrivs för läge 1 och dessutom väntar den på att acceptera en till enhet. När den nya enheten detekteras får man göra första konfigurationen för denna enhet.
+	\item Sköter allt som beskrivs för läge 1 och tillåter dessutom att man ändrar konfiguration för redan inkopplad enhet. För konfiguration av dörrlarm är det busenkelt, det blir bara att skicka ny den nya konfigurationen. För rörelsesensorenheten krävs att man ber om mätvärden att utgå ifrån för justeringar.
+\end{enumerate}
+
+Varje perferienhet förväntas ha en unik fysisk adress som kommer användas vid tilldelning av ID adresser. Likt fysiska MAC adresser och logiska IP adresser i ethernet.
+
+\section*{Bitfördelning i identifieringsdelen av meddelandet}
+\label{sec:bitfördelning}
+
+Totalt 11 bitar (Utan att utöka med 18 bitar till)
+\begin{description}
+	\item{0-3:} Första bitarna är meddelandetyp. 4 bitar dvs 16 meddelandetyper.
+	\item{4:} en bit för riktning. Från/till centralenheten. Kan ses som en 5e bit i meddelandetypen.
+	\item{5-10:} 6 bitar:
+		Om riktning är till centralenheten är bitarna sändarens ID.
+		Om riktningen är från centralenheten beskriver bitarna mottagarens ID.
+		Innan enheten har en egen ID används bara ettor.
+\end{description}
+
+
+\section*{Meddelandetyper lista}
+\label{sec:meddelandetyper}
+
+\begin{table}[H]
+	\begin{tabular}{|c|l|p{2.6cm}|p{6cm}|}
+		\hline
+		N& Riktning & Meddelandenamn & Beskrivning \\ \hline \hline
+		0 & p -> c & Acceptera konfiguration & Acknowledgement för senaste konfigurationen \\ \hline
+		1 & p -> c & Skicka larm och mätvärden & Talar för centralenheten om någon dörr eller sensor larmar. Skickar även mätvärden för avståndsgivaren vid konfiguration. Detta meddelande borde bara skickas om någonting larmar eller om man håller på att konfigurera avståndsgivaren. \\ \hline
+		2 & c -> p & Skicka konfiguration & Skickar hela konfigurationen till periferienheten kontinuerligt. Fungerar även som ping. \\ \hline
+		3 & p -> c & Acceptera  tilldelad ID & Acknowledgement för senaste tilldelade ID \\ \hline
+		4 & c -> p & Tilldelning av ID & Centralenheten tilldelar en periferienhet dess ID. Enheten identifieras med dess fysiska adress i meddelandet. Detta meddelande skickas bara då centralenheten är i konfigurationsläge (läge  2). \\ \hline
+		5 & p -> c & Ny enhet här & Centralenheten tilldelar en periferienhet dess ID. Enheten identifieras med dess fysiska adress i meddelandet. Detta meddelande skickas bara då centralenheten är i konfigurationsläge (läge  2). \\ \hline
+	\end{tabular}
+	\label{tab:meddelandetyper}
+\end{table}
+
+\section*{Detaljinformation angående meddelandetyperna}
+\label{sec:detaljinfo}
+\textbf{Skicka konfiguration} \\
+I datadelen av meddelande för dörrlarm borde det finnas:
+\begin{itemize}
+	\item En aktiveringsbit per dörr.
+	\item En bit per dörr för avaktivering av pågående larm.
+	\item Ett par bitar för varje tidsfördröjning.
+\end{itemize}
+
+I datadelen av meddelande för rörelsesensorlarm borde det finnas:
+\begin{itemize}
+	\item En aktiveringsbit per sensor
+	\item En bit per sensor för avaktivering av pågående larm.
+	\item En bit per enhet för aktivering av automatisk översändning av “Skicka larm och mätvärden” meddelanden. Detta kommer användas vid konfiguration av avståndsgivare.
+\end{itemize}
+
+\section*{Todo}
+\label{sec:todo}
+Tolka “Antalet dörrar ska kunna konfigureras när enheten startas, genom USART, via CAN från centralenheten eller genom strömbrytare.” från beskrivningen av dörrlarmsenheterna. Ska man kunna göra konfigurationen direkt på enheten måste man justera någonting i det protokollet som beskrivs ovan.
+
+Borde man ha olika meddelandetyper för “Skicka larm och mätvärden” beroende på vilken enhetstyp det rör sig om?
+
+Ett alternativ till flera meddelandetyper för ack skulle kunna vara att ha en enda som i datadelen talar om vilket meddelande som ackas. Då är det lättare att lägga till ack av ytterligare meddelandetyper.
+
+
+%För referenser
+%\bibliographystyle{IEEEtran}
+%\bibliography{referenser}
+\end{document}
