@@ -1,0 +1,75 @@
+%LaTeX-inställningar%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Kompliera med pdflatex
+\documentclass[a4paper, 10pt]{article}
+
+\usepackage[utf8x]{inputenc}
+\usepackage[swedish]{babel}
+\usepackage{graphicx}
+
+\usepackage{geometry} 
+\geometry{a4paper} 
+\geometry{margin=1in}
+\setcounter{section}{1}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%Fyll i vid varje möte:
+\newcommand{\tid}{09:00}
+\newcommand{\plats}{3505}
+\newcommand{\datum}{2019-09-18}
+
+\newcommand{\sammankallande}{\textit{Adam Thörnblom}}
+
+%Snabbkommandon
+\newcommand{\sect}[1][]{\section*{\S \thesection. #1} \stepcounter{section}}
+\newcommand{\para}{\paragraph \noindent}
+\newcommand{\ssect}[1][]{\subsection*{#1}}
+
+\begin{document}
+
+
+%Rubrik etc
+\section*{\center Kallelse till veckomöte} 
+\hrule
+\vspace{1em}
+\textbf{Kl:} \tid , \datum \\
+\textbf{Plats:} \plats \\
+
+
+
+%Dagordning:
+%Detta är en mall. Lägg till paragrafer och underparagrafer om det behövs.
+\section*{Preliminär dagordning:}
+
+\sect[Mötets öppnande]
+\ssect [   1.1 Närvarande]
+
+\sect[Val av sekreterare och justerare]
+
+\sect[Godkännande av dagordning]
+\ssect [   3.1 Tillägg av punkter]
+
+\sect[Godkännande av föregående mötesprotokoll]
+
+\sect[Informationspunkter]
+
+\sect[Statusrapport]
+\ssect [    6.1 Centralenheten]
+\ssect [    6.2 Dörrenheten]
+\ssect [    6.3 Rörelseenheten]
+
+\sect[Uppföljning och eventuella förändringar]
+\ssect [    7.1 Kommunikationsprotokoll]
+
+\sect[Kommande uppgifter]
+
+\sect[Övriga frågor]
+
+\sect[Nästa möte sker]
+
+
+\sect[Mötets avslutande]
+
+\ \\ \ \\
+\sammankallande \\
+
+\end{document}
