@@ -1,0 +1,8 @@
+#För att ignorera filer ifrån codelite
+*.workspace
+*.codelite
+*.project
+*Makefile
+*Debug
+*.mk
+*.s
