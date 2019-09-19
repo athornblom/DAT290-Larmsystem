@@ -25,30 +25,42 @@ void app_init(){
 	
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
 	GPIO_StructInit(&init);
-	
-	init.GPIO_Pin = GPIO_Pin_1;
+	init.GPIO_Pin = GPIO_Pin_1 | GPIO_Pin_3 | GPIO_Pin_5 | GPIO_Pin_7;
 	init.GPIO_Mode = GPIO_Mode_OUT;
 	init.GPIO_OType = GPIO_OType_PP;
-	
-	
 	GPIO_Init(GPIOA,&init);
+	
+
 
 //konfigurerar inport
 	GPIO_StructInit(&init);
-	init.GPIO_Pin = GPIO_Pin_2;
+	init.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_2 | GPIO_Pin_4 | GPIO_Pin_6;
 	init.GPIO_Mode = GPIO_Mode_IN;
 	init.GPIO_PuPd = GPIO_PuPd_UP;
 	GPIO_Init(GPIOA,&init);
+	
+	
 }
 void main(void)
 {
 	app_init();
-	
+
 	while (1) {
 		if (GPIO_ReadInputData(GPIOA) & (1<<2)) {
-			GPIO_SetBits(GPIOA,GPIO_Pin_1);
-		} else {
 			GPIO_ResetBits(GPIOA,GPIO_Pin_1);
+		} else {
+			GPIO_SetBits(GPIOA,GPIO_Pin_1);
+		}
+		if (GPIO_ReadInputData(GPIOA) & (1<<4)) {
+			GPIO_ResetBits(GPIOA,GPIO_Pin_3);
+		} else {
+			GPIO_SetBits(GPIOA,GPIO_Pin_3);
+		}
+		if (GPIO_ReadInputData(GPIOA) & (1<<6)) {
+			GPIO_ResetBits(GPIOA,GPIO_Pin_5);
+		} else {
+			GPIO_SetBits(GPIOA,GPIO_Pin_5);
+		
 		}
 	}
 	
