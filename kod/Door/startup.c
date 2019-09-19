@@ -19,7 +19,7 @@ __asm volatile(
 	) ;
 }
 
-void app_init(){
+void init_GPIOA(){
 /*  Function used to set the GPIO configuration to the default reset state ****/
 	GPIO_InitTypeDef init;
 	
@@ -29,8 +29,6 @@ void app_init(){
 	init.GPIO_Mode = GPIO_Mode_OUT;
 	init.GPIO_OType = GPIO_OType_PP;
 	GPIO_Init(GPIOA,&init);
-	
-
 
 //konfigurerar inport
 	GPIO_StructInit(&init);
@@ -41,51 +39,57 @@ void app_init(){
 	
 	
 }
+
+void app_init() {
+	door door1 = {1, 0,1,2,1234};
+}
+
+void alarm_TurnOff(door d) {
+	
+}
+
 void main(void)
-{
+{	
+//	app_init();  Vad ska hända här? //nästan allt för början av uppstart
 	app_init();
+	init_GPIOA();
 
-	while (1) {
-		if (GPIO_ReadInputData(GPIOA) & (1<<2)) {
-			GPIO_ResetBits(GPIOA,GPIO_Pin_1);
-		} else {
-			GPIO_SetBits(GPIOA,GPIO_Pin_1);
-		}
-		if (GPIO_ReadInputData(GPIOA) & (1<<4)) {
-			GPIO_ResetBits(GPIOA,GPIO_Pin_3);
-		} else {
-			GPIO_SetBits(GPIOA,GPIO_Pin_3);
-		}
-		if (GPIO_ReadInputData(GPIOA) & (1<<6)) {
-			GPIO_ResetBits(GPIOA,GPIO_Pin_5);
-		} else {
-			GPIO_SetBits(GPIOA,GPIO_Pin_5);
-		
-		}
-	}
-	
-	//struct door* newItem = malloc(sizeof(struct door));
-	
-	
+	// För iteration av samtliga GPIO_pins i loopar.
+	uint16_t GPIO_Pins[] = {
+		GPIO_Pin_0, GPIO_Pin_1, GPIO_Pin_2, GPIO_Pin_3,
+		GPIO_Pin_4, GPIO_Pin_5, GPIO_Pin_6, GPIO_Pin_7,
+		GPIO_Pin_8, GPIO_Pin_9, GPIO_Pin_10, GPIO_Pin_11,
+		GPIO_Pin_12, GPIO_Pin_13, GPIO_Pin_14, GPIO_Pin_15
+		};	
+	// Main Loop
+	while(1) {
+		for (int i = 0; i < sizeof(GPIO_Pins); i+=2) 
+		{
+			if(GPIO_ReadInputDataBit(GPIOA,GPIO_Pins[i])) {
+				GPIO_ResetBits(GPIOA,GPIO_Pins[i+1]);
+			} else {
+				GPIO_SetBits(GPIOA,GPIO_Pins[i+1]);
+				//if (kontroll bit dörren är inte uppställd)
+				//else{
+					//if är dörren upplåst ctrl bit 2
+						//delay door.get(time_alarm)
+						
+					//else annars LARM DIREKT
+
+
+				//}
+			}
+		}	
 }
 
-	
-	
 
-
-/*inline struct door* door(char id, char controlbits, char time_larm,char time_central_larm, short password)
-{
-    return (struct my*)(id, controlbits, time_larm,time_central_larm,password);
-}
-*/
-
-struct door {
+typedef struct door {
 	char id;
 	char controlbits; // 8 kontrollbitar tex den minst signifikanta biten är ifall dörren är upplåst eller ej
 	char time_larm; // tid i 10 sekunders intervall innan dörr larmar lokalt
 	char time_central_larm; // tid i 10 sekunders intervall innan dörr larmar centralenheten
 	short password; //4 sifferig kod för att låsa upp dörrarna
-};
+} door;
 
 
 
