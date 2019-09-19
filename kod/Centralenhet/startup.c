@@ -17,7 +17,7 @@
 CanRxMsg RxMessage;
 CanTxMsg TxMessage;
 
-typedef struct Door_dev{
+typedef struct{
     unsigned int mac;
     unsigned char id;
     unsigned char num_of_doors;
@@ -176,7 +176,18 @@ void config_door(unsigned char id_device, unsigned char id_door, unsigned int ti
 }
 
 void setup_doors(){
-    
+    Door_device door_dev;
+        
+        door_dev = door_devs[i];
+        //TODO: Fråga via usart om användaren vill konfigurera antal dörrar
+        //TODO: Om ja, lägg antal dörrar i door_dev.num_of_doors
+        
+        num_of_doors = door_dev.num_of_doors;
+        
+        
+        for(unsigned int j = 0; j < num_of_doors; j++){
+            
+        }
 }
 
 
@@ -184,17 +195,4 @@ void main(void) {
 	
 	// Help us determine if CAN got started at all. 0 = bad. 1 = good.
 	light = can_init();
-    
-    Device door_dev;
-    for(unsigned int i = 0; i < num_of_door_devices){
-        door_dev = door_devs[i];
-        //Fråga via usart om användaren vill konfigurera antal dörrar
-        //Om ja, lägg antal dörrar i door_dev.num_of_doors
-        
-        num_of_doors = door_dev.num_of_doors;
-        
-        for(unsigned int j = 0; j < num_of_doors; j++){
-        
-        }
-    }
 }
