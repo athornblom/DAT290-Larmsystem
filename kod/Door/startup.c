@@ -18,6 +18,11 @@ void startup(void)
 	);
 }
 
+void init_SYSTICK() {
+	SystemInit(void); // from system_stm32f4xx.c
+	SysTick_Config(SystemCoreClock / 1000);
+}
+
 void init_GPIOA(){
 /*  Function used to set the GPIO configuration to the default reset state ****/
 	GPIO_InitTypeDef init;
@@ -36,7 +41,7 @@ void app_init()
 }
 
 void app_init() {
-	door door1 = {1, 0,1,2,1234};
+	//door door1 = {1, 0,1,2,1234};
 }
 
 void alarm_TurnOff(door d) {
