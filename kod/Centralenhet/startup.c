@@ -18,9 +18,17 @@ CanRxMsg RxMessage;
 CanTxMsg TxMessage;
 
 typedef struct{
+    unsigned char id;
+    unsigned char device_id;
+    unsigned int time0;
+    unsigned int time1;
+} Door;
+
+typedef struct{
     unsigned int mac;
     unsigned char id;
     unsigned char num_of_doors;
+    Door doors[];
 } Door_device;
 
 unsigned int id;
@@ -170,24 +178,31 @@ void assign_id(unsigned int mac, unsigned char id){
     
 }
 
-//Ställer in de två tiderna för en dörr
-void config_door(unsigned char id_device, unsigned char id_door, unsigned int time0, unsigned int time1) {
-    
+
+void set_door_times(Door door, unsigned int time0, unsigned int time1){
+    door.time0 = time0;
+    door.time1 = time1;
+    //TODO: Skicka CAN-meddelande till enheten med dörrens id och tider
 }
 
-void setup_doors(){
-    Door_device door_dev;
+//Denna funktion ska köras för varje dörrenhet för att ange antal dörrar och konfigurera dessa
+void setup_doors(Door_device door_dev){
+    //TODO: Fråga via usart om användaren vill välja antal dörrar
+    //TODO: Om ja, lägg antal dörrar i door_dev.num_of_doors (Annars förväntas door_dev ha ett default-värde för antal dörrar
+    
+    unsigned short num_of_doors = door_dev.num_of_doors;
+    
+    Door door;
+    unsigned int time0 = default_time0;
+    unsigned int time1 = default_time1;
+    for(unsigned short i = 0; i < num_of_doors; i++){
+        door = door_dev.doors[i];
+        door.device_id = door_dev.id;
+        //Låt användaren ställa in tiderna via usart. Om ingen tid anges används föregående värde
         
-        door_dev = door_devs[i];
-        //TODO: Fråga via usart om användaren vill konfigurera antal dörrar
-        //TODO: Om ja, lägg antal dörrar i door_dev.num_of_doors
         
-        num_of_doors = door_dev.num_of_doors;
-        
-        
-        for(unsigned int j = 0; j < num_of_doors; j++){
-            
-        }
+        set_door_times(door, time0, time1);
+    }
 }
 
 
