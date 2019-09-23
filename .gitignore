@@ -8,4 +8,5 @@
 *.bbl
 *.blg
 *.toc
+*.db
 **/*.log
