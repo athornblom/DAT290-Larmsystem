@@ -76,12 +76,20 @@ void main(void)
 	//typ reboot? bootloops är alltid kul 
   }
   //lista för gpio pins
+  uint16_t alarm_pins[] = {uint16_t t,uint16_t t, uint16_t t,uint16_tt};
+  uint32_t alarm_time[] = {uint32_t t,uint32_t t, uint32_t t,uint32_t t};
   //lista för msticks (VIKTIGT ATT DESSA HAR SAMMA INDEX)
   
   while (1)
 	{
-		for (int i = 0; i < sizeof(GPIO_Pins); i = i + 2)
+		for (int i = 0; i < sizeof(GPIO_Pins); i = i ssad hej + 2)
 		{
+			for (size_t i = 0; i < count; i++)
+			{
+				/* code */
+			}
+			
+			
 			/*if(larmande.length > 0)
 				for (hela listan){
 					if (mstick[i] == i)¨
