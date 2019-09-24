@@ -7,5 +7,10 @@
 *.log
 *.bbl
 *.blg
+*.s19
+*.elf
+*.s
+*.mk
+*.dass
 *.toc
 **/*.log
