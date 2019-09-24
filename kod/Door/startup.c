@@ -25,13 +25,14 @@ uint16_t GPIO_Pins[] = {
 		GPIO_Pin_0, GPIO_Pin_1, GPIO_Pin_2, GPIO_Pin_3,
 		GPIO_Pin_4, GPIO_Pin_5, GPIO_Pin_6, GPIO_Pin_7,
 		GPIO_Pin_8, GPIO_Pin_9, GPIO_Pin_10, GPIO_Pin_11,
-		GPIO_Pin_12, GPIO_Pin_13, GPIO_Pin_14, GPIO_Pin_15};
+		GPIO_Pin_12, GPIO_Pin_13, GPIO_Pin_14, GPIO_Pin_15
+		};
 
-void Port_init()
+void init_GPIO_Ports()
 {
 	/*  Function used to set the GPIO configuration to the default reset state ****/
 	GPIO_InitTypeDef init;
-
+	//GPIO A UTPORTAR
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
 	GPIO_StructInit(&init);
 	init.GPIO_Pin = GPIO_Pin_1 | GPIO_Pin_3 | GPIO_Pin_5 | GPIO_Pin_7;
@@ -39,7 +40,7 @@ void Port_init()
 	init.GPIO_OType = GPIO_OType_PP;
 	GPIO_Init(GPIOA, &init);
 
-	//konfigurerar inport
+	//konfigurerar inport GPIO A
 	GPIO_StructInit(&init);
 	init.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_2 | GPIO_Pin_4 | GPIO_Pin_6;
 	init.GPIO_Mode = GPIO_Mode_IN;
@@ -57,25 +58,61 @@ void SysTick_Handler(void)  {                               /* SysTick interrupt
 	if (msTicks % 2000 == 0) {
 		GPIO_ResetBits(GPIOA,GPIO_Pin_1);
 	}
+	// Gör en ny Array med dörrar som larmar.
 }
 
 void main(void)
 {
 	//app_init();
-	Port_init();
+	init_GPIO_Ports();
+	
+	//Systick
 	*((void (**)(void) ) 0x2001C03C ) = SysTick_Handler;
 	uint32_t returnCode;
-	GPIO_SetBits(GPIOA,GPIO_Pin_1);
-  
-  returnCode = SysTick_Config(168000000/1000);      /* Configure SysTick to generate an interrupt every millisecond */
+  	returnCode = SysTick_Config(168000000/1000);      /* Configure SysTick to generate an interrupt every millisecond */
   
   if (returnCode != 0)  {                                   /* Check return code for errors */
-    // Error Handling 
+    // Error Handling
+	//typ reboot? bootloops är alltid kul 
   }
+  //lista för gpio pins
+  //lista för msticks (VIKTIGT ATT DESSA HAR SAMMA INDEX)
   
-  while(1) {
+  while (1)
+	{
+		for (int i = 0; i < sizeof(GPIO_Pins); i = i + 2)
+		{
+			/*if(larmande.length > 0)
+				for (hela listan){
+					if (mstick[i] == i)¨
+					LARMA lokalt
+					
+				}
+			}*/
+			if (GPIO_ReadInputDataBit(GPIOA, GPIO_Pins[i]))
+			{
+				//tarbort larmad GPIO PIN ur listan med larmade
+				
+				//GPIO_ResetBits(GPIOA, GPIO_Pins[i + 1]);
+			}
+			else
+			{
+				//GPIO_SetBits(GPIOA, GPIO_Pins[i + 1]);
+				 //Lägger till larmande GPIO PIN i en lista för dörrar som larmar
+				 //lägger till mstick + larm lokalt tid i listan
+			}
+		}
+	}
 
-  }
+
+typedef struct door
+{
+	char id;
+	char controlbits;		// 8 kontrollbitar tex den minst signifikanta biten är ifall dörren är upplåst eller ej
+	char time_larm;			// tid i 10 sekunders intervall innan dörr larmar lokalt
+	char time_central_larm; // tid i 10 sekunders intervall innan dörr larmar centralenheten
+	short password;			//4 sifferig kod för att låsa upp dörrarna
+}door; 
 }
 	
 
