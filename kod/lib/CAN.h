@@ -1,0 +1,2 @@
+#define	CAN1_IRQ_VECTOR		(0x2001C000+0x90)
+#define __CAN_IRQ_PRIORITY		2
