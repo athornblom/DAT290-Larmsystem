@@ -6,7 +6,9 @@
  * Includera denna fil.
  * Initziera mha DebugPrintInit()
  * Därefter kan du använda följande funktioner
-    * DebugPrint(uint8_t *str) för att printa text. Accepterade täcken är 0-9 a-z A-Z samt space
+    * DebugPrint(uint8_t *str) för att printa text.
+       Accepterade täcken är 0-9 a-z A-Z space samt * för ny rad
+
     * DebugPrint(uint32_t num) för att printa nummer
  */
 

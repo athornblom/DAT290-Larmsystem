@@ -195,6 +195,13 @@ uint8_t charToPrintable(uint8_t inChar){
     #ifdef SIMULATOR
     return inChar;
     #else
+    //* används för ny rad
+    //10 är ny rad vid utskrift kort -> pc (USARTPut)
+    //"*" är 42
+    if (inChar == 42) {
+        return (10);
+    }
+
     //2 är space vid utskrift kort -> pc (USARTPut)
     //" " är 32
     if (inChar == 32) {
