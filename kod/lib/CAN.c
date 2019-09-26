@@ -4,8 +4,12 @@
 #include "stm32f4xx_rcc.h"
 #include "stm32f4xx_gpio.h"
 
+<<<<<<< Updated upstream
 
 uint8_t send_can_message(CanTxMsg msg){
+=======
+uint8_t send_can_message(CanTxMsg *msg){
+>>>>>>> Stashed changes
 	return CAN_Transmit(CAN1, msg);
 }
 
