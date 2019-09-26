@@ -1,18 +1,9 @@
-#include "CAN.c"
+#include "CAN.h"
+#include "USART.h"
 #include "misc.h"
 #include "stm32f4xx_can.h"
 #include "stm32f4xx_rcc.h"
 #include "stm32f4xx_gpio.h"
-
-#define E_MODER ((unsigned int *) 0x40021000)
-#define D_MODER ((unsigned int *) 0x40020C00)
-
-#define D_ODR_LOW ((unsigned char *) 0x40020C14)
-#define E_IDR_LOW ((unsigned char *) 0x40021010)
-#define E_ODR_LOW ((unsigned char *) 0x40021014)
-
-
-
 
 CanRxMsg RxMessage;
 CanTxMsg TxMessage;
@@ -69,9 +60,15 @@ void setup_doors(){
         }
 }
 
-
 void main(void) {
-	
-	// Help us determine if CAN got started at all. 0 = bad. 1 = good.
-	light = can_init();
+    USARTConfig();
+    USARTPrint("start");
+    CanTxMsg canMsg;
+    uint8_t msg;
+    while (1) {
+        if (USARTGet(&msg)){
+            //code canMsg
+            send_can_message(&canMsg);
+        }
+    }
 }
