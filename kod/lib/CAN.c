@@ -4,8 +4,7 @@
 #include "stm32f4xx_rcc.h"
 #include "stm32f4xx_gpio.h"
 
-uint8_t send_can_message()
-{
+uint8_t send_can_message() {
 	CanTxMsg msgstorage;
 	CanTxMsg* msg = &msgstorage;
 	msg->StdId = id;
@@ -124,3 +123,14 @@ uint8_t can_init() {
 	
 	return can_init_status;
 }
+
+uint8_t encode_door_time_config(CanTxMsg *msg, uint32_t time0, uint32_t time1){
+    uint8_t *data_pointer =  &(msg->Data);
+    
+    //De två tidsvärdena skrivs in i bytearrayen för data
+    *data_pointer = time0;
+    *(data_pointer + 4) = time1;
+}
+
+
+void 
