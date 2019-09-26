@@ -10,15 +10,29 @@ uint8_t send_can_message(CanTxMsg *msg){
 }
 
 void can_irq_handler(void){
+    //TODO REMOVE
+    USARTPrint("In irq handler*");
+    
     if(CAN_GetITStatus(CAN1, CAN_IT_FMP0)) {
         if (CAN_MessagePending(CAN1, CAN_FIFO0)) {
             CanRxMsg rxMsg;
             CAN_Receive(CAN1, CAN_FIFO0, &rxMsg);
             //TODO hantera meddelandet
             
-            //För enkelt test
+            //För enkelt test TODO REMOVE
+            if (rxMsg.IDE == CAN_Id_Standard){ //standard meddelande
+                USARTPrint("StdId ");
+                USARTPrintNum((uint32_t)rxMsg.StdId & 0x7FF);
+            } else if (rxMsg.IDE == CAN_Id_Extended){
+                USARTPrint("ExtId ");
+                USARTPrintNum(rxMsg.ExtId & 0x1FFFFFFF);
+            } else {
+                USARTPrint("unknown IDE");
+            }
+            USARTPrint("*Data ");
             USARTPrintNum((rxMsg.Data[0]));
-            USARTPrint("*");
+            USARTPrint("**");
+            
         }
     }
 }

@@ -62,14 +62,23 @@ void config_door(unsigned char id_device, unsigned char id_door, unsigned int ti
 
 void main(void) {
     USARTConfig();
-    USARTPrint("start");
+    can_init();
+    USARTPrint("start*");
     CanTxMsg canMsg;
-    uint8_t msg;
+    uint8_t USARTmsg;
     while (1) {
-        if (USARTGet(&msg)){
+        if (USARTGet(&USARTmsg)){
             //code canMsg
-            encode_door_time_config(&canMsg,12345,6789);
-            send_can_message(&canMsg);
+            //encode_door_time_config(&canMsg,5,12);
+            canMsg.StdId = 55;
+            canMsg.ExtId = 32;
+            canMsg.IDE = CAN_Id_Extended; //Alternativen är CAN_Id_Standard eller FCAN_Id_Extended
+            canMsg.RTR = CAN_RTR_Data;
+            canMsg.DLC = 1;
+            canMsg.Data[0] = USARTmsg;
+            if (send_can_message(&canMsg) == CAN_TxStatus_NoMailBox){
+                USARTPrint("no mailbox empty*");
+            }
         }
     }
 }
