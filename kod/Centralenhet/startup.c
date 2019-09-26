@@ -45,7 +45,7 @@ void config_door(unsigned char id_device, unsigned char id_door, unsigned int ti
     
 }
 
-void setup_doors(){
+/*void setup_doors(){
     Door_device door_dev;
         
         door_dev = door_devs[i];
@@ -58,7 +58,7 @@ void setup_doors(){
         for(unsigned int j = 0; j < num_of_doors; j++){
             
         }
-}
+}*/
 
 void main(void) {
     USARTConfig();
@@ -68,6 +68,7 @@ void main(void) {
     while (1) {
         if (USARTGet(&msg)){
             //code canMsg
+            encode_door_time_config(&canMsg,12345,6789);
             send_can_message(&canMsg);
         }
     }

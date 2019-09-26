@@ -4,12 +4,8 @@
 #include "stm32f4xx_rcc.h"
 #include "stm32f4xx_gpio.h"
 
-<<<<<<< Updated upstream
 
-uint8_t send_can_message(CanTxMsg msg){
-=======
 uint8_t send_can_message(CanTxMsg *msg){
->>>>>>> Stashed changes
 	return CAN_Transmit(CAN1, msg);
 }
 
@@ -19,6 +15,10 @@ void can_irq_handler(void){
             CanRxMsg rxMsg;
             CAN_Receive(CAN1, CAN_FIFO0, &rxMsg);
             //TODO hantera meddelandet
+            
+            //För enkelt test
+            USARTPrintNum((rxMsg.Data[0]));
+            USARTPrint("*");
         }
     }
 }
@@ -129,8 +129,8 @@ uint8_t encode_door_time_config(CanTxMsg *msg, uint32_t time0, uint32_t time1){
     return 1;
 }
 
-uint8_t handle_door_time_msg(CanTxMsg *msg, uint32_t) {
-    uint32_t time0. time1;
+uint8_t handle_door_time_msg(CanTxMsg *msg) {
+    uint32_t time0, time1;
     uint8_t *data_pointer =  &(msg->Data);
     
     time0 = *data_pointer;
@@ -138,6 +138,3 @@ uint8_t handle_door_time_msg(CanTxMsg *msg, uint32_t) {
     
     //TODO: Gör grejer med tiderna
 }
-
-
-void 
