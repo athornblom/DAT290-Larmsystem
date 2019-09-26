@@ -4,27 +4,18 @@
 #include "stm32f4xx_rcc.h"
 #include "stm32f4xx_gpio.h"
 
-uint8_t send_can_message() {
-	CanTxMsg msgstorage;
-	CanTxMsg* msg = &msgstorage;
-	msg->StdId = id;
-    msg->ExtId = 0x01;
-	msg->RTR = CAN_RTR_DATA;
-    msg->IDE = CAN_ID_STD;
-    msg->DLC = 0;
+
+uint8_t send_can_message(CanTxMsg msg){
 	return CAN_Transmit(CAN1, msg);
 }
 
-void can_irq_handler(void)
-{
-    CanRxMsg rxMsg;
-    if(CAN_MessagePending(CAN1, CAN_FIFO0)) {
-		CAN_Receive(CAN1, CAN_FIFO0, &rxMsg);
-		toggle_light();
-		if(id == 101) {
-			messages_to_send++;
-			counter = 3000000;
-		}
+void can_irq_handler(void){
+    if(CAN_GetITStatus(CAN1, CAN_IT_FMP0)) {
+        if (CAN_MessagePending(CAN1, CAN_FIFO0)) {
+            CanRxMsg rxMsg;
+            CAN_Receive(CAN1, CAN_FIFO0, &rxMsg);
+            //TODO hantera meddelandet
+        }
     }
 }
 
@@ -54,7 +45,7 @@ uint8_t can_init() {
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
     GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
     GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-        GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_Init(GPIOB, &GPIO_InitStructure);	
 
     GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8;	
@@ -68,7 +59,7 @@ uint8_t can_init() {
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
     GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
     GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-        GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_Init(GPIOB, &GPIO_InitStructure);	
 
     GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5;	
