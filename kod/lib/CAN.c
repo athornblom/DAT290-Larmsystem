@@ -157,14 +157,25 @@ uint8_t handle_door_time_msg(CanRxMsg *msg) {
 
 
 
-uint8_t encode_assign_id(CanTxMsg *msg, uint16_t id){
+uint8_t encode_request_id(CanTxMsg *msg, uint32_t temp_id){
     uint8_t *data_pointer =  &(msg->Data);
     
-    msg->DLC = 2;
+    msg->StdId = 5;
+    msg->DLC = 4;
     
     //Id skrivs in i bytearrayen för data
-    *data_pointer = id;
+    *data_pointer = temp_id;
 }
+
+uint8_t handle_recieve_id_msg(CanRxMsg *msg) {
+    uint16_t id;
+    uint8_t *data_pointer =  &(msg->Data);
+    
+    id = *data_pointer;
+    
+    //TODO: Gör grejer med id
+}
+
 
 
 uint8_t encode_distance_config(CanTxMsg *msg, uint32_t dist){
@@ -172,6 +183,7 @@ uint8_t encode_distance_config(CanTxMsg *msg, uint32_t dist){
     
     msg->DLC = 4;
     
-    //Id skrivs in i bytearrayen för data
+    //Avstånd skrivs in i bytearrayen för data
     *data_pointer = dist;
 }
+
