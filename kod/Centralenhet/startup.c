@@ -72,7 +72,7 @@ void main(void) {
             //encode_door_time_config(&canMsg,5,12);
             canMsg.StdId = 55;
             canMsg.ExtId = 32;
-            canMsg.IDE = CAN_Id_Extended; //Alternativen är CAN_Id_Standard eller FCAN_Id_Extended
+            canMsg.IDE = CAN_Id_Standard; //Alternativen är CAN_Id_Standard eller FCAN_Id_Extended
             canMsg.RTR = CAN_RTR_Data;
             canMsg.DLC = 1;
             canMsg.Data[0] = USARTmsg;
