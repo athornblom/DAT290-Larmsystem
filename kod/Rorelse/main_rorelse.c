@@ -26,25 +26,28 @@ __asm volatile(
 
 		
 typedef struct MotionSensors {
-	char id;
-	char controlbits;		// 8 kontrollbitar tex den minst signifikanta biten är ifall sensorn är aktiv eller ej
-	short password;			// 4 sifferig kod för att aktivera/avaktivera sensorn
-	uint16_t trig, echo;	// Pinnar för trig och echo, t.ex GPIO_Pin_0 och GPIO_Pin_1
-} MotionSensor; 
+	char id, controlbits;							// Id och 8 kontrollbitar tex den minst signifikanta biten är ifall sensorn är aktiv eller ej.
+	short password;									// 4 sifferig kod för att aktivera/avaktivera sensorn.
+	uint16_t trig, echo;							// Pinnar för trig och echo, t.ex GPIO_Pin_0 och GPIO_Pin_1.
+	uint32_t trigPulse, pulseLength, delayPulse;	// Längd på triggerpuls(10µs), tid tills pulsen kommer tillbaks och fördröjning mellan pulser
+} MotionSensor;
+
+
 MotionSensor motion1;
 
 
-volatile uint32_t msTicks = 0;                              /* Variable to store millisecond ticks */
+volatile uint32_t microTicks = 0;                              /* Variable för microsekunder*/
   
 void SysTick_Handler(void)  {                               /* SysTick interrupt Handler. */
-	msTicks++;
-	if (msTicks % 1000 == 0) {
-		GPIO_SetBits(GPIOA,GPIO_Pin_1);
-	}
-	if (msTicks % 2000 == 0) {
-		GPIO_ResetBits(GPIOA,GPIO_Pin_1);
-	}
-	// Gör en ny Array med dörrar som larmar.
+	microTicks++;
+}
+
+
+void init_Timer(){
+	//Systick
+	*((void (**)(void) ) 0x2001C03C ) = SysTick_Handler;
+	uint32_t returnCode;
+  	returnCode = SysTick_Config(168000000/1000000);      /* Konfigurera SysTick att generera avbrott varje mikrosekund */
 }
 
 
@@ -54,43 +57,57 @@ void init_Sensors(){
 	motion1.password = 2389;
 	motion1.trig = GPIO_Pin_0;
 	motion1.echo = GPIO_Pin_1;
+	motion1.trigPulse = 0;
+	motion1.pulseLength = 0;
+	motion1.delayPulse = 0; 
 	
 }
 
 
 void init_GPIO_Ports(){
-	/*  Function used to set the GPIO configuration to the default reset state ****/
+	/*  Funktion för att sätta GPIO till standard konfigurationer */
 	GPIO_InitTypeDef init;
-	//GPIO A UTPORTAR
+	//konfigurerar inport GPIO A
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
 	GPIO_StructInit(&init);
 	init.GPIO_Pin = motion1.echo | GPIO_Pin_3 | GPIO_Pin_5 | GPIO_Pin_7;
 	init.GPIO_Mode = GPIO_Mode_IN;
 	init.GPIO_OType = GPIO_OType_PP;
+	init.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_Init(GPIOA, &init);
 
-	//konfigurerar inport GPIO A
+	//konfigurerar utport GPIO A
 	GPIO_StructInit(&init);
 	init.GPIO_Pin = motion1.trig | GPIO_Pin_2 | GPIO_Pin_4 | GPIO_Pin_6;
 	init.GPIO_Mode = GPIO_Mode_OUT;
 	init.GPIO_PuPd = GPIO_PuPd_UP;
+	init.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_Init(GPIOA, &init);
 }
 
+
+
+void init_app(){
+	init_Timer();
+	init_Sensors();
+	init_GPIO_Ports();
+}
 
 
 
 void main(void)
 {
-	init_Sensors();
-	init_GPIO_Ports();
-
-	
-	//Systick
-	*((void (**)(void) ) 0x2001C03C ) = SysTick_Handler;
-	uint32_t returnCode;
-  	returnCode = SysTick_Config(168000000/1000);      /* Configure SysTick to generate an interrupt every millisecond */
+	init_app();
+	while(1){
+		if(motion1.controlbits & 1 && microTicks >= motion1.delayPulse){
+			GPIO_SetBits(GPIOA, motion1.trig);
+			motion1.trigPulse = microTicks + 10; // Triggpuls 10µs
+			motion1.delayPulse = microTicks + 1000;	//
+		}
+		if(motion1.controlbits & 1 && microTicks >= motion1.trigPulse){
+			GPIO_ResetBits(GPIOA, motion1.trig);
+		}
+	}
 	
 	
 }
-
