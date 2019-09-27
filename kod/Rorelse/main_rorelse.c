@@ -29,7 +29,8 @@ typedef struct MotionSensors {
 	char id, controlbits;							// Id och 8 kontrollbitar tex den minst signifikanta biten är ifall sensorn är aktiv eller ej.
 	short password;									// 4 sifferig kod för att aktivera/avaktivera sensorn.
 	uint16_t trig, echo;							// Pinnar för trig och echo, t.ex GPIO_Pin_0 och GPIO_Pin_1.
-	uint32_t trigPulse, pulseLength, delayPulse;	// Längd på triggerpuls(10µs), tid tills pulsen kommer tillbaks och fördröjning mellan pulser
+	uint32_t pulseTrig, pulseEcho, pulseDelay;		// Längd på triggerpuls(10µs), tid tills pulsen kommer tillbaks och fördröjning mellan pulser
+	float cm, alarm; 								// Avstånd till föremål och larmavstånd
 } MotionSensor;
 
 
@@ -57,9 +58,11 @@ void init_Sensors(){
 	motion1.password = 2389;
 	motion1.trig = GPIO_Pin_0;
 	motion1.echo = GPIO_Pin_1;
-	motion1.trigPulse = 0;
-	motion1.pulseLength = 0;
-	motion1.delayPulse = 0; 
+	motion1.pulseTrig = 0;
+	motion1.pulseEcho = 0;
+	motion1.pulseDelay = 0; 
+	motion1.cm = 400;
+	motion1.alarm = 20;
 	
 }
 
@@ -99,14 +102,27 @@ void main(void)
 {
 	init_app();
 	while(1){
-		if(motion1.controlbits & 1 && microTicks >= motion1.delayPulse){
-			GPIO_SetBits(GPIOA, motion1.trig);
-			motion1.trigPulse = microTicks + 10; // Triggpuls 10µs
-			motion1.delayPulse = microTicks + 1000;	//
+		if(microTicks >= motion1.pulseTrig){ // Är trigpulsen klar?
+			GPIO_ResetBits(GPIOA, motion1.trig);	// Avaktivera triggerpuls
 		}
-		if(motion1.controlbits & 1 && microTicks >= motion1.trigPulse){
-			GPIO_ResetBits(GPIOA, motion1.trig);
+		else if(microTicks >= motion1.pulseDelay){  // Är triggfördröjningen klar?
+			GPIO_SetBits(GPIOA, motion1.trig);	// Aktivera triggerpuls
+			motion1.pulseTrig = microTicks + 10; // Triggpuls 10µs
+			motion1.pulseDelay = microTicks + 1000;	// Fördröjning mellan triggerpulserna, 1ms
 		}
+		if(GPIO_ReadInputDataBit(GPIOA, motion1.echo)){ // Är echo hög?
+			motion1.pulseEcho = microTicks; // Början av echopulsen
+			while(GPIO_ReadInputDataBit(GPIOA, motion1.echo)){ // Medan echo är hög
+			}
+			motion1.cm = (microTicks - motion1.pulseEcho)/58; // Sekunder tills echo kommer tillbaks
+		}
+		if(motion1.cm < motion1.alarm){ // Upptäcker sensorn något som är för nära?
+			GPIO_SetBits(GPIOA, GPIO_Pin_2);	// Tänd lampa
+		}
+		else{
+			GPIO_ResetBits(GPIOA, GPIO_Pin_2);	// Släck lampa
+		}
+		
 	}
 	
 	
