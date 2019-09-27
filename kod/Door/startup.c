@@ -2,12 +2,17 @@
  * 	startup.c
  *
  */
+
+#define DEBUG
+
 #include "stm32f4xx.h"
 #include "stm32f4xx_rcc.h"
 #include "stm32f4xx_rcc.c"
 #include "core_cm4.h"
 #include "stm32f4xx_gpio.h"
 #include "system_stm32f4xx.h"
+#include "startup.h"
+#include "USARTDebug.h"
 
 void startup(void) __attribute__((naked)) __attribute__((section(".start_section")));
 
@@ -20,26 +25,16 @@ void startup(void)
 		"_exit: B .\n" /* never return */
 	);
 }
-	// Globala variabler.
-/*uint16_t GPIO_Pins[] = {
-		GPIO_Pin_0, GPIO_Pin_1, GPIO_Pin_2, GPIO_Pin_3,
-		GPIO_Pin_4, GPIO_Pin_5, GPIO_Pin_6, GPIO_Pin_7,
-		GPIO_Pin_8, GPIO_Pin_9, GPIO_Pin_10, GPIO_Pin_11,
-		GPIO_Pin_12, GPIO_Pin_13, GPIO_Pin_14, GPIO_Pin_15
-		};*/
+// Globala variabler.
+/*
+uint16_t GPIO_Pins[] = {
+	GPIO_Pin_0, GPIO_Pin_1, GPIO_Pin_2, GPIO_Pin_3,
+	GPIO_Pin_4, GPIO_Pin_5, GPIO_Pin_6, GPIO_Pin_7,
+	GPIO_Pin_8, GPIO_Pin_9, GPIO_Pin_10, GPIO_Pin_11,
+	GPIO_Pin_12, GPIO_Pin_13, GPIO_Pin_14, GPIO_Pin_15}; */
 
-volatile uint32_t msTicks = 0;                              /* Variable to store millisecond ticks */
-typedef struct doors
-{
-	char id;
-	char controlbits;		// 8 kontrollbitar tex den minst signifikanta biten är ifall dörren är upplåst eller ej
-	char time_larm;			// tid i 10 sekunders intervall innan dörr larmar lokalt
-	char time_central_larm; // tid i 10 sekunders intervall innan dörr larmar centralenheten
-	int password;			//4 sifferig kod för att låsa upp dörrarna
-	int GPIO_lamp;
-	int GPIO_read;
-	int larmTick;        // msTick == larmState ? Larm
-} door; 
+volatile uint32_t msTicks = 0; /* Variable to store millisecond ticks */
+
 void init_GPIO_Ports()
 {
 	/*  Function used to set the GPIO configuration to the default reset state ****/
@@ -60,81 +55,87 @@ void init_GPIO_Ports()
 	GPIO_Init(GPIOA, &init);
 }
 
-  
-void SysTick_Handler(void)  {                               /* SysTick interrupt Handler. */
+void SysTick_Handler(void)
+{ /* SysTick interrupt Handler. */
 	msTicks++;
 }
 
-void app_Init(void){
-	
-	
+void app_Init(void)
+{
 	// Initiera SysTick.
-	*((void (**)(void) ) 0x2001C03C ) = SysTick_Handler;
+	*((void (**)(void))0x2001C03C) = SysTick_Handler;
 	uint32_t returnCode;
-	returnCode = SysTick_Config(168000000/1000);      // Genererar ett SysTick-avbrott varje ms.
-  
-	if (returnCode != 0)  {                          // Om inte SysTick_Config lyckas...
-	//typ reboot? bootloops är alltid kul 
-  }
+	returnCode = SysTick_Config(168000000 / 1000); // Genererar ett SysTick-avbrott varje ms.
 
-
+	if (returnCode != 0)
+	{   // Om inte SysTick_Config lyckas...
+		//typ reboot? bootloops är alltid kul
+	}
 }
 
 void main(void)
 {
 	init_GPIO_Ports();
 	app_Init();
+	DebugPrintInit();
 
-	door test1 = {.id = 0, .controlbits = 0, .time_larm = 1, .time_central_larm = 3, .password = 0, .GPIO_lamp = GPIO_Pin_3, .GPIO_read = GPIO_Pin_2, .larmTick = 0};
-	door test2 = {.id = 1, .controlbits = 0, .time_larm = 1, .time_central_larm = 3, .password = 0, .GPIO_lamp = GPIO_Pin_5, .GPIO_read = GPIO_Pin_4, .larmTick = 0};
-	door test3 = {.id = 2, .controlbits = 0, .time_larm = 1, .time_central_larm = 3, .password = 0, .GPIO_lamp = GPIO_Pin_1, .GPIO_read = GPIO_Pin_0, .larmTick = 0};
-	door active_doors[3] = {test1, test2,test3};
+	door test1 = {.id = 0, .controlbits = 255, .time_larm = 1, .time_central_larm = 3, .password = 0, .GPIO_lamp = GPIO_Pin_3, .GPIO_read = GPIO_Pin_2, .larmTick = 0};
+	door test2 = {.id = 1, .controlbits = 255, .time_larm = 1, .time_central_larm = 3, .password = 0, .GPIO_lamp = GPIO_Pin_5, .GPIO_read = GPIO_Pin_4, .larmTick = 0};
 	
-  //lista för msticks (VIKTIGT ATT DESSA HAR SAMMA INDEX)
-  
-  while (1)
+	door test3 = {.id = 2, .controlbits = 255, .time_larm = 1, .time_central_larm = 3, .password = 0, .GPIO_lamp = GPIO_Pin_1, .GPIO_read = GPIO_Pin_0, .larmTick = 0};
+	
+	door test4 = {.id = 3, .controlbits = 255, .time_larm = 1, .time_central_larm = 3, .password = 0, .GPIO_lamp = GPIO_Pin_7, .GPIO_read = GPIO_Pin_6, .larmTick = 0};
+	door active_doors[4] = {test1,test2,test3,test4};
+	
+	door *active_doorsPointers[4];
+	active_doorsPointers[0] = &test1;
+	active_doorsPointers[1] = &test2;
+	active_doorsPointers[2] = &test3;
+	active_doorsPointers[3] = &test4;
+	
+
+	while (1)
 	{
-		for (int j = 0; j < sizeof(active_doors); j++)
+		for (int i = 0; i < sizeof(active_doors); i++)
 		{
-			if(active_doors[j].controlbits == 1){
-				if (active_doors[j].larmTick < msTicks)
-				{
-					GPIO_SetBits(GPIOA, active_doors[j].GPIO_lamp);
-				}else{
-					//GPIO_ResetBits(GPIOA, active_doors[j].GPIO_lamp);
-				}
-				
-			}else
+			if (GPIO_ReadInputDataBit(GPIOA, active_doors[i].GPIO_read)) // Dörren stängd?
 			{
-			}
-			
-		}
-		
-	
-		
-		for (int i = 0; i < sizeof(active_doors); i = i + 1)
-		{
-			if (GPIO_ReadInputDataBit(GPIOA, active_doors[i].GPIO_read))
-			{
-				//tarbort larmad GPIO PIN 
-				active_doors[i].controlbits = 0;
-				//GPIO_ResetBits(GPIOA, active_doors[i].GPIO_lamp);
+				active_doorsPointers[i]->controlbits = 0;
+				GPIO_ResetBits(GPIOA, active_doors[i].GPIO_lamp);
 			}
 			else
-			{
-				active_doors[i].controlbits = 1;
-				active_doors[i].larmTick = msTicks + 10*1000*active_doors[i].time_larm;
-				//GPIO_SetBits(GPIOA, active_doors[i].GPIO_lamp);
-				 //Lägger till larmande GPIO PIN i en lista för dörrar som larmar
-				 //lägger till mstick + larm lokalt tid i listan
+			{ // Annars tänd.
+				if (!active_doors[i].controlbits)
+				{
+					active_doors[i].larmTick = msTicks + 10 * 1000 * active_doors[i].time_larm; // Starta Timer.
+				}
+					active_doorsPointers[i]->controlbits = 0x01;
+					GPIO_SetBits(GPIOA, active_doors[i].GPIO_lamp);
 			}
 		}
 	}
-
-
-
 }
 
 
-
 // Array av arrayer för Centralenheten, 2d, en siffra för kortet, en siffra för dörrarna,
+
+/*for (int i = 0; i < sizeof(active_doors); i++)
+		{
+			if (GPIO_ReadInputDataBit(GPIOA, active_doors[i].GPIO_read))
+			{
+				//tarbort larmad GPIO PIN
+
+				active_doors[i].controlbits = 0;
+				GPIO_ResetBits(GPIOA, active_doors[i].GPIO_lamp);
+			}
+			else if (GPIO_ReadInputDataBit(GPIOA, active_doors[i].GPIO_read == 0))
+			{
+				if (active_doors[i].controlbits == 0)
+				{
+					active_doors[i].larmTick = msTicks + 10 * 1000 * active_doors[i].time_larm;
+					GPIO_SetBits(GPIOA, active_doors[i].GPIO_lamp);
+				}
+				active_doors[i].controlbits = 1;
+			}
+		}
+	}*/

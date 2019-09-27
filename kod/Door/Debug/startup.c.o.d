@@ -9,7 +9,8 @@ Debug/startup.c.o: startup.c \
  ../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx.h \
  ../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c \
  ../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_gpio.h \
- ../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/inc/system_stm32f4xx.h
+ ../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/inc/system_stm32f4xx.h \
+ startup.h ../lib/USARTDebug.h ../lib/USART.h
 
 ../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx.h:
 
@@ -32,3 +33,9 @@ Debug/startup.c.o: startup.c \
 ../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_gpio.h:
 
 ../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/inc/system_stm32f4xx.h:
+
+startup.h:
+
+../lib/USARTDebug.h:
+
+../lib/USART.h:
