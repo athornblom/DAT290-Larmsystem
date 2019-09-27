@@ -5,16 +5,34 @@
 #include "stm32f4xx_gpio.h"
 
 
-uint8_t send_can_message(CanTxMsg msg){
+uint8_t send_can_message(CanTxMsg *msg){
 	return CAN_Transmit(CAN1, msg);
 }
 
 void can_irq_handler(void){
+    //TODO REMOVE
+    USARTPrint("In irq handler*");
+    
     if(CAN_GetITStatus(CAN1, CAN_IT_FMP0)) {
         if (CAN_MessagePending(CAN1, CAN_FIFO0)) {
             CanRxMsg rxMsg;
             CAN_Receive(CAN1, CAN_FIFO0, &rxMsg);
             //TODO hantera meddelandet
+            
+            //För enkelt test TODO REMOVE
+            if (rxMsg.IDE == CAN_Id_Standard){ //standard meddelande
+                USARTPrint("StdId ");
+                USARTPrintNum((uint32_t)rxMsg.StdId & 0x7FF);
+            } else if (rxMsg.IDE == CAN_Id_Extended){
+                USARTPrint("ExtId ");
+                USARTPrintNum(rxMsg.ExtId & 0x1FFFFFFF);
+            } else {
+                USARTPrint("unknown IDE");
+            }
+            USARTPrint("*Data ");
+            USARTPrintNum((rxMsg.Data[0]));
+            USARTPrint("**");
+            
         }
     }
 }
@@ -118,10 +136,24 @@ uint8_t can_init() {
 uint8_t encode_door_time_config(CanTxMsg *msg, uint32_t time0, uint32_t time1){
     uint8_t *data_pointer =  &(msg->Data);
     
+    msg->StdId = 0;
+    msg->ExtId = 0;
+    msg->DLC = 8;
+    
     //De två tidsvärdena skrivs in i bytearrayen för data
     *data_pointer = time0;
     *(data_pointer + 4) = time1;
+    
+    return 1;
 }
 
+uint8_t handle_door_time_msg(CanRxMsg *msg) {
+    uint32_t time0, time1;
+    uint8_t *data_pointer =  &(msg->Data);
+    
+    time0 = *data_pointer;
+    time1 = *(data_pointer + 4);
+    
+    //TODO: Gör grejer med tiderna
+}
 
-void 

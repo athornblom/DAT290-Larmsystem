@@ -8304,321 +8304,547 @@
  3427 000a C046     		nop
  3428              		.cfi_endproc
  3429              	.LFE176:
- 3431              		.global	GPIO_Pins
- 3432              		.data
+ 3431              		.global	msTicks
+ 3432              		.bss
  3433              		.align	2
- 3436              	GPIO_Pins:
- 3437 0010 0100     		.short	1
- 3438 0012 0200     		.short	2
- 3439 0014 0400     		.short	4
- 3440 0016 0800     		.short	8
- 3441 0018 1000     		.short	16
- 3442 001a 2000     		.short	32
- 3443 001c 4000     		.short	64
- 3444 001e 8000     		.short	128
- 3445 0020 0001     		.short	256
- 3446 0022 0002     		.short	512
- 3447 0024 0004     		.short	1024
- 3448 0026 0008     		.short	2048
- 3449 0028 0010     		.short	4096
- 3450 002a 0020     		.short	8192
- 3451 002c 0040     		.short	16384
- 3452 002e 0080     		.short	-32768
- 3453              		.text
- 3454              		.align	1
- 3455              		.global	init_GPIO_Ports
- 3456              		.syntax unified
- 3457              		.code	16
- 3458              		.thumb_func
- 3459              		.fpu softvfp
- 3461              	init_GPIO_Ports:
- 3462              	.LFB177:
-  23:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 
-  24:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** uint16_t GPIO_Pins[] = {
+ 3436              	msTicks:
+ 3437 0000 00000000 		.space	4
+ 3438              		.text
+ 3439              		.align	1
+ 3440              		.global	init_GPIO_Ports
+ 3441              		.syntax unified
+ 3442              		.code	16
+ 3443              		.thumb_func
+ 3444              		.fpu softvfp
+ 3446              	init_GPIO_Ports:
+ 3447              	.LFB177:
+  23:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	// Globala variabler.
+  24:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** /*uint16_t GPIO_Pins[] = {
   25:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		GPIO_Pin_0, GPIO_Pin_1, GPIO_Pin_2, GPIO_Pin_3,
   26:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		GPIO_Pin_4, GPIO_Pin_5, GPIO_Pin_6, GPIO_Pin_7,
   27:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		GPIO_Pin_8, GPIO_Pin_9, GPIO_Pin_10, GPIO_Pin_11,
   28:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		GPIO_Pin_12, GPIO_Pin_13, GPIO_Pin_14, GPIO_Pin_15
-  29:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		};
+  29:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		};*/
   30:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 
-  31:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** void init_GPIO_Ports()
-  32:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** {
- 3463              		.loc 3 32 0
- 3464              		.cfi_startproc
- 3465              		@ args = 0, pretend = 0, frame = 8
- 3466              		@ frame_needed = 1, uses_anonymous_args = 0
- 3467 0d98 80B5     		push	{r7, lr}
- 3468              		.cfi_def_cfa_offset 8
- 3469              		.cfi_offset 7, -8
- 3470              		.cfi_offset 14, -4
- 3471 0d9a 82B0     		sub	sp, sp, #8
- 3472              		.cfi_def_cfa_offset 16
- 3473 0d9c 00AF     		add	r7, sp, #0
- 3474              		.cfi_def_cfa_register 7
-  33:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	/*  Function used to set the GPIO configuration to the default reset state ****/
-  34:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	GPIO_InitTypeDef init;
-  35:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	//GPIO A UTPORTAR
-  36:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
- 3475              		.loc 3 36 0
- 3476 0d9e 0121     		movs	r1, #1
- 3477 0da0 0120     		movs	r0, #1
- 3478 0da2 FFF7FEFF 		bl	RCC_AHB1PeriphClockCmd
-  37:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	GPIO_StructInit(&init);
- 3479              		.loc 3 37 0
- 3480 0da6 3B00     		movs	r3, r7
- 3481 0da8 1800     		movs	r0, r3
- 3482 0daa FFF7FEFF 		bl	GPIO_StructInit
-  38:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	init.GPIO_Pin = GPIO_Pin_1 | GPIO_Pin_3 | GPIO_Pin_5 | GPIO_Pin_7;
- 3483              		.loc 3 38 0
- 3484 0dae 3B00     		movs	r3, r7
- 3485 0db0 AA22     		movs	r2, #170
- 3486 0db2 1A60     		str	r2, [r3]
-  39:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	init.GPIO_Mode = GPIO_Mode_OUT;
- 3487              		.loc 3 39 0
- 3488 0db4 3B00     		movs	r3, r7
- 3489 0db6 0122     		movs	r2, #1
- 3490 0db8 1A71     		strb	r2, [r3, #4]
-  40:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	init.GPIO_OType = GPIO_OType_PP;
- 3491              		.loc 3 40 0
- 3492 0dba 3B00     		movs	r3, r7
- 3493 0dbc 0022     		movs	r2, #0
- 3494 0dbe 9A71     		strb	r2, [r3, #6]
-  41:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	GPIO_Init(GPIOA, &init);
- 3495              		.loc 3 41 0
- 3496 0dc0 3B00     		movs	r3, r7
- 3497 0dc2 0E4A     		ldr	r2, .L250
- 3498 0dc4 1900     		movs	r1, r3
- 3499 0dc6 1000     		movs	r0, r2
- 3500 0dc8 FFF7FEFF 		bl	GPIO_Init
-  42:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 
-  43:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	//konfigurerar inport GPIO A
-  44:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	GPIO_StructInit(&init);
- 3501              		.loc 3 44 0
- 3502 0dcc 3B00     		movs	r3, r7
- 3503 0dce 1800     		movs	r0, r3
- 3504 0dd0 FFF7FEFF 		bl	GPIO_StructInit
-  45:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	init.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_2 | GPIO_Pin_4 | GPIO_Pin_6;
- 3505              		.loc 3 45 0
- 3506 0dd4 3B00     		movs	r3, r7
- 3507 0dd6 5522     		movs	r2, #85
- 3508 0dd8 1A60     		str	r2, [r3]
-  46:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	init.GPIO_Mode = GPIO_Mode_IN;
- 3509              		.loc 3 46 0
- 3510 0dda 3B00     		movs	r3, r7
- 3511 0ddc 0022     		movs	r2, #0
- 3512 0dde 1A71     		strb	r2, [r3, #4]
-  47:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	init.GPIO_PuPd = GPIO_PuPd_UP;
- 3513              		.loc 3 47 0
- 3514 0de0 3B00     		movs	r3, r7
- 3515 0de2 0122     		movs	r2, #1
- 3516 0de4 DA71     		strb	r2, [r3, #7]
-  48:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	GPIO_Init(GPIOA, &init);
- 3517              		.loc 3 48 0
- 3518 0de6 3B00     		movs	r3, r7
- 3519 0de8 044A     		ldr	r2, .L250
- 3520 0dea 1900     		movs	r1, r3
- 3521 0dec 1000     		movs	r0, r2
- 3522 0dee FFF7FEFF 		bl	GPIO_Init
-  49:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** }
- 3523              		.loc 3 49 0
- 3524 0df2 C046     		nop
- 3525 0df4 BD46     		mov	sp, r7
- 3526 0df6 02B0     		add	sp, sp, #8
- 3527              		@ sp needed
- 3528 0df8 80BD     		pop	{r7, pc}
- 3529              	.L251:
- 3530 0dfa C046     		.align	2
- 3531              	.L250:
- 3532 0dfc 00000240 		.word	1073872896
- 3533              		.cfi_endproc
- 3534              	.LFE177:
- 3536              		.global	msTicks
- 3537              		.bss
- 3538              		.align	2
- 3541              	msTicks:
- 3542 0000 00000000 		.space	4
- 3543              		.global	__aeabi_uidivmod
- 3544              		.text
- 3545              		.align	1
- 3546              		.global	SysTick_Handler
- 3547              		.syntax unified
- 3548              		.code	16
- 3549              		.thumb_func
- 3550              		.fpu softvfp
- 3552              	SysTick_Handler:
- 3553              	.LFB178:
-  50:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 
-  51:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** volatile uint32_t msTicks = 0;                              /* Variable to store millisecond ticks 
-  52:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c ****   
-  53:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** void SysTick_Handler(void)  {                               /* SysTick interrupt Handler. */
- 3554              		.loc 3 53 0
- 3555              		.cfi_startproc
- 3556              		@ args = 0, pretend = 0, frame = 0
- 3557              		@ frame_needed = 1, uses_anonymous_args = 0
- 3558 0e00 80B5     		push	{r7, lr}
- 3559              		.cfi_def_cfa_offset 8
- 3560              		.cfi_offset 7, -8
- 3561              		.cfi_offset 14, -4
- 3562 0e02 00AF     		add	r7, sp, #0
- 3563              		.cfi_def_cfa_register 7
-  54:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	msTicks++;
- 3564              		.loc 3 54 0
- 3565 0e04 114B     		ldr	r3, .L256
- 3566 0e06 1B68     		ldr	r3, [r3]
- 3567 0e08 5A1C     		adds	r2, r3, #1
- 3568 0e0a 104B     		ldr	r3, .L256
- 3569 0e0c 1A60     		str	r2, [r3]
-  55:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	if (msTicks % 1000 == 0) {
- 3570              		.loc 3 55 0
- 3571 0e0e 0F4B     		ldr	r3, .L256
- 3572 0e10 1A68     		ldr	r2, [r3]
- 3573 0e12 FA23     		movs	r3, #250
- 3574 0e14 9900     		lsls	r1, r3, #2
- 3575 0e16 1000     		movs	r0, r2
- 3576 0e18 FFF7FEFF 		bl	__aeabi_uidivmod
- 3577              	.LVL3:
- 3578 0e1c 0B1E     		subs	r3, r1, #0
- 3579 0e1e 04D1     		bne	.L253
-  56:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		GPIO_SetBits(GPIOA,GPIO_Pin_1);
- 3580              		.loc 3 56 0
- 3581 0e20 0B4B     		ldr	r3, .L256+4
- 3582 0e22 0221     		movs	r1, #2
- 3583 0e24 1800     		movs	r0, r3
- 3584 0e26 FFF7FEFF 		bl	GPIO_SetBits
- 3585              	.L253:
-  57:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	}
-  58:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	if (msTicks % 2000 == 0) {
- 3586              		.loc 3 58 0
- 3587 0e2a 084B     		ldr	r3, .L256
- 3588 0e2c 1A68     		ldr	r2, [r3]
- 3589 0e2e FA23     		movs	r3, #250
- 3590 0e30 D900     		lsls	r1, r3, #3
- 3591 0e32 1000     		movs	r0, r2
- 3592 0e34 FFF7FEFF 		bl	__aeabi_uidivmod
- 3593              	.LVL4:
- 3594 0e38 0B1E     		subs	r3, r1, #0
- 3595 0e3a 04D1     		bne	.L255
-  59:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		GPIO_ResetBits(GPIOA,GPIO_Pin_1);
- 3596              		.loc 3 59 0
- 3597 0e3c 044B     		ldr	r3, .L256+4
- 3598 0e3e 0221     		movs	r1, #2
- 3599 0e40 1800     		movs	r0, r3
- 3600 0e42 FFF7FEFF 		bl	GPIO_ResetBits
- 3601              	.L255:
-  60:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	}
-  61:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	// Gör en ny Array med dörrar som larmar.
-  62:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** }
- 3602              		.loc 3 62 0
- 3603 0e46 C046     		nop
- 3604 0e48 BD46     		mov	sp, r7
- 3605              		@ sp needed
- 3606 0e4a 80BD     		pop	{r7, pc}
- 3607              	.L257:
- 3608              		.align	2
- 3609              	.L256:
- 3610 0e4c 00000000 		.word	msTicks
- 3611 0e50 00000240 		.word	1073872896
- 3612              		.cfi_endproc
- 3613              	.LFE178:
- 3615              		.align	1
- 3616              		.global	main
- 3617              		.syntax unified
- 3618              		.code	16
- 3619              		.thumb_func
- 3620              		.fpu softvfp
- 3622              	main:
- 3623              	.LFB179:
-  63:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 
-  64:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** void main(void)
-  65:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** {
- 3624              		.loc 3 65 0
- 3625              		.cfi_startproc
- 3626              		@ args = 0, pretend = 0, frame = 8
- 3627              		@ frame_needed = 1, uses_anonymous_args = 0
- 3628 0e54 80B5     		push	{r7, lr}
- 3629              		.cfi_def_cfa_offset 8
- 3630              		.cfi_offset 7, -8
- 3631              		.cfi_offset 14, -4
- 3632 0e56 82B0     		sub	sp, sp, #8
- 3633              		.cfi_def_cfa_offset 16
- 3634 0e58 00AF     		add	r7, sp, #0
- 3635              		.cfi_def_cfa_register 7
-  66:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	//app_init();
-  67:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	init_GPIO_Ports();
- 3636              		.loc 3 67 0
- 3637 0e5a FFF7FEFF 		bl	init_GPIO_Ports
-  68:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	
-  69:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	//Systick
-  70:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	*((void (**)(void) ) 0x2001C03C ) = SysTick_Handler;
- 3638              		.loc 3 70 0
- 3639 0e5e 0E4B     		ldr	r3, .L262
- 3640 0e60 0E4A     		ldr	r2, .L262+4
- 3641 0e62 1A60     		str	r2, [r3]
-  71:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	uint32_t returnCode;
-  72:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c ****   	returnCode = SysTick_Config(168000000/1000);      /* Configure SysTick to generate an interrupt 
- 3642              		.loc 3 72 0
- 3643 0e64 0E4B     		ldr	r3, .L262+8
- 3644 0e66 1800     		movs	r0, r3
- 3645 0e68 FFF7FAF8 		bl	SysTick_Config
- 3646 0e6c 0300     		movs	r3, r0
- 3647 0e6e 3B60     		str	r3, [r7]
- 3648              	.L261:
- 3649              	.LBB2:
-  73:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c ****   
-  74:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c ****   if (returnCode != 0)  {                                   /* Check return code for errors */
-  75:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c ****     // Error Handling
-  76:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	//typ reboot? bootloops är alltid kul 
-  77:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c ****   }
-  78:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c ****   
-  79:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c ****   while (1)
-  80:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	{
-  81:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		for (int i = 0; i < sizeof(GPIO_Pins); i = i + 2)
- 3650              		.loc 3 81 0
- 3651 0e70 0023     		movs	r3, #0
- 3652 0e72 7B60     		str	r3, [r7, #4]
- 3653 0e74 0BE0     		b	.L259
- 3654              	.L260:
-  82:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		{
-  83:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 
-  84:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 			if (GPIO_ReadInputDataBit(GPIOA, GPIO_Pins[i]))
- 3655              		.loc 3 84 0
- 3656 0e76 0B4B     		ldr	r3, .L262+12
- 3657 0e78 7A68     		ldr	r2, [r7, #4]
- 3658 0e7a 5200     		lsls	r2, r2, #1
- 3659 0e7c D35A     		ldrh	r3, [r2, r3]
- 3660 0e7e 0A4A     		ldr	r2, .L262+16
- 3661 0e80 1900     		movs	r1, r3
- 3662 0e82 1000     		movs	r0, r2
- 3663 0e84 FFF7FEFF 		bl	GPIO_ReadInputDataBit
-  81:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		{
- 3664              		.loc 3 81 0
- 3665 0e88 7B68     		ldr	r3, [r7, #4]
- 3666 0e8a 0233     		adds	r3, r3, #2
- 3667 0e8c 7B60     		str	r3, [r7, #4]
- 3668              	.L259:
-  81:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		{
- 3669              		.loc 3 81 0 is_stmt 0 discriminator 1
- 3670 0e8e 7B68     		ldr	r3, [r7, #4]
- 3671 0e90 1F2B     		cmp	r3, #31
- 3672 0e92 F0D9     		bls	.L260
- 3673              	.LBE2:
-  81:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		{
- 3674              		.loc 3 81 0
- 3675 0e94 ECE7     		b	.L261
- 3676              	.L263:
- 3677 0e96 C046     		.align	2
- 3678              	.L262:
- 3679 0e98 3CC00120 		.word	536985660
- 3680 0e9c 00000000 		.word	SysTick_Handler
- 3681 0ea0 40900200 		.word	168000
- 3682 0ea4 00000000 		.word	GPIO_Pins
- 3683 0ea8 00000240 		.word	1073872896
- 3684              		.cfi_endproc
- 3685              	.LFE179:
- 3687              	.Letext0:
- 3688              		.file 4 "../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx.h"
- 3689              		.file 5 "c:\\cseapp\\codelite\\tools\\gcc-arm\\arm-none-eabi\\include\\machine\\_default_types.h"
- 3690              		.file 6 "c:\\cseapp\\codelite\\tools\\gcc-arm\\arm-none-eabi\\include\\sys\\_stdint.h"
- 3691              		.file 7 "../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/inc/system_stm32f4xx.h"
- 3692              		.file 8 "../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_rcc.h"
- 3693              		.file 9 "../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_gpio.h"
+  31:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** volatile uint32_t msTicks = 0;                              /* Variable to store millisecond ticks 
+  32:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** typedef struct doors
+  33:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** {
+  34:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	char id;
+  35:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	char controlbits;		// 8 kontrollbitar tex den minst signifikanta biten är ifall dörren är uppl�
+  36:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	char time_larm;			// tid i 10 sekunders intervall innan dörr larmar lokalt
+  37:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	char time_central_larm; // tid i 10 sekunders intervall innan dörr larmar centralenheten
+  38:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	int password;			//4 sifferig kod för att låsa upp dörrarna
+  39:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	int GPIO_lamp;
+  40:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	int GPIO_read;
+  41:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	int larmTick;        // msTick == larmState ? Larm
+  42:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** } door; 
+  43:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** void init_GPIO_Ports()
+  44:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** {
+ 3448              		.loc 3 44 0
+ 3449              		.cfi_startproc
+ 3450              		@ args = 0, pretend = 0, frame = 8
+ 3451              		@ frame_needed = 1, uses_anonymous_args = 0
+ 3452 0d98 80B5     		push	{r7, lr}
+ 3453              		.cfi_def_cfa_offset 8
+ 3454              		.cfi_offset 7, -8
+ 3455              		.cfi_offset 14, -4
+ 3456 0d9a 82B0     		sub	sp, sp, #8
+ 3457              		.cfi_def_cfa_offset 16
+ 3458 0d9c 00AF     		add	r7, sp, #0
+ 3459              		.cfi_def_cfa_register 7
+  45:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	/*  Function used to set the GPIO configuration to the default reset state ****/
+  46:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	GPIO_InitTypeDef init;
+  47:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	//GPIO A UTPORTAR
+  48:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
+ 3460              		.loc 3 48 0
+ 3461 0d9e 0121     		movs	r1, #1
+ 3462 0da0 0120     		movs	r0, #1
+ 3463 0da2 FFF7FEFF 		bl	RCC_AHB1PeriphClockCmd
+  49:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	GPIO_StructInit(&init);
+ 3464              		.loc 3 49 0
+ 3465 0da6 3B00     		movs	r3, r7
+ 3466 0da8 1800     		movs	r0, r3
+ 3467 0daa FFF7FEFF 		bl	GPIO_StructInit
+  50:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	init.GPIO_Pin = GPIO_Pin_1 | GPIO_Pin_3 | GPIO_Pin_5 | GPIO_Pin_7;
+ 3468              		.loc 3 50 0
+ 3469 0dae 3B00     		movs	r3, r7
+ 3470 0db0 AA22     		movs	r2, #170
+ 3471 0db2 1A60     		str	r2, [r3]
+  51:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	init.GPIO_Mode = GPIO_Mode_OUT;
+ 3472              		.loc 3 51 0
+ 3473 0db4 3B00     		movs	r3, r7
+ 3474 0db6 0122     		movs	r2, #1
+ 3475 0db8 1A71     		strb	r2, [r3, #4]
+  52:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	init.GPIO_OType = GPIO_OType_PP;
+ 3476              		.loc 3 52 0
+ 3477 0dba 3B00     		movs	r3, r7
+ 3478 0dbc 0022     		movs	r2, #0
+ 3479 0dbe 9A71     		strb	r2, [r3, #6]
+  53:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	GPIO_Init(GPIOA, &init);
+ 3480              		.loc 3 53 0
+ 3481 0dc0 3B00     		movs	r3, r7
+ 3482 0dc2 0E4A     		ldr	r2, .L250
+ 3483 0dc4 1900     		movs	r1, r3
+ 3484 0dc6 1000     		movs	r0, r2
+ 3485 0dc8 FFF7FEFF 		bl	GPIO_Init
+  54:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 
+  55:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	//konfigurerar inport GPIO A
+  56:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	GPIO_StructInit(&init);
+ 3486              		.loc 3 56 0
+ 3487 0dcc 3B00     		movs	r3, r7
+ 3488 0dce 1800     		movs	r0, r3
+ 3489 0dd0 FFF7FEFF 		bl	GPIO_StructInit
+  57:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	init.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_2 | GPIO_Pin_4 | GPIO_Pin_6;
+ 3490              		.loc 3 57 0
+ 3491 0dd4 3B00     		movs	r3, r7
+ 3492 0dd6 5522     		movs	r2, #85
+ 3493 0dd8 1A60     		str	r2, [r3]
+  58:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	init.GPIO_Mode = GPIO_Mode_IN;
+ 3494              		.loc 3 58 0
+ 3495 0dda 3B00     		movs	r3, r7
+ 3496 0ddc 0022     		movs	r2, #0
+ 3497 0dde 1A71     		strb	r2, [r3, #4]
+  59:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	init.GPIO_PuPd = GPIO_PuPd_UP;
+ 3498              		.loc 3 59 0
+ 3499 0de0 3B00     		movs	r3, r7
+ 3500 0de2 0122     		movs	r2, #1
+ 3501 0de4 DA71     		strb	r2, [r3, #7]
+  60:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	GPIO_Init(GPIOA, &init);
+ 3502              		.loc 3 60 0
+ 3503 0de6 3B00     		movs	r3, r7
+ 3504 0de8 044A     		ldr	r2, .L250
+ 3505 0dea 1900     		movs	r1, r3
+ 3506 0dec 1000     		movs	r0, r2
+ 3507 0dee FFF7FEFF 		bl	GPIO_Init
+  61:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** }
+ 3508              		.loc 3 61 0
+ 3509 0df2 C046     		nop
+ 3510 0df4 BD46     		mov	sp, r7
+ 3511 0df6 02B0     		add	sp, sp, #8
+ 3512              		@ sp needed
+ 3513 0df8 80BD     		pop	{r7, pc}
+ 3514              	.L251:
+ 3515 0dfa C046     		.align	2
+ 3516              	.L250:
+ 3517 0dfc 00000240 		.word	1073872896
+ 3518              		.cfi_endproc
+ 3519              	.LFE177:
+ 3521              		.align	1
+ 3522              		.global	SysTick_Handler
+ 3523              		.syntax unified
+ 3524              		.code	16
+ 3525              		.thumb_func
+ 3526              		.fpu softvfp
+ 3528              	SysTick_Handler:
+ 3529              	.LFB178:
+  62:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 
+  63:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c ****   
+  64:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** void SysTick_Handler(void)  {                               /* SysTick interrupt Handler. */
+ 3530              		.loc 3 64 0
+ 3531              		.cfi_startproc
+ 3532              		@ args = 0, pretend = 0, frame = 0
+ 3533              		@ frame_needed = 1, uses_anonymous_args = 0
+ 3534 0e00 80B5     		push	{r7, lr}
+ 3535              		.cfi_def_cfa_offset 8
+ 3536              		.cfi_offset 7, -8
+ 3537              		.cfi_offset 14, -4
+ 3538 0e02 00AF     		add	r7, sp, #0
+ 3539              		.cfi_def_cfa_register 7
+  65:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	msTicks++;
+ 3540              		.loc 3 65 0
+ 3541 0e04 034B     		ldr	r3, .L253
+ 3542 0e06 1B68     		ldr	r3, [r3]
+ 3543 0e08 5A1C     		adds	r2, r3, #1
+ 3544 0e0a 024B     		ldr	r3, .L253
+ 3545 0e0c 1A60     		str	r2, [r3]
+  66:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** }
+ 3546              		.loc 3 66 0
+ 3547 0e0e C046     		nop
+ 3548 0e10 BD46     		mov	sp, r7
+ 3549              		@ sp needed
+ 3550 0e12 80BD     		pop	{r7, pc}
+ 3551              	.L254:
+ 3552              		.align	2
+ 3553              	.L253:
+ 3554 0e14 00000000 		.word	msTicks
+ 3555              		.cfi_endproc
+ 3556              	.LFE178:
+ 3558              		.align	1
+ 3559              		.global	app_Init
+ 3560              		.syntax unified
+ 3561              		.code	16
+ 3562              		.thumb_func
+ 3563              		.fpu softvfp
+ 3565              	app_Init:
+ 3566              	.LFB179:
+  67:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 
+  68:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** void app_Init(void){
+ 3567              		.loc 3 68 0
+ 3568              		.cfi_startproc
+ 3569              		@ args = 0, pretend = 0, frame = 8
+ 3570              		@ frame_needed = 1, uses_anonymous_args = 0
+ 3571 0e18 80B5     		push	{r7, lr}
+ 3572              		.cfi_def_cfa_offset 8
+ 3573              		.cfi_offset 7, -8
+ 3574              		.cfi_offset 14, -4
+ 3575 0e1a 82B0     		sub	sp, sp, #8
+ 3576              		.cfi_def_cfa_offset 16
+ 3577 0e1c 00AF     		add	r7, sp, #0
+ 3578              		.cfi_def_cfa_register 7
+  69:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	
+  70:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	
+  71:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	// Initiera SysTick.
+  72:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	*((void (**)(void) ) 0x2001C03C ) = SysTick_Handler;
+ 3579              		.loc 3 72 0
+ 3580 0e1e 064B     		ldr	r3, .L256
+ 3581 0e20 064A     		ldr	r2, .L256+4
+ 3582 0e22 1A60     		str	r2, [r3]
+  73:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	uint32_t returnCode;
+  74:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	returnCode = SysTick_Config(168000000/1000);      // Genererar ett SysTick-avbrott varje ms.
+ 3583              		.loc 3 74 0
+ 3584 0e24 064B     		ldr	r3, .L256+8
+ 3585 0e26 1800     		movs	r0, r3
+ 3586 0e28 FFF71AF9 		bl	SysTick_Config
+ 3587 0e2c 0300     		movs	r3, r0
+ 3588 0e2e 7B60     		str	r3, [r7, #4]
+  75:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c ****   
+  76:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	if (returnCode != 0)  {                          // Om inte SysTick_Config lyckas...
+  77:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	//typ reboot? bootloops är alltid kul 
+  78:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c ****   }
+  79:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 
+  80:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 
+  81:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** }
+ 3589              		.loc 3 81 0
+ 3590 0e30 C046     		nop
+ 3591 0e32 BD46     		mov	sp, r7
+ 3592 0e34 02B0     		add	sp, sp, #8
+ 3593              		@ sp needed
+ 3594 0e36 80BD     		pop	{r7, pc}
+ 3595              	.L257:
+ 3596              		.align	2
+ 3597              	.L256:
+ 3598 0e38 3CC00120 		.word	536985660
+ 3599 0e3c 00000000 		.word	SysTick_Handler
+ 3600 0e40 40900200 		.word	168000
+ 3601              		.cfi_endproc
+ 3602              	.LFE179:
+ 3604              		.section	.rodata
+ 3605              		.align	2
+ 3606              	.LC0:
+ 3607 0000 00       		.byte	0
+ 3608 0001 00       		.byte	0
+ 3609 0002 01       		.byte	1
+ 3610 0003 03       		.byte	3
+ 3611 0004 00000000 		.word	0
+ 3612 0008 08000000 		.word	8
+ 3613 000c 04000000 		.word	4
+ 3614 0010 00000000 		.word	0
+ 3615              		.align	2
+ 3616              	.LC1:
+ 3617 0014 01       		.byte	1
+ 3618 0015 00       		.byte	0
+ 3619 0016 01       		.byte	1
+ 3620 0017 03       		.byte	3
+ 3621 0018 00000000 		.word	0
+ 3622 001c 20000000 		.word	32
+ 3623 0020 10000000 		.word	16
+ 3624 0024 00000000 		.word	0
+ 3625              		.align	2
+ 3626              	.LC2:
+ 3627 0028 02       		.byte	2
+ 3628 0029 00       		.byte	0
+ 3629 002a 01       		.byte	1
+ 3630 002b 03       		.byte	3
+ 3631 002c 00000000 		.word	0
+ 3632 0030 02000000 		.word	2
+ 3633 0034 01000000 		.word	1
+ 3634 0038 00000000 		.word	0
+ 3635              		.text
+ 3636              		.align	1
+ 3637              		.global	main
+ 3638              		.syntax unified
+ 3639              		.code	16
+ 3640              		.thumb_func
+ 3641              		.fpu softvfp
+ 3643              	main:
+ 3644              	.LFB180:
+  82:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 
+  83:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** void main(void)
+  84:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** {
+ 3645              		.loc 3 84 0
+ 3646              		.cfi_startproc
+ 3647              		@ args = 0, pretend = 0, frame = 128
+ 3648              		@ frame_needed = 1, uses_anonymous_args = 0
+ 3649 0e44 F0B5     		push	{r4, r5, r6, r7, lr}
+ 3650              		.cfi_def_cfa_offset 20
+ 3651              		.cfi_offset 4, -20
+ 3652              		.cfi_offset 5, -16
+ 3653              		.cfi_offset 6, -12
+ 3654              		.cfi_offset 7, -8
+ 3655              		.cfi_offset 14, -4
+ 3656 0e46 A1B0     		sub	sp, sp, #132
+ 3657              		.cfi_def_cfa_offset 152
+ 3658 0e48 00AF     		add	r7, sp, #0
+ 3659              		.cfi_def_cfa_register 7
+  85:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	init_GPIO_Ports();
+ 3660              		.loc 3 85 0
+ 3661 0e4a FFF7FEFF 		bl	init_GPIO_Ports
+  86:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	app_Init();
+ 3662              		.loc 3 86 0
+ 3663 0e4e FFF7FEFF 		bl	app_Init
+  87:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 
+  88:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	door test1 = {.id = 0, .controlbits = 0, .time_larm = 1, .time_central_larm = 3, .password = 0, .G
+ 3664              		.loc 3 88 0
+ 3665 0e52 6421     		movs	r1, #100
+ 3666 0e54 7B18     		adds	r3, r7, r1
+ 3667 0e56 514A     		ldr	r2, .L267
+ 3668 0e58 31CA     		ldmia	r2!, {r0, r4, r5}
+ 3669 0e5a 31C3     		stmia	r3!, {r0, r4, r5}
+ 3670 0e5c 11CA     		ldmia	r2!, {r0, r4}
+ 3671 0e5e 11C3     		stmia	r3!, {r0, r4}
+  89:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	door test2 = {.id = 1, .controlbits = 0, .time_larm = 1, .time_central_larm = 3, .password = 0, .G
+ 3672              		.loc 3 89 0
+ 3673 0e60 5020     		movs	r0, #80
+ 3674 0e62 3B18     		adds	r3, r7, r0
+ 3675 0e64 4E4A     		ldr	r2, .L267+4
+ 3676 0e66 70CA     		ldmia	r2!, {r4, r5, r6}
+ 3677 0e68 70C3     		stmia	r3!, {r4, r5, r6}
+ 3678 0e6a 30CA     		ldmia	r2!, {r4, r5}
+ 3679 0e6c 30C3     		stmia	r3!, {r4, r5}
+  90:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	door test3 = {.id = 2, .controlbits = 0, .time_larm = 1, .time_central_larm = 3, .password = 0, .G
+ 3680              		.loc 3 90 0
+ 3681 0e6e 3C24     		movs	r4, #60
+ 3682 0e70 3B19     		adds	r3, r7, r4
+ 3683 0e72 4C4A     		ldr	r2, .L267+8
+ 3684 0e74 62CA     		ldmia	r2!, {r1, r5, r6}
+ 3685 0e76 62C3     		stmia	r3!, {r1, r5, r6}
+ 3686 0e78 22CA     		ldmia	r2!, {r1, r5}
+ 3687 0e7a 22C3     		stmia	r3!, {r1, r5}
+  91:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	door active_doors[3] = {test1, test2,test3};
+ 3688              		.loc 3 91 0
+ 3689 0e7c 3B00     		movs	r3, r7
+ 3690 0e7e 6421     		movs	r1, #100
+ 3691 0e80 7A18     		adds	r2, r7, r1
+ 3692 0e82 62CA     		ldmia	r2!, {r1, r5, r6}
+ 3693 0e84 62C3     		stmia	r3!, {r1, r5, r6}
+ 3694 0e86 22CA     		ldmia	r2!, {r1, r5}
+ 3695 0e88 22C3     		stmia	r3!, {r1, r5}
+ 3696 0e8a 3B00     		movs	r3, r7
+ 3697 0e8c 3A18     		adds	r2, r7, r0
+ 3698 0e8e 1433     		adds	r3, r3, #20
+ 3699 0e90 23CA     		ldmia	r2!, {r0, r1, r5}
+ 3700 0e92 23C3     		stmia	r3!, {r0, r1, r5}
+ 3701 0e94 03CA     		ldmia	r2!, {r0, r1}
+ 3702 0e96 03C3     		stmia	r3!, {r0, r1}
+ 3703 0e98 3B00     		movs	r3, r7
+ 3704 0e9a 3A19     		adds	r2, r7, r4
+ 3705 0e9c 2833     		adds	r3, r3, #40
+ 3706 0e9e 13CA     		ldmia	r2!, {r0, r1, r4}
+ 3707 0ea0 13C3     		stmia	r3!, {r0, r1, r4}
+ 3708 0ea2 03CA     		ldmia	r2!, {r0, r1}
+ 3709 0ea4 03C3     		stmia	r3!, {r0, r1}
+ 3710              	.L266:
+ 3711              	.LBB2:
+  92:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	
+  93:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c ****   //lista för msticks (VIKTIGT ATT DESSA HAR SAMMA INDEX)
+  94:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c ****   
+  95:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c ****   while (1)
+  96:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	{
+  97:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		for (int j = 0; j < sizeof(active_doors); j++)
+ 3712              		.loc 3 97 0
+ 3713 0ea6 0023     		movs	r3, #0
+ 3714 0ea8 FB67     		str	r3, [r7, #124]
+ 3715 0eaa 2AE0     		b	.L259
+ 3716              	.L261:
+  98:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		{
+  99:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 			if(active_doors[j].controlbits == 1){
+ 3717              		.loc 3 99 0
+ 3718 0eac 3900     		movs	r1, r7
+ 3719 0eae FA6F     		ldr	r2, [r7, #124]
+ 3720 0eb0 1300     		movs	r3, r2
+ 3721 0eb2 9B00     		lsls	r3, r3, #2
+ 3722 0eb4 9B18     		adds	r3, r3, r2
+ 3723 0eb6 9B00     		lsls	r3, r3, #2
+ 3724 0eb8 CB18     		adds	r3, r1, r3
+ 3725 0eba 0133     		adds	r3, r3, #1
+ 3726 0ebc 1B78     		ldrb	r3, [r3]
+ 3727 0ebe 012B     		cmp	r3, #1
+ 3728 0ec0 1CD1     		bne	.L260
+ 100:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 				if (active_doors[j].larmTick < msTicks)
+ 3729              		.loc 3 100 0
+ 3730 0ec2 3900     		movs	r1, r7
+ 3731 0ec4 FA6F     		ldr	r2, [r7, #124]
+ 3732 0ec6 1300     		movs	r3, r2
+ 3733 0ec8 9B00     		lsls	r3, r3, #2
+ 3734 0eca 9B18     		adds	r3, r3, r2
+ 3735 0ecc 9B00     		lsls	r3, r3, #2
+ 3736 0ece CB18     		adds	r3, r1, r3
+ 3737 0ed0 1033     		adds	r3, r3, #16
+ 3738 0ed2 1B68     		ldr	r3, [r3]
+ 3739 0ed4 1A00     		movs	r2, r3
+ 3740 0ed6 344B     		ldr	r3, .L267+12
+ 3741 0ed8 1B68     		ldr	r3, [r3]
+ 3742 0eda 9A42     		cmp	r2, r3
+ 3743 0edc 0ED2     		bcs	.L260
+ 101:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 				{
+ 102:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 					GPIO_SetBits(GPIOA, active_doors[j].GPIO_lamp);
+ 3744              		.loc 3 102 0
+ 3745 0ede 3900     		movs	r1, r7
+ 3746 0ee0 FA6F     		ldr	r2, [r7, #124]
+ 3747 0ee2 1300     		movs	r3, r2
+ 3748 0ee4 9B00     		lsls	r3, r3, #2
+ 3749 0ee6 9B18     		adds	r3, r3, r2
+ 3750 0ee8 9B00     		lsls	r3, r3, #2
+ 3751 0eea CB18     		adds	r3, r1, r3
+ 3752 0eec 0833     		adds	r3, r3, #8
+ 3753 0eee 1B68     		ldr	r3, [r3]
+ 3754 0ef0 9BB2     		uxth	r3, r3
+ 3755 0ef2 2E4A     		ldr	r2, .L267+16
+ 3756 0ef4 1900     		movs	r1, r3
+ 3757 0ef6 1000     		movs	r0, r2
+ 3758 0ef8 FFF7FEFF 		bl	GPIO_SetBits
+ 3759              	.L260:
+  97:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		{
+ 3760              		.loc 3 97 0 discriminator 2
+ 3761 0efc FB6F     		ldr	r3, [r7, #124]
+ 3762 0efe 0133     		adds	r3, r3, #1
+ 3763 0f00 FB67     		str	r3, [r7, #124]
+ 3764              	.L259:
+  97:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		{
+ 3765              		.loc 3 97 0 is_stmt 0 discriminator 1
+ 3766 0f02 FB6F     		ldr	r3, [r7, #124]
+ 3767 0f04 3B2B     		cmp	r3, #59
+ 3768 0f06 D1D9     		bls	.L261
+ 3769              	.LBE2:
+ 3770              	.LBB3:
+ 103:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 				}else{
+ 104:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 					//GPIO_ResetBits(GPIOA, active_doors[j].GPIO_lamp);
+ 105:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 				}
+ 106:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 				
+ 107:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 			}else
+ 108:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 			{
+ 109:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 			}
+ 110:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 			
+ 111:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		}
+ 112:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		
+ 113:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	
+ 114:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		
+ 115:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		for (int i = 0; i < sizeof(active_doors); i = i + 1)
+ 3771              		.loc 3 115 0 is_stmt 1
+ 3772 0f08 0023     		movs	r3, #0
+ 3773 0f0a BB67     		str	r3, [r7, #120]
+ 3774 0f0c 42E0     		b	.L262
+ 3775              	.L265:
+ 116:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		{
+ 117:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 			if (GPIO_ReadInputDataBit(GPIOA, active_doors[i].GPIO_read))
+ 3776              		.loc 3 117 0
+ 3777 0f0e 3900     		movs	r1, r7
+ 3778 0f10 BA6F     		ldr	r2, [r7, #120]
+ 3779 0f12 1300     		movs	r3, r2
+ 3780 0f14 9B00     		lsls	r3, r3, #2
+ 3781 0f16 9B18     		adds	r3, r3, r2
+ 3782 0f18 9B00     		lsls	r3, r3, #2
+ 3783 0f1a CB18     		adds	r3, r1, r3
+ 3784 0f1c 0C33     		adds	r3, r3, #12
+ 3785 0f1e 1B68     		ldr	r3, [r3]
+ 3786 0f20 9BB2     		uxth	r3, r3
+ 3787 0f22 224A     		ldr	r2, .L267+16
+ 3788 0f24 1900     		movs	r1, r3
+ 3789 0f26 1000     		movs	r0, r2
+ 3790 0f28 FFF7FEFF 		bl	GPIO_ReadInputDataBit
+ 3791 0f2c 031E     		subs	r3, r0, #0
+ 3792 0f2e 0AD0     		beq	.L263
+ 118:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 			{
+ 119:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 				//tarbort larmad GPIO PIN 
+ 120:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 				active_doors[i].controlbits = 0;
+ 3793              		.loc 3 120 0
+ 3794 0f30 3900     		movs	r1, r7
+ 3795 0f32 BA6F     		ldr	r2, [r7, #120]
+ 3796 0f34 1300     		movs	r3, r2
+ 3797 0f36 9B00     		lsls	r3, r3, #2
+ 3798 0f38 9B18     		adds	r3, r3, r2
+ 3799 0f3a 9B00     		lsls	r3, r3, #2
+ 3800 0f3c CB18     		adds	r3, r1, r3
+ 3801 0f3e 0133     		adds	r3, r3, #1
+ 3802 0f40 0022     		movs	r2, #0
+ 3803 0f42 1A70     		strb	r2, [r3]
+ 3804 0f44 23E0     		b	.L264
+ 3805              	.L263:
+ 121:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 				//GPIO_ResetBits(GPIOA, active_doors[i].GPIO_lamp);
+ 122:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 			}
+ 123:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 			else
+ 124:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 			{
+ 125:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 				active_doors[i].controlbits = 1;
+ 3806              		.loc 3 125 0
+ 3807 0f46 3900     		movs	r1, r7
+ 3808 0f48 BA6F     		ldr	r2, [r7, #120]
+ 3809 0f4a 1300     		movs	r3, r2
+ 3810 0f4c 9B00     		lsls	r3, r3, #2
+ 3811 0f4e 9B18     		adds	r3, r3, r2
+ 3812 0f50 9B00     		lsls	r3, r3, #2
+ 3813 0f52 CB18     		adds	r3, r1, r3
+ 3814 0f54 0133     		adds	r3, r3, #1
+ 3815 0f56 0122     		movs	r2, #1
+ 3816 0f58 1A70     		strb	r2, [r3]
+ 126:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 				active_doors[i].larmTick = msTicks + 10*1000*active_doors[i].time_larm;
+ 3817              		.loc 3 126 0
+ 3818 0f5a 3900     		movs	r1, r7
+ 3819 0f5c BA6F     		ldr	r2, [r7, #120]
+ 3820 0f5e 1300     		movs	r3, r2
+ 3821 0f60 9B00     		lsls	r3, r3, #2
+ 3822 0f62 9B18     		adds	r3, r3, r2
+ 3823 0f64 9B00     		lsls	r3, r3, #2
+ 3824 0f66 CB18     		adds	r3, r1, r3
+ 3825 0f68 0233     		adds	r3, r3, #2
+ 3826 0f6a 1B78     		ldrb	r3, [r3]
+ 3827 0f6c 1A00     		movs	r2, r3
+ 3828 0f6e 104B     		ldr	r3, .L267+20
+ 3829 0f70 5343     		muls	r3, r2
+ 3830 0f72 1A00     		movs	r2, r3
+ 3831 0f74 0C4B     		ldr	r3, .L267+12
+ 3832 0f76 1B68     		ldr	r3, [r3]
+ 3833 0f78 D318     		adds	r3, r2, r3
+ 3834 0f7a 1800     		movs	r0, r3
+ 3835 0f7c 3900     		movs	r1, r7
+ 3836 0f7e BA6F     		ldr	r2, [r7, #120]
+ 3837 0f80 1300     		movs	r3, r2
+ 3838 0f82 9B00     		lsls	r3, r3, #2
+ 3839 0f84 9B18     		adds	r3, r3, r2
+ 3840 0f86 9B00     		lsls	r3, r3, #2
+ 3841 0f88 CB18     		adds	r3, r1, r3
+ 3842 0f8a 1033     		adds	r3, r3, #16
+ 3843 0f8c 1860     		str	r0, [r3]
+ 3844              	.L264:
+ 115:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		{
+ 3845              		.loc 3 115 0 discriminator 2
+ 3846 0f8e BB6F     		ldr	r3, [r7, #120]
+ 3847 0f90 0133     		adds	r3, r3, #1
+ 3848 0f92 BB67     		str	r3, [r7, #120]
+ 3849              	.L262:
+ 115:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		{
+ 3850              		.loc 3 115 0 is_stmt 0 discriminator 1
+ 3851 0f94 BB6F     		ldr	r3, [r7, #120]
+ 3852 0f96 3B2B     		cmp	r3, #59
+ 3853 0f98 B9D9     		bls	.L265
+ 3854              	.LBE3:
+  97:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		{
+ 3855              		.loc 3 97 0 is_stmt 1
+ 3856 0f9a 84E7     		b	.L266
+ 3857              	.L268:
+ 3858              		.align	2
+ 3859              	.L267:
+ 3860 0f9c 00000000 		.word	.LC0
+ 3861 0fa0 14000000 		.word	.LC1
+ 3862 0fa4 28000000 		.word	.LC2
+ 3863 0fa8 00000000 		.word	msTicks
+ 3864 0fac 00000240 		.word	1073872896
+ 3865 0fb0 10270000 		.word	10000
+ 3866              		.cfi_endproc
+ 3867              	.LFE180:
+ 3869              	.Letext0:
+ 3870              		.file 4 "../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx.h"
+ 3871              		.file 5 "c:\\cseapp\\codelite\\tools\\gcc-arm\\arm-none-eabi\\include\\machine\\_default_types.h"
+ 3872              		.file 6 "c:\\cseapp\\codelite\\tools\\gcc-arm\\arm-none-eabi\\include\\sys\\_stdint.h"
+ 3873              		.file 7 "../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/inc/system_stm32f4xx.h"
+ 3874              		.file 8 "../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_rcc.h"
+ 3875              		.file 9 "../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_gpio.h"

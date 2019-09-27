@@ -1,18 +1,9 @@
-#include "CAN.c"
+#include "CAN.h"
+#include "USART.h"
 #include "misc.h"
 #include "stm32f4xx_can.h"
 #include "stm32f4xx_rcc.h"
 #include "stm32f4xx_gpio.h"
-
-#define E_MODER ((unsigned int *) 0x40021000)
-#define D_MODER ((unsigned int *) 0x40020C00)
-
-#define D_ODR_LOW ((unsigned char *) 0x40020C14)
-#define E_IDR_LOW ((unsigned char *) 0x40021010)
-#define E_ODR_LOW ((unsigned char *) 0x40021014)
-
-
-
 
 CanRxMsg RxMessage;
 CanTxMsg TxMessage;
@@ -54,7 +45,7 @@ void config_door(unsigned char id_device, unsigned char id_door, unsigned int ti
     
 }
 
-void setup_doors(){
+/*void setup_doors(){
     Door_device door_dev;
         
         door_dev = door_devs[i];
@@ -67,11 +58,27 @@ void setup_doors(){
         for(unsigned int j = 0; j < num_of_doors; j++){
             
         }
-}
-
+}*/
 
 void main(void) {
-	
-	// Help us determine if CAN got started at all. 0 = bad. 1 = good.
-	light = can_init();
+    USARTConfig();
+    can_init();
+    USARTPrint("start*");
+    CanTxMsg canMsg;
+    uint8_t USARTmsg;
+    while (1) {
+        if (USARTGet(&USARTmsg)){
+            //code canMsg
+            //encode_door_time_config(&canMsg,5,12);
+            canMsg.StdId = 55;
+            canMsg.ExtId = 32;
+            canMsg.IDE = CAN_Id_Extended; //Alternativen är CAN_Id_Standard eller FCAN_Id_Extended
+            canMsg.RTR = CAN_RTR_Data;
+            canMsg.DLC = 1;
+            canMsg.Data[0] = USARTmsg;
+            if (send_can_message(&canMsg) == CAN_TxStatus_NoMailBox){
+                USARTPrint("no mailbox empty*");
+            }
+        }
+    }
 }
