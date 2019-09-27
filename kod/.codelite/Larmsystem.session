@@ -4,31 +4,17 @@
   <wxString Value="C:\Users\Erik\Documents\Datateknisktprojekt\kod\Larmsystem.workspace" Name="m_workspaceName"/>
   <TabInfoArray Name="TabInfoArray">
     <TabInfo>
-      <wxString Value="C:\Users\Erik\Documents\Datateknisktprojekt\kod\lib\STM32F4_lib\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_gpio.c" Name="FileName"/>
-      <int Value="195" Name="FirstVisibleLine"/>
-      <int Value="195" Name="CurrentLine"/>
+      <wxString Value="C:\Users\Erik\Documents\Datateknisktprojekt\kod\Door\startup.c" Name="FileName"/>
+      <int Value="98" Name="FirstVisibleLine"/>
+      <int Value="36" Name="CurrentLine"/>
       <wxArrayString Name="Bookmarks"/>
       <IntVector Name="CollapsedFolds"/>
     </TabInfo>
     <TabInfo>
-      <wxString Value="C:\Users\Erik\Documents\Datateknisktprojekt\kod\Rorelse\startup.c" Name="FileName"/>
-      <int Value="12" Name="FirstVisibleLine"/>
-      <int Value="29" Name="CurrentLine"/>
+      <wxString Value="C:\Users\Erik\Documents\Datateknisktprojekt\kod\Rorelse\main_rorelse.c" Name="FileName"/>
+      <int Value="23" Name="FirstVisibleLine"/>
+      <int Value="37" Name="CurrentLine"/>
       <wxArrayString Name="Bookmarks"/>
-      <IntVector Name="CollapsedFolds"/>
-    </TabInfo>
-    <TabInfo>
-      <wxString Value="C:\Users\Erik\Documents\Datateknisktprojekt\kod\lib\STM32F4_lib\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_gpio.h" Name="FileName"/>
-      <int Value="51" Name="FirstVisibleLine"/>
-      <int Value="69" Name="CurrentLine"/>
-      <wxArrayString Name="Bookmarks">
-        <wxString Value="97:7"/>
-        <wxString Value="98:7"/>
-        <wxString Value="99:7"/>
-        <wxString Value="100:7"/>
-        <wxString Value="102:7"/>
-        <wxString Value="139:7"/>
-      </wxArrayString>
       <IntVector Name="CollapsedFolds"/>
     </TabInfo>
   </TabInfoArray>
