@@ -126,5 +126,3 @@ $(IntermediateDirectory)/up_lib_STM32F4_lib_STM32F4xx_StdPeriph_Driver_src_stm32
 ##
 clean:
 	$(RM) -r ./Debug/
-
-
