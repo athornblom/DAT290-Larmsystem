@@ -9,34 +9,8 @@ uint8_t send_can_message(CanTxMsg *msg){
 	return CAN_Transmit(CAN1, msg);
 }
 
-void can_irq_handler(void){
-    //TODO REMOVE
-    USARTPrint("In irq handler*");
-    
-    if(CAN_GetITStatus(CAN1, CAN_IT_FMP0)) {
-        if (CAN_MessagePending(CAN1, CAN_FIFO0)) {
-            CanRxMsg rxMsg;
-            CAN_Receive(CAN1, CAN_FIFO0, &rxMsg);
-            //TODO hantera meddelandet
-            
-            //För enkelt test TODO REMOVE
-            if (rxMsg.IDE == CAN_Id_Standard){ //standard meddelande
-                USARTPrint("StdId ");
-                USARTPrintNum((uint32_t)rxMsg.StdId & 0x7FF);
-            } else if (rxMsg.IDE == CAN_Id_Extended){
-                USARTPrint("ExtId ");
-                USARTPrintNum(rxMsg.ExtId & 0x1FFFFFFF);
-            } else {
-                USARTPrint("unknown IDE");
-            }
-            USARTPrint("*Data ");
-            USARTPrintNum((rxMsg.Data[0]));
-            USARTPrint("**");
-            
-        }
-    }
-}
 
+void can_irq_handler(void);
 uint8_t can_init() {
 	CAN_InitTypeDef CAN_InitStructure;
 	NVIC_InitTypeDef NVIC_InitStructure;
@@ -165,6 +139,16 @@ uint8_t encode_request_id(CanTxMsg *msg, uint32_t temp_id){
     
     //Id skrivs in i bytearrayen för data
     *data_pointer = temp_id;
+}
+
+uint8_t encode_assign_id(CanTxMsg *msg, uint16_t id){
+    uint8_t *data_pointer =  &(msg->Data);
+    
+    msg->StdId = 5;
+    msg->DLC = 4;
+    
+    //Id skrivs in i bytearrayen för data
+    *data_pointer = id;
 }
 
 uint8_t handle_recieve_id_msg(CanRxMsg *msg) {

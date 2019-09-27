@@ -37,6 +37,30 @@ void toggle_light() {
 
 
 
+can_irq_handler(void){
+    //TODO REMOVE
+    USARTPrint("In irq handler*");
+    
+    if(CAN_GetITStatus(CAN1, CAN_IT_FMP0)) {
+        if (CAN_MessagePending(CAN1, CAN_FIFO0)) {
+            CanRxMsg rxMsg;
+            CAN_Receive(CAN1, CAN_FIFO0, &rxMsg);
+            //TODO hantera meddelandet
+            
+            
+            if(rxMsg.StdId==5){
+                USARTPrint("*Jag tilldelades id: ");
+                USARTPrintNum((rxMsg.Data[0]));
+                USARTPrint("**");
+            }
+            else{
+                USARTPrint("*Neeeej**");
+            }
+            
+        }
+    }
+}
+
 
 void main(void) {
     USARTConfig();
