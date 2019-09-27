@@ -136,8 +136,6 @@ uint8_t can_init() {
 uint8_t encode_door_time_config(CanTxMsg *msg, uint32_t time0, uint32_t time1){
     uint8_t *data_pointer =  &(msg->Data);
     
-    msg->StdId = 0;
-    msg->ExtId = 0;
     msg->DLC = 8;
     
     //De två tidsvärdena skrivs in i bytearrayen för data
@@ -157,3 +155,23 @@ uint8_t handle_door_time_msg(CanRxMsg *msg) {
     //TODO: Gör grejer med tiderna
 }
 
+
+
+uint8_t encode_assign_id(CanTxMsg *msg, uint16_t id){
+    uint8_t *data_pointer =  &(msg->Data);
+    
+    msg->DLC = 2;
+    
+    //Id skrivs in i bytearrayen för data
+    *data_pointer = id;
+}
+
+
+uint8_t encode_distance_config(CanTxMsg *msg, uint32_t dist){
+    uint8_t *data_pointer =  &(msg->Data);
+    
+    msg->DLC = 4;
+    
+    //Id skrivs in i bytearrayen för data
+    *data_pointer = dist;
+}
