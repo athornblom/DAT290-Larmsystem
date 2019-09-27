@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<CodeLite_Project Name="Centralenhet" Version="10.0.0" InternalType="User templates">
+<CodeLite_Project Name="Periferienhet" Version="10.0.0" InternalType="User templates">
   <Plugins>
     <Plugin Name="qmake">
       <![CDATA[00010001N0005Debug000000000000]]>
@@ -23,20 +23,19 @@
     <File Name="md407-ram.x"/>
   </VirtualDirectory>
   <VirtualDirectory Name="src">
-    <File Name="../lib/USARTDebug.h"/>
     <File Name="../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_usart.c"/>
     <File Name="../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c"/>
-    <File Name="../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx.h"/>
-    <File Name="startup.c"/>
-    <File Name="../lib/buffer.h"/>
-    <File Name="../lib/buffer.c"/>
-    <File Name="../lib/USART.h"/>
-    <File Name="../lib/USART.c"/>
-    <File Name="../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_can.h"/>
     <File Name="../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_can.c"/>
     <File Name="../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/misc.c"/>
+    <File Name="../lib/USARTDebug.h"/>
+    <File Name="../lib/USART.h"/>
+    <File Name="../lib/USART.c"/>
     <File Name="../lib/CAN.h"/>
     <File Name="../lib/CAN.c"/>
+    <File Name="../lib/buffer.h"/>
+    <File Name="../lib/buffer.c"/>
+    <File Name="startup.c"/>
+    <File Name="../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_gpio.c"/>
   </VirtualDirectory>
   <Settings Type="Executable">
     <GlobalSettings>

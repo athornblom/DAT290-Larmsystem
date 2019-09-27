@@ -9,7 +9,7 @@
 //För att skicka can meddelande
 uint8_t send_can_message(CanTxMsg *msg);
 
-//För att initziera can1
+//För att initiera can1
 uint8_t can_init();
 
 #endif
