@@ -144,18 +144,17 @@ uint8_t USARTPrint(uint8_t *list){
 //Returnerar 1 om det lyckades, 0 annars.
 uint8_t USARTPrintNum(uint32_t num){
     //Max längd för 32 bitar inbut är 10 digits
-    uint8_t digits,digitArr[10];
-    digits = (num == 0) ? 1 : ceil(log10(num));
+    uint8_t index = 0,digitArr[10];
 
-    //Save the digit in reverse to array
-    for (uint8_t i = digits; i != 0; i--){
-        digitArr[i-1] = digitToPrintable(num % 10);
+    //Sparar tecknen i arrayn
+    do {
+        digitArr[index++] = digitToPrintable(num % 10);
         num /= 10;
-    }
+    } while (num);
 
-    //Printing
-     for (uint8_t i = 0; i != digits; i++){
-         if(!USARTPut(digitArr[i])){
+    //Printar
+    while(index){
+         if(!USARTPut(digitArr[--index])){
              return 0;
          }
      }
