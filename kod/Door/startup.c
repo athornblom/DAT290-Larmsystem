@@ -87,7 +87,7 @@ void main(void)
 				active_doors[i].controlbits = 0;
 				//GPIO_ResetBits(GPIOA, active_doors[i].GPIO_lamp);
 			} else{
-				if(active_doors[i].controlbits == 0){
+				if(!active_doors[i].controlbits & 1){
 					active_doors[i].larmTick = msTicks;
 				}
 				active_doors[i].controlbits = 1;
@@ -97,7 +97,7 @@ void main(void)
 				
 		for (int i = 0; i < sizeof(active_doors); i++)
 		{ 
-			if (active_doors[i].controlbits == 1 && msTicks > (active_doors[i].larmTick + 1000*10* active_doors[i].time_larm))
+			if (active_doors[i].controlbits & 1 && msTicks > (active_doors[i].larmTick + 1000*10* active_doors[i].time_larm))
 			{
 				GPIO_SetBits(GPIOA, active_doors[i].GPIO_lamp);
 			}
