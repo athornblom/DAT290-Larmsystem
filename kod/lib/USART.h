@@ -17,9 +17,14 @@ void USARTConfig(void);
 uint8_t USARTPrint(uint8_t *list);
 
 //Lägger till num som enskilda nummer
-//0-9 till kön för att skicka
+//0-9 till kön för att skicka (bas 10)
 //Returnerar 1 om det lyckades, 0 annars.
 uint8_t USARTPrintNum(uint32_t num);
+
+//Lägger till num som enskilda nummer
+//base anger vilken bas
+//Returnerar 1 om det lyckades, 0 annars.
+uint8_t USARTPrintNumBase(uint32_t num, uint8_t base);
 
 //Hämta senaste mottagna meddelandet till dest
 //Gör ingen omvandling, dvs returnerar det tal som skickades över USART
