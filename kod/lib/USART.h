@@ -13,7 +13,6 @@ void USARTConfig(void);
 
 //Lägger till list till kön för att skicka
 //Sköter omvandling mellan sträng i c till rätt tecken i USART.
-//Klarar 0-9, a-z, A-Z, mellanslag och * för ny rad
 //Returnerar 1 om det lyckades, 0 annars.
 uint8_t USARTPrint(uint8_t *list);
 
