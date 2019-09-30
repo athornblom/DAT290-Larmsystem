@@ -4,11 +4,16 @@
  */
 void startup(void) __attribute__((naked)) __attribute__((section (".start_section")) );
 
-#include "stdio.h"
+#define DEBUG
+
+
+#include <stdio.h>
+#include "string.h"
 #include "stm32f4xx_gpio.h"
 #include "core_cm4.h"
 #include "stm32f4xx_rcc.h"
 #include "stm32f4xx_syscfg.h"
+#include "USARTDebug.h"
 
 
 
@@ -49,6 +54,13 @@ void init_Timer(){
 	*((void (**)(void) ) 0x2001C03C ) = SysTick_Handler;
 	uint32_t returnCode;
   	returnCode = SysTick_Config(168000000/1000000);      /* Konfigurera SysTick att generera avbrott varje mikrosekund */
+	
+}
+
+void delay_micro(uint32_t micros){
+	uint32_t wait = microTicks + micros;
+	while(wait > microTicks){
+	}
 }
 
 
@@ -75,7 +87,7 @@ void init_GPIO_Ports(){
 	GPIO_StructInit(&init);
 	init.GPIO_Pin = motion1.echo | GPIO_Pin_3 | GPIO_Pin_5 | GPIO_Pin_7;
 	init.GPIO_Mode = GPIO_Mode_IN;
-	init.GPIO_OType = GPIO_OType_PP;
+	init.GPIO_PuPd = GPIO_PuPd_UP;
 	init.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_Init(GPIOA, &init);
 
@@ -83,7 +95,7 @@ void init_GPIO_Ports(){
 	GPIO_StructInit(&init);
 	init.GPIO_Pin = motion1.trig | GPIO_Pin_2 | GPIO_Pin_4 | GPIO_Pin_6;
 	init.GPIO_Mode = GPIO_Mode_OUT;
-	init.GPIO_PuPd = GPIO_PuPd_UP;
+	init.GPIO_OType = GPIO_OType_PP;
 	init.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_Init(GPIOA, &init);
 }
@@ -94,18 +106,46 @@ void init_app(){
 	init_Timer();
 	init_Sensors();
 	init_GPIO_Ports();
+	DebugPrintInit();
 }
 
 
 
-void main(void)
-{
+void main(void){
 	init_app();
 	while(1){
-		if(microTicks >= motion1.pulseTrig){ // Är trigpulsen klar?
+		
+		// Delayverision
+		GPIO_ResetBits(GPIOA, motion1.trig); // Vill ha en fin hög
+		delay_micro(2);
+		GPIO_SetBits(GPIOA,motion1.trig); // Aktivera triggpuls
+		delay_micro(10);
+		GPIO_ResetBits(GPIOA, motion1.trig); // Avaktivera triggpuls
+		
+		while(!GPIO_ReadInputDataBit(GPIOA, motion1.echo)){ // Vänta på svar från echo
+		}
+	
+		motion1.pulseEcho = microTicks;
+		while(GPIO_ReadInputDataBit(GPIOA, motion1.echo)){ // Mät hur länge echopulsen är hög
+		}
+		 
+		motion1.cm = (microTicks - motion1.pulseEcho)/58;
+		if(motion1.cm < motion1.alarm){ // Upptäcker sensorn något som är för nära?
+			//GPIO_SetBits(GPIOA, GPIO_Pin_2);	// Tänd lampa
+			DebugPrint("1*");
+		}
+		else{
+			//GPIO_ResetBits(GPIOA, GPIO_Pin_2);	// Släck lampa
+			DebugPrint("0*");
+		}
+		delay_micro(1000);
+
+		
+		// Pollingverision
+		/*if(microTicks >= motion1.pulseTrig){ // Är trigpulsen klar?
 			GPIO_ResetBits(GPIOA, motion1.trig);	// Avaktivera triggerpuls
 		}
-		else if(microTicks >= motion1.pulseDelay){  // Är triggfördröjningen klar?
+		if(microTicks >= motion1.pulseDelay){  // Är triggfördröjningen klar?
 			GPIO_SetBits(GPIOA, motion1.trig);	// Aktivera triggerpuls
 			motion1.pulseTrig = microTicks + 10; // Triggpuls 10µs
 			motion1.pulseDelay = microTicks + 1000;	// Fördröjning mellan triggerpulserna, 1ms
@@ -121,9 +161,12 @@ void main(void)
 		}
 		else{
 			GPIO_ResetBits(GPIOA, GPIO_Pin_2);	// Släck lampa
-		}
+		}*/
 		
 	}
+
+		
+	
 	
 	
 }
