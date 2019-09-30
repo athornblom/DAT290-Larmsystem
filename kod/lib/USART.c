@@ -140,16 +140,21 @@ uint8_t USARTPrint(uint8_t *list){
 }
 
 //Lägger till num som enskilda nummer
-//0-9 till kön för att skicka
+//base anger vilken bas
 //Returnerar 1 om det lyckades, 0 annars.
-uint8_t USARTPrintNum(uint32_t num){
-    //Max längd för 32 bitar inbut är 10 digits
-    uint8_t index = 0,digitArr[10];
+uint8_t USARTPrintNumBase(uint32_t num, uint8_t base){
+    if (base == 0 || base == 1){
+        return 0;
+    }
+
+    //Max längd är 32 bitar vid base = 2
+    uint8_t index = 0,digitArr[32];
 
     //Sparar tecknen i arrayn
     do {
-        digitArr[index++] = '0' + (num % 10);
-        num /= 10;
+        uint8_t digit = num % base;
+        digitArr[index++] = digit >= 10 ? 'A' + digit - 10 : '0' + digit;
+        num /= base;
     } while (num);
 
     //Printar
@@ -160,6 +165,13 @@ uint8_t USARTPrintNum(uint32_t num){
      }
 
     return 1;
+}
+
+//Lägger till num som enskilda nummer
+//0-9 till kön för att skicka
+//Returnerar 1 om det lyckades, 0 annars.
+uint8_t USARTPrintNum(uint32_t num){
+    USARTPrintNumBase(num, 10);
 }
 
 //Hämta senaste mottagna meddelandet till dest
