@@ -1,3 +1,5 @@
+//Centralenhet
+
 #include "CAN.h"
 #include "USART.h"
 #include "misc.h"
@@ -8,16 +10,24 @@
 CanRxMsg RxMessage;
 CanTxMsg TxMessage;
 
+
 typedef struct{
-    unsigned int mac;
-    unsigned char id;
-    unsigned char num_of_doors;
+    uint8_t id;
+    uint8_t num_of_doors;
 } Door_device;
 
-unsigned int id;
-unsigned int messages_to_send;
-unsigned char light;
-unsigned int counter;
+typedef struct{
+    uint8_t id;
+    uint32_t dist_threshold;
+} Motion_device;
+
+uint8_t next_id = 0;
+
+void *devices[256];
+
+uint32_t messages_to_send;
+uint8_t light;
+uint32_t counter;
 
 void startup(void) __attribute__((naked)) __attribute__((section (".start_section")) );
 
@@ -34,6 +44,19 @@ void toggle_light() {
 	light = ~light;
 }
 
+
+Door_device get_door_device(uint8_t id){
+    return *((Door_device*) (devices[id]));
+}
+
+//Denna funktion ska alltid användas för att lägga till en ny dörrenhet
+Door_device add_door_device(uint8_t id){
+    Door_device dev;
+    dev.id = id;
+    devices[id] = (void*)(&dev);
+    
+    return dev;
+}
 
 //Använder MAC-adress för att tilldela en enhet ett id
 void assign_id(unsigned int mac, unsigned char id){
@@ -74,12 +97,20 @@ void can_irq_handler(void){
             if (rxMsg.IDE == CAN_Id_Standard){ //standard meddelande
                 if(rxMsg.StdId == 5){ //Om det är en id-förfrågan
                     CanTxMsg txMsg;
-                    encode_assign_id(&txMsg, 42);
+                    encode_assign_id(&txMsg, next_id);
                     if (send_can_message(&txMsg) == CAN_TxStatus_NoMailBox){
                         USARTPrint("No mailbox empty\n");
                     }
                     else{
-                        USARTPrint("Skickat id till periferienhet\n");
+                        
+                        Door_device dev = add_door_device(next_id);
+                        USARTPrint("Lagt till dorrenhet med id ");
+                        
+                        uint8_t id = get_door_device(next_id).id;
+                        USARTPrintNum((uint32_t)id);
+                        USARTPrint("\n");
+                        next_id++;
+                        
                     }
                 }
                 USARTPrint("StdId ");
@@ -90,9 +121,9 @@ void can_irq_handler(void){
             } else {
                 USARTPrint("unknown IDE");
             }
-            USARTPrint("*Data ");
+            USARTPrint("\nData ");
             USARTPrintNum((rxMsg.Data[0]));
-            USARTPrint("**");
+            USARTPrint("\n");
             
         }
     }

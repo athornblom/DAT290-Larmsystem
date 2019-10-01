@@ -14,10 +14,10 @@ typedef struct{
     unsigned char num_of_doors;
 } Door_device;
 
-unsigned int id;
-unsigned int messages_to_send;
-unsigned char light;
-unsigned int counter;
+uint32_t id;
+uint32_t messages_to_send;
+uint8_t light;
+uint32_t counter;
 uint8_t requesting_id = 1;
 
 void startup(void) __attribute__((naked)) __attribute__((section (".start_section")) );
@@ -50,8 +50,9 @@ can_irq_handler(void){
             
             
             if(rxMsg.StdId==4){
+                id = rxMsg.Data[0];
                 USARTPrint("Jag tilldelades id: ");
-                USARTPrintNum((rxMsg.Data[0]));
+                USARTPrintNum(id);
                 USARTPrint("\n");
                 requesting_id = 0; //Nollställ flaggan för att sluta begära id
             }
@@ -77,10 +78,10 @@ void main(void) {
     while (requesting_id) {
         
         if (send_can_message(&canMsg) == CAN_TxStatus_NoMailBox){
-            USARTPrint("no mailbox empty*");
+            USARTPrint("no mailbox empty\n");
         }
         else{
-            USARTPrint("Skickat id-förfrågan*");
+            USARTPrint("Skickat id-forfragan\n");
         }
         
         blockingDelayMs(1000);
