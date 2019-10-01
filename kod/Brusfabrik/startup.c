@@ -1,5 +1,6 @@
 #include "USART.h"
 
+#include "delay.h"
 #include "misc.h"
 #include "stm32f4xx_can.h"
 #include "stm32f4xx_gpio.h"
@@ -29,18 +30,17 @@ void main(void) {
     
     CanTxMsg canMsg;
 
-    USARTPrint("Started\n");
+    USARTPrint("\nStarted\n");
                     
-    while (0) {
+    while (1) {
         //Ändra fördröjningen för att justera hur mycket snabbt data som skickas
-        //TODO någon typ av fördröjning borde finnas här
-        //delay(xxx);
+        blockingDelayus(100000);
         
         tryRandomizeCANMsg(&canMsg);
         
         //Prova att skicka
         if (CAN_Transmit(CAN1, &canMsg) == CAN_TxStatus_NoMailBox){
-            USARTPrint("no mailbox empty*");
+            USARTPrint("no mailbox empty\n");
         }
     }
 }
@@ -116,7 +116,7 @@ uint8_t can_init() {
 }
 
 //Slumpar ett meddelande, RNG måste ha initsieras innan användning
-uint8_t randomizeCANMsg(CanTxMsg *msg){
+uint8_t tryRandomizeCANMsg(CanTxMsg *msg){
     //kollar om vi kan hämta ett nytt slumptal
      if (RNG_GetFlagStatus(RNG_FLAG_DRDY) == SET && //Nytt meddelande finns
              RNG_GetFlagStatus(RNG_FLAG_CECS) == RESET && //Inget klockfel
