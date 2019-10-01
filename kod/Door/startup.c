@@ -85,13 +85,13 @@ void main(void)
 		for (int i = 0; i < sizeof(active_doors); i++)
 		{
 			if(GPIO_ReadInputDataBit(GPIOA, active_doors[i].GPIO_read)){
-				active_doors[i].controlbits =& 0xFFFE; //borde va så!
+				active_doors[i].controlbits &= 0xFFFE; //borde va så!
 				//GPIO_ResetBits(GPIOA, active_doors[i].GPIO_lamp);
 			} else{
 				if(!active_doors[i].controlbits & 1){
 					active_doors[i].larmTick = msTicks;
 				}
-				active_doors[i].controlbits =| 1;
+				active_doors[i].controlbits |= 1;
 
 				//GPIO_SetBits(GPIOA, active_doors[i].GPIO_lamp);
 				}
