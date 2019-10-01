@@ -12,8 +12,8 @@
 //Buffertar för mottagning och sändning
 //Pekare för att slippa skicka adresser med & hela tiden
 static FIFO *txBuffer, *rxBuffer, realTxBuffer, realRxBuffer;
-uint8_t digitToPrintable(uint8_t inDigit);
-uint8_t charToPrintable(uint8_t inChar);
+/*uint8_t digitToPrintable(uint8_t inDigit);
+uint8_t charToPrintable(uint8_t inChar);*/
 
 //Avbrottshantering för USART1
 void USART1_IRQHandler(void){
@@ -81,13 +81,14 @@ void USARTConfig(void){
     - No parity
     - Hardware flow control disabled (RTS and CTS signals)
     - Receive and transmit enabled*/
-      USART_InitStructure.USART_BaudRate = 115200;
-      USART_InitStructure.USART_WordLength = USART_WordLength_8b;
-      USART_InitStructure.USART_StopBits = USART_StopBits_1;
-      USART_InitStructure.USART_Parity = USART_Parity_No;
-      USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
-      USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
-    USART_Init(USART1, &USART_InitStructure);
+    USART_InitStructure.USART_BaudRate = 115200;
+    USART_InitStructure.USART_WordLength = USART_WordLength_8b;
+    USART_InitStructure.USART_StopBits = USART_StopBits_1;
+    USART_InitStructure.USART_Parity = USART_Parity_No;
+    USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
+    USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
+    //Utan initsiering fungerar det utan "krumelurer"
+    //USART_Init(USART1, &USART_InitStructure);
 
     //Konfigurerar avbrott för USART
     NVIC_InitTypeDef NVIC_InitStructure;
@@ -124,7 +125,6 @@ uint8_t USARTPut (uint8_t elem){
 }
 
 //Lägger till list till kön för att skicka
-//Sköter omvandling mellan sträng i c till rätt tecken i USART. Klarar 0-9 a-z A-Z och mellanslag
 //Returnerar 1 om det lyckades, 0 annars.
 uint8_t USARTPrint(uint8_t *list){
     //En sträng avslutas med null så vi
@@ -132,7 +132,7 @@ uint8_t USARTPrint(uint8_t *list){
     while (*list) {
         //Lägg till alla tecken en efter en
         //Misslyckas vi med en avbryter vi resten
-        if (!USARTPut(charToPrintable(*list++))){
+        if (!USARTPut(*list++)){
             return 0;
         }
     }
@@ -140,16 +140,21 @@ uint8_t USARTPrint(uint8_t *list){
 }
 
 //Lägger till num som enskilda nummer
-//0-9 till kön för att skicka
+//base anger vilken bas
 //Returnerar 1 om det lyckades, 0 annars.
-uint8_t USARTPrintNum(uint32_t num){
-    //Max längd för 32 bitar inbut är 10 digits
-    uint8_t index = 0,digitArr[10];
+uint8_t USARTPrintNumBase(uint32_t num, uint8_t base){
+    if (base == 0 || base == 1){
+        return 0;
+    }
+
+    //Max längd är 32 bitar vid base = 2
+    uint8_t index = 0,digitArr[32];
 
     //Sparar tecknen i arrayn
     do {
-        digitArr[index++] = digitToPrintable(num % 10);
-        num /= 10;
+        uint8_t digit = num % base;
+        digitArr[index++] = digit >= 10 ? 'A' + digit - 10 : '0' + digit;
+        num /= base;
     } while (num);
 
     //Printar
@@ -162,6 +167,13 @@ uint8_t USARTPrintNum(uint32_t num){
     return 1;
 }
 
+//Lägger till num som enskilda nummer
+//0-9 till kön för att skicka
+//Returnerar 1 om det lyckades, 0 annars.
+uint8_t USARTPrintNum(uint32_t num){
+    USARTPrintNumBase(num, 10);
+}
+
 //Hämta senaste mottagna meddelandet till dest
 //Gör ingen omvandling, dvs returnerar det tal som skickades över USART
 //Returnerar 1 om det lyckades, dvs det fanns ett meddelande att hämta 0 annars.
@@ -171,7 +183,7 @@ uint8_t USARTGet(uint8_t *dest){
 
 //För omvandling från 0-9 heltal till int som kan skrivas
 //ut i terminalen. Det fungerar annorluna i simulatorn
-uint8_t digitToPrintable(uint8_t inDigit){
+/*uint8_t digitToPrintable(uint8_t inDigit){
         #ifdef SIMULATOR
         if (0 <= inDigit && inDigit <= 9) {
             return ('0' + inDigit);
@@ -186,11 +198,11 @@ uint8_t digitToPrintable(uint8_t inDigit){
 
         return (31); //return ?
         #endif
-}
+}*/
 
 //För omvandling från char till int som kan skrivas ut i terminalen
 // hårdvaran.  Det fungerar annorluna i simulatorn
-uint8_t charToPrintable(uint8_t inChar){
+/*uint8_t charToPrintable(uint8_t inChar){
     #ifdef SIMULATOR
     return inChar;
     #else
@@ -228,4 +240,4 @@ uint8_t charToPrintable(uint8_t inChar){
     //else return ?
     return (31);
     #endif
-}
+}*/

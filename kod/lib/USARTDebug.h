@@ -7,9 +7,9 @@
  * Initziera mha DebugPrintInit()
  * Därefter kan du använda följande funktioner
     * DebugPrint(uint8_t *str) för att printa text.
-       Accepterade täcken är 0-9 a-z A-Z space samt * för ny rad
-
     * DebugPrint(uint32_t num) för att printa nummer
+    * DebugPrintBase(uint32_t num, uint8_t base) för att printa nummer med bas base
+
  */
 
 #include "USART.h"
@@ -22,6 +22,7 @@
 #define DebugPrintInit() do { if (DEBUG_ENABLE) USARTConfig(); } while (0)
 #define DebugPrint(str) do { if (DEBUG_ENABLE) USARTPrint(str); } while (0)
 #define DebugPrintNum(num) do { if (DEBUG_ENABLE) USARTPrintNum(num); } while (0)
+#define DebugPrintNumBase(num, base) do { if (DEBUG_ENABLE) USARTPrintNumBase(num, base); } while (0)
 
 
 #endif

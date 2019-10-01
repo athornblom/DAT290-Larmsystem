@@ -27,7 +27,9 @@ void startup(void)
 }
 
 volatile uint32_t msTicks = 0; /* Variable to store millisecond ticks */
-
+void app_init(void){
+	//TEST 123
+}
 void init_GPIO_Ports()
 {
 	/*  Function used to set the GPIO configuration to the default reset state ****/
@@ -47,13 +49,12 @@ void init_GPIO_Ports()
 	init.GPIO_PuPd = GPIO_PuPd_UP;
 	GPIO_Init(GPIOA, &init);
 }
-
 void SysTick_Handler(void)
 { /* SysTick interrupt Handler. */
 	msTicks++;
 }
 
-void app_Init(void)
+void systick_Init(void)
 {
 	// Initiera SysTick.
 	*((void (**)(void))0x2001C03C) = SysTick_Handler;
@@ -69,7 +70,7 @@ void app_Init(void)
 void main(void)
 {
 	init_GPIO_Ports();
-	app_Init();
+	systick_Init();
 //	DebugPrintInit();
 
 	door test1 = {.id = 0, .controlbits = 0, .time_larm = 1, .time_central_larm = 2, .password = 0, .GPIO_lamp = GPIO_Pin_3, .GPIO_read = GPIO_Pin_2, .larmTick = 0};
@@ -84,20 +85,20 @@ void main(void)
 		for (int i = 0; i < sizeof(active_doors); i++)
 		{
 			if(GPIO_ReadInputDataBit(GPIOA, active_doors[i].GPIO_read)){
-				active_doors[i].controlbits = 0;
+				active_doors[i].controlbits =& 0xFFFE; //borde va så!
 				//GPIO_ResetBits(GPIOA, active_doors[i].GPIO_lamp);
 			} else{
-				if(active_doors[i].controlbits == 0){
+				if(!active_doors[i].controlbits & 1){
 					active_doors[i].larmTick = msTicks;
 				}
-				active_doors[i].controlbits = 1;
+				active_doors[i].controlbits =| 1;
 
 				//GPIO_SetBits(GPIOA, active_doors[i].GPIO_lamp);
 				}
 				
 		for (int i = 0; i < sizeof(active_doors); i++)
 		{ 
-			if (active_doors[i].controlbits == 1 && msTicks > (active_doors[i].larmTick + 1000*10* active_doors[i].time_larm))
+			if (active_doors[i].controlbits & 1 && msTicks > (active_doors[i].larmTick + 1000*10* active_doors[i].time_larm))
 			{
 				GPIO_SetBits(GPIOA, active_doors[i].GPIO_lamp);
 			}
@@ -105,7 +106,7 @@ void main(void)
 			else{
 				GPIO_ResetBits(GPIOA, active_doors[i].GPIO_lamp);
 			}
-			if (active_doors[i].controlbits == 1 && msTicks > (active_doors[i].larmTick + 1000*10* active_doors[i].time_central_larm))
+			if (active_doors[i].controlbits & 1 && msTicks > (active_doors[i].larmTick + 1000*10* active_doors[i].time_central_larm))
 			{
 				//Larma central enheten
 			}	
