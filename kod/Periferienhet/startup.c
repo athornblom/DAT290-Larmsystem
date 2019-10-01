@@ -18,6 +18,7 @@ unsigned int id;
 unsigned int messages_to_send;
 unsigned char light;
 unsigned int counter;
+uint8_t requesting_id = 1;
 
 void startup(void) __attribute__((naked)) __attribute__((section (".start_section")) );
 
@@ -39,7 +40,7 @@ void toggle_light() {
 
 can_irq_handler(void){
     //TODO REMOVE
-    USARTPrint("In irq handler*");
+    USARTPrint("In irq handler\n");
     
     if(CAN_GetITStatus(CAN1, CAN_IT_FMP0)) {
         if (CAN_MessagePending(CAN1, CAN_FIFO0)) {
@@ -48,13 +49,15 @@ can_irq_handler(void){
             //TODO hantera meddelandet
             
             
-            if(rxMsg.StdId==5){
-                USARTPrint("*Jag tilldelades id: ");
+            if(rxMsg.StdId==4){
+                USARTPrint("Jag tilldelades id: ");
                 USARTPrintNum((rxMsg.Data[0]));
-                USARTPrint("**");
+                USARTPrint("\n");
+                requesting_id = 0; //Nollställ flaggan för att sluta begära id
             }
             else{
-                USARTPrint("*Neeeej**");
+                USARTPrint("\nNeeeej! rxMsg.StdId: ");
+                USARTPrintNum((uint32_t)rxMsg.StdId);
             }
             
         }
@@ -65,19 +68,21 @@ can_irq_handler(void){
 void main(void) {
     USARTConfig();
     can_init();
-    USARTPrint("*start periferi*");
+    USARTPrint("\nstart periferi\n");
     CanTxMsg canMsg;
     uint32_t temp_id = 5;
     
-    while (1) {
+    encode_request_id(&canMsg, temp_id);
+    
+    while (requesting_id) {
         
-        //code canMsg
-        encode_request_id(&canMsg, temp_id);
-        canMsg.IDE = CAN_Id_Standard; //Alternativen är CAN_Id_Standard eller FCAN_Id_Extended
-        canMsg.RTR = CAN_RTR_Data;
         if (send_can_message(&canMsg) == CAN_TxStatus_NoMailBox){
             USARTPrint("no mailbox empty*");
         }
-        else break;
+        else{
+            USARTPrint("Skickat id-förfrågan*");
+        }
+        
+        blockingDelayMs(1000);
     }
 }

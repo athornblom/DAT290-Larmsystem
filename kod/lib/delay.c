@@ -7,3 +7,9 @@ void blockingDelayus(uint16_t delay){
     while (!(SysTick->CTRL & SysTick_CTRL_COUNTFLAG_Msk));
     SysTick->CTRL = 0;
 }
+
+void blockingDelayMs(uint16_t delay){
+    for(; delay; delay--){
+        blockingDelayus(1000);
+    }
+}

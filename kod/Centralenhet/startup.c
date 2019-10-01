@@ -62,7 +62,7 @@ void config_door(unsigned char id_device, unsigned char id_door, unsigned int ti
 
 void can_irq_handler(void){
     //TODO REMOVE
-    USARTPrint("In irq handler*");
+    USARTPrint("In irq handler\n");
     
     if(CAN_GetITStatus(CAN1, CAN_IT_FMP0)) {
         if (CAN_MessagePending(CAN1, CAN_FIFO0)) {
@@ -72,6 +72,16 @@ void can_irq_handler(void){
             
             //För enkelt test TODO REMOVE
             if (rxMsg.IDE == CAN_Id_Standard){ //standard meddelande
+                if(rxMsg.StdId == 5){ //Om det är en id-förfrågan
+                    CanTxMsg txMsg;
+                    encode_assign_id(&txMsg, 42);
+                    if (send_can_message(&txMsg) == CAN_TxStatus_NoMailBox){
+                        USARTPrint("No mailbox empty\n");
+                    }
+                    else{
+                        USARTPrint("Skickat id till periferienhet\n");
+                    }
+                }
                 USARTPrint("StdId ");
                 USARTPrintNum((uint32_t)rxMsg.StdId & 0x7FF);
             } else if (rxMsg.IDE == CAN_Id_Extended){
@@ -91,9 +101,9 @@ void can_irq_handler(void){
 void main(void) {
     USARTConfig();
     can_init();
-    USARTPrint("start*");
+    USARTPrint("Start Central\n");
     CanTxMsg canMsg;
-    uint8_t USARTmsg;
+    uint8_t USARTmsg;/*
     while (1) {
         if (USARTGet(&USARTmsg)){
             //code canMsg
@@ -105,8 +115,8 @@ void main(void) {
             canMsg.DLC = 1;
             canMsg.Data[0] = USARTmsg;
             if (send_can_message(&canMsg) == CAN_TxStatus_NoMailBox){
-                USARTPrint("no mailbox empty*");
+                USARTPrint("no mailbox empty\n");
             }
         }
-    }
+    }*/
 }
