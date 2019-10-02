@@ -1,5 +1,8 @@
 \documentclass{article}
 \usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{float}
+\usepackage{parskip}
 
 \title{Rapportutkast1}
 \author{Grupp 13}
@@ -16,9 +19,15 @@
 
 \begin{document}
 
-\maketitle
-
 %Titelsida
+\maketitle
+\pagenumbering{gobble}
+\newpage
+
+\tableofcontents
+\newpage
+
+\pagenumbering{arabic}
 
 
 \section{Introduktion}
@@ -45,7 +54,11 @@ x antal dörrar per kort, utrustat med rörelsesensorer, alla korten uppkopplade
 \subsubsection{Centralenheten }
 \subsubsection{Dörrenheten}
 \subsubsection{Rörelsesensorn}
-\subsection{CAN}
+\subsection{CAN kommunikation}
+Nedan finns dokumentationen av protokollet som tagits fram för kommunikationen mellan enheterna. Därefter följer en beskrivning av hur kommunikationen har implementerats.
+\subsubsection{Protokoll}
+\input{../protokoll/protokollInput.tex}
+\subsubsection{Implementation}
 % Användarhandledning?
 
 \section{Metoder}
