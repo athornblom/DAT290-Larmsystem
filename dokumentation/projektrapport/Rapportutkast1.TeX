@@ -1,8 +1,10 @@
 \documentclass{article}
+\usepackage[swedish]{babel}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{float}
 \usepackage{parskip}
+\usepackage{todonotes}
 
 \title{Rapportutkast1}
 \author{Grupp 13}
@@ -32,8 +34,11 @@
 
 \section{Introduktion}
 \subsection{Syfte} % Svarar på fårgan "Varför"?
-Projektet syftar till att utveckla ett dörrlarmsystem riktat i huvudsak till mindre företagslokaler. Larmet är tänkt att användas till att
-Larmet ska vara lätt att konfiguera för någon utan teknisk expertis.
+Rapporten syfte är att beskriva utvecklingen av ett larm- och låssystem som i grunden består av ARM-baserade MD407-datorer som exekverar kod skriven i programmeringsspråket C. \\
+Systemets uppgift är att öka säkerheten och översikten av användarens lokaler, genom att möjliggöra för datarepresentationer av önskade dörrar. Användaren kan sedan använda dessa representationer för att konfiguera individuella dörrar efter unika behov, där exempel på konfigurationsalternativ är uppställningstid innan larm, eller upplåsningskod. \\
+Systemet tillåter även hårdvarumässiga utökningar av rörelse- och/eller vibrationssensorer.
+\\
+Användning av systemet förutsätter ingen speciell teknisk expertis.
 
 
 \subsection{Mål} % Svarar på frågan "Vad"?
@@ -43,6 +48,7 @@ x antal dörrar per kort, utrustat med rörelsesensorer, alla korten uppkopplade
 \subsection{Arbetsmetod} % svarar på frågan "hur har vi gått tillväga i det tekniska utvecklingsarbetet"?
 \subsubsection{Subgrupper Erik}
 \subsubsection{Kommunikation Gustav}
+Under projekets gång har arbetsgruppens medlemmar skött den icke-muntliga interna kommunikationen via en gemensam Messenger-chatt. I chatten har medlemmarna kunnat ställa projektrelaterade frågor till varandra, men det har även fungerat som verktyg för medlemmarna att uppdatera varandra om när/var/hur de arbetar samt kommande mötestider.
 \subsubsection{Möten och arbetstid Adam}
 
 Projektgruppen har 
@@ -53,14 +59,23 @@ Projektgruppen har
 \subsection{Teknisk bakgrund Filip}
 \subsection{Systemöversikt Ben}
 \subsection{Delsystem }
-\subsubsection{Centralenheten Effektgubben}
+\subsubsection{Centralenheten}
 %\label{subsec:centralenhet}
-Centralenheten är den enhet som styr och håller koll på övriga enheter. Inställningar görs via USART, varpå de vidarebefordras till rätt periferienhet via CAN (se \ref{can}). För att kunna adressera olika periferienheter måste centralenheten tilldela dessa varsitt unikt id. Detta görs genom att varje enhet som saknar id skickar en förfrågan via CAN. När centralenheten tar emot en sådan förfrågan från en periferienhet, skickar den tillbaka det lägsta lediga id:t och skapar en ny instans av en strukt som representerar periferienheten med följande värden:
-\begin{itemize}
-    \item uint8\_t id: Används för att addressera meddelanden till samt identifiera meddelanden från enheten.
-    \item uint8\_t num\_of\_doors: Används för dörrenheter för att ange antal dörrar.
-    \item uint32\_t dist\_threshold: Anger det största mätvärdet på avståndssensorn för vilket larmet ska triggas på en rörelseenhet.
-\end{itemize}
+Centralenheten är den enhet som styr och håller koll på övriga enheter. Inställningar görs via USART, varpå de vidarebefordras till rätt periferienhet via CAN (se \ref{can}). 
+
+Centralenheten har följande två lägen:
+
+\begin{enumerate}
+    \item Standardläge: Enheten väntar på larm-meddelanden från periferienheterna eller användarinput via USART. Dessutom skickar den regelbundet  konfigurationen för anslutna dörrar och sensorer till periferienheterna, som förväntas bekräfta konfigurationen. Om en enhet inte svarar efter ett antal meddelanden går larmet.
+    \item Konfigurationsläge: Enheten startar i detta läge. Här kan användaren konfigurera anslutna dörr- och rörelseenheter via USART. Användaren kan sätta centralenheten i detta läge via USART för att lägga till eller konfigurera periferienheter.
+\end{enumerate}
+
+För att kunna adressera olika periferienheter måste centralenheten tilldela dessa varsitt unikt id. Detta görs i konfigurationsläget genom att varje enhet som saknar id skickar en förfrågan via CAN. När centralenheten tar emot en sådan förfrågan från en periferienhet, skickar den tillbaka det lägsta lediga id:t och skapar en ny instans av en struktur som representerar periferienheten och lägger den i en lista. Strukturen innehåller enhetens id och konfiguration (d.v.s. tider för varje dörr för dörrenheter respektive avstånd för varje avståndssensor och antal vibrationssensorer för rörelseenheter). Id:t används för att addressera meddelanden till samt identifiera meddelanden från enheten. Det är också periferienhetens index i centralenhetens lista, vilket innebär att det är oerhört effektivt att hitta rätt enhet i listan när dess id har lästs i CAN-meddelandet.
+
+
+
+
+
 \subsubsection{Dörrenheten}
 \subsubsection{Rörelsesensorn}
 \subsection{CAN-kommunikation}
