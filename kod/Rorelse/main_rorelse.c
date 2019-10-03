@@ -40,6 +40,7 @@ typedef struct MotionSensors {
 
 
 MotionSensor motion1;
+MotionSensor motion2;
 
 
 volatile uint32_t microTicks = 0;                              /* Variable för microsekunder*/
@@ -54,6 +55,9 @@ void init_Timer(){
 	*((void (**)(void) ) 0x2001C03C ) = SysTick_Handler;
 	uint32_t returnCode;
   	returnCode = SysTick_Config(168000000/1000000);      /* Konfigurera SysTick att generera avbrott varje mikrosekund */
+	if (returnCode) {
+		DebugPrint("SysTick Fail");
+	}
 	
 }
 
@@ -75,7 +79,17 @@ void init_Sensors(){
 	motion1.pulseDelay = 0; 
 	motion1.cm = 400;
 	motion1.alarm = 20;
-	
+		
+	motion2.id = 1;
+	motion2.controlbits = 1;
+	motion2.password = 2389;
+	motion2.trig = 0;
+	motion2.echo = GPIO_Pin_1;
+	motion2.pulseTrig = 0;
+	motion2.pulseEcho = 0;
+	motion2.pulseDelay = 10000; // Todo, hitta ett rimligt värde för max vibration/sec
+	motion2.cm = 0;
+	motion2.alarm = 0;
 }
 
 
@@ -88,7 +102,7 @@ void init_GPIO_Ports(){
 	init.GPIO_Pin = motion1.echo | GPIO_Pin_3 | GPIO_Pin_5 | GPIO_Pin_7;
 	init.GPIO_Mode = GPIO_Mode_IN;
 	init.GPIO_PuPd = GPIO_PuPd_UP;
-	init.GPIO_Speed = GPIO_Speed_50MHz;
+	init.GPIO_Speed = GPIO_Fast_Speed; // 50 Mhz
 	GPIO_Init(GPIOA, &init);
 
 	//konfigurerar utport GPIO A
@@ -96,8 +110,17 @@ void init_GPIO_Ports(){
 	init.GPIO_Pin = motion1.trig | GPIO_Pin_2 | GPIO_Pin_4 | GPIO_Pin_6;
 	init.GPIO_Mode = GPIO_Mode_OUT;
 	init.GPIO_OType = GPIO_OType_PP;
-	init.GPIO_Speed = GPIO_Speed_50MHz;
+	init.GPIO_Speed = GPIO_Fast_Speed;
 	GPIO_Init(GPIOA, &init);
+		
+	//konfigurerar inport GPIO B
+	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
+	GPIO_StructInit(&init);
+	init.GPIO_Pin = motion2.echo;
+	init.GPIO_Mode = GPIO_Mode_IN;
+	init.GPIO_PuPd = GPIO_PuPd_UP;
+	init.GPIO_Speed = GPIO_Fast_Speed;
+	GPIO_Init(GPIOB, &init);
 }
 
 
@@ -114,7 +137,7 @@ void init_app(){
 void main(void){
 	init_app();
 	while(1){
-		
+		/*
 		// Delayverision
 		GPIO_ResetBits(GPIOA, motion1.trig); // Vill ha en fin hög
 		delay_micro(2);
@@ -142,7 +165,7 @@ void main(void){
 
 		
 		// Pollingverision
-		/*if(microTicks >= motion1.pulseTrig){ // Är trigpulsen klar?
+		if(microTicks >= motion1.pulseTrig){ // Är trigpulsen klar?
 			GPIO_ResetBits(GPIOA, motion1.trig);	// Avaktivera triggerpuls
 		}
 		if(microTicks >= motion1.pulseDelay){  // Är triggfördröjningen klar?
@@ -162,6 +185,33 @@ void main(void){
 		else{
 			GPIO_ResetBits(GPIOA, GPIO_Pin_2);	// Släck lampa
 		}*/
+		
+		
+		if (GPIO_ReadInputDataBit(GPIOB, motion2.echo) == Bit_RESET) {  // Vibration triggad
+		/* Återanvänder variabler i MotionSensor till annat, Todo: i framtiden bör det nog finnas en egen struct för vibration.
+		 * pulseEcho  = antal vibrationer
+		 * pulseDelay = max antal vibrationer på 1 sekund innan det larmar
+		 * pulseTrig  = tidsdelta 
+		 * 
+		 * Vid mätning utan delay mellan loop-cyklarna verkade 10k vara ett rimligt värde för pulseDelay.
+		 * Detta bör mätas om när loopen är färdigskriven då timingen kommer att ha ändrats
+		*/
+			if (!motion2.pulseEcho) {
+				motion2.pulseTrig = microTicks; // Tidstamp för första vibrationen			
+			}
+			motion2.pulseEcho++;
+		}
+			
+						
+		if (microTicks > (motion2.pulseTrig + 1000000))  {  // 1 Sekund efter första vibration
+			if (motion2.pulseEcho > motion2.pulseDelay) {
+				// Larma
+			}
+			motion2.pulseTrig = 0;
+			motion2.pulseEcho= 0;
+		}
+						
+		// microTicks bör ställas till 0 vid lämpligt tillfälle, max värde = 72 min
 		
 	}
 
