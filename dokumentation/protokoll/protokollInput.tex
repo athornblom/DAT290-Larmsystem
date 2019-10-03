@@ -1,48 +1,51 @@
-\section*{Grundidé}
-\label{sec:grundide}
+Protokollet som har skapats för kommunikationen mellan enheterna bygger på Controller Area Nework (CAN) protokollet. CAN är ett bussprotokoll som främst används för kommunikation mellan datorer och givare på fordon där det ställs höga krav på tillförlitlighet. En av de unika funktionerna är metoden som används för att undvika kommunikationskrockar. Detta åstakoms genom att låta en av de logiska nivåerna vara dominant. I detta fall är det logisk nolla som har priorietet. För at skicka en logisk nolla skapar man en spänningsskillnad mellen de två bussledningarna, om man istället ska sicka en etta låter man spänningsskillnaden vara 0. Denna dominans använder man för att minska risken för busskollisioner genom att under sändning av den första delen av meddelandet som talar om meddelandetyp förutom att skicka även lyssnar vilket värde som egentligen skickas på bussen. Skulle dessa vädrden skilja sig åt slutar man skicka och låter det andra meddelandet med högre prioritet skickas färdigt. Detta medför att meddelanden med bara nollor har högst prioritet medans meddelanden med bara ettor har lägst.
 
-Centralenheten sparar all status och datainformation, denna information kopieras regelbundet till perferienheterna via konfigureringsmeddelanden. Centralenheten har 2 lägen.
-
-\begin{enumerate}
-	\item Standard running. Här lyssnar man på larm från periferienheterna. Dessutom skickar man regelbundet  konfigurationen för anslutna dörrar och sensorer. Periferienheten svarar ok, om den inte svarar efter ett antal meddelande larmar man.
-	\item Vid uppstart är centralenheten i konfigurationsläge. Nu kan man via USART konfigurera anslutna dörrlarmsenheter samt lörelselarm.
-\end{enumerate}
-
-Varje perferienhet förväntas ha en unik fysisk adress som kommer användas vid tilldelning av ID adresser. Likt fysiska MAC adresser och logiska IP adresser i ethernet.
-
-\section*{Bitfördelning i identifieringsdelen av meddelandet}
-\label{sec:bitfördelning}
-
-Totalt 11 bitar (Utan att utöka med 18 bitar till)
-\begin{description}
-	\item{0-2:} Första bitarna är meddelandetyp. 3 bitar dvs 8 meddelandetyper.
-	\item{3:} en bit för riktning. Från/till centralenheten. Kan ses som en 4e bit i meddelandetypen.
-	\item{4-10:} 7 bitar:
-		Om riktning är till centralenheten är bitarna sändarens ID.
-		Om riktningen är från centralenheten beskriver bitarna mottagarens ID.
-		Innan enheten har en egen ID används bara ettor.
-\end{description}
-
-
-\section*{Meddelandetyper lista}
-\label{sec:meddelandetyper}
+Den innbygda prioriteringen av meddelanden har noga avvägts vid tilldelning av de 11 ID bitarna som bland annat beskriver meddelandetypen. Dessa bitar har fördelats enligt tabell \ref{tab:idbitar}.
 
 \begin{table}[H]
-	\begin{tabular}{|c|l|p{2.6cm}|p{6cm}|}
+	\centering
+	\begin{tabular}{|c|p{0.8\textwidth}|}
 		\hline
-		N& Riktning & Meddelandenamn & Beskrivning \\ \hline \hline
-		0 & p -> c & Ack & Acknowledgement för senaste meddelandet. \\ \hline
-		1 & p -> c & Skicka larm & Talar för centralenheten om någon dörr eller sensor larmar. \\ \hline
-		3 & Båda & Skicka konfiguration & Skickar konfiguration till periferienheten kontinuerligt. Fungerar även som ping. Perferienheterna skickar sina konfigurationener i andra riktingen vid uppstart. Rörelselarmet har mätvärden i denna typ av meddelande. \\ \hline
-		4 & c -> p & Tilldelning av ID & Centralenheten tilldelar en periferienhet dess ID. Enheten identifieras med dess fysiska adress i meddelandet. Detta meddelande skickas bara då centralenheten är i konfigurationsläge (läge  2). \\ \hline
-		5 & p -> c & Ny enhet här & Centralenheten tilldelar en periferienhet dess ID. Enheten identifieras med dess fysiska adress i meddelandet. Detta meddelande skickas bara då centralenheten är i konfigurationsläge (läge  2). \\ \hline
+		Bitar 	& Används till \\ \hline \hline
+		0-2		& Första bitarna är meddelandetyp. 3 bitar dvs 8 meddelandetyper. \\ \hline
+		3		& en bit för riktning. Från/till centralenheten. Kan ses som en 4e bit i meddelandetypen. \\ \hline
+		4-10	& 7 bitar:
+		Om riktning är till centralenheten är bitarna sändarens ID.
+		Om riktningen är från centralenheten beskriver bitarna mottagarens ID. \\ \hline
+
 	\end{tabular}
+	\caption{Lista över hur de 11 ID bitarna i CAN meddelandet används.}
+	\label{tab:idbitar}
+\end{table}
+
+Utöver de 11 ID bitarna i CAN meddelandet finns ett antal kontrollfält bland annat startbit, bitar för datafältets längd, datafält, kontrollsumma och bitar för bekräftelse. Utav dessa är det bara datafältet som man har kontroll över, de andra är bestämda av CAN standarden. Datafältets maximalta längd är 8 bytes och bildar tillsammans med ID fältet unika medelanden. De meddelande som vi använder beskrivs översiktligt i tabell \ref{tab:meddelandetyper} sedan följer an utförligare beskrivning av var och ett av dem.
+
+\begin{table}[H]
+	\centering
+	\begin{tabular}{|c|l|l|l|}
+		\hline
+		N & Riktning 	& Meddelandenamn 	& Datafältets längd \\ \hline \hline
+		0 & Båda 		& Ack 						& \todo[inline]{Inte bestämt} \\ \hline
+		1 & p -> c 	& Skicka larm 			& \todo[inline]{Inte bestämt} \\ \hline
+		3 & Båda 		& Skicka konfiguration 	& \todo[inline]{Inte bestämt} \\ \hline
+		4 & c -> p 	& Tilldelning av ID 		& \todo[inline]{Inte bestämt} \\ \hline
+		5 & p -> c 	& ID begäran 			& \todo[inline]{Inte bestämt} \\ \hline
+	\end{tabular}
+	\caption{Tabell över de meddelandetyper som används. N är meddelandetypen som beskrivs av de 3 första bitarna. I riktningskolumnen står p för perferienhet och c för centralenhet.}
 	\label{tab:meddelandetyper}
 \end{table}
 
-\section*{Detaljinformation angående meddelandetyperna}
-\label{sec:detaljinfo}
+\textbf{Ack} \\
+Acknowledgement för senaste meddelandet.
+\todo[inline]{Beskrivningen av detta meddelandet är inte klar}
+
+\textbf{Skicka larm} \\
+Talar för centralenheten om någon dörr eller sensor larmar.
+\todo[inline]{Beskrivningen av detta meddelandet är inte klar}
+
 \textbf{Skicka konfiguration} \\
+Skickar konfiguration till periferienheten kontinuerligt. Fungerar även som ping. Perferienheterna skickar sina konfigurationener i andra riktingen vid uppstart. Rörelselarmet har mätvärden i denna typ av meddelande.
+
 I datadelen av meddelande för dörrlarm borde det finnas:
 \begin{itemize}
 	\item Ett par bitar för addressen till dörren i fråga.
@@ -57,7 +60,14 @@ I datadelen av meddelande för rörelsesensorlarm borde det finnas:
 	\item En bit per sensor för avaktivering av pågående larm.
 	\item En bit per enhet för aktivering av automatisk översändning av “Skicka larm och mätvärden” meddelanden. Detta kommer användas vid konfiguration av avståndsgivare.
 \end{itemize}
+\todo[inline]{Beskrivningen av detta meddelandet är inte klar}
 
-\section*{Todo}
-\label{sec:todo}
-Borde man ha olika meddelandetyper för “Skicka larm” beroende på vilken enhetstyp det rör sig om?
+
+\textbf{Tilldelning av ID} \\
+Detta meddelande används då centralenheten tilldelar en periferienhet dess ID. I datafältet skickas ett slumptal som perferienheten använder som identifiering under tilldelingen av ID. Detta meddelande skickas bara då centralenheten är i konfigurationsläge.
+\todo[inline]{Beskrivningen av detta meddelandet är inte klar}
+
+
+\textbf{ID begäran} \\
+Detta meddelande skickas som en begäran av ID. I datafältet
+\todo[inline]{Beskrivningen av detta meddelandet är inte klar}
