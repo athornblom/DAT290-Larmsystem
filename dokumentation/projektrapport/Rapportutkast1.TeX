@@ -51,10 +51,18 @@ x antal dörrar per kort, utrustat med rörelsesensorer, alla korten uppkopplade
 \subsection{Teknisk bakgrund Filip}
 \subsection{Systemöversikt Ben}
 \subsection{Delsystem }
-\subsubsection{Centralenheten }
+\subsubsection{Centralenheten Effektgubben}
+%\label{subsec:centralenhet}
+Centralenheten är den enhet som styr och håller koll på övriga enheter. Inställningar görs via USART, varpå de vidarebefordras till rätt periferienhet via CAN (se \ref{can}). För att kunna adressera olika periferienheter måste centralenheten tilldela dessa varsitt unikt id. Detta görs genom att varje enhet som saknar id skickar en förfrågan via CAN. När centralenheten tar emot en sådan förfrågan från en periferienhet, skickar den tillbaka det lägsta lediga id:t och skapar en ny instans av en strukt som representerar periferienheten med följande värden:
+\begin{itemize}
+    \item uint8\_t id: Används för att addressera meddelanden till samt identifiera meddelanden från enheten.
+    \item uint8\_t num\_of\_doors: Används för dörrenheter för att ange antal dörrar.
+    \item uint32\_t dist\_threshold: Anger det största mätvärdet på avståndssensorn för vilket larmet ska triggas på en rörelseenhet.
+\end{itemize}
 \subsubsection{Dörrenheten}
 \subsubsection{Rörelsesensorn}
-\subsection{CAN kommunikation}
+\subsection{CAN-kommunikation}
+\label{can}
 Nedan finns dokumentationen av protokollet som tagits fram för kommunikationen mellan enheterna. Därefter följer en beskrivning av hur kommunikationen har implementerats.
 \subsubsection{Protokoll}
 \input{../protokoll/protokollInput.tex}

@@ -9,5 +9,74 @@
 
 \begin{document}
 \pagenumbering{arabic}
-\input{protokollInput.tex}
+
+\section*{Grundidé}
+\label{sec:grundide}
+
+Centralenheten sparar all status och datainformation, denna information kopieras regelbundet till perferienheterna via konfigureringsmeddelanden. Centralenheten har 2 lägen.
+
+\begin{enumerate}
+	\item Standard running. Här lyssnar man på larm från periferienheterna. Dessutom skickar man regelbundet  konfigurationen för anslutna dörrar och sensorer. Periferienheten svarar ok, om den inte svarar efter ett antal meddelande larmar man.
+	\item Vid uppstart är centralenheten i konfigurationsläge. Nu kan man via USART konfigurera anslutna dörrlarmsenheter samt lörelselarm.
+\end{enumerate}
+
+Varje perferienhet förväntas ha en unik fysisk adress som kommer användas vid tilldelning av ID adresser. Likt fysiska MAC adresser och logiska IP adresser i ethernet.
+
+\section*{Bitfördelning i identifieringsdelen av meddelandet}
+\label{sec:bitfördelning}
+
+Totalt 11 bitar (Utan att utöka med 18 bitar till)
+\begin{description}
+	\item{0-2:} Första bitarna är meddelandetyp. 3 bitar dvs 8 meddelandetyper.
+	\item{3:} en bit för riktning. Från/till centralenheten. Kan ses som en 4e bit i meddelandetypen.
+	\item{4-10:} 7 bitar:
+		Om riktning är till centralenheten är bitarna sändarens ID.
+		Om riktningen är från centralenheten beskriver bitarna mottagarens ID.
+		Innan enheten har en egen ID används bara ettor.
+\end{description}
+
+
+\section*{Meddelandetyper lista}
+\label{sec:meddelandetyper}
+
+\begin{table}[H]
+	\begin{tabular}{|c|l|p{2.6cm}|p{6cm}|}
+		\hline
+		N& Riktning & Meddelandenamn & Beskrivning \\ \hline \hline
+		0 & p -> c & Ack & Acknowledgement för senaste meddelandet. \\ \hline
+		1 & p -> c & Skicka larm & Talar för centralenheten om någon dörr eller sensor larmar. \\ \hline
+		3 & Båda & Skicka konfiguration & Skickar konfiguration till periferienheten kontinuerligt. Fungerar även som ping. Perferienheterna skickar sina konfigurationener i andra riktingen vid uppstart. Rörelselarmet har mätvärden i denna typ av meddelande. \\ \hline
+		4 & c -> p & Tilldelning av ID & Centralenheten tilldelar en periferienhet dess ID. Enheten identifieras med dess fysiska adress i meddelandet. Detta meddelande skickas bara då centralenheten är i konfigurationsläge (läge  2). \\ \hline
+		5 & p -> c & Ny enhet här & Centralenheten tilldelar en periferienhet dess ID. Enheten identifieras med dess fysiska adress i meddelandet. Detta meddelande skickas bara då centralenheten är i konfigurationsläge (läge  2). \\ \hline
+	\end{tabular}
+	\label{tab:meddelandetyper}
+\end{table}
+
+\section*{Detaljinformation angående meddelandetyperna}
+\label{sec:detaljinfo}
+\textbf{Skicka konfiguration} \\
+I datadelen av meddelande för dörrlarm borde det finnas:
+\begin{itemize}
+	\item Ett par bitar för addressen till dörren i fråga.
+	\item En aktiveringsbit per dörr.
+	\item En bit per dörr för avaktivering av pågående larm.
+	\item Ett par bitar för varje tidsfördröjning.
+\end{itemize}
+
+I datadelen av meddelande för rörelsesensorlarm borde det finnas:
+\begin{itemize}
+	\item En aktiveringsbit per sensor
+	\item En bit per sensor för avaktivering av pågående larm.
+	\item En bit per enhet för aktivering av automatisk översändning av “Skicka larm och mätvärden” meddelanden. Detta kommer användas vid konfiguration av avståndsgivare.
+\end{itemize}
+
+\section*{Todo}
+\label{sec:todo}
+Borde man ha olika meddelandetyper för “Skicka larm” beroende på vilken enhetstyp det rör sig om?
+
+
+
+%För referenser
+%\bibliographystyle{IEEEtran}
+%\bibliography{referenser}
 \end{document}
