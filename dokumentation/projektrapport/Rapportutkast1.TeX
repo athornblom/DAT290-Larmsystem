@@ -51,14 +51,21 @@ x antal dörrar per kort, utrustat med rörelsesensorer, alla korten uppkopplade
 \subsection{Teknisk bakgrund Filip}
 \subsection{Systemöversikt Ben}
 \subsection{Delsystem }
-\subsubsection{Centralenheten Effektgubben}
+\subsubsection{Centralenheten}
 %\label{subsec:centralenhet}
-Centralenheten är den enhet som styr och håller koll på övriga enheter. Inställningar görs via USART, varpå de vidarebefordras till rätt periferienhet via CAN (se \ref{can}). För att kunna adressera olika periferienheter måste centralenheten tilldela dessa varsitt unikt id. Detta görs genom att varje enhet som saknar id skickar en förfrågan via CAN. När centralenheten tar emot en sådan förfrågan från en periferienhet, skickar den tillbaka det lägsta lediga id:t och skapar en ny instans av en strukt som representerar periferienheten med följande värden:
-\begin{itemize}
-    \item uint8\_t id: Används för att addressera meddelanden till samt identifiera meddelanden från enheten.
-    \item uint8\_t num\_of\_doors: Används för dörrenheter för att ange antal dörrar.
-    \item uint32\_t dist\_threshold: Anger det största mätvärdet på avståndssensorn för vilket larmet ska triggas på en rörelseenhet.
-\end{itemize}
+Centralenheten är den enhet som styr och håller koll på övriga enheter. Inställningar görs via USART, varpå de vidarebefordras till rätt periferienhet via CAN (se \ref{can}). För att kunna adressera olika periferienheter måste centralenheten tilldela dessa varsitt unikt id. Detta görs genom att varje enhet som saknar id skickar en förfrågan via CAN. När centralenheten tar emot en sådan förfrågan från en periferienhet, skickar den tillbaka det lägsta lediga id:t och skapar en ny instans av en struktur som representerar periferienheten och lägger den i en lista. Strukturen innehåller enhetens id och konfiguration (d.v.s. tider för varje dörr för dörrenheter respektive avstånd för varje avståndssensor och antal vibrationssensorer för rörelseenheter). Id:t används för att addressera meddelanden till samt identifiera meddelanden från enheten. Det är också periferienhetens index i centralenhetens lista, vilket innebär att det är oerhört effektivt att hitta rätt enhet i listan när dess id har lästs i CAN-meddelandet.
+
+
+
+Centralenheten har fölajnde två lägen:
+
+\begin{enumerate}
+    \item Standardläge: Enheten väntar på larm-meddelanden från periferienheterna eller användarinput via USART. Dessutom skickar den regelbundet  konfigurationen för anslutna dörrar och sensorer. Periferienheten bekräftar konfigurationen. Om den inte svarar efter ett antal meddelanden går larmet.
+	\item Konfigurationsläge: Enheten startar i detta läge. Här kan användaren konfigurera anslutna dörr- och rörelseenheter via USART. Användaren kan sätta centralenheten i detta läge via USART för att lägga till eller konfigurera periferienheter.
+\end{enumerate}
+
+Varje perferienhet förväntas ha en unik fysisk adress som kommer användas vid tilldelning av ID adresser. Likt fysiska MAC adresser och logiska IP adresser i ethernet.
+
 \subsubsection{Dörrenheten}
 \subsubsection{Rörelsesensorn}
 \subsection{CAN-kommunikation}
