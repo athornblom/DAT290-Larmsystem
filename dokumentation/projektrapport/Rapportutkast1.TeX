@@ -60,6 +60,14 @@ x antal dörrar per kort, utrustat med rörelsesensorer, alla korten
 
 \subsection{Arbetsmetod} % svarar på frågan "hur har vi gått tillväga i det tekniska utvecklingsarbetet"?
 \subsubsection{Subgrupper Erik}
+För att förhindra stockning i projektet har projektgruppen delats in i tre tvåmanna grupper, en för varje periferienhet, då parallellt arbete ansågs effektivare.
+
+\textbf{Centralenheten}: Teamet består av Josef och Filip. Målet är att kunna styra alla de andra periferienheterna från centralenheten samt implementera CAN-bussen.
+
+\textbf{Dörrenheten}: Arbetslaget består av Adam och Gustav. Dörrenheten ansvarar för att alla dörrar skall vara uppkopplade och larmade.
+
+\textbf{Rörelseenheten}: Gruppen utgörs av Erik och Ben. Syftet är att koppla upp rörelse- och vibrationssensorer vid till exempelvis fönster eller värdefulla föremål.
+
 \subsubsection{Kommunikation Gustav}
 Under projekets gång har arbetsgruppens medlemmar skött den icke-muntliga 
 interna kommunikationen via en gemensam Messenger-chatt. 
@@ -139,7 +147,14 @@ Vid uppstart detekterar och initierar dörrenheten automatiskt alla dörrar som
 är stängda och förutsätter att ingen dörr som ska vara aktiv är
 öppen. Vid initieringen så ger Dörrenheten varje dörr en hårdkodad
 standard konfiguaration som sedan centralenhet kan ändra. 
-\subsubsection{Rörelsesensorn}
+\subsubsection{Rörelseenheten}
+Denna periferienhet använder rörelsesensorer, av modellen HC-SR04, och vibrationssensorer, av modellen SW-18010P, som styrs av ett MD407-kort. 
+Vid uppstart av systemet skall alla inkopplade sensorer fördelas ett id som säger vilken sorts sensor det är och numrerar dem.
+
+\textbf{Rörelsesensorn}: Aktiveras genom att MD407-kortet skickar en hög puls till sensorn i minst 10 mikrosekunder, sedan skickar sensorn ut ultraljudsvågor och skickar ut en hög puls, tills ultraljdsvågorna kommer tillbaks,  till MD407-kortet där avståndet till närmaste föremål beräknas genom att mäta längden på pulsen. HC-SR04 kan mäta avstånd upp till 400cm och larmavståndet är justerbart från centralenheten.
+
+\textbf{Vibrationssensorn}: När sensorn känner av vibrationer skickar den en hög puls till MD407-kortet. Sensorns känslighet justeras fysiskt genom en komparator på sensorn.
+
 \subsection{CAN-kommunikation}
 \label{can}
 Nedan finns dokumentationen av protokollet som tagits fram för 
