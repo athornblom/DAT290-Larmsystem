@@ -16,3 +16,10 @@
 **/*.log
 **/Debug/*
 **/.codelite/*
+*.dass
+*.dass
+*.elf
+*.s19
+*.o
+*.mk
+*.s

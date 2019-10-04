@@ -4,35 +4,94 @@
 #include "stm32f4xx_rcc.h"
 #include "stm32f4xx_gpio.h"
 
+#define	CAN1_IRQ_VECTOR		(0x2001C000+0x90)
+#define __CAN_IRQ_PRIORITY		2
+
+typedef struct {
+    void (*handler)(CanRxMsg *);
+    FunctionalState state;
+} CANFilterHandler;
+
+//Filter handler lista, längd 14 för att vi max kan ha 14 olika
+//filter för mottagning av can-meddelanden. Iaf om man använder "Mask mode"
+#define HANDLERLISTSIZE 14
+CANFilterHandler handlerList[HANDLERLISTSIZE];
+
+//Kollar om det finns plats i handlerList
+//Returnerar 1 om det finns plats, 0 annars
+uint8_t CANhandlerListNotFull(void){
+    for (uint8_t index = 0; index < HANDLERLISTSIZE; index++){
+            if (handlerList[index].state == DISABLE){
+                return 1;
+            }
+    }
+    return 0;
+}
+
+//Lägger till en CANFilterHandler, returnerar index för newFilter i handlerList
+//Kolla att det finns plats i handlerList innan med handlerListNotFull();
+uint8_t CANaddFilterHandler(void (*newHandler)(CanRxMsg *), CANFilter *filter, CANFilter *mask){
+    for (uint8_t index = 0; index < HANDLERLISTSIZE; index++){
+        if (handlerList[index].state == DISABLE){
+            handlerList[index].state = ENABLE;
+            handlerList[index].handler = newHandler;
+
+            //Union för omvandling mellan CANFilter och uint16_t
+            filterUnion unionFilter, unionMask;
+            unionFilter.filter = *filter;
+            unionMask.filter = *mask;
+
+            /* CAN filter init */
+            CAN_FilterInitTypeDef CAN_FilterInitStructure;
+            CAN_FilterInitStructure.CAN_FilterNumber = index;
+            CAN_FilterInitStructure.CAN_FilterMode = CAN_FilterMode_IdMask;
+            CAN_FilterInitStructure.CAN_FilterScale = CAN_FilterScale_32bit;
+            CAN_FilterInitStructure.CAN_FilterIdHigh = unionFilter.u16bits[1];
+            CAN_FilterInitStructure.CAN_FilterIdLow = unionFilter.u16bits[0];
+            CAN_FilterInitStructure.CAN_FilterMaskIdHigh = unionMask.u16bits[1];
+            CAN_FilterInitStructure.CAN_FilterMaskIdLow = unionMask.u16bits[0];
+            CAN_FilterInitStructure.CAN_FilterFIFOAssignment = 0;
+            CAN_FilterInitStructure.CAN_FilterActivation = ENABLE;
+            CAN_FilterInit(&CAN_FilterInitStructure);
+
+            return index;
+        }
+    }
+
+    //Detta händer bara om man inte kollat så det finns plats innan kulle man avaktivera
+    //filter med denna index så händer ingenting se CANdisableFilterHandler.
+    return HANDLERLISTSIZE;
+}
+
+//Avaktiverar CANFilterHandler med index index från handlerList
+void CANdisableFilterHandler(uint8_t index){
+    if (index < HANDLERLISTSIZE){
+        handlerList[index].state = DISABLE;
+
+        //Avaktiverar filtret
+        CAN_FilterInitTypeDef CAN_FilterInitStructure;
+        CAN_FilterInitStructure.CAN_FilterNumber = index;
+        CAN_FilterInitStructure.CAN_FilterFIFOAssignment = 0;
+        CAN_FilterInitStructure.CAN_FilterActivation = DISABLE;
+        CAN_FilterInit(&CAN_FilterInitStructure);
+    }
+}
 
 uint8_t send_can_message(CanTxMsg *msg){
 	return CAN_Transmit(CAN1, msg);
 }
 
 void can_irq_handler(void){
-    //TODO REMOVE
-    USARTPrint("In irq handler*");
-    
     if(CAN_GetITStatus(CAN1, CAN_IT_FMP0)) {
         if (CAN_MessagePending(CAN1, CAN_FIFO0)) {
             CanRxMsg rxMsg;
             CAN_Receive(CAN1, CAN_FIFO0, &rxMsg);
-            //TODO hantera meddelandet
-            
-            //För enkelt test TODO REMOVE
-            if (rxMsg.IDE == CAN_Id_Standard){ //standard meddelande
-                USARTPrint("StdId ");
-                USARTPrintNum((uint32_t)rxMsg.StdId & 0x7FF);
-            } else if (rxMsg.IDE == CAN_Id_Extended){
-                USARTPrint("ExtId ");
-                USARTPrintNum(rxMsg.ExtId & 0x1FFFFFFF);
-            } else {
-                USARTPrint("unknown IDE");
+
+            if (rxMsg.FMI < HANDLERLISTSIZE){
+                if (handlerList[rxMsg.FMI].state == ENABLE){
+                    handlerList[rxMsg.FMI].handler(&rxMsg);
+                }
             }
-            USARTPrint("*Data ");
-            USARTPrintNum((rxMsg.Data[0]));
-            USARTPrint("**");
-            
         }
     }
 }
@@ -40,7 +99,6 @@ void can_irq_handler(void){
 uint8_t can_init() {
 	CAN_InitTypeDef CAN_InitStructure;
 	NVIC_InitTypeDef NVIC_InitStructure;
-	CAN_FilterInitTypeDef CAN_FilterInitStructure;
 	GPIO_InitTypeDef GPIO_InitStructure;
 
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_CAN1, ENABLE);
@@ -95,18 +153,6 @@ uint8_t can_init() {
 	 
 	/* CAN register init */
 	CAN_DeInit(CAN1);
-
-	/* CAN filter init */
-	CAN_FilterInitStructure.CAN_FilterNumber = 0;
-	CAN_FilterInitStructure.CAN_FilterMode = CAN_FilterMode_IdMask;
-	CAN_FilterInitStructure.CAN_FilterScale = CAN_FilterScale_32bit;
-	CAN_FilterInitStructure.CAN_FilterIdHigh = 0x0000;
-	CAN_FilterInitStructure.CAN_FilterIdLow = 0x0000;
-	CAN_FilterInitStructure.CAN_FilterMaskIdHigh = 0x0000;
-	CAN_FilterInitStructure.CAN_FilterMaskIdLow = 0x0000;
-	CAN_FilterInitStructure.CAN_FilterFIFOAssignment = 0;
-	CAN_FilterInitStructure.CAN_FilterActivation = ENABLE;
-	CAN_FilterInit(&CAN_FilterInitStructure);
 	
 	/* CAN cell init */
 	CAN_InitStructure.CAN_TTCM = DISABLE; // time-triggered communication mode = DISABLED
@@ -121,9 +167,14 @@ uint8_t can_init() {
 	CAN_InitStructure.CAN_BS1 = CAN_BS1_3tq;
 	CAN_InitStructure.CAN_BS2 = CAN_BS2_4tq;
 	CAN_InitStructure.CAN_Prescaler = 7;
-	
+
+    //Avaktiverar alla filter
+    for (uint8_t index = 0; index < HANDLERLISTSIZE; index++){
+        CANdisableFilterHandler(index);
+    }
+
 	uint8_t can_init_status = CAN_Init(CAN1, &CAN_InitStructure);
-	
+
 	*((void (**)(void) ) CAN1_IRQ_VECTOR ) = can_irq_handler;
 	// We need the following function because it's not equivalent to what NVIC_Init does with respect
 	// to IRQ priority. Which seems bananas to me...
@@ -155,23 +206,47 @@ uint8_t handle_door_time_msg(CanRxMsg *msg) {
     //TODO: Gör grejer med tiderna
 }
 
-
+uint8_t encode_request_id(CanTxMsg *msg, uint32_t temp_id){
+    uint8_t *data_pointer =  &(msg->Data);
+    
+    msg->StdId = 5;
+    msg->DLC = 4;
+    
+    msg->IDE = CAN_Id_Standard; //Alternativen är CAN_Id_Standard eller FCAN_Id_Extended
+    msg->RTR = CAN_RTR_Data;
+    
+    //Id skrivs in i bytearrayen för data
+    *data_pointer = temp_id;
+}
 
 uint8_t encode_assign_id(CanTxMsg *msg, uint16_t id){
     uint8_t *data_pointer =  &(msg->Data);
     
-    msg->DLC = 2;
+    msg->StdId = 4;
+    msg->DLC = 4;
+    
+    msg->IDE = CAN_Id_Standard; //Alternativen är CAN_Id_Standard eller FCAN_Id_Extended
+    msg->RTR = CAN_RTR_Data;
     
     //Id skrivs in i bytearrayen för data
     *data_pointer = id;
 }
 
+uint8_t handle_recieve_id_msg(CanRxMsg *msg) {
+    uint16_t id;
+    uint8_t *data_pointer =  &(msg->Data);
+    
+    id = *data_pointer;
+    
+    //TODO: Gör grejer med id
+}
 
 uint8_t encode_distance_config(CanTxMsg *msg, uint32_t dist){
     uint8_t *data_pointer =  &(msg->Data);
     
     msg->DLC = 4;
     
-    //Id skrivs in i bytearrayen för data
+    //Avstånd skrivs in i bytearrayen för data
     *data_pointer = dist;
 }
+

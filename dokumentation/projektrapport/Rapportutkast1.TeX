@@ -1,0 +1,174 @@
+\documentclass{article}
+\usepackage[swedish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{float}
+\usepackage{parskip}
+\usepackage{todonotes}
+
+\title{Rapportutkast1}
+\author{Grupp 13}
+\date{Läsperiod 1, HT-2019}
+
+% I utvärderingen granskas hur väl studenterna i sina rapporter har lyckats visa att de genom de teknikutvärderingar, konstruktionsval, tester och analys som de har gjort har förstått de problem de har ställts inför, samt hur de på basis av denna förståelse och utifrån rådande förutsättningar har lyckats agera för att lösa dessa problem.
+
+% Kriterierna är läsarorienterade vilket innebär att de ska bedöma en utomstående läsaresmöjligheter att förstå rapporten. Rapporten ska först och främst ses som ett dokument vars läsare finns inom organisationen där arbetet sker,men det ska kunna läsas och förstås av personer som inte har jobbat med och därför inte är insatta i projektet, exempelvis en nyanställd som inte känner till projektet och dess bakgrund, en anställd i en annan organisation med liknande verksamhet eller en ingenjörsstudent inom datateknik som har gått en liknande utbildning på en annanhögskola.
+
+% En bakåtsyftande projektrapport: “Rapporten beskriver utvecklingen av…”
+
+
+
+
+\begin{document}
+
+%Titelsida
+\maketitle
+\pagenumbering{gobble}
+\newpage
+
+\tableofcontents
+\newpage
+
+\pagenumbering{arabic}
+
+
+\section{Introduktion}
+\subsection{Syfte} % Svarar på fårgan "Varför"?
+Rapporten syfte är att beskriva utvecklingen av ett larm- och
+ låssystem som i grunden består av ARM-baserade MD407-datorer
+  som exekverar kod skriven i programmeringsspråket C.
+
+Systemets uppgift är att öka säkerheten och översikten av
+ användarens lokaler, genom att möjliggöra för 
+ datarepresentationer av önskade dörrar. Användaren 
+ kan sedan använda dessa representationer för att konfiguera 
+ individuella dörrar efter unika behov, där exempel på 
+ konfigurationsalternativ är uppställningstid innan larm,
+  eller upplåsningskod. 
+
+Systemet tillåter även hårdvarumässiga utökningar av 
+rörelse- och/eller vibrationssensorer.
+
+Användning av systemet förutsätter ingen speciell 
+teknisk expertis.
+
+
+\subsection{Mål} % Svarar på frågan "Vad"?
+x antal dörrar per kort, utrustat med rörelsesensorer, alla korten
+ uppkopplade till ett centralsystem.
+% I detta avsnitt beskrivs koncist samtliga övergripande tekniska mål med projektet, det vill säga, vad som ska konstrueras. De mål som anges här kommer att styra projektets utveckling. När projektet närmar sig sitt slut och den slutliga projektrapporten lämnas in kommer beställaren att kritiskt analysera hur väl projektet lyckats genom att jämföra planens mål med den tekniska konstruktion som redovisas i projektrapporten.
+
+\subsection{Arbetsmetod} % svarar på frågan "hur har vi gått tillväga i det tekniska utvecklingsarbetet"?
+\subsubsection{Subgrupper Erik}
+\subsubsection{Kommunikation Gustav}
+Under projekets gång har arbetsgruppens medlemmar skött den icke-muntliga 
+interna kommunikationen via en gemensam Messenger-chatt. 
+I chatten har medlemmarna kunnat ställa projektrelaterade 
+frågor till varandra, men det har även fungerat som verktyg
+ för medlemmarna att uppdatera varandra om när/var/hur de 
+ arbetar samt kommande mötestider.
+\subsubsection{Möten och arbetstid Adam}
+Projektgruppen har haft ett Möte med handledare varje vecka, där
+gruppen har gått igenom vad som gjorts sen senaste mötet och hur
+mycket tid man har lagt ner. Samt så har eventuella förändringar
+diskuterats på dessa möten men stöd ifrån handledare.
+
+Projektgruppen har även haft två bestämda arbetstillfällen varje
+vecka där det flesta medlemmar har närvarat. 
+
+utöver de bestämda arbetspassen har även gruppen suttit och 
+jobbat i sina subgrupper på lite mer spontana arbetspass. Under
+dessa tillfällen har subgrupperna även kunnat tagit hjälp av 
+andra subgrupper då gruppen har suttit i labbsalen.
+
+Varje gruppmedlem har även lagt tid utanför dedikerad arbetstid.  
+
+\subsubsection{Fildelning och versionshantering Gustav - kan behöva hjälp git e svårt}
+
+
+\section{Teknisk beskrivning} % Vad är utgångspunkten för i förkonstruktionsarbetet?
+\subsection{Teknisk bakgrund Filip}
+\subsection{Systemöversikt Ben}
+\subsection{Delsystem }
+\subsubsection{Centralenheten}
+%\label{subsec:centralenhet}
+Centralenheten är den enhet som styr och håller koll på övriga enheter.
+ Inställningar görs via USART, varpå de vidarebefordras till rätt
+  periferienhet via CAN (se \ref{can}). 
+
+Centralenheten har följande två lägen:
+
+\begin{enumerate}
+    \item Standardläge: Enheten väntar på larm-meddelanden från 
+    periferienheterna eller användarinput via USART. Dessutom 
+    skickar den regelbundet  konfigurationen för anslutna 
+    dörrar och sensorer till periferienheterna, som förväntas 
+    bekräfta konfigurationen. Om en enhet inte svarar efter 
+    ett antal meddelanden går larmet.
+    \item Konfigurationsläge: Enheten startar i detta läge.
+     Här kan användaren konfigurera anslutna dörr- och 
+     rörelseenheter via USART. Användaren kan sätta centralenheten
+      i detta läge via USART för att lägga till eller konfigurera
+       periferienheter.
+\end{enumerate}
+
+För att kunna adressera olika periferienheter måste centralenheten 
+tilldela dessa varsitt unikt id. Detta görs i konfigurationsläget
+genom att varje enhet som saknar id skickar en förfrågan via CAN.
+När centralenheten tar emot en sådan förfrågan från en periferienhet, 
+skickar den tillbaka det lägsta lediga id:t och skapar en ny instans
+av en struktur som representerar periferienheten och lägger den i en
+lista. Strukturen innehåller enhetens id och konfiguration (d.v.s.
+tider för varje dörr för dörrenheter respektive avstånd för varje
+avståndssensor och antal vibrationssensorer för rörelseenheter). 
+Id:t används för att addressera meddelanden till samt identifiera 
+meddelanden från enheten. Det är också periferienhetens index i 
+centralenhetens lista, vilket innebär att det är oerhört effektivt
+att hitta rätt enhet i listan när dess id har lästs i CAN-meddelandet.
+
+
+
+
+
+\subsubsection{Dörrenheten}
+%\label{subsec:Dörrenheten}
+Dörrenheten är en fristående enhet som kan köras i lokaldrift
+men ska för bäst effekt köras uppkopplad mot centralenheten.
+
+Vid uppstart detekterar och initierar dörrenheten automatiskt alla dörrar som
+är stängda och förutsätter att ingen dörr som ska vara aktiv är
+öppen. Vid initieringen så ger Dörrenheten varje dörr en hårdkodad
+standard konfiguaration som sedan centralenhet kan ändra. 
+\subsubsection{Rörelsesensorn}
+\subsection{CAN-kommunikation}
+\label{can}
+Nedan finns dokumentationen av protokollet som tagits fram för 
+kommunikationen mellan enheterna. Därefter följer en beskrivning 
+av hur kommunikationen har implementerats.
+\subsubsection{Protokoll}
+\input{../protokoll/protokollInput.tex}
+\subsubsection{Implementation}
+% Användarhandledning?
+
+\section{Metoder}
+\subsection{Verifikation not done}
+\todo[inline]{Har inte utfört några tester}
+\subsection{Programbibliotek}
+För att minska arbetet har programbiblioteket STM32[infoga Referens finns i inc mappen]
+användts. 
+STM32 programbiblioteket har används vid initieringar av tex GPIO-portar, Systick med mera.
+
+\section{Resultat och diskussion} % Kan dela upp dessa om vi vill.
+% Detta avsnitt redovisar resultatet av genomförd verifirering av systemet; dels fördelarna, dels för komplett system. Detta avsnitt redovisar även resultatet av det slutgiltiga fysiska testet när hela systemet körs i skarpt läge. Ni ska främst redovisa resultat i form av funktionalitet, men ta ocks upp prestanda aspekter om dessa är viktiga. Diskutea hur väl ni lyckats med er slutprodukt i förhållande till er projektplan.
+\todo[inline]{Vi har inget resultat än}
+\section{Slutsats}
+% Detta avsnitt innehåller en sammanfattning av konstruktionen och en diskussion av resultatet. Om detta är möjligt, dra slutsatser av ert projekt och identifiera förbättringsmöjligheter. (Vilka kan vara användbara för en beställare)
+\todo[inline]{Vi har inget slutsats än}
+\section{Referenser lägg in när det böhövs}
+% Referenser enligtIEEE.
+
+% Avslutningsvis så vill vi påminna om att projektets slutrapport, precis som projektplanen, ska vara projektintern, det väl säga att den ska beskriva det tekniska utvecklingsarbetet och bortse från att projektarbetet faktiskt organiserats inom ramen för en kurs.
+
+\section{Bilagor}
+
+\end{document}

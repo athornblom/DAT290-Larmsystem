@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<CodeLite_Project Name="Centralenhet" Version="10.0.0" InternalType="User templates">
+<CodeLite_Project Name="Lyssnare" Version="10.0.0" InternalType="User templates">
   <Plugins>
     <Plugin Name="qmake">
       <![CDATA[00010001N0005Debug000000000000]]>
@@ -19,25 +19,21 @@
   </Plugins>
   <Description/>
   <Dependencies/>
-  <VirtualDirectory Name="resources">
-    <File Name="md407-ram.x"/>
-  </VirtualDirectory>
   <VirtualDirectory Name="src">
-    <File Name="../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_gpio.c"/>
-    <File Name="../lib/USARTDebug.h"/>
+    <File Name="../lib/CAN.h"/>
     <File Name="../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_usart.c"/>
     <File Name="../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c"/>
-    <File Name="../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx.h"/>
-    <File Name="startup.c"/>
-    <File Name="../lib/buffer.h"/>
-    <File Name="../lib/buffer.c"/>
-    <File Name="../lib/USART.h"/>
-    <File Name="../lib/USART.c"/>
-    <File Name="../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_can.h"/>
+    <File Name="../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_gpio.c"/>
     <File Name="../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_can.c"/>
     <File Name="../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/misc.c"/>
-    <File Name="../lib/CAN.h"/>
+    <File Name="../lib/USART.c"/>
+    <File Name="../lib/delay.c"/>
     <File Name="../lib/CAN.c"/>
+    <File Name="../lib/buffer.c"/>
+    <File Name="startup.c"/>
+  </VirtualDirectory>
+  <VirtualDirectory Name="resources">
+    <File Name="md407-ram.x"/>
   </VirtualDirectory>
   <Settings Type="Executable">
     <GlobalSettings>
@@ -50,7 +46,7 @@
       <ResourceCompiler Options=""/>
     </GlobalSettings>
     <Configuration Name="Debug" CompilerType="Cross GCC ( arm-none-eabi )" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-g;-O0;-W" C_Options="-Wa,-adhln=test.s;-g;-O0;-w;-mthumb -march=armv6-m  -mfloat-abi=soft;-std=c99;-mthumb;-march=armv6-m" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="0">
+      <Compiler Options="-g;-O0;-W" C_Options="-Wa,-adhln=test.s;-g;-O0;-mthumb -march=armv6-m  -mfloat-abi=soft;-std=c99;-mthumb;-march=armv6-m" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="0">
         <IncludePath Value="."/>
         <IncludePath Value="../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/inc"/>
         <IncludePath Value="../lib/STM32F4_lib/CMSIS/Include"/>
