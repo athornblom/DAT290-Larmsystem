@@ -34,35 +34,53 @@
 
 \section{Introduktion}
 \subsection{Syfte} % Svarar på fårgan "Varför"?
-Rapporten syfte är att beskriva utvecklingen av ett larm- och låssystem som i grunden består av ARM-baserade MD407-datorer som exekverar kod skriven i programmeringsspråket C. \\
-Systemets uppgift är att öka säkerheten och översikten av användarens lokaler, genom att möjliggöra för datarepresentationer av önskade dörrar. Användaren kan sedan använda dessa representationer för att konfiguera individuella dörrar efter unika behov, där exempel på konfigurationsalternativ är uppställningstid innan larm, eller upplåsningskod. \\
-Systemet tillåter även hårdvarumässiga utökningar av rörelse- och/eller vibrationssensorer.
-\\
-Användning av systemet förutsätter ingen speciell teknisk expertis.
+Rapporten syfte är att beskriva utvecklingen av ett larm- och
+ låssystem som i grunden består av ARM-baserade MD407-datorer
+  som exekverar kod skriven i programmeringsspråket C.
+
+Systemets uppgift är att öka säkerheten och översikten av
+ användarens lokaler, genom att möjliggöra för 
+ datarepresentationer av önskade dörrar. Användaren 
+ kan sedan använda dessa representationer för att konfiguera 
+ individuella dörrar efter unika behov, där exempel på 
+ konfigurationsalternativ är uppställningstid innan larm,
+  eller upplåsningskod. 
+
+Systemet tillåter även hårdvarumässiga utökningar av 
+rörelse- och/eller vibrationssensorer.
+
+Användning av systemet förutsätter ingen speciell 
+teknisk expertis.
 
 
 \subsection{Mål} % Svarar på frågan "Vad"?
-x antal dörrar per kort, utrustat med rörelsesensorer, alla korten uppkopplade till ett centralsystem.
+x antal dörrar per kort, utrustat med rörelsesensorer, alla korten
+ uppkopplade till ett centralsystem.
 % I detta avsnitt beskrivs koncist samtliga övergripande tekniska mål med projektet, det vill säga, vad som ska konstrueras. De mål som anges här kommer att styra projektets utveckling. När projektet närmar sig sitt slut och den slutliga projektrapporten lämnas in kommer beställaren att kritiskt analysera hur väl projektet lyckats genom att jämföra planens mål med den tekniska konstruktion som redovisas i projektrapporten.
 
 \subsection{Arbetsmetod} % svarar på frågan "hur har vi gått tillväga i det tekniska utvecklingsarbetet"?
 \subsubsection{Subgrupper Erik}
 \subsubsection{Kommunikation Gustav}
-Under projekets gång har arbetsgruppens medlemmar skött den icke-muntliga interna kommunikationen 
-via en gemensam Messenger-chatt. I chatten har medlemmarna kunnat ställa projektrelaterade frågor till 
-varandra, men det har även fungerat som verktyg för medlemmarna att uppdatera varandra om när/var/hur de 
-arbetar samt kommande mötestider.
+Under projekets gång har arbetsgruppens medlemmar skött den icke-muntliga 
+interna kommunikationen via en gemensam Messenger-chatt. 
+I chatten har medlemmarna kunnat ställa projektrelaterade 
+frågor till varandra, men det har även fungerat som verktyg
+ för medlemmarna att uppdatera varandra om när/var/hur de 
+ arbetar samt kommande mötestider.
 \subsubsection{Möten och arbetstid Adam}
 Projektgruppen har haft ett Möte med handledare varje vecka, där
 gruppen har gått igenom vad som gjorts sen senaste mötet och hur
 mycket tid man har lagt ner. Samt så har eventuella förändringar
-diskuterats på dessa möten men stöd ifrån handledare.\\
+diskuterats på dessa möten men stöd ifrån handledare.
+
 Projektgruppen har även haft två bestämda arbetstillfällen varje
-vecka där det flesta medlemmar har närvarat. \\
+vecka där det flesta medlemmar har närvarat. 
+
 utöver de bestämda arbetspassen har även gruppen suttit och 
 jobbat i sina subgrupper på lite mer spontana arbetspass. Under
 dessa tillfällen har subgrupperna även kunnat tagit hjälp av 
-andra subgrupper då gruppen har suttit i labbsalen.\\
+andra subgrupper då gruppen har suttit i labbsalen.
+
 Varje gruppmedlem har även lagt tid utanför dedikerad arbetstid.  
 
 \subsubsection{Fildelning och versionshantering Gustav - kan behöva hjälp git e svårt}
@@ -76,16 +94,39 @@ på ett och samma ställe, så valde arbetsgruppen att använde sig av versionsh
 \subsection{Delsystem }
 \subsubsection{Centralenheten}
 %\label{subsec:centralenhet}
-Centralenheten är den enhet som styr och håller koll på övriga enheter. Inställningar görs via USART, varpå de vidarebefordras till rätt periferienhet via CAN (se \ref{can}). 
+Centralenheten är den enhet som styr och håller koll på övriga enheter.
+ Inställningar görs via USART, varpå de vidarebefordras till rätt
+  periferienhet via CAN (se \ref{can}). 
 
 Centralenheten har följande två lägen:
 
 \begin{enumerate}
-    \item Standardläge: Enheten väntar på larm-meddelanden från periferienheterna eller användarinput via USART. Dessutom skickar den regelbundet  konfigurationen för anslutna dörrar och sensorer till periferienheterna, som förväntas bekräfta konfigurationen. Om en enhet inte svarar efter ett antal meddelanden går larmet.
-    \item Konfigurationsläge: Enheten startar i detta läge. Här kan användaren konfigurera anslutna dörr- och rörelseenheter via USART. Användaren kan sätta centralenheten i detta läge via USART för att lägga till eller konfigurera periferienheter.
+    \item Standardläge: Enheten väntar på larm-meddelanden från 
+    periferienheterna eller användarinput via USART. Dessutom 
+    skickar den regelbundet  konfigurationen för anslutna 
+    dörrar och sensorer till periferienheterna, som förväntas 
+    bekräfta konfigurationen. Om en enhet inte svarar efter 
+    ett antal meddelanden går larmet.
+    \item Konfigurationsläge: Enheten startar i detta läge.
+     Här kan användaren konfigurera anslutna dörr- och 
+     rörelseenheter via USART. Användaren kan sätta centralenheten
+      i detta läge via USART för att lägga till eller konfigurera
+       periferienheter.
 \end{enumerate}
 
-För att kunna adressera olika periferienheter måste centralenheten tilldela dessa varsitt unikt id. Detta görs i konfigurationsläget genom att varje enhet som saknar id skickar en förfrågan via CAN. När centralenheten tar emot en sådan förfrågan från en periferienhet, skickar den tillbaka det lägsta lediga id:t och skapar en ny instans av en struktur som representerar periferienheten och lägger den i en lista. Strukturen innehåller enhetens id och konfiguration (d.v.s. tider för varje dörr för dörrenheter respektive avstånd för varje avståndssensor och antal vibrationssensorer för rörelseenheter). Id:t används för att addressera meddelanden till samt identifiera meddelanden från enheten. Det är också periferienhetens index i centralenhetens lista, vilket innebär att det är oerhört effektivt att hitta rätt enhet i listan när dess id har lästs i CAN-meddelandet.
+För att kunna adressera olika periferienheter måste centralenheten 
+tilldela dessa varsitt unikt id. Detta görs i konfigurationsläget
+genom att varje enhet som saknar id skickar en förfrågan via CAN.
+När centralenheten tar emot en sådan förfrågan från en periferienhet, 
+skickar den tillbaka det lägsta lediga id:t och skapar en ny instans
+av en struktur som representerar periferienheten och lägger den i en
+lista. Strukturen innehåller enhetens id och konfiguration (d.v.s.
+tider för varje dörr för dörrenheter respektive avstånd för varje
+avståndssensor och antal vibrationssensorer för rörelseenheter). 
+Id:t används för att addressera meddelanden till samt identifiera 
+meddelanden från enheten. Det är också periferienhetens index i 
+centralenhetens lista, vilket innebär att det är oerhört effektivt
+att hitta rätt enhet i listan när dess id har lästs i CAN-meddelandet.
 
 
 
@@ -94,7 +135,8 @@ För att kunna adressera olika periferienheter måste centralenheten tilldela de
 \subsubsection{Dörrenheten}
 %\label{subsec:Dörrenheten}
 Dörrenheten är en fristående enhet som kan köras i lokaldrift
-men ska för bäst effekt köras uppkopplad mot centralenheten.\\
+men ska för bäst effekt köras uppkopplad mot centralenheten.
+
 Vid uppstart detekterar och initierar dörrenheten automatiskt alla dörrar som
 är stängda och förutsätter att ingen dörr som ska vara aktiv är
 öppen. Vid initieringen så ger Dörrenheten varje dörr en hårdkodad
@@ -102,7 +144,9 @@ standard konfiguaration som sedan centralenhet kan ändra.
 \subsubsection{Rörelsesensorn}
 \subsection{CAN-kommunikation}
 \label{can}
-Nedan finns dokumentationen av protokollet som tagits fram för kommunikationen mellan enheterna. Därefter följer en beskrivning av hur kommunikationen har implementerats.
+Nedan finns dokumentationen av protokollet som tagits fram för 
+kommunikationen mellan enheterna. Därefter följer en beskrivning 
+av hur kommunikationen har implementerats.
 \subsubsection{Protokoll}
 \input{../protokoll/protokollInput.tex}
 \subsubsection{Implementation}
