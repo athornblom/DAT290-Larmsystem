@@ -134,13 +134,24 @@ att hitta rätt enhet i listan när dess id har lästs i CAN-meddelandet.
 
 \subsubsection{Dörrenheten}
 %\label{subsec:Dörrenheten}
-Dörrenheten är en fristående enhet som kan köras i lokaldrift
-men ska för bäst effekt köras uppkopplad mot centralenheten.
+Dörrenheten är en av systemets fristående enheter och kräve ett MD407-kort. Ett kort kan stötta x dörrar.
 
-Vid uppstart detekterar och initierar dörrenheten automatiskt alla dörrar som
-är stängda och förutsätter att ingen dörr som ska vara aktiv är
-öppen. Vid initieringen så ger Dörrenheten varje dörr en hårdkodad
-standard konfiguaration som sedan centralenhet kan ändra. 
+Vid systemuppstart deteketeras alla stängda dörrar som är kopplade till MD407-kortet. En C-struct kommer sedan initieras för varje dörr, denna structen fungerar som en datarepresentation för dörren. Denna datarepresentation är utrustat med följande värden:
+\begin{itemize}
+  \item {char id;}
+  \item {int controlbits;} 
+  \item \textbf{char time\textunderscore{}Larm;}
+  \item \textbf{char time\textunderscore{}Central\textunderscore{}Larm;}
+  \item \textbf{int password;}
+  \item int GPIO\textunderscore{}Lamp;
+  \item int GPIO\textunderscore{}Read;
+  \item int larmTick;
+\end{itemize}
+
+De fetmarkerade värdena är konfiguerbara för användaren, \textbf{time\textunderscore{}Larm} och \\ \textbf{time\textunderscore{}Central\textunderscore{}Larm} sätts med 10-sekunders intervall binärt med 8 bitar. Lösenordet \textbf{password} är 4 hexadecimala siffror som används för att låsa upp dörren på Keypaden.
+
+Dörrenheten kan köras i lokaldrift
+men ska för bäst effekt köras uppkopplad mot centralenheten.\\
 \subsubsection{Rörelsesensorn}
 \subsection{CAN-kommunikation}
 \label{can}
