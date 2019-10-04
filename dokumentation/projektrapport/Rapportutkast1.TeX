@@ -92,10 +92,14 @@ andra subgrupper då gruppen har suttit i labbsalen.
 Varje gruppmedlem har även lagt tid utanför dedikerad arbetstid.  
 
 \subsubsection{Fildelning och versionshantering Gustav - kan behöva hjälp git e svårt}
+För att förenkla det parallella programmerandet, och för att samla alla filer och dokument 
+på ett och samma ställe, så valde arbetsgruppen att använde sig av versionshanteringstjänsten GIT.
 
 
 \section{Teknisk beskrivning} % Vad är utgångspunkten för i förkonstruktionsarbetet?
-\subsection{Teknisk bakgrund Filip}
+\subsection{Teknisk bakgrund}
+Mjukvaran till Larmsystemet körs på 3 st MD407 kort, vilket är en 
+enkortsdator.
 \subsection{Systemöversikt Ben}
 \subsection{Delsystem }
 \subsubsection{Centralenheten}
@@ -140,13 +144,25 @@ att hitta rätt enhet i listan när dess id har lästs i CAN-meddelandet.
 
 \subsubsection{Dörrenheten}
 %\label{subsec:Dörrenheten}
-Dörrenheten är en fristående enhet som kan köras i lokaldrift
-men ska för bäst effekt köras uppkopplad mot centralenheten.
 
-Vid uppstart detekterar och initierar dörrenheten automatiskt alla dörrar som
-är stängda och förutsätter att ingen dörr som ska vara aktiv är
-öppen. Vid initieringen så ger Dörrenheten varje dörr en hårdkodad
-standard konfiguaration som sedan centralenhet kan ändra. 
+Dörrenheten är en av systemets fristående enheter och kräve ett MD407-kort. Ett kort kan stötta x dörrar.
+
+Vid systemuppstart deteketeras alla stängda dörrar som är kopplade till MD407-kortet. En C-struct kommer sedan initieras för varje dörr, denna structen fungerar som en datarepresentation för dörren. Denna datarepresentation är utrustat med följande värden:
+\begin{itemize}
+  \item {char id;}
+  \item {int controlbits;} 
+  \item \textbf{char time\textunderscore{}Larm;}
+  \item \textbf{char time\textunderscore{}Central\textunderscore{}Larm;}
+  \item \textbf{int password;}
+  \item int GPIO\textunderscore{}Lamp;
+  \item int GPIO\textunderscore{}Read;
+  \item int larmTick;
+\end{itemize}
+
+De fetmarkerade värdena är konfiguerbara för användaren, \textbf{time\textunderscore{}Larm} och \\ \textbf{time\textunderscore{}Central\textunderscore{}Larm} sätts med 10-sekunders intervall binärt med 8 bitar. Lösenordet \textbf{password} är 4 hexadecimala siffror som används för att låsa upp dörren på Keypaden.
+
+Dörrenheten kan köras i lokaldrift
+men ska för bäst effekt köras uppkopplad mot centralenheten.\\
 \subsubsection{Rörelseenheten}
 Denna periferienhet använder rörelsesensorer, av modellen HC-SR04, och vibrationssensorer, av modellen SW-18010P, som styrs av ett MD407-kort. 
 Vid uppstart av systemet skall alla inkopplade sensorer fördelas ett id som säger vilken sorts sensor det är och numrerar dem.
