@@ -20,6 +20,12 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/misc.c"/>
+    <File Name="../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_usart.c"/>
+    <File Name="../lib/buffer.c"/>
+    <File Name="../lib/USARTDebug.h"/>
+    <File Name="../lib/USART.h"/>
+    <File Name="../lib/USART.c"/>
     <File Name="main_rorelse.c"/>
     <File Name="../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_syscfg.h"/>
     <File Name="../lib/STM32F4_lib/CMSIS/Include/core_cm4.h"/>
@@ -49,6 +55,7 @@
         <IncludePath Value="../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/inc"/>
         <IncludePath Value="../lib/STM32F4_lib/CMSIS/include"/>
         <IncludePath Value="../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src"/>
+        <IncludePath Value="../lib"/>
       </Compiler>
       <Linker Options="-T$(ProjectPath)/md407-ram.x;-L$(ARM_V6LIB) -L$(ARM_GCC_V6LIB);-nostartfiles" Required="yes">
         <Library Value="gcc"/>
