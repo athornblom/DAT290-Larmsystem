@@ -2,6 +2,9 @@
 \usepackage[swedish]{babel}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
+
+%Lägger till Referenser i Innehållsförteckningen
+\usepackage[numbib]{tocbibind}
 \usepackage{float}
 \usepackage{parskip}
 \usepackage{todonotes}
@@ -179,13 +182,25 @@ av hur kommunikationen har implementerats.
 \subsubsection{Protokoll}
 \input{../protokoll/protokollInput.tex}
 \subsubsection{Implementation}
+För hantering av CAN meddelande har STM biblioteket (se \ref{stm}) använts för inledande initiering, hantering av avbrott samt för att skicka meddelande.
+Utöver detta har det skapats ett system för hantering av mottagana meddelanden.
+Detta har lösts med avbrott där hanteringsfunktionen paras ihop med filtret för tillhörande meddelande.
+Hanteringsfunktionen anropas sedan av avbrottsrutinen då ett medelande passerat filtret.
+Denna lösning har valts då de flesta meddelanden naturligt hanteras med en kort hanteringsfunktion som inte kräver input från användaren.
+
+Ett fall som är mer invecklat än en direkt hanteringsfunktion är vid konfiguration av avståndsgivare på rörelselarmet. I detta fall är krävs input från användaren... \todo[inline]{Här borde de}
+
+
+
+
 % Användarhandledning?
 
 \section{Metoder}
+\label{stm}
 \subsection{Verifikation not done}
 \todo[inline]{Har inte utfört några tester}
 \subsection{Programbibliotek}
-För att minska arbetet har programbiblioteket STM32[infoga Referens finns i inc mappen]
+För att minska arbetet har programbiblioteket STM32\cite{stm}
 användts. 
 STM32 programbiblioteket har används vid initieringar av tex GPIO-portar, Systick med mera.
 
@@ -195,8 +210,11 @@ STM32 programbiblioteket har används vid initieringar av tex GPIO-portar, Systi
 \section{Slutsats}
 % Detta avsnitt innehåller en sammanfattning av konstruktionen och en diskussion av resultatet. Om detta är möjligt, dra slutsatser av ert projekt och identifiera förbättringsmöjligheter. (Vilka kan vara användbara för en beställare)
 \todo[inline]{Vi har inget slutsats än}
-\section{Referenser lägg in när det böhövs}
+
 % Referenser enligtIEEE.
+%För referenser
+\bibliographystyle{IEEEtran}
+\bibliography{referenser}
 
 % Avslutningsvis så vill vi påminna om att projektets slutrapport, precis som projektplanen, ska vara projektintern, det väl säga att den ska beskriva det tekniska utvecklingsarbetet och bortse från att projektarbetet faktiskt organiserats inom ramen för en kurs.
 
