@@ -42,17 +42,17 @@ Rapporten syfte är att beskriva utvecklingen av ett larm- och
   som exekverar kod skriven i programmeringsspråket C.
 
 Systemets uppgift är att öka säkerheten och översikten av
- användarens lokaler, genom att möjliggöra för 
- datarepresentationer av önskade dörrar. Användaren 
- kan sedan använda dessa representationer för att konfiguera 
- individuella dörrar efter unika behov, där exempel på 
+ användarens lokaler, genom att möjliggöra för
+ datarepresentationer av önskade dörrar. Användaren
+ kan sedan använda dessa representationer för att konfiguera
+ individuella dörrar efter unika behov, där exempel på
  konfigurationsalternativ är uppställningstid innan larm,
-  eller upplåsningskod. 
+  eller upplåsningskod.
 
-Systemet tillåter även hårdvarumässiga utökningar av 
+Systemet tillåter även hårdvarumässiga utökningar av
 rörelse- och/eller vibrationssensorer.
 
-Användning av systemet förutsätter ingen speciell 
+Användning av systemet förutsätter ingen speciell
 teknisk expertis.
 
 
@@ -72,11 +72,11 @@ För att förhindra stockning i projektet har projektgruppen delats in i tre tv�
 \textbf{Rörelseenheten}: Gruppen utgörs av Erik och Ben. Syftet är att koppla upp rörelse- och vibrationssensorer vid till exempelvis fönster eller värdefulla föremål.
 
 \subsubsection{Kommunikation Gustav}
-Under projekets gång har arbetsgruppens medlemmar skött den icke-muntliga 
-interna kommunikationen via en gemensam Messenger-chatt. 
-I chatten har medlemmarna kunnat ställa projektrelaterade 
+Under projekets gång har arbetsgruppens medlemmar skött den icke-muntliga
+interna kommunikationen via en gemensam Messenger-chatt.
+I chatten har medlemmarna kunnat ställa projektrelaterade
 frågor till varandra, men det har även fungerat som verktyg
- för medlemmarna att uppdatera varandra om när/var/hur de 
+ för medlemmarna att uppdatera varandra om när/var/hur de
  arbetar samt kommande mötestider.
 \subsubsection{Möten och arbetstid Adam}
 Projektgruppen har haft ett Möte med handledare varje vecka, där
@@ -85,23 +85,23 @@ mycket tid man har lagt ner. Samt så har eventuella förändringar
 diskuterats på dessa möten men stöd ifrån handledare.
 
 Projektgruppen har även haft två bestämda arbetstillfällen varje
-vecka där det flesta medlemmar har närvarat. 
+vecka där det flesta medlemmar har närvarat.
 
-utöver de bestämda arbetspassen har även gruppen suttit och 
+utöver de bestämda arbetspassen har även gruppen suttit och
 jobbat i sina subgrupper på lite mer spontana arbetspass. Under
-dessa tillfällen har subgrupperna även kunnat tagit hjälp av 
+dessa tillfällen har subgrupperna även kunnat tagit hjälp av
 andra subgrupper då gruppen har suttit i labbsalen.
 
-Varje gruppmedlem har även lagt tid utanför dedikerad arbetstid.  
+Varje gruppmedlem har även lagt tid utanför dedikerad arbetstid.
 
 \subsubsection{Fildelning och versionshantering Gustav - kan behöva hjälp git e svårt}
-För att förenkla det parallella programmerandet, och för att samla alla filer och dokument 
+För att förenkla det parallella programmerandet, och för att samla alla filer och dokument
 på ett och samma ställe, så valde arbetsgruppen att använde sig av versionshanteringstjänsten GIT.
 
 
 \section{Teknisk beskrivning} % Vad är utgångspunkten för i förkonstruktionsarbetet?
 \subsection{Teknisk bakgrund}
-Mjukvaran till Larmsystemet körs på 3 st MD407 kort, vilket är en 
+Mjukvaran till Larmsystemet körs på 3 st MD407 kort, vilket är en
 enkortsdator.
 \subsection{Systemöversikt}
 
@@ -110,7 +110,7 @@ Systemet utgår ifran en centralenhet, kopplad till en dörrenhet och en rörels
 Dörrenheten är kopplad till ett antal strömbrytare/dörrsensorer, och larmar då en dörr är öppen för länge, först lokalt och sedan central; Rörelseenheten är kopplad till ett antal avståndsmätare och vibrationsensorer, och larmar centralt om ett föremål detekteras av en avståndsmätare inom konfigurerbart avstånd. Rörelseenheten larmar även centralt om en vibrationssensor mäter en konfigurerbar mängd vibrationer inom en viss tidsram. % Lite flummig beskrivning kanske, får ändra när koden är klar.
 
 En översikt av hårdvaran och hur den är kopplad finns i Figur \ref{fig:hårdvara}.
-\begin{figure}[H]
+\begin{figure}[H] % Samma figur som projektplanen, då hårdvaran fortfarande ser likadan ut, det är värt att göra en ny innan slutgiltiga rapporten.
     \centering
     \includegraphics[width=1\textwidth]{projektrapport/figurer/HardvaraOversikt.jpg}
     \caption{Översikt Hårdvara}
@@ -133,35 +133,35 @@ En överblick av mjukvarans tidsflöde finns i Figur \ref{fig:tidsflöde}.
 %\label{subsec:centralenhet}
 Centralenheten är den enhet som styr och håller koll på övriga enheter.
  Inställningar görs via USART, varpå de vidarebefordras till rätt
-  periferienhet via CAN (se \ref{can}). 
+  periferienhet via CAN (se \ref{can}).
 
 Centralenheten har följande två lägen:
 
 \begin{enumerate}
-    \item Standardläge: Enheten väntar på larm-meddelanden från 
-    periferienheterna eller användarinput via USART. Dessutom 
-    skickar den regelbundet  konfigurationen för anslutna 
-    dörrar och sensorer till periferienheterna, som förväntas 
-    bekräfta konfigurationen. Om en enhet inte svarar efter 
+    \item Standardläge: Enheten väntar på larm-meddelanden från
+    periferienheterna eller användarinput via USART. Dessutom
+    skickar den regelbundet  konfigurationen för anslutna
+    dörrar och sensorer till periferienheterna, som förväntas
+    bekräfta konfigurationen. Om en enhet inte svarar efter
     ett antal meddelanden går larmet.
     \item Konfigurationsläge: Enheten startar i detta läge.
-     Här kan användaren konfigurera anslutna dörr- och 
+     Här kan användaren konfigurera anslutna dörr- och
      rörelseenheter via USART. Användaren kan sätta centralenheten
       i detta läge via USART för att lägga till eller konfigurera
        periferienheter.
 \end{enumerate}
 
-För att kunna adressera olika periferienheter måste centralenheten 
+För att kunna adressera olika periferienheter måste centralenheten
 tilldela dessa varsitt unikt id. Detta görs i konfigurationsläget
 genom att varje enhet som saknar id skickar en förfrågan via CAN.
-När centralenheten tar emot en sådan förfrågan från en periferienhet, 
+När centralenheten tar emot en sådan förfrågan från en periferienhet,
 skickar den tillbaka det lägsta lediga id:t och skapar en ny instans
 av en struktur som representerar periferienheten och lägger den i en
 lista. Strukturen innehåller enhetens id och konfiguration (d.v.s.
 tider för varje dörr för dörrenheter respektive avstånd för varje
-avståndssensor och antal vibrationssensorer för rörelseenheter). 
-Id:t används för att addressera meddelanden till samt identifiera 
-meddelanden från enheten. Det är också periferienhetens index i 
+avståndssensor och antal vibrationssensorer för rörelseenheter).
+Id:t används för att addressera meddelanden till samt identifiera
+meddelanden från enheten. Det är också periferienhetens index i
 centralenhetens lista, vilket innebär att det är oerhört effektivt
 att hitta rätt enhet i listan när dess id har lästs i CAN-meddelandet.
 
@@ -177,7 +177,7 @@ Dörrenheten är en av systemets fristående enheter och kräve ett MD407-kort. 
 Vid systemuppstart deteketeras alla stängda dörrar som är kopplade till MD407-kortet. En C-struct kommer sedan initieras för varje dörr, denna structen fungerar som en datarepresentation för dörren. Denna datarepresentation är utrustat med följande värden:
 \begin{itemize}
   \item {char id;}
-  \item {int controlbits;} 
+  \item {int controlbits;}
   \item \textbf{char time\textunderscore{}Larm;}
   \item \textbf{char time\textunderscore{}Central\textunderscore{}Larm;}
   \item \textbf{int password;}
@@ -191,7 +191,7 @@ De fetmarkerade värdena är konfiguerbara för användaren, \textbf{time\textun
 Dörrenheten kan köras i lokaldrift
 men ska för bäst effekt köras uppkopplad mot centralenheten.\\
 \subsubsection{Rörelseenheten}
-Denna periferienhet använder rörelsesensorer, av modellen HC-SR04, och vibrationssensorer, av modellen SW-18010P, som styrs av ett MD407-kort. 
+Denna periferienhet använder rörelsesensorer, av modellen HC-SR04, och vibrationssensorer, av modellen SW-18010P, som styrs av ett MD407-kort.
 Vid uppstart av systemet skall alla inkopplade sensorer fördelas ett id som säger vilken sorts sensor det är och numrerar dem.
 
 \textbf{Rörelsesensorn}: Aktiveras genom att MD407-kortet skickar en hög puls till sensorn i minst 10 mikrosekunder, sedan skickar sensorn ut ultraljudsvågor och skickar ut en hög puls, tills ultraljdsvågorna kommer tillbaks,  till MD407-kortet där avståndet till närmaste föremål beräknas genom att mäta längden på pulsen. HC-SR04 kan mäta avstånd upp till 400cm och larmavståndet är justerbart från centralenheten.
@@ -200,8 +200,8 @@ Vid uppstart av systemet skall alla inkopplade sensorer fördelas ett id som sä
 
 \subsection{CAN-kommunikation}
 \label{can}
-Nedan finns dokumentationen av protokollet som tagits fram för 
-kommunikationen mellan enheterna. Därefter följer en beskrivning 
+Nedan finns dokumentationen av protokollet som tagits fram för
+kommunikationen mellan enheterna. Därefter följer en beskrivning
 av hur kommunikationen har implementerats.
 \subsubsection{Protokoll}
 \input{../protokoll/protokollInput.tex}
@@ -225,7 +225,7 @@ Ett fall som är mer invecklat än en direkt hanteringsfunktion är vid konfigur
 \todo[inline]{Har inte utfört några tester}
 \subsection{Programbibliotek}
 För att minska arbetet har programbiblioteket STM32\cite{stm}
-användts. 
+användts.
 STM32 programbiblioteket har används vid initieringar av tex GPIO-portar, Systick med mera.
 
 \section{Resultat och diskussion} % Kan dela upp dessa om vi vill.
