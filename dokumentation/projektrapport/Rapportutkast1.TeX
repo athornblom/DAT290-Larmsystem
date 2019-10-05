@@ -103,7 +103,31 @@ på ett och samma ställe, så valde arbetsgruppen att använde sig av versionsh
 \subsection{Teknisk bakgrund}
 Mjukvaran till Larmsystemet körs på 3 st MD407 kort, vilket är en 
 enkortsdator.
-\subsection{Systemöversikt Ben}
+\subsection{Systemöversikt}
+
+Systemet utgår ifran en centralenhet, kopplad till en dörrenhet och en rörelsenhet, över en gemensam CAN-buss. Periferienheterna hanterar avmätning av dess respektiva sensorer, samt begär larm via CAN-bussen vid behov. När det går ett centralt larm fortsätter larmet tills det att en användare slår av larmet via en pin-kod till centralenheten.
+
+Dörrenheten är kopplad till ett antal strömbrytare/dörrsensorer, och larmar då en dörr är öppen för länge, först lokalt och sedan central; Rörelseenheten är kopplad till ett antal avståndsmätare och vibrationsensorer, och larmar centralt om ett föremål detekteras av en avståndsmätare inom konfigurerbart avstånd. Rörelseenheten larmar även centralt om en vibrationssensor mäter en konfigurerbar mängd vibrationer inom en viss tidsram. % Lite flummig beskrivning kanske, får ändra när koden är klar.
+
+En översikt av hårdvaran och hur den är kopplad finns i Figur \ref{fig:hårdvara}.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{projektrapport/figurer/HardvaraOversikt.jpg}
+    \caption{Översikt Hårdvara}
+    \label{fig:hårdvara}
+\end{figure}
+
+När centralenheten samt periferienheterna startar infinner de sig i konfigurationslägen, där de först konfigurerar sina egna enheter (USART, CAN-bussen, GPIO), sedan skickar centrala enheten konfigurationer för sensorerna till periferienheterna, som de använder för att konfigurera deras respektiva sensorer. Efter att ha konfigurerats går enehterna i var sin kontinuerlig loop. Periferienheterna mäter ständigt av sensorerna och skickar larm-meddelanden över CAN-bussen till centralenheten vid behov. Centralenheten skickar periodiskt konfigurationer till periferinheterna och larmar när de inte bekräftas.
+
+En överblick av mjukvarans tidsflöde finns i Figur \ref{fig:tidsflöde}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{projektrapport/figurer/TidsFlode.jpg}
+    \caption{Tidsflöde Mjukvara}
+    \label{fig:tidsflöde}
+\end{figure}
+
 \subsection{Delsystem }
 \subsubsection{Centralenheten}
 %\label{subsec:centralenhet}
