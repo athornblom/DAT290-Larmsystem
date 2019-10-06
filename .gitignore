@@ -1,5 +1,6 @@
 *.pdf
 !**/figurer/*.pdf
+!**/dokumentation/projektrapport/inc/*.pdf
 *.aux
 *.fdb_latexmk
 *.fls
