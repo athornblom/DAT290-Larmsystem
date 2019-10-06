@@ -57,10 +57,16 @@ rörelse- och/eller vibrationssensorer.
 Användning av systemet förutsätter ingen speciell
 teknisk expertis.
 
-
 \subsection{Mål} % Svarar på frågan "Vad"?
-x antal dörrar per kort, utrustat med rörelsesensorer, alla korten uppkopplade till ett centralsystem.
 % I detta avsnitt beskrivs koncist samtliga övergripande tekniska mål med projektet, det vill säga, vad som ska konstrueras. De mål som anges här kommer att styra projektets utveckling. När projektet närmar sig sitt slut och den slutliga projektrapporten lämnas in kommer beställaren att kritiskt analysera hur väl projektet lyckats genom att jämföra planens mål med den tekniska konstruktion som redovisas i projektrapporten.
+
+Larm- och låssystemet skall konstrueras av en dörrenhet och en rörelseenhet, kopplade till en central larmenhet.
+
+Dörrenheten skall ha stöd för en justerbar mängd dörrar. Varje dörr i systemet utrustas med en dörrsensor kopplad till en MD407 minidator, som sköter lokallarmning och kan begära centrallarm cia centralenheten.
+
+Rörelseenheten är uppbyggd med avståndsmätare och vibrationssensorer. Likt dörreneheten kopplas en justerbar mängd av dessa sensorer till en MD407 minidator, som kan begära centrallarm vid behov.
+
+Centralenheten är också en MD407 minidator, den hanterar konfiguration av periferienheterna och larmning. Ett larm som går på centralenheten skall kunnas stängas av via en pin-kod kopplad till enheten som larmar. Centralenheten skall även sköta initial konfiguration av systemet samt se till att inga enheter kan kopplas in/ut när systemet är i drift.
 
 \subsection{Arbetsmetod} % svarar på frågan "hur har vi gått tillväga i det tekniska utvecklingsarbetet"?
 \subsubsection{Subgrupper}
