@@ -1,26 +1,11 @@
-<<<<<<< HEAD
-Protokollet som har skapats för kommunikationen mellan enheterna bygger på protokollet Controller Area Network (CAN). CAN är ett bussprotokoll som främst används för kommunikation mellan datorer och givare på fordon där det ställs höga krav på tillförlitlighet. Metoden som används för att öka tillförlitligheten genom att undvika kommunikationskrockar är att låta en av de logiska nivåerna vara dominant. I detta fall är det logisk nolla som har prioritet. För at skicka en logisk nolla skapas en spänningsskillnad mellan de två bussledarna. Om man istället ska sicka en etta låter man spänningsskillnaden vara 0. Denna dominans används för att minska risken för busskollisioner genom att enheten under sändning, utöver att skicka, även lyssnar på vilket värde som egentligen skickas på bussen. Skulle dessa värden skilja sig åt slutar man skicka och låter det andra meddelandet med högre prioritet skickas färdigt. Detta medför att meddelanden som inleds med nollor har hög prioritet medan meddelanden som startar med ettor har lägre.
+Protokollet som har skapats för kommunikationen mellan enheterna bygger på protokollet Controller Area Network (CAN). CAN är ett bussprotokoll som främst används för kommunikation mellan datorer och givare på fordon där det ställs höga krav på tillförlitlighet. Metoden som används för att öka tillförlitligheten genom att undvika kommunikationskrockar är att låta en av de logiska nivåerna vara dominant. I detta fall är det logisk nolla som har prioritet. För att skicka en logisk nolla skapas en spänningsskillnad mellan de två bussledarna. Om man istället ska skicka en etta låter man spänningsskillnaden vara noll. Denna dominans används för att minska risken för busskollisioner genom att enheten under sändning även lyssnar på vilket värde som egentligen skickas på bussen. Skulle det egentiliga vädrdet skilja sig från det sändaren tänkt skicka så avbryts sändningen och det andra meddelandet med högre prioritet tillåts skickas färdigt. Detta medför att meddelanden som inleds med nollor har högre prioritet än meddelanden som startar med ettor.
 
-Ett CAN-meddelande är uppbyggt av ett antal fält med olika funktioner. Det finns bland annat fält för startbitar, identifiering (ID), data, kontrollsummor samt stoppbitar. Av dessa fält är det i huvudsak ID och datafältet som bär den aktuella informationen. De övriga fälten används av CAN-protokollet för att åstadkomma tillförlitlig kommunikation.
+Ett CAN-meddelande är uppbyggt av ett antal fält med olika funktioner. Det finns bland annat fält för startbitar, identifiering (ID), data, kontrollsummor samt stoppbitar. Av dessa fält är det i huvudsak ID och datafältet som bär den aktuella informationen.
+De övriga fälten används av CAN-protokollet för att åstadkomma tillförlitlig kommunikation.
 
-Den inbyggda prioriteringen av meddelanden har noga avvägts vid tilldelning av de 11 ID-bitar som finns tillgängliga. Då det är detta fält som avgör prioriteringen för meddelanden på bussen så beskriver det i huvudsak meddelandetypen. De 11 bitarna har fördelats enligt tabell \ref{tab:idbitar}.
-=======
-Protokollet som har skapats för kommunikationen mellan enheterna bygger på Controller Area Nework (CAN) protokollet.
-CAN är ett bussprotokoll som främst används för kommunikation mellan datorer och givare på fordon där det ställs höga krav på tillförlitlighet. Metoden som används för att öka tillförlitligheten, genom att undvika kommunikationskrockar, åstakoms genom att låta en av de logiska nivåerna vara dominant. I detta fall är det logisk nolla som har priorietet.
-För at skicka en logisk nolla skapar man en spänningsskillnad mellen de två bussledarna.
-Om man istället ska sicka en etta låter man spänningsskillnaden vara noll.
-Denna dominans används för att minska risken för busskollisioner genom att sändaren under sänding även lyssnar vilket värde som egentligen skickas på bussen.
-Skulle det egentiliga vädrdet skilja sig från det sändaren tänkt skicka så avbryts sändingen och det andra meddelandet med högre prioritet tillåts skickas färdigt.
-Detta medför att meddelanden som inleds med nollor har högre prioritet än meddelanden som startar med ettor.
-
-Ett CAN meddelande är uppbyggt av ett antal fält med olika funktioner. Det finns bland annat fält för startbitar, identifiering (ID), data, kontrollsummor samt stopbitar.
-Av dessa fält är det i huvudsak ID och datafältet som bär den aktuella informationen.
-De övriga fälten används av CAN protokollet för att åstakomma tillförlitlig kommunikation.
-
-Den inbyggda prioriteringen av meddelanden har noga avvägts vid tilldelning av de 11 bitar som finns tillgängliga i ID fältet.
-Då det är detta fält som avgör prioritringen för meddelanen på bussen så beskriver de i huvudsak meddelandetypen.
+Den inbyggda prioriteringen av meddelanden har noga avvägts vid tilldelning av de 11 bitar som finns tillgängliga i ID-fältet.
+Då det är detta fält som avgör prioritringen för meddelanden på bussen så beskriver de i huvudsak meddelandetypen.
 De 11 bitarna har fördelats enligt tabell \ref{tab:idbitar}.
->>>>>>> 07e487ec9f5f4a9b3293e044bb899c304cba0d85
 
 \begin{table}[H]
 	\centering
@@ -34,21 +19,12 @@ De 11 bitarna har fördelats enligt tabell \ref{tab:idbitar}.
 		Om riktningen är från centralenheten beskriver bitarna mottagarens ID. \\ \hline
 
 	\end{tabular}
-<<<<<<< HEAD
-	\caption{Beskriver hur de 11 ID-bitarna i CAN-meddelandet används.}
-=======
-	\caption{Beskriver hur de 11 bitarna i ID fältet av CAN meddelandet används.}
->>>>>>> 07e487ec9f5f4a9b3293e044bb899c304cba0d85
+	\caption{Beskriver hur de 11 bitarna i ID-fältet av CAN-meddelandet används.}
 	\label{tab:idbitar}
 \end{table}
 
 
-<<<<<<< HEAD
 Datafältets maximala längd är 8 bytes och bildar tillsammans med ID-fältet unika meddelanden. De meddelanden som används beskrivs nedan.
-=======
-Datafältets maximalta längd är 8 bytes och bildar tillsammans med ID fältet unika medelanden.
-De meddelande som används beskrivs nedan.
->>>>>>> 07e487ec9f5f4a9b3293e044bb899c304cba0d85
 
 
 \todo[inline]{Beskrivningarna av meddelandena nedan är mycket övergripande då meddelandena inte är implementerade än.}
@@ -58,12 +34,7 @@ De meddelande som används beskrivs nedan.
     \item Meddelandetyp 0
     \item Skickas i båda riktningar
 \end{itemize}
-<<<<<<< HEAD
 Bekräftelse för senaste mottagna meddelandet. Detta meddelande har högsta prioritet och skickas som svar på något annat meddelande som inte är av typen ack. \\
-=======
-Bekräftelse för senaste mottagna meddelandet.
-Detta meddelande har högsta prioritet och skickas som svar på något annat meddelande som inte är av ack typ. \\
->>>>>>> 07e487ec9f5f4a9b3293e044bb899c304cba0d85
 
 
 \textbf{Skicka larm}
@@ -71,12 +42,7 @@ Detta meddelande har högsta prioritet och skickas som svar på något annat med
     \item Meddelandetyp 1
     \item Skickas från periferienhet till centralenheten
 \end{itemize}
-<<<<<<< HEAD
 Talar om för centralenheten om någon dörr eller sensor larmar. Detta meddelande har typnummer 1 och skickas endast av periferienheterna. \\
-=======
-Talar för centralenheten om någon dörr eller sensor larmar.
-Detta meddelande har typsnummer 1 och är skickas endast av perferienheterna. \\
->>>>>>> 07e487ec9f5f4a9b3293e044bb899c304cba0d85
 
 
 \textbf{Skicka konfiguration}
@@ -84,34 +50,12 @@ Detta meddelande har typsnummer 1 och är skickas endast av perferienheterna. \\
     \item Meddelandetyp 2
     \item Skickas i båda riktningar
 \end{itemize}
-<<<<<<< HEAD
-Detta meddelande används för att skicka konfigurationer i båda riktningarna. Centralenheten skickar konfiguration till periferienheten kontinuerligt under drift för att försäkra sig om att periferienheten har rätt konfiguration. Detta fungerar även som ping, då ett antal uteblivna ack skulle betyda att enheten inte längre finns på nätverket. I så fall uppmärksammar centralenheten detta.
-
-Periferienheterna skickar sina konfigurationer i andra riktingen vid uppstart. Dessa ger centralenheten förslag på hur enheterna borde konfigureras initialt. Rörelselarmet skickar även mätvärden i denna typ av meddelande.
-
-I datadelen av meddelandet för dörrlarm borde det finnas:
-\begin{itemize}
-	\item Ett par bitar för addressen till dörren i fråga.
-	\item En aktiveringsbit per dörr.
-	\item En bit per dörr för avaktivering av pågående larm.
-	\item Ett par bitar för varje tidsfördröjning.
-\end{itemize}
-
-I datadelen av meddelandet för rörelsesensorlarm borde det finnas:
-\begin{itemize}
-	\item En aktiveringsbit per sensor
-	\item En bit per sensor för avaktivering av pågående larm.
-	\item En bit per enhet för aktivering av automatisk översändning av konfigurationsmeddelanden. Detta används vid konfiguration av avståndsgivare.
-\end{itemize}
-=======
 Detta meddelande används för att skicka konfigurationer i båda riktningarna.
-Centralenheten skickar konfiguration till periferienheten kontinuerligt under drift för att fösäkra sig om att perferienheten har rätt konfiguration.
-Detta fungerar även som ping, då ett antal uteblivna ack skulle betyda att enheten inte längre finns på nätverket.
+Centralenheten skickar konfiguration till periferienheten kontinuerligt under drift för att fösäkra sig om att periferienheten har rätt konfiguration. Detta fungerar även som ping, då ett bestämt antal uteblivna ack tolkas som att enheten inte längre finns på nätverket.
 I så fall uppmärksammar centralenheten detta.
 
-Perferienheterna skickar sina konfigurationener i andra riktingen vid uppstart.
+Periferienheterna skickar sina konfigurationener i andra riktingen vid uppstart.
 Dessa ger centralenheten förslag på hur enheterna borde konfigureras initialt. Rörelselarmet skickar även mätvärden i denna typ av meddelande.
->>>>>>> 07e487ec9f5f4a9b3293e044bb899c304cba0d85
 
 
 \textbf{Tilldelning av ID}
@@ -119,14 +63,7 @@ Dessa ger centralenheten förslag på hur enheterna borde konfigureras initialt.
     \item Meddelandetyp 3
     \item Skickas från centralenheten till preferienhet
 \end{itemize}
-<<<<<<< HEAD
-Detta meddelande används då centralenheten tilldelar en periferienhet dess ID. I datafältet skickas ett slumptal som periferienheten använder som identifiering vid tilldelningen av ID. Detta meddelande skickas bara då centralenheten är i konfigurationsläge. Periferienheterna adresseras med bara nollor i de 7 bitarna avsedda för ID. \\
-=======
-Detta meddelande används då centralenheten tilldelar en periferienhet dess ID.
-I datafältet skickas ett slumptal som perferienheten använder som identifiering vid tilldelingen av ID.
-Detta meddelande skickas bara då centralenheten är i konfigurationsläge.
-Perferienheterna adresseras med bara nollor i de 7 bitarna avsedda för ID. \\
->>>>>>> 07e487ec9f5f4a9b3293e044bb899c304cba0d85
+Detta meddelande används då centralenheten tilldelar en periferienhet dess ID. I datafältet skickas ett slumptal som periferienheten använder som identifiering vid tilldelningen av ID. Detta meddelande skickas bara då centralenheten är i konfigurationsläge. Periferienheterna adresseras med bara nollor i de sju bitarna avsedda för ID. \\
 
 
 \textbf{ID-begäran}
@@ -134,9 +71,4 @@ Perferienheterna adresseras med bara nollor i de 7 bitarna avsedda för ID. \\
     \item Meddelandetyp 4
     \item Skickas från periferienhet till centralenheten
 \end{itemize}
-<<<<<<< HEAD
-Detta meddelande skickas som en begäran av ID. De 7 bitar i ID-fältet som annars ska ange periferienhetens ID är bara nollor i detta meddelande.
-=======
-Detta meddelande skickas som en begäran av ID.
-De 7 bitar i ID fältet som ska beskriva perferienhetens ID är bara nollor i detta meddelande.
->>>>>>> 07e487ec9f5f4a9b3293e044bb899c304cba0d85
+Detta meddelande skickas som en begäran av ID. De sju bitar i ID-fältet som annars ska ange periferienhetens ID är bara nollor i detta meddelande.
