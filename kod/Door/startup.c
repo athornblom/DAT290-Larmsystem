@@ -26,9 +26,54 @@ void startup(void)
 	);
 }
 
+uint16_t GPIO_Pins[] = {
+	GPIO_Pin_0, GPIO_Pin_1, GPIO_Pin_2, GPIO_Pin_3, GPIO_Pin_4, GPIO_Pin_5,
+	GPIO_Pin_6, GPIO_Pin_7, GPIO_Pin_8, GPIO_Pin_9, GPIO_Pin_10, GPIO_Pin_11,
+	GPIO_Pin_12, GPIO_Pin_13, GPIO_Pin_14, GPIO_Pin_15
+	};
+
+
 volatile uint32_t msTicks = 0; /* Variable to store millisecond ticks */
-void app_init(void){
-	//TEST 123
+int activeDoors = 0;
+
+void number_of_activeDoors (void){
+
+	for (int i = 0; i < sizeof(GPIO_Pins); i = i+2)
+	{
+		if (GPIO_ReadInputDataBit(GPIOA, GPIO_Pins[i]));
+		{
+			activeDoors++;
+		}
+		
+	}
+}
+
+
+
+void app_init2(door **array, int length) {
+	free(*array);
+	*array = malloc(length * sizeof(door));
+	for (int i = 0; i < length; i++) {
+		(*array)[i] = {.controlbits = i}
+	}
+}
+
+/*
+void app_init(door active_doors[]){
+	int a = 0;
+	int c = 0;
+	for (int i = 0; i < sizeof(GPIO_Pins); i = i+2)
+	{
+		if (GPIO_ReadInputDataBit(GPIOA, GPIO_Pins[i]));
+		{
+			active_doors[a] = {.id = a, .controlbits = 0, .time_larm = 1, .time_central_larm = 2, .password = 4444, .GPIO_lamp = GPIO_Pins[i+1], .GPIO_read = GPIO_Pins[i], .larmTick = 0};
+			a++;
+			c++;
+		}
+		
+	}
+	*/
+	
 }
 void init_GPIO_Ports()
 {
@@ -70,15 +115,17 @@ void systick_Init(void)
 void main(void)
 {
 	init_GPIO_Ports();
+	number_of_activeDoors();			// Hur många dörrar är aktiva?
+	door activeDoors[activeDoors];		// Skapa en array med tillräckligt stor size.
+	app_init2(&activeDoors,active_doors);				// Initiera tillräckligt många structs och lägg till i arrayen.
 	systick_Init();
 //	DebugPrintInit();
-
-	door test1 = {.id = 0, .controlbits = 0, .time_larm = 1, .time_central_larm = 2, .password = 0, .GPIO_lamp = GPIO_Pin_3, .GPIO_read = GPIO_Pin_2, .larmTick = 0};
-	door test2 = {.id = 1, .controlbits = 0, .time_larm = 1, .time_central_larm = 2, .password = 0, .GPIO_lamp = GPIO_Pin_5, .GPIO_read = GPIO_Pin_4, .larmTick = 0};
-	door test3 = {.id = 2, .controlbits = 0, .time_larm = 1, .time_central_larm = 2, .password = 0, .GPIO_lamp = GPIO_Pin_1, .GPIO_read = GPIO_Pin_0, .larmTick = 0};
-	door test4 = {.id = 3, .controlbits = 0, .time_larm = 1, .time_central_larm = 2, .password = 0, .GPIO_lamp = GPIO_Pin_7, .GPIO_read = GPIO_Pin_6, .larmTick = 0};
-
-	door active_doors[4] = {test1,test2,test3,test4};
+	//door test1 = {.id = 0, .controlbits = 0, .time_larm = 1, .time_central_larm = 2, .password = 0, .GPIO_lamp = GPIO_Pin_3, .GPIO_read = GPIO_Pin_2, .larmTick = 0};
+	//door test2 = {.id = 1, .controlbits = 0, .time_larm = 1, .time_central_larm = 2, .password = 0, .GPIO_lamp = GPIO_Pin_5, .GPIO_read = GPIO_Pin_4, .larmTick = 0};
+	//door test3 = {.id = 2, .controlbits = 0, .time_larm = 1, .time_central_larm = 2, .password = 0, .GPIO_lamp = GPIO_Pin_1, .GPIO_read = GPIO_Pin_0, .larmTick = 0};
+	//door test4 = {.id = 3, .controlbits = 0, .time_larm = 1, .time_central_larm = 2, .password = 0, .GPIO_lamp = GPIO_Pin_7, .GPIO_read = GPIO_Pin_6, .larmTick = 0};
+//
+	//door active_doors[4] = {test1,test2,test3,test4};
 
 	while (1)
 	{
