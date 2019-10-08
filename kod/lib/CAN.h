@@ -41,6 +41,9 @@ uint8_t CANaddFilterHandler(void (*newHandler)(CanRxMsg *), CANFilter *filter, C
 //Avaktiverar CANFilterHandler med index index från handlerList
 void CANdisableFilterHandler(uint8_t index);
 
+//Avaktiverar alla CANFilterHandlers
+void CANdisableAllFilterHandlers(void);
+
 //För att initiera can1
 uint8_t can_init();
 

@@ -77,6 +77,13 @@ void CANdisableFilterHandler(uint8_t index){
     }
 }
 
+//Avaktiverar alla CANFilterHandlers
+void CANdisableAllFilterHandlers(void){
+    for (uint8_t index = 0; index < HANDLERLISTSIZE; index++){
+        handlerList[index].state = DISABLE;
+    }
+}
+
 uint8_t send_can_message(CanTxMsg *msg){
 	return CAN_Transmit(CAN1, msg);
 }
