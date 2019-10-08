@@ -6,6 +6,7 @@
 #include "stm32f4xx_can.h"
 #include "stm32f4xx_rcc.h"
 #include "stm32f4xx_gpio.h"
+#include "delay.c"
 
 CanRxMsg RxMessage;
 CanTxMsg TxMessage;
@@ -23,8 +24,8 @@ typedef struct{
 
 uint8_t next_id = 0;
 
-void *devices[256];
-
+void *devices[128];
+Door_device door_devs[128];
 uint32_t messages_to_send;
 uint8_t light;
 uint32_t counter;
@@ -45,17 +46,19 @@ void toggle_light() {
 }
 
 
-Door_device get_door_device(uint8_t id){
-    return *((Door_device*) (devices[id]));
+Door_device *get_door_device(uint8_t id){
+    return (Door_device*) (devices[id]);
+    //return &door_devs[id];
 }
 
 //Denna funktion ska alltid användas för att lägga till en ny dörrenhet
-Door_device add_door_device(uint8_t id){
+Door_device *add_door_device(uint8_t id){
     Door_device dev;
     dev.id = id;
-    devices[id] = (void*)(&dev);
+    door_devs[id] = dev; //Lägger dev i array av faktiska strukturinstanser för att undvika att den skrivs över
+    devices[id] = (void*)(&door_devs[id]);
     
-    return dev;
+    return &door_devs[id];
 }
 
 //Använder MAC-adress för att tilldela en enhet ett id
@@ -83,50 +86,44 @@ void config_door(unsigned char id_device, unsigned char id_door, unsigned int ti
         }
 }*/
 
-void can_irq_handler(void){
+void can_handler(CanRxMsg *rxMsgP){
     //TODO REMOVE
     USARTPrint("In irq handler\n");
     
-    if(CAN_GetITStatus(CAN1, CAN_IT_FMP0)) {
-        if (CAN_MessagePending(CAN1, CAN_FIFO0)) {
-            CanRxMsg rxMsg;
-            CAN_Receive(CAN1, CAN_FIFO0, &rxMsg);
-            //TODO hantera meddelandet
-            
-            //För enkelt test TODO REMOVE
-            if (rxMsg.IDE == CAN_Id_Standard){ //standard meddelande
-                if(rxMsg.StdId == 5){ //Om det är en id-förfrågan
-                    CanTxMsg txMsg;
-                    encode_assign_id(&txMsg, next_id);
-                    if (send_can_message(&txMsg) == CAN_TxStatus_NoMailBox){
-                        USARTPrint("No mailbox empty\n");
-                    }
-                    else{
-                        
-                        Door_device dev = add_door_device(next_id);
-                        USARTPrint("Lagt till dorrenhet med id ");
-                        
-                        uint8_t id = get_door_device(next_id).id;
-                        USARTPrintNum((uint32_t)id);
-                        USARTPrint("\n");
-                        next_id++;
-                        
-                    }
-                }
-                USARTPrint("StdId ");
-                USARTPrintNum((uint32_t)rxMsg.StdId & 0x7FF);
-            } else if (rxMsg.IDE == CAN_Id_Extended){
-                USARTPrint("ExtId ");
-                USARTPrintNum(rxMsg.ExtId & 0x1FFFFFFF);
-            } else {
-                USARTPrint("unknown IDE");
+    CanRxMsg rxMsg = *rxMsgP;
+    CAN_Receive(CAN1, CAN_FIFO0, &rxMsg);
+    //TODO hantera meddelandet
+    
+    
+    if (rxMsg.IDE == CAN_Id_Standard){ //standard meddelande
+        if(rxMsg.StdId == 5){ //Om det är en id-förfrågan
+            CanTxMsg txMsg;
+            encode_assign_id(&txMsg, next_id);
+            if (send_can_message(&txMsg) == CAN_TxStatus_NoMailBox){
+                USARTPrint("No mailbox empty\n");
             }
-            USARTPrint("\nData ");
-            USARTPrintNum((rxMsg.Data[0]));
-            USARTPrint("\n");
-            
+            else{
+                blockingDelayMs(300);
+                Door_device *dev = add_door_device(next_id);
+                USARTPrint("Lagt till dorrenhet med id ");
+                
+                uint8_t id = get_door_device(next_id)->id;
+                USARTPrintNum((uint32_t)id);
+                blockingDelayMs(700);
+                USARTPrint("\nId:t borde vara ");
+                USARTPrintNum((uint32_t)next_id);
+                USARTPrint("\n");
+                next_id++;
+                
+            }
         }
+        USARTPrint("StdId ");
+        USARTPrintNum((uint32_t)rxMsg.StdId & 0x7FF);
     }
+    USARTPrint("\nData ");
+    USARTPrintNum((rxMsg.Data[0]));
+    USARTPrint("\n");
+
 }
 
 void main(void) {
@@ -150,4 +147,39 @@ void main(void) {
             }
         }
     }*/
+    
+    
+    CANFilter testFilter;
+    testFilter.STDID = 0;
+    testFilter.EXDID = 0;
+    testFilter.IDE = 0;
+    testFilter.RTR = 0;
+    uint8_t testIndex;
+    
+    CANFilter testMask;
+    testMask.STDID = 0;
+    testMask.EXDID = 0;
+    testMask.IDE = 0;
+    testMask.RTR = 0;
+    
+    filterUnion test;
+    test.filter = testFilter;
+    USARTPrint("filter\n");
+    USARTPrintNumBase(test.u16bits[1], 2);
+    USARTPrint("-");
+    USARTPrintNumBase(test.u16bits[0], 2);
+    USARTPrint("\n");
+    
+    test.filter = testMask;
+    USARTPrint("mask\n");
+    USARTPrintNumBase(test.u16bits[1], 2);
+    USARTPrint("-");
+    USARTPrintNumBase(test.u16bits[0], 2);
+    USARTPrint("\n");
+    
+    if (CANhandlerListNotFull()){
+        USARTPrint("handler list not full\n");
+        testIndex = CANaddFilterHandler(can_handler, &testFilter, &testMask);
+        USARTPrintNum(testIndex);
+    }
 }
