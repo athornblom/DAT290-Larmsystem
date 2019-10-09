@@ -38,31 +38,22 @@ void toggle_light() {
 
 
 
-can_irq_handler(void){
-    //TODO REMOVE
+can_handler(void){
+    blockingDelayMs(800);
+    
+    
     USARTPrint("In irq handler\n");
     
-    if(CAN_GetITStatus(CAN1, CAN_IT_FMP0)) {
-        if (CAN_MessagePending(CAN1, CAN_FIFO0)) {
-            CanRxMsg rxMsg;
-            CAN_Receive(CAN1, CAN_FIFO0, &rxMsg);
-            //TODO hantera meddelandet
-            
-            
-            if(rxMsg.StdId==4){
-                id = rxMsg.Data[0];
-                USARTPrint("Jag tilldelades id: ");
-                USARTPrintNum(id);
-                USARTPrint("\n");
-                requesting_id = 0; //Nollställ flaggan för att sluta begära id
-            }
-            else{
-                USARTPrint("\nNeeeej! rxMsg.StdId: ");
-                USARTPrintNum((uint32_t)rxMsg.StdId);
-            }
-            
-        }
-    }
+    CanRxMsg rxMsg;
+    CAN_Receive(CAN1, CAN_FIFO0, &rxMsg);
+    
+    
+    
+    id = rxMsg.Data[0];
+    USARTPrint("Jag tilldelades id: ");
+    USARTPrintNum(id);
+    USARTPrint("\n");
+    requesting_id = 0; //Nollställ flaggan för att sluta begära id
 }
 
 
@@ -70,6 +61,45 @@ void main(void) {
     USARTConfig();
     can_init();
     USARTPrint("\nstart periferi\n");
+    
+    
+    
+    CANFilter filter;
+    filter.STDID = 0b10000000000;
+    filter.EXDID = 0;
+    filter.IDE = 0;
+    filter.RTR = 0;
+    uint8_t index;
+    
+    CANFilter mask;
+    mask.STDID = 0b11111111111;
+    mask.EXDID = 0;
+    mask.IDE = 0;
+    mask.RTR = 0;
+    
+    filterUnion test;
+    test.filter = filter;
+    USARTPrint("filter\n");
+    USARTPrintNumBase(test.u16bits[1], 2);
+    USARTPrint("-");
+    USARTPrintNumBase(test.u16bits[0], 2);
+    USARTPrint("\n");
+    
+    test.filter = mask;
+    USARTPrint("mask\n");
+    USARTPrintNumBase(test.u16bits[1], 2);
+    USARTPrint("-");
+    USARTPrintNumBase(test.u16bits[0], 2);
+    USARTPrint("\n");
+    
+    if (CANhandlerListNotFull()){
+        USARTPrint("handler list not full\n");
+        index = CANaddFilterHandler(can_handler, &filter, &mask);
+        USARTPrintNum(index);
+    }
+    
+    
+    
     CanTxMsg canMsg;
     uint32_t temp_id = 5;
     
