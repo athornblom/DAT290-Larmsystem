@@ -216,7 +216,7 @@ uint8_t handle_door_time_msg(CanRxMsg *msg) {
 uint8_t encode_request_id(CanTxMsg *msg, uint32_t temp_id){
     uint8_t *data_pointer =  &(msg->Data);
     
-    msg->StdId = 5;
+    msg->StdId = 0b10110000000;
     msg->DLC = 4;
     
     msg->IDE = CAN_Id_Standard; //Alternativen är CAN_Id_Standard eller FCAN_Id_Extended
@@ -229,7 +229,7 @@ uint8_t encode_request_id(CanTxMsg *msg, uint32_t temp_id){
 uint8_t encode_assign_id(CanTxMsg *msg, uint16_t id){
     uint8_t *data_pointer =  &(msg->Data);
     
-    msg->StdId = 4;
+    msg->StdId = 0b10000000000;
     msg->DLC = 4;
     
     msg->IDE = CAN_Id_Standard; //Alternativen är CAN_Id_Standard eller FCAN_Id_Extended

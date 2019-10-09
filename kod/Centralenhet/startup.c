@@ -96,27 +96,27 @@ void can_handler(CanRxMsg *rxMsgP){
     
     
     if (rxMsg.IDE == CAN_Id_Standard){ //standard meddelande
-        if(rxMsg.StdId == 5){ //Om det är en id-förfrågan
-            CanTxMsg txMsg;
-            encode_assign_id(&txMsg, next_id);
-            if (send_can_message(&txMsg) == CAN_TxStatus_NoMailBox){
-                USARTPrint("No mailbox empty\n");
-            }
-            else{
-                blockingDelayMs(300);
-                Door_device *dev = add_door_device(next_id);
-                USARTPrint("Lagt till dorrenhet med id ");
-                
-                uint8_t id = get_door_device(next_id)->id;
-                USARTPrintNum((uint32_t)id);
-                blockingDelayMs(700);
-                USARTPrint("\nId:t borde vara ");
-                USARTPrintNum((uint32_t)next_id);
-                USARTPrint("\n");
-                next_id++;
-                
-            }
+        
+        CanTxMsg txMsg;
+        encode_assign_id(&txMsg, next_id);
+        if (send_can_message(&txMsg) == CAN_TxStatus_NoMailBox){
+            USARTPrint("No mailbox empty\n");
         }
+        else{
+            blockingDelayMs(300);
+            Door_device *dev = add_door_device(next_id);
+            USARTPrint("Lagt till dorrenhet med id ");
+            
+            uint8_t id = get_door_device(next_id)->id;
+            USARTPrintNum((uint32_t)id);
+            blockingDelayMs(700);
+            USARTPrint("\nId:t borde vara ");
+            USARTPrintNum((uint32_t)next_id);
+            USARTPrint("\n");
+            next_id++;
+            
+        }
+        
         USARTPrint("StdId ");
         USARTPrintNum((uint32_t)rxMsg.StdId & 0x7FF);
     }
@@ -129,7 +129,7 @@ void can_handler(CanRxMsg *rxMsgP){
 void main(void) {
     USARTConfig();
     can_init();
-    USARTPrint("Start Central\n");
+    USARTPrint("\nStart Central\n");
     CanTxMsg canMsg;
     uint8_t USARTmsg;/*
     while (1) {
@@ -149,28 +149,28 @@ void main(void) {
     }*/
     
     
-    CANFilter testFilter;
-    testFilter.STDID = 0;
-    testFilter.EXDID = 0;
-    testFilter.IDE = 0;
-    testFilter.RTR = 0;
-    uint8_t testIndex;
+    CANFilter filter;
+    filter.STDID = 0b10110000000;
+    filter.EXDID = 0;
+    filter.IDE = 0;
+    filter.RTR = 0;
+    uint8_t index;
     
-    CANFilter testMask;
-    testMask.STDID = 0;
-    testMask.EXDID = 0;
-    testMask.IDE = 0;
-    testMask.RTR = 0;
+    CANFilter mask;
+    mask.STDID = 0b11111111111;
+    mask.EXDID = 0;
+    mask.IDE = 0;
+    mask.RTR = 0;
     
     filterUnion test;
-    test.filter = testFilter;
+    test.filter = filter;
     USARTPrint("filter\n");
     USARTPrintNumBase(test.u16bits[1], 2);
     USARTPrint("-");
     USARTPrintNumBase(test.u16bits[0], 2);
     USARTPrint("\n");
     
-    test.filter = testMask;
+    test.filter = mask;
     USARTPrint("mask\n");
     USARTPrintNumBase(test.u16bits[1], 2);
     USARTPrint("-");
@@ -179,7 +179,7 @@ void main(void) {
     
     if (CANhandlerListNotFull()){
         USARTPrint("handler list not full\n");
-        testIndex = CANaddFilterHandler(can_handler, &testFilter, &testMask);
-        USARTPrintNum(testIndex);
+        index = CANaddFilterHandler(can_handler, &filter, &mask);
+        USARTPrintNum(index);
     }
 }
