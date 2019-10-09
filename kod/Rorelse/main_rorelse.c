@@ -137,7 +137,7 @@ void init_app(){
 void main(void){
 	init_app();
 	while(1){
-		/*
+		
 		// Delayverision
 		GPIO_ResetBits(GPIOA, motion1.trig); // Vill ha en fin hög
 		delay_micro(2);
@@ -154,16 +154,16 @@ void main(void){
 		 
 		motion1.cm = (microTicks - motion1.pulseEcho)/58;
 		if(motion1.cm < motion1.alarm){ // Upptäcker sensorn något som är för nära?
-			//GPIO_SetBits(GPIOA, GPIO_Pin_2);	// Tänd lampa
-			DebugPrint("1*");
+			GPIO_SetBits(GPIOA, GPIO_Pin_2);	// Tänd lampa
+			DebugPrint("1\n");
 		}
 		else{
-			//GPIO_ResetBits(GPIOA, GPIO_Pin_2);	// Släck lampa
-			DebugPrint("0*");
+			GPIO_ResetBits(GPIOA, GPIO_Pin_2);	// Släck lampa
+			DebugPrint("0\n");
 		}
-		delay_micro(1000);
+		delay_micro(1000000);
 
-		
+		/*
 		// Pollingverision
 		if(microTicks >= motion1.pulseTrig){ // Är trigpulsen klar?
 			GPIO_ResetBits(GPIOA, motion1.trig);	// Avaktivera triggerpuls
@@ -187,15 +187,15 @@ void main(void){
 		}*/
 		
 		
-		if (GPIO_ReadInputDataBit(GPIOB, motion2.echo) == Bit_RESET) {  // Vibration triggad
-		/* Återanvänder variabler i MotionSensor till annat, Todo: i framtiden bör det nog finnas en egen struct för vibration.
+		/*if (GPIO_ReadInputDataBit(GPIOB, motion2.echo) == Bit_RESET) {  // Vibration triggad
+		 * Återanvänder variabler i MotionSensor till annat, Todo: i framtiden bör det nog finnas en egen struct för vibration.
 		 * pulseEcho  = antal vibrationer
 		 * pulseDelay = max antal vibrationer på 1 sekund innan det larmar
 		 * pulseTrig  = tidsdelta 
 		 * 
 		 * Vid mätning utan delay mellan loop-cyklarna verkade 10k vara ett rimligt värde för pulseDelay.
 		 * Detta bör mätas om när loopen är färdigskriven då timingen kommer att ha ändrats
-		*/
+		 *
 			if (!motion2.pulseEcho) {
 				motion2.pulseTrig = microTicks; // Tidstamp för första vibrationen			
 			}
@@ -209,7 +209,7 @@ void main(void){
 			}
 			motion2.pulseTrig = 0;
 			motion2.pulseEcho= 0;
-		}
+		}*/
 						
 		// microTicks bör ställas till 0 vid lämpligt tillfälle, max värde = 72 min
 		
