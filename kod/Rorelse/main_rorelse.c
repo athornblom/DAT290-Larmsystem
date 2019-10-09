@@ -44,6 +44,7 @@ MotionSensor motion2;
 
 
 volatile uint32_t microTicks = 0;                              /* Variable för microsekunder*/
+uint32_t delta = 0;
   
 void SysTick_Handler(void)  {                               /* SysTick interrupt Handler. */
 	microTicks++;
@@ -136,8 +137,9 @@ void init_app(){
 
 void main(void){
 	init_app();
+	int highcount = 0;
 	while(1){
-		/*
+		DebugPrint("Start\n");
 		// Delayverision
 		GPIO_ResetBits(GPIOA, motion1.trig); // Vill ha en fin hög
 		delay_micro(2);
@@ -150,20 +152,47 @@ void main(void){
 	
 		motion1.pulseEcho = microTicks;
 		while(GPIO_ReadInputDataBit(GPIOA, motion1.echo)){ // Mät hur länge echopulsen är hög
+			//highcount++;
 		}
-		 
-		motion1.cm = (microTicks - motion1.pulseEcho)/58;
+		
+		delta = microTicks - motion1.pulseEcho;
+		if (delta < 5) {
+			GPIO_InitTypeDef initi;
+			//konfigurerar om inport GPIO A
+			RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
+			GPIO_StructInit(&initi);
+			initi.GPIO_Pin = motion1.echo | GPIO_Pin_3 | GPIO_Pin_5 | GPIO_Pin_7;
+			initi.GPIO_Mode = GPIO_Mode_OUT;
+			initi.GPIO_OType = GPIO_OType_PP;
+			initi.GPIO_Speed = GPIO_Fast_Speed;
+			GPIO_Init(GPIOA, &initi);
+			
+			GPIO_SetBits(GPIOA, motion1.echo);
+			delay_micro(1000000);
+			GPIO_ResetBits(GPIOA, motion1.echo);
+
+			RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
+			GPIO_StructInit(&initi);
+			initi.GPIO_Pin = motion1.echo | GPIO_Pin_3 | GPIO_Pin_5 | GPIO_Pin_7;
+			initi.GPIO_Mode = GPIO_Mode_IN;
+			initi.GPIO_PuPd = GPIO_PuPd_UP;
+			initi.GPIO_Speed = GPIO_Fast_Speed; // 50 Mhz
+			GPIO_Init(GPIOA, &initi);
+			
+		}
+		motion1.cm = delta/58;
 		if(motion1.cm < motion1.alarm){ // Upptäcker sensorn något som är för nära?
-			//GPIO_SetBits(GPIOA, GPIO_Pin_2);	// Tänd lampa
-			DebugPrint("1*");
+			GPIO_SetBits(GPIOA, GPIO_Pin_2);	// Tänd lampa
+			DebugPrint("1\n");
 		}
 		else{
-			//GPIO_ResetBits(GPIOA, GPIO_Pin_2);	// Släck lampa
-			DebugPrint("0*");
+			// GPIO_ResetBits(GPIOA, GPIO_Pin_2);	// Släck lampa
+			DebugPrint("0\n");
 		}
-		delay_micro(1000);
+		DebugPrintNum(delta);
+		delay_micro(2000000);
 
-		
+		/*
 		// Pollingverision
 		if(microTicks >= motion1.pulseTrig){ // Är trigpulsen klar?
 			GPIO_ResetBits(GPIOA, motion1.trig);	// Avaktivera triggerpuls
@@ -184,10 +213,10 @@ void main(void){
 		}
 		else{
 			GPIO_ResetBits(GPIOA, GPIO_Pin_2);	// Släck lampa
-		}*/
+		}
+		*/
 		
-		
-		if (GPIO_ReadInputDataBit(GPIOB, motion2.echo) == Bit_RESET) {  // Vibration triggad
+		//if (GPIO_ReadInputDataBit(GPIOB, motion2.echo) == Bit_RESET) {  // Vibration triggad
 		/* Återanvänder variabler i MotionSensor till annat, Todo: i framtiden bör det nog finnas en egen struct för vibration.
 		 * pulseEcho  = antal vibrationer
 		 * pulseDelay = max antal vibrationer på 1 sekund innan det larmar
@@ -195,7 +224,7 @@ void main(void){
 		 * 
 		 * Vid mätning utan delay mellan loop-cyklarna verkade 10k vara ett rimligt värde för pulseDelay.
 		 * Detta bör mätas om när loopen är färdigskriven då timingen kommer att ha ändrats
-		*/
+		
 			if (!motion2.pulseEcho) {
 				motion2.pulseTrig = microTicks; // Tidstamp för första vibrationen			
 			}
@@ -210,7 +239,7 @@ void main(void){
 			motion2.pulseTrig = 0;
 			motion2.pulseEcho= 0;
 		}
-						
+		*/
 		// microTicks bör ställas till 0 vid lämpligt tillfälle, max värde = 72 min
 		
 	}

@@ -1,8 +1,8 @@
 .PHONY: clean All
 
 All:
-	@echo "----------Building project:[ Periferienhet - Debug ]----------"
-	@cd "Periferienhet" && "$(MAKE)" -f  "Periferienhet.mk" && "$(MAKE)" -f  "Periferienhet.mk" PostBuild
+	@echo "----------Building project:[ Rorelse - Debug ]----------"
+	@cd "Rorelse" && "$(MAKE)" -f  "Rorelse.mk" && "$(MAKE)" -f  "Rorelse.mk" PostBuild
 clean:
-	@echo "----------Cleaning project:[ Periferienhet - Debug ]----------"
-	@cd "Periferienhet" && "$(MAKE)" -f  "Periferienhet.mk" clean
+	@echo "----------Cleaning project:[ Rorelse - Debug ]----------"
+	@cd "Rorelse" && "$(MAKE)" -f  "Rorelse.mk" clean
