@@ -8,4 +8,5 @@ typedef struct door
     int GPIO_lamp;
     int GPIO_read;
     int larmTick; // msTick == larmState ? Larm
+    int GPIO_Type; //GPIOA = 0, osv
 } door;

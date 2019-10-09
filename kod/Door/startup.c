@@ -23,13 +23,18 @@ uint16_t GPIO_Pins[] = {
 	GPIO_Pin_6, GPIO_Pin_7, GPIO_Pin_8, GPIO_Pin_9, GPIO_Pin_10, GPIO_Pin_11,
 	GPIO_Pin_12, GPIO_Pin_13, GPIO_Pin_14, GPIO_Pin_15};
 
+GPIO_TypeDef *GPIO_Ports[] = {GPIOA};
+
 void detect_Closed_Doors(int *pointer)
 {
-	for (int i = 0; i < sizeof(GPIO_Pins); i = i + 2)
+	for (int j = 0; j < sizeof(GPIO_Ports) / sizeof(GPIO_TypeDef *); j++)
 	{
-		if (GPIO_ReadInputDataBit(GPIOA, GPIO_Pins[i]))
+		for (int i = 0; i < sizeof(GPIO_Pins); i = i + 2)
 		{
-			(*pointer)++;
+			if (GPIO_ReadInputDataBit(GPIO_Ports[j], GPIO_Pins[i]))
+			{
+				(*pointer)++;
+			}
 		}
 	}
 }
@@ -37,26 +42,30 @@ void detect_Closed_Doors(int *pointer)
 void init_Doors(door *pointer, int length)
 {
 	int SafetyNum = 0;
-	for (int i = 0; i < sizeof(GPIO_Pins); i = i+2)
+	for (int j = 0; j < sizeof(GPIO_Ports); j++)
 	{
-		if (SafetyNum == length) //finns ifall en dörr stängs efter att första gången som programet kollar dörrar
+		for (int i = 0; i < sizeof(GPIO_Pins); i = i+2)
 		{
-			break;
-		}
-		if (GPIO_ReadInputDataBit(GPIOA, GPIO_Pins[i]))
-		{
-		
-			SafetyNum++;
-			pointer->id = i;
-			pointer->controlbits = 0;
-			pointer->time_larm = 1;
-			pointer->time_central_larm = 2;
-			pointer->password = 0;
-			pointer->GPIO_lamp = GPIO_Pins[i + 1];
-			pointer->GPIO_read = GPIO_Pins[i];
-			pointer->larmTick = 0;
-			pointer++;
+			if (SafetyNum == length) //finns ifall en dörr stängs efter att första gången som programet kollar dörrar
+			{
+				break;
+			}
+			if (GPIO_ReadInputDataBit(GPIO_Ports[j], GPIO_Pins[i]))
+			{
 			
+				SafetyNum++;
+				pointer->id = i;
+				pointer->controlbits = 0;
+				pointer->time_larm = 0;
+				pointer->time_central_larm = 2;
+				pointer->password = 0;
+				pointer->GPIO_lamp = GPIO_Pins[i + 1];
+				pointer->GPIO_read = GPIO_Pins[i];
+				pointer->larmTick = 0;
+				pointer->GPIO_Type = j;
+				pointer++;
+				
+			}
 		}
 	}
 }
@@ -79,7 +88,7 @@ void init_GPIO_Ports()
 	init.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_2 | GPIO_Pin_4 | GPIO_Pin_6;
 	init.GPIO_Mode = GPIO_Mode_IN;
 	init.GPIO_PuPd = GPIO_PuPd_UP;
-	GPIO_Init(GPIOA, &init);
+	GPIO_Init(GPIO_Ports[0], &init);
 }
 
 
@@ -124,12 +133,12 @@ void main(void)
 
 	while (1)
 	{
-		for (int i = 0; i < sizeof(active_doors); i++)
+		for (int i = 0; i < sizeof(active_doors)/sizeof(door); i++)
 		{
-			if (GPIO_ReadInputDataBit(GPIOA, active_doors[i].GPIO_read))
+			if (GPIO_ReadInputDataBit(GPIO_Ports[active_doors[i].GPIO_Type], active_doors[i].GPIO_read))
 			{
 				active_doors[i].controlbits &= 0xFFFE; //borde va så!
-													   //GPIO_ResetBits(GPIOA, active_doors[i].GPIO_lamp);
+													   //GPIO_ResetBits(GPIO_Ports[0], active_doors[i].GPIO_lamp);
 			}
 			else
 			{
@@ -139,19 +148,19 @@ void main(void)
 				}
 				active_doors[i].controlbits |= 1;
 
-				//GPIO_SetBits(GPIOA, active_doors[i].GPIO_lamp);
+				//GPIO_SetBits(GPIO_Ports[0], active_doors[i].GPIO_lamp);
 			}
 
 			for (int i = 0; i < sizeof(active_doors); i++)
 			{
 				if (active_doors[i].controlbits & 1 && msTicks > (active_doors[i].larmTick + 1000 * 10 * active_doors[i].time_larm))
 				{
-					GPIO_SetBits(GPIOA, active_doors[i].GPIO_lamp);
+					GPIO_SetBits(GPIO_Ports[0], active_doors[i].GPIO_lamp);
 				}
 
 				else
 				{
-					GPIO_ResetBits(GPIOA, active_doors[i].GPIO_lamp);
+					GPIO_ResetBits(GPIO_Ports[0], active_doors[i].GPIO_lamp);
 				}
 				if (active_doors[i].controlbits & 1 && msTicks > (active_doors[i].larmTick + 1000 * 10 * active_doors[i].time_central_larm))
 				{
