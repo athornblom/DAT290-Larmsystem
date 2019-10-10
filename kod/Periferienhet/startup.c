@@ -39,10 +39,7 @@ void toggle_light() {
 
 
 can_handler(void){
-    blockingDelayMs(800);
-    
-    
-    USARTPrint("In irq handler\n");
+    blockingDelayMs(800); //TODO: Försök minska den här. Jag tycker USART-grejset borde fixa det istället
     
     CanRxMsg rxMsg;
     CAN_Receive(CAN1, CAN_FIFO0, &rxMsg);
@@ -60,8 +57,8 @@ can_handler(void){
 void main(void) {
     USARTConfig();
     can_init();
-    USARTPrint("\nstart periferi\n");
-    
+    USARTPrint("\nGod morgon! Jag ar en periferienhet som inte kan saga a, a och o\n");
+    blockingDelayMs(400);
     
     
     CANFilter filter;
@@ -77,21 +74,6 @@ void main(void) {
     mask.IDE = 0;
     mask.RTR = 0;
     
-    filterUnion test;
-    test.filter = filter;
-    USARTPrint("filter\n");
-    USARTPrintNumBase(test.u16bits[1], 2);
-    USARTPrint("-");
-    USARTPrintNumBase(test.u16bits[0], 2);
-    USARTPrint("\n");
-    
-    test.filter = mask;
-    USARTPrint("mask\n");
-    USARTPrintNumBase(test.u16bits[1], 2);
-    USARTPrint("-");
-    USARTPrintNumBase(test.u16bits[0], 2);
-    USARTPrint("\n");
-    
     if (CANhandlerListNotFull()){
         USARTPrint("handler list not full\n");
         index = CANaddFilterHandler(can_handler, &filter, &mask);
@@ -103,7 +85,7 @@ void main(void) {
     CanTxMsg canMsg;
     uint32_t temp_id = 5;
     
-    encode_request_id(&canMsg, temp_id);
+    encode_request_id(&canMsg, temp_id, 0,42,0);
     
     while (requesting_id) {
         

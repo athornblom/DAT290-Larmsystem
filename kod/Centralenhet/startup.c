@@ -22,7 +22,7 @@ typedef struct{
     uint32_t dist_threshold;
 } Motion_device;
 
-uint8_t next_id = 0;
+uint8_t next_id = 50;
 
 void *devices[128];
 Door_device door_devs[128];
@@ -86,7 +86,7 @@ void config_door(unsigned char id_device, unsigned char id_door, unsigned int ti
         }
 }*/
 
-void can_handler(CanRxMsg *rxMsgP){
+void id_request_handler(CanRxMsg *rxMsgP){
     //TODO REMOVE
     USARTPrint("In irq handler\n");
     
@@ -109,9 +109,6 @@ void can_handler(CanRxMsg *rxMsgP){
             
             uint8_t id = get_door_device(next_id)->id;
             USARTPrintNum((uint32_t)id);
-            blockingDelayMs(700);
-            USARTPrint("\nId:t borde vara ");
-            USARTPrintNum((uint32_t)next_id);
             USARTPrint("\n");
             next_id++;
             
@@ -121,10 +118,54 @@ void can_handler(CanRxMsg *rxMsgP){
         USARTPrintNum((uint32_t)rxMsg.StdId & 0x7FF);
     }
     USARTPrint("\nData ");
-    USARTPrintNum((rxMsg.Data[0]));
+    USARTPrintNum((uint32_t)rxMsg.Data);
     USARTPrint("\n");
 
 }
+
+void add_id_request_handler(void){
+    
+    CANFilter filter;
+    filter.STDID = 0b10110000000;
+    filter.EXDID = 0;
+    filter.IDE = 0;
+    filter.RTR = 0;
+    uint8_t index;
+    
+    CANFilter mask;
+    mask.STDID = 0b11111111111;
+    mask.EXDID = 0;
+    mask.IDE = 0;
+    mask.RTR = 0;
+    
+    if (CANhandlerListNotFull()){
+        USARTPrint("handler list not full\n");
+        index = CANaddFilterHandler(id_request_handler, &filter, &mask);
+        USARTPrintNum(index);
+    }
+}
+/*
+void add_handler(void){
+    
+    CANFilter filter;
+    filter.STDID = 0b10110000000;
+    filter.EXDID = 0;
+    filter.IDE = 0;
+    filter.RTR = 0;
+    uint8_t index;
+    
+    CANFilter mask;
+    mask.STDID = 0b11111111111;
+    mask.EXDID = 0;
+    mask.IDE = 0;
+    mask.RTR = 0;
+    
+    if (CANhandlerListNotFull()){
+        USARTPrint("handler list not full\n");
+        index = CANaddFilterHandler(can_handler, &filter, &mask);
+        USARTPrintNum(index);
+    }
+}*/
 
 void main(void) {
     USARTConfig();
@@ -148,38 +189,5 @@ void main(void) {
         }
     }*/
     
-    
-    CANFilter filter;
-    filter.STDID = 0b10110000000;
-    filter.EXDID = 0;
-    filter.IDE = 0;
-    filter.RTR = 0;
-    uint8_t index;
-    
-    CANFilter mask;
-    mask.STDID = 0b11111111111;
-    mask.EXDID = 0;
-    mask.IDE = 0;
-    mask.RTR = 0;
-    
-    filterUnion test;
-    test.filter = filter;
-    USARTPrint("filter\n");
-    USARTPrintNumBase(test.u16bits[1], 2);
-    USARTPrint("-");
-    USARTPrintNumBase(test.u16bits[0], 2);
-    USARTPrint("\n");
-    
-    test.filter = mask;
-    USARTPrint("mask\n");
-    USARTPrintNumBase(test.u16bits[1], 2);
-    USARTPrint("-");
-    USARTPrintNumBase(test.u16bits[0], 2);
-    USARTPrint("\n");
-    
-    if (CANhandlerListNotFull()){
-        USARTPrint("handler list not full\n");
-        index = CANaddFilterHandler(can_handler, &filter, &mask);
-        USARTPrintNum(index);
-    }
+    add_id_request_handler();
 }
