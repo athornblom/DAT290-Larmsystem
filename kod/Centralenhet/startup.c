@@ -57,7 +57,6 @@ Door_device *add_door_device(uint8_t id){
     dev.id = id;
     door_devs[id] = dev; //Lägger dev i array av faktiska strukturinstanser för att undvika att den skrivs över
     devices[id] = (void*)(&door_devs[id]);
-    
     return &door_devs[id];
 }
 

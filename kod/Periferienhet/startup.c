@@ -37,7 +37,6 @@ void toggle_light() {
 
 
 
-
 can_handler(void){
     blockingDelayMs(800); //TODO: Försök minska den här. Jag tycker USART-grejset borde fixa det istället
     
