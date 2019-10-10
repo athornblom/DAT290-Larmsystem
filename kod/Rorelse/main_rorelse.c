@@ -48,6 +48,7 @@ MotionSensor motion1;
 MotionSensor motion2;
 
 
+
 volatile uint32_t microTicks = 0;		 // Variabel för microsekunder.
   
 void SysTick_Handler(void)  {			 // SysTick interrupt Handler.
@@ -90,13 +91,15 @@ void init_Sensors(){
 	motion2.id = 1;
 	motion2.controlbits = 1;
 	motion2.password = 2389;
-	motion2.trig = 0;
-	motion2.echo = GPIO_Pin_1;
+	motion2.trig = GPIO_Pin_4;
+	motion2.echo = GPIO_Pin_5;
+	motion2.lamp = GPIO_Pin_6;
 	motion2.pulseTrig = 0;
 	motion2.pulseEcho = 0;
-	motion2.pulseDelay = 10000; // Todo, hitta ett rimligt värde för max vibration/sec
-	motion2.cm = 0;
-	motion2.alarm = 0;
+	motion2.pulseDelay = 0;
+	motion2.cm = 400;
+	motion2.alarm = 20;
+	
 }
 
 
@@ -106,7 +109,7 @@ void init_GPIO_Ports(){
 	//konfigurerar inportar GPIO A
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
 	GPIO_StructInit(&init);
-	init.GPIO_Pin = motion1.echo;
+	init.GPIO_Pin = motion1.echo | motion2.echo;
 	init.GPIO_Mode = GPIO_Mode_IN;
 	init.GPIO_PuPd = GPIO_PuPd_UP;
 	init.GPIO_Speed = GPIO_Fast_Speed; // 50 Mhz
@@ -114,7 +117,7 @@ void init_GPIO_Ports(){
 
 	//konfigurerar utportar GPIO A
 	GPIO_StructInit(&init);
-	init.GPIO_Pin = motion1.trig | motion1.lamp;
+	init.GPIO_Pin = motion1.trig | motion1.lamp | motion2.trig | motion2.lamp;
 	init.GPIO_Mode = GPIO_Mode_OUT;
 	init.GPIO_OType = GPIO_OType_PP;
 	init.GPIO_Speed = GPIO_Fast_Speed;
@@ -144,6 +147,7 @@ void init_app(){
 
 void main(void){
 	init_app();
+	MotionSensor motionSensors[2] = {motion1, motion2};
 	
 	while(1){
 		//DebugPrint("Start\n");
@@ -178,28 +182,32 @@ void main(void){
 */
 		
 		// Pollingverision
-		if(microTicks >= motion1.pulseTrig){ // Är trigpulsen klar?
-			GPIO_ResetBits(GPIOA, motion1.trig);	// Avaktivera triggerpuls
+		for(int i = 0; i*4 < sizeof(motionSensors); i++){
+		if(motionSensors[i].controlbits & 1){
+			if(microTicks >= motionSensors[i].pulseTrig){ // Är trigpulsen klar?
+				GPIO_ResetBits(GPIOA, motionSensors[i].trig);	// Avaktivera triggerpuls
+			}
+			if(microTicks >= motionSensors[i].pulseDelay){  // Är triggfördröjningen klar?
+				GPIO_SetBits(GPIOA, motionSensors[i].trig);	// Aktivera triggerpuls
+				motionSensors[i].pulseTrig = microTicks + 10; // Triggpuls 10µs
+				motionSensors[i].pulseDelay = microTicks + 60000;	// Fördröjning mellan triggerpulserna, 60ms
+			}
+			if(!(motionSensors[i].controlbits & (1 << 1)) && GPIO_ReadInputDataBit(GPIOA, motionSensors[i].echo)){ // Är echo hög för första gången?
+				motionSensors[i].pulseEcho = microTicks; // Början av echopulsen.
+				motionSensors[i].controlbits |= 1 << 1;  // Ettställer kontrollbit 1.
+			}
+			if ((motionSensors[i].controlbits & (1 << 1)) && !GPIO_ReadInputDataBit(GPIOA, motionSensors[i].echo)) {	// Är echo låg för första gången?
+				motionSensors[i].cm = (microTicks - motionSensors[i].pulseEcho)/58; // Sekunder tills echo kommer tillbaks.
+				motionSensors[i].controlbits &= 0xFD;	// Nollställer kontrollbit 1.
+			}
+			if(motionSensors[i].cm < motionSensors[i].alarm){	// Upptäcker sensorn något som är för nära?
+				GPIO_SetBits(GPIOA, motionSensors[i].lamp);	// Tänd lampa.
+			}
+			else{
+				GPIO_ResetBits(GPIOA, motionSensors[i].lamp);	// Släck lampa.
+			}
 		}
-		if(microTicks >= motion1.pulseDelay){  // Är triggfördröjningen klar?
-			GPIO_SetBits(GPIOA, motion1.trig);	// Aktivera triggerpuls
-			motion1.pulseTrig = microTicks + 10; // Triggpuls 10µs
-			motion1.pulseDelay = microTicks + 60000;	// Fördröjning mellan triggerpulserna, 60ms
-		}
-		if(!(motion1.controlbits & (1 << 1)) && GPIO_ReadInputDataBit(GPIOA, motion1.echo)){ // Är echo hög för första gången?
-			motion1.pulseEcho = microTicks; // Början av echopulsen.
-			motion1.controlbits |= 1 << 1;  // Ettställer kontrollbit 1.
-		}
-		if ((motion1.controlbits & (1 << 1)) && !GPIO_ReadInputDataBit(GPIOA, motion1.echo)) {	// Är echo låg för första gången?
-			motion1.cm = (microTicks - motion1.pulseEcho)/58; // Sekunder tills echo kommer tillbaks.
-			motion1.controlbits &= 0xFD;	// Nollställer kontrollbit 1.
-		}
-		if(motion1.cm < motion1.alarm){	// Upptäcker sensorn något som är för nära?
-			GPIO_SetBits(GPIOA, motion1.lamp);	// Tänd lampa.
-		}
-		else{
-			GPIO_ResetBits(GPIOA, motion1.lamp);	// Släck lampa.
-		}
+		
 		
 		
 		//if (GPIO_ReadInputDataBit(GPIOB, motion2.echo) == Bit_RESET) {  // Vibration triggad
@@ -228,6 +236,7 @@ void main(void){
 		*/
 		// microTicks bör ställas till 0 vid lämpligt tillfälle, max värde = 72 min
 		
+	}
 	}
 
 		
