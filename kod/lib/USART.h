@@ -1,6 +1,8 @@
 #ifndef USART_H
 #define USART_H
 
+//USART använder Port A pinnarna 9 och 10
+
 /*Guide:
  * Börja med att konfigurera USART med USARTConfig()
  * Nu kan du använda funktionerna nedan
