@@ -1,6 +1,8 @@
 #ifndef CAN_H
 #define CAN_H
 
+//CAN använder Port B pinnarna 8 och 9
+
 #include "stm32f4xx.h"
 #include "stm32f4xx_can.h"
 

@@ -8,6 +8,7 @@
 #include "stm32f4xx_rcc.h"
 #include <math.h>
 
+//USART använder Port A pinnarna 9 och 10
 
 //Buffertar för mottagning och sändning
 //Pekare för att slippa skicka adresser med & hela tiden
@@ -114,14 +115,16 @@ void USARTConfig(void){
 //Lägger till elem till kön för att skicka
 //Returnerar 1 om det lyckades, 0 annars.
 uint8_t USARTPut (uint8_t elem){
+    //Avaktiverar avbrott för sändning för att inte tillåta avbrott under skrivning till buffern
+    USART_ITConfig(USART1, USART_IT_TXE, DISABLE);
+
     //Lägger till den i bufferten om det går
-    if (bufferPut(txBuffer, elem)){
-        //Aktiverar avbrott för att skicka
-        USART_ITConfig(USART1, USART_IT_TXE, ENABLE);
-        //Alternativ lösning: hålla koll på om avbrott redan är aktivt
-        return 1;
-    }
-    return 0;
+    uint8_t retVal = bufferPut(txBuffer, elem);
+
+    //Aktiverar avbrott för sändning igen
+    USART_ITConfig(USART1, USART_IT_TXE, ENABLE);
+
+    return retVal;
 }
 
 //Lägger till list till kön för att skicka
@@ -178,7 +181,16 @@ uint8_t USARTPrintNum(uint32_t num){
 //Gör ingen omvandling, dvs returnerar det tal som skickades över USART
 //Returnerar 1 om det lyckades, dvs det fanns ett meddelande att hämta 0 annars.
 uint8_t USARTGet(uint8_t *dest){
-    return bufferGet (rxBuffer, dest);
+    //Avaktiverar avbrott för mottagning för att inte gå till avbrottet under läsning från buffern.
+    USART_ITConfig(USART1, USART_IT_RXNE, DISABLE);
+
+    //Läser från buffern
+    uint8_t retVal =  bufferGet (rxBuffer, dest);
+
+    //Aktiverar avbrott igen
+    USART_ITConfig(USART1, USART_IT_RXNE, ENABLE);
+
+    return retVal;
 }
 
 //För omvandling från 0-9 heltal till int som kan skrivas

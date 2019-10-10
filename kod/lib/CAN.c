@@ -4,6 +4,8 @@
 #include "stm32f4xx_rcc.h"
 #include "stm32f4xx_gpio.h"
 
+//CAN använder Port B pinnarna 8 och 9
+
 #define	CAN1_IRQ_VECTOR		(0x2001C000+0x90)
 #define __CAN_IRQ_PRIORITY		2
 
