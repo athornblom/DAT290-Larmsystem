@@ -27,7 +27,7 @@ void detect_Closed_Doors(int *pointer)
 {
 	for (int i = 0; i < sizeof(GPIO_Pins); i = i + 2)
 	{
-		if (GPIO_ReadInputDataBit(GPIOE, GPIO_Pins[i]))
+		if ((GPIO_ReadInputDataBit(GPIOE, GPIO_Pins[i])))
 		{
 			(*pointer)++;
 		}
@@ -43,7 +43,7 @@ void init_Doors(door *pointer, int length)
 		{
 			break;
 		}
-		if (GPIO_ReadInputDataBit(GPIOE, GPIO_Pins[i]))
+		if ((GPIO_ReadInputDataBit(GPIOE, GPIO_Pins[i])))
 		{
 		
 			SafetyNum++;
@@ -66,15 +66,16 @@ void init_GPIO_Ports()
 {
 	/*  Function used to set the GPIO configuration to the default reset state ****/
 	GPIO_InitTypeDef init;
-	//GPIO A UTPORTAR
+	//GPIO E UTPORTAR
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOE, ENABLE);
 	GPIO_StructInit(&init);
 	init.GPIO_Pin = GPIO_Pin_1 | GPIO_Pin_3 | GPIO_Pin_5 | GPIO_Pin_7 | GPIO_Pin_9 | GPIO_Pin_11 | GPIO_Pin_13 | GPIO_Pin_15;
 	init.GPIO_Mode = GPIO_Mode_OUT;
 	init.GPIO_OType = GPIO_OType_PP;
+	init.GPIO_PuPd = GPIO_PuPd_NOPULL;
 	GPIO_Init(GPIOE, &init);
-
-	//konfigurerar inport GPIO A
+	
+	//konfigurerar inport GPIO E
 	GPIO_StructInit(&init);
 	init.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_2 | GPIO_Pin_4 | GPIO_Pin_6 | GPIO_Pin_8 | GPIO_Pin_10 | GPIO_Pin_12 |GPIO_Pin_14;
 	init.GPIO_Mode = GPIO_Mode_IN;
@@ -101,19 +102,24 @@ void systick_Init(void)
 		//typ reboot? bootloops är alltid kul
 	}
 }
-
-void main(void)
+void main(void){
+	init_GPIO_Ports();
+	if(GPIO_ReadInputDataBit(GPIOE, GPIO_Pin_14)){
+		GPIO_SetBits(GPIOE, GPIO_Pin_15);
+	}
+}
+/*void main(void)
 {
 	init_GPIO_Ports();
-//
-	//int amountOfActiveDoors = 0;
-	//detect_Closed_Doors(&amountOfActiveDoors); // Hur många dörrar är aktiva?
-	//door active_doors[amountOfActiveDoors];	// Skapa en array med tillräckligt stor size.
-	//init_Doors(&active_doors[0], amountOfActiveDoors);
-//
+
+	int amountOfActiveDoors = 0;
+	detect_Closed_Doors(&amountOfActiveDoors); // Hur många dörrar är aktiva?
+	door active_doors[amountOfActiveDoors];	// Skapa en array med tillräckligt stor size.
+	init_Doors(&active_doors[0], amountOfActiveDoors);
+
 	systick_Init();
 
-	
+	/*
 	door test1 = {.id = 0, .controlbits = 0, .time_larm = 0, .time_central_larm = 2, .password = 0, .GPIO_lamp = GPIO_Pin_3, .GPIO_read = GPIO_Pin_2, .larmTick = 0};
 	door test2 = {.id = 1, .controlbits = 0, .time_larm = 0, .time_central_larm = 2, .password = 0, .GPIO_lamp = GPIO_Pin_5, .GPIO_read = GPIO_Pin_4, .larmTick = 0};
 	door test3 = {.id = 2, .controlbits = 0, .time_larm = 0, .time_central_larm = 2, .password = 0, .GPIO_lamp = GPIO_Pin_11, .GPIO_read = GPIO_Pin_10, .larmTick = 0};
@@ -126,7 +132,7 @@ void main(void)
 	{
 		for (int i = 0; i < sizeof(active_doors); i++)
 		{
-			if (GPIO_ReadInputDataBit(GPIOE, active_doors[i].GPIO_read))
+			if (!GPIO_ReadInputDataBit(GPIOE, active_doors[i].GPIO_read))
 			{
 				active_doors[i].controlbits &= 0xFFFE; //borde va så!
 													   //GPIO_ResetBits(GPIOE, active_doors[i].GPIO_lamp);
@@ -161,7 +167,7 @@ void main(void)
 		}
 	}
 }
-
+*/
 // Lösenord?
 // Detektera dörrar automatiskt.
 //
