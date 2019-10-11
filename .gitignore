@@ -25,3 +25,9 @@
 *.mk
 *.s
 */Makefile
+kod/Rorelse/compile_flags.txt
+kod/Periferienhet/compile_flags.txt
+kod/Lyssnare/compile_flags.txt
+kod/Door/compile_flags.txt
+kod/Centralenhet/compile_flags.txt
+kod/Brusfabrik/compile_flags.txt
