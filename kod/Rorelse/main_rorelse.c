@@ -73,7 +73,6 @@ void init_Timer(){
 	if (returnCode) {
 		DebugPrint("SysTick Fail");
 	}
-	
 }
 
 // Fördröjningsfunktion i mikrosekunder.
@@ -82,6 +81,66 @@ void delay_micro(uint32_t micros){
 	while(wait > microTicks){
 	}
 }
+
+/**
+ * @brief Konfigurera GPIO portarna
+ * 
+ * @note 
+ * Portar A, B, och C används till rörelsesensor; D och E används till vibrationsmätare.
+ * För rörelsesensor används pinnar 3n, 3n + 1, 3n + 2, till trigg, echo, respektive lysdioden.
+ * För vibrationsmätaren används jämna pinnar till D0 (Sensor avmätning), och udda till lysdioder.
+ * 
+ * Det finns stöd för 5 rörelsesensor per port och 8 vibrationsmätare per port.
+ */
+void init_GPIO_Ports(){
+	// Initiera klockar för alla portar
+	uint32_t portClocks[5] = {RCC_AHB1Periph_GPIOA, RCC_AHB1Periph_GPIOB, RCC_AHB1Periph_GPIOC, RCC_AHB1Periph_GPIOD, RCC_AHB1Periph_GPIOE}; 
+	for (int i=0; i*sizeof(portClocks[0]) < sizeof(portClocks); i++) {
+		RCC_AHB1PeriphClockCmd(portClocks[i], ENABLE);
+	}
+	GPIO_InitTypeDef init;
+	
+	GPIO_TypeDef* motionPorts[3] = {GPIOA, GPIOB, GPIOC};
+	for (int i=0; i*sizeof(motionPorts[0]) < sizeof(motionPorts); i++)
+	{
+		// Konfigurerar inportar för avståndsmätare
+		GPIO_StructInit(&init);  // Default-ställer init konfigurationen
+		init.GPIO_Pin = GPIO_Pin_1 | GPIO_Pin_4 | GPIO_Pin_7 | GPIO_Pin_10 | GPIO_Pin_13;  // Echo pinnar
+		init.GPIO_Mode = GPIO_Mode_IN;
+		init.GPIO_PuPd = GPIO_PuPd_UP;
+		init.GPIO_Speed = GPIO_Fast_Speed; // 50 Mhz
+		GPIO_Init(motionPorts[i], &init);
+		
+		// Konfigurerar utportar för avståndsmätare
+		GPIO_StructInit(&init);
+		init.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_2 | GPIO_Pin_3 | GPIO_Pin_5 | GPIO_Pin_6 | GPIO_Pin_8 | GPIO_Pin_9 | GPIO_Pin_11 | GPIO_Pin_12 | GPIO_Pin_14;  // Trigg & Lysdiod pinnar
+		init.GPIO_Mode = GPIO_Mode_OUT;
+		init.GPIO_OType = GPIO_OType_PP;
+		init.GPIO_Speed = GPIO_Fast_Speed;
+		GPIO_Init(motionPorts[i], &init);
+	}
+
+	GPIO_TypeDef*  vibrationPorts[2] = {GPIOD, GPIOE};
+
+	for (int i=0; i*sizeof(vibrationPorts[0]) < sizeof(vibrationPorts); i++) {
+		// Konfigurerar inportar vibrationssensor
+		GPIO_StructInit(&init);
+		init.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_2 | GPIO_Pin_4 | GPIO_Pin_6 | GPIO_Pin_8 | GPIO_Pin_10 | GPIO_Pin_12 | GPIO_Pin_14; // D0 pinnar
+		init.GPIO_Mode = GPIO_Mode_IN;
+		init.GPIO_PuPd = GPIO_PuPd_UP;
+		init.GPIO_Speed = GPIO_Fast_Speed; // 50 Mhz
+		GPIO_Init(vibrationPorts[i], &init);
+		
+		// Konfigurerar utportar vibrationssensor
+		GPIO_StructInit(&init);
+		init.GPIO_Pin = GPIO_Pin_1 | GPIO_Pin_3 | GPIO_Pin_5 | GPIO_Pin_7 | GPIO_Pin_9 | GPIO_Pin_11 | GPIO_Pin_13 | GPIO_Pin_15; // Lysdiod pinnar
+		init.GPIO_Mode = GPIO_Mode_IN;
+		init.GPIO_PuPd = GPIO_PuPd_UP;
+		init.GPIO_Speed = GPIO_Fast_Speed; // 50 Mhz
+		GPIO_Init(vibrationPorts[i], &init);
+	}
+}
+
 
 
 void init_MotionSensors(){
@@ -118,36 +177,13 @@ void init_VibrationSensor(){
 	vibration1.pinLamp = GPIO_Pin_0;
 }
 
-
-void init_GPIO_Ports(){
-	/*  Funktion för att sätta GPIO till standard konfigurationer */
-	GPIO_InitTypeDef init;
-	//konfigurerar inportar GPIO A
-	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
-	GPIO_StructInit(&init);
-	init.GPIO_Pin = motion1.pinEcho | motion2.pinEcho | vibration1.pinDO;
-	init.GPIO_Mode = GPIO_Mode_IN;
-	init.GPIO_PuPd = GPIO_PuPd_UP;
-	init.GPIO_Speed = GPIO_Fast_Speed; // 50 Mhz
-	GPIO_Init(GPIOA, &init);
-
-	//konfigurerar utportar GPIO A
-	GPIO_StructInit(&init);
-	init.GPIO_Pin = motion1.pinTrig | motion1.pinLamp | motion2.pinTrig | motion2.pinLamp | vibration1.pinLamp;
-	init.GPIO_Mode = GPIO_Mode_OUT;
-	init.GPIO_OType = GPIO_OType_PP;
-	init.GPIO_Speed = GPIO_Fast_Speed;
-	GPIO_Init(GPIOA, &init);
-}
-
-
-
 void init_app(){
-	init_Timer();
-	init_MotionSensors();
-	init_VibrationSensor();
-	DebugPrintInit();
+	init_Timer();	
 	init_GPIO_Ports();
+	//init_Sensors():
+	// init_MotionSensors();
+	// init_VibrationSensor();
+	DebugPrintInit();
 }
 
 
@@ -189,7 +225,7 @@ void main(void){
 */
 		
 		// Pollingverision avståndssensor
-		for(int i = 0; i*4 < sizeof(motionSensors); i++){ // Itererar koden för alla avståndsmätare
+		for(int i = 0; i*sizeof(motionSensors[0]) < sizeof(motionSensors); i++){ // Itererar koden för alla avståndsmätare
 		if(motionSensors[i].controlbits & 1){ // Är sensorn aktiverad?
 			if(microTicks >= motionSensors[i].pulseTrig){ // Är trigpulsen klar?
 				GPIO_ResetBits(GPIOA, motionSensors[i].pinTrig);	// Avaktivera triggerpuls
