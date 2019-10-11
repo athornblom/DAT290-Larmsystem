@@ -5,6 +5,7 @@
 #include "stm32f4xx_gpio.h"
 #include "system_stm32f4xx.h"
 #include "startup.h"
+#include "delay.h"
 
 void startup(void) __attribute__((naked)) __attribute__((section(".start_section")));
 
@@ -25,31 +26,30 @@ uint16_t GPIO_Pins[] = {
 
 void detect_Closed_Doors(int *pointer)
 {
+	while ((*pointer) == 0) {
 	for (int i = 0; i < sizeof(GPIO_Pins); i = i + 2)
 	{
-		if ((GPIO_ReadInputDataBit(GPIOE, GPIO_Pins[i])))
+		if (!(GPIO_ReadInputDataBit(GPIOE, GPIO_Pins[i])))
 		{
 			(*pointer)++;
 		}
 	}
-}
+	}
+	}
+
 
 void init_Doors(door *pointer, int length)
 {
 	int SafetyNum = 0;
 	for (int i = 0; i < sizeof(GPIO_Pins); i = i+2)
 	{
-		if (SafetyNum == length) //finns ifall en dörr stängs efter att första gången som programet kollar dörrar
-		{
-			break;
-		}
-		if ((GPIO_ReadInputDataBit(GPIOE, GPIO_Pins[i])))
+		if (!(GPIO_ReadInputDataBit(GPIOE, GPIO_Pins[i])))
 		{
 		
 			SafetyNum++;
 			pointer->id = i;
 			pointer->controlbits = 0;
-			pointer->time_larm = 1;
+			pointer->time_larm = 0;
 			pointer->time_central_larm = 2;
 			pointer->password = 0;
 			pointer->GPIO_lamp = GPIO_Pins[i + 1];
@@ -102,32 +102,76 @@ void systick_Init(void)
 		//typ reboot? bootloops är alltid kul
 	}
 }
-void main(void){
+/*void main(void){
 	init_GPIO_Ports();
-	if(GPIO_ReadInputDataBit(GPIOE, GPIO_Pin_14)){
+	systick_Init;
+	while(msTicks < 1000)
+	
+	for (int i = 0; i < 1; i++)
+	{
+		if(GPIO_ReadInputDataBit(GPIOE, GPIO_Pin_14)){
 		GPIO_SetBits(GPIOE, GPIO_Pin_15);
 	}
-}
-/*void main(void)
+	}
+	else
+	{
+		GPIO_ResetBits(GPIOE, GPIO_Pin_15);
+	}
+
+	
+	
+
+}*/
+door active_doors[4];
+void main(void)
 {
 	init_GPIO_Ports();
-
-	int amountOfActiveDoors = 0;
-	detect_Closed_Doors(&amountOfActiveDoors); // Hur många dörrar är aktiva?
-	door active_doors[amountOfActiveDoors];	// Skapa en array med tillräckligt stor size.
-	init_Doors(&active_doors[0], amountOfActiveDoors);
-
 	systick_Init();
+	while(msTicks < 2000);
+	/*int amountOfActiveDoors = 0;
+	for (int i = 0; i < sizeof(GPIO_Pins) / sizeof(uint16_t); i = i + 2)
+	{
+		if(!GPIO_ReadInputDataBit(GPIOE, GPIO_Pins[i])){
+			amountOfActiveDoors++;
+		}
+	}
+	
+	//amountOfActiveDoors = 4;
+	if(amountOfActiveDoors == 4){
+		GPIO_SetBits(GPIOE,GPIO_Pin_15);
+	}
+	
+	//door active_doors[amountOfActiveDoors];
+	 */
+	
+	int counter = 0;
+	for (int i = 0; i < sizeof(GPIO_Pins) / sizeof(uint16_t); i = i + 2)
+	{
+		if((!GPIO_ReadInputDataBit(GPIOE, GPIO_Pins[i])) && (counter < 4 )){
+			active_doors[counter].GPIO_read = GPIO_Pins[i];
+			active_doors[counter].GPIO_lamp = GPIO_Pins[i+1];
+			active_doors[counter].controlbits = 0;
+			active_doors[counter].time_larm = 0;
+			active_doors[counter].time_central_larm = 2;
+			counter++;
+		}
+	}
+
+	//detect_Closed_Doors(&amountOfActiveDoors); // Hur många dörrar är aktiva?
+	//door active_doors[amountOfActiveDoors];	// Skapa en array med tillräckligt stor size.
+	//init_Doors(&active_doors[0], amountOfActiveDoors);
+
+	
 
 	/*
 	door test1 = {.id = 0, .controlbits = 0, .time_larm = 0, .time_central_larm = 2, .password = 0, .GPIO_lamp = GPIO_Pin_3, .GPIO_read = GPIO_Pin_2, .larmTick = 0};
 	door test2 = {.id = 1, .controlbits = 0, .time_larm = 0, .time_central_larm = 2, .password = 0, .GPIO_lamp = GPIO_Pin_5, .GPIO_read = GPIO_Pin_4, .larmTick = 0};
-	door test3 = {.id = 2, .controlbits = 0, .time_larm = 0, .time_central_larm = 2, .password = 0, .GPIO_lamp = GPIO_Pin_11, .GPIO_read = GPIO_Pin_10, .larmTick = 0};
+	door test3 = {.id = 2, .controlbits = 0, .time_larm = 0, .time_central_larm = 2, .password = 0, .GPIO_lamp = GPIO_Pin_9, .GPIO_read = GPIO_Pin_8, .larmTick = 0};
 	door test4 = {.id = 3, .controlbits = 0, .time_larm = 0, .time_central_larm = 2, .password = 0, .GPIO_lamp = GPIO_Pin_7, .GPIO_read = GPIO_Pin_6, .larmTick = 0};
 	
 	door active_doors[4] = {test1,test2,test3,test4};
+	*/
 	
-
 	while (1)
 	{
 		for (int i = 0; i < sizeof(active_doors); i++)
@@ -167,7 +211,7 @@ void main(void){
 		}
 	}
 }
-*/
+
 // Lösenord?
 // Detektera dörrar automatiskt.
 //
