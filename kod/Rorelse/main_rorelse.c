@@ -33,7 +33,7 @@ __asm volatile(
 typedef struct MotionSensors {
 	char id, controlbits;							// Id och 8 kontrollbitar tex den minst signifikanta biten är ifall sensorn är aktiv eller ej.
 	short password;									// 4 sifferig kod för att aktivera/avaktivera sensorn.
-	uint16_t trig, echo, lamp;						// Pinnar för trig, echo och lampa, t.ex GPIO_Pin_2, GPIO_Pin_3 och GPIO_Pin_4.
+	uint16_t pinTrig, pinEcho, pinLamp;				// Pinnar för trig, echo och lampa, t.ex GPIO_Pin_2, GPIO_Pin_3 och GPIO_Pin_4.
 	uint32_t pulseTrig, pulseEcho, pulseDelay;		// Längd på triggerpuls(10µs), tid tills pulsen kommer tillbaks och fördröjning mellan pulser.
 	float cm, alarm; 								// Avstånd till föremål och larmavstånd.
 } MotionSensor;
@@ -46,6 +46,15 @@ typedef struct MotionSensors {
 
 MotionSensor motion1;
 MotionSensor motion2;
+
+
+typedef struct VibrationSensors{
+	char id, controlbits;		// Id och 8 kontrollbitar tex den minst signifikanta biten är ifall sensorn är aktiv eller ej.
+	short password;				// 4 sifferig kod för att aktivera/avaktivera sensorn.
+	uint16_t pinDO, pinLamp;	// Pinnar för vibrationssensorns 'digital output' och en lampa.
+} VibrationSensor;
+
+VibrationSensor vibration1;
 
 
 
@@ -75,13 +84,13 @@ void delay_micro(uint32_t micros){
 }
 
 
-void init_Sensors(){
+void init_MotionSensors(){
 	motion1.id = 0;
 	motion1.controlbits = 1;
 	motion1.password = 2389;
-	motion1.trig = GPIO_Pin_2;
-	motion1.echo = GPIO_Pin_3;
-	motion1.lamp = GPIO_Pin_0;
+	motion1.pinTrig = GPIO_Pin_7;
+	motion1.pinEcho = GPIO_Pin_3;
+	motion1.pinLamp = GPIO_Pin_8;
 	motion1.pulseTrig = 0;
 	motion1.pulseEcho = 0;
 	motion1.pulseDelay = 0;
@@ -91,15 +100,22 @@ void init_Sensors(){
 	motion2.id = 1;
 	motion2.controlbits = 1;
 	motion2.password = 2389;
-	motion2.trig = GPIO_Pin_4;
-	motion2.echo = GPIO_Pin_5;
-	motion2.lamp = GPIO_Pin_6;
+	motion2.pinTrig = GPIO_Pin_4;
+	motion2.pinEcho = GPIO_Pin_5;
+	motion2.pinLamp = GPIO_Pin_6;
 	motion2.pulseTrig = 0;
 	motion2.pulseEcho = 0;
 	motion2.pulseDelay = 0;
 	motion2.cm = 400;
 	motion2.alarm = 20;
 	
+}
+
+void init_VibrationSensor(){
+	vibration1.id = 0;
+	vibration1.controlbits = 1;
+	vibration1.pinDO = GPIO_Pin_2;
+	vibration1.pinLamp = GPIO_Pin_0;
 }
 
 
@@ -109,7 +125,7 @@ void init_GPIO_Ports(){
 	//konfigurerar inportar GPIO A
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
 	GPIO_StructInit(&init);
-	init.GPIO_Pin = motion1.echo | motion2.echo;
+	init.GPIO_Pin = motion1.pinEcho | motion2.pinEcho | vibration1.pinDO;
 	init.GPIO_Mode = GPIO_Mode_IN;
 	init.GPIO_PuPd = GPIO_PuPd_UP;
 	init.GPIO_Speed = GPIO_Fast_Speed; // 50 Mhz
@@ -117,28 +133,19 @@ void init_GPIO_Ports(){
 
 	//konfigurerar utportar GPIO A
 	GPIO_StructInit(&init);
-	init.GPIO_Pin = motion1.trig | motion1.lamp | motion2.trig | motion2.lamp;
+	init.GPIO_Pin = motion1.pinTrig | motion1.pinLamp | motion2.pinTrig | motion2.pinLamp | vibration1.pinLamp;
 	init.GPIO_Mode = GPIO_Mode_OUT;
 	init.GPIO_OType = GPIO_OType_PP;
 	init.GPIO_Speed = GPIO_Fast_Speed;
 	GPIO_Init(GPIOA, &init);
-		
-	//konfigurerar inport GPIO B
-	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
-	GPIO_StructInit(&init);
-	init.GPIO_Pin = motion2.echo;
-	init.GPIO_Mode = GPIO_Mode_IN;
-	init.GPIO_PuPd = GPIO_PuPd_UP;
-	init.GPIO_Speed = GPIO_Fast_Speed;
-	GPIO_Init(GPIOB, &init);
-
 }
 
 
 
 void init_app(){
 	init_Timer();
-	init_Sensors();
+	init_MotionSensors();
+	init_VibrationSensor();
 	DebugPrintInit();
 	init_GPIO_Ports();
 }
@@ -181,33 +188,41 @@ void main(void){
 		delay_micro(200000);
 */
 		
-		// Pollingverision
-		for(int i = 0; i*4 < sizeof(motionSensors); i++){
-		if(motionSensors[i].controlbits & 1){
+		// Pollingverision avståndssensor
+		for(int i = 0; i*4 < sizeof(motionSensors); i++){ // Itererar koden för alla avståndsmätare
+		if(motionSensors[i].controlbits & 1){ // Är sensorn aktiverad?
 			if(microTicks >= motionSensors[i].pulseTrig){ // Är trigpulsen klar?
-				GPIO_ResetBits(GPIOA, motionSensors[i].trig);	// Avaktivera triggerpuls
+				GPIO_ResetBits(GPIOA, motionSensors[i].pinTrig);	// Avaktivera triggerpuls
 			}
 			if(microTicks >= motionSensors[i].pulseDelay){  // Är triggfördröjningen klar?
-				GPIO_SetBits(GPIOA, motionSensors[i].trig);	// Aktivera triggerpuls
+				GPIO_SetBits(GPIOA, motionSensors[i].pinTrig);	// Aktivera triggerpuls
 				motionSensors[i].pulseTrig = microTicks + 10; // Triggpuls 10µs
 				motionSensors[i].pulseDelay = microTicks + 60000;	// Fördröjning mellan triggerpulserna, 60ms
 			}
-			if(!(motionSensors[i].controlbits & (1 << 1)) && GPIO_ReadInputDataBit(GPIOA, motionSensors[i].echo)){ // Är echo hög för första gången?
+			if(!(motionSensors[i].controlbits & (1 << 1)) && GPIO_ReadInputDataBit(GPIOA, motionSensors[i].pinEcho)){ // Är echo hög för första gången?
 				motionSensors[i].pulseEcho = microTicks; // Början av echopulsen.
 				motionSensors[i].controlbits |= 1 << 1;  // Ettställer kontrollbit 1.
 			}
-			if ((motionSensors[i].controlbits & (1 << 1)) && !GPIO_ReadInputDataBit(GPIOA, motionSensors[i].echo)) {	// Är echo låg för första gången?
+			if ((motionSensors[i].controlbits & (1 << 1)) && !GPIO_ReadInputDataBit(GPIOA, motionSensors[i].pinEcho)) {	// Är echo låg för första gången?
 				motionSensors[i].cm = (microTicks - motionSensors[i].pulseEcho)/58; // Sekunder tills echo kommer tillbaks.
 				motionSensors[i].controlbits &= 0xFD;	// Nollställer kontrollbit 1.
 			}
 			if(motionSensors[i].cm < motionSensors[i].alarm){	// Upptäcker sensorn något som är för nära?
-				GPIO_SetBits(GPIOA, motionSensors[i].lamp);	// Tänd lampa.
+				GPIO_SetBits(GPIOA, motionSensors[i].pinLamp);	// Tänd lampa.
 			}
 			else{
-				GPIO_ResetBits(GPIOA, motionSensors[i].lamp);	// Släck lampa.
+				GPIO_ResetBits(GPIOA, motionSensors[i].pinLamp);	// Släck lampa.
 			}
 		}
+		}
 		
+		if(!GPIO_ReadInputDataBit(GPIOA, vibration1.pinDO)){
+			GPIO_SetBits(GPIOA, vibration1.pinLamp);
+		}
+		else{
+			GPIO_ResetBits(GPIOA, vibration1.pinLamp);
+		}
+	
 		
 		
 		//if (GPIO_ReadInputDataBit(GPIOB, motion2.echo) == Bit_RESET) {  // Vibration triggad
@@ -236,7 +251,6 @@ void main(void){
 		*/
 		// microTicks bör ställas till 0 vid lämpligt tillfälle, max värde = 72 min
 		
-	}
 	}
 
 		
