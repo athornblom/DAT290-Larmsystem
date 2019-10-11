@@ -136,6 +136,11 @@ uint8_t USARTPut (uint8_t elem, uint8_t showError){
 //Lägger till list till kön för att skicka
 //Returnerar 1 om det lyckades, 0 annars.
 uint8_t USARTPrint(uint8_t *list){
+    //Kan inte lägga till en tom sträng
+    if (*list == 0){
+        return 0;
+    }
+
     //En sträng avslutas med null så vi
     //läser tills vi hittar den
     while (*list) {

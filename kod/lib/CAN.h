@@ -29,6 +29,29 @@ typedef union {
     CANFilter filter;
 } filterUnion;
 
+//Struktur för omvandling mellan STDID och våran ID-uppdelning
+    typedef struct  {
+        //Padding för att hamna rätt i STDID
+        uint32_t __unused : 21;
+
+        //De 3 mest signifikanta bitarna beskriver meddelandetyp
+        uint8_t msgType : 3;
+
+        //En bit för meddelandets riktning
+        //1 om mottagaren är centralenheten, 0 annars
+        uint8_t toCentral : 1;
+
+        //7 bitar för ID. Om riktning är till centralenheten är bitarna sändarens ID.
+        //Om riktningen är från centralenheten beskriver bitarna mot-tagarens ID.
+        uint8_t ID : 7;
+    } Header;
+
+//Union för själva omvandlingen
+typedef union {
+    Header header;
+    uint32_t STDID;
+} STDIDtoHeader;
+
 //För att skicka can meddelande
 uint8_t send_can_message(CanTxMsg *msg);
 
