@@ -113,13 +113,19 @@ void USARTConfig(void){
 }
 
 //Lägger till elem till kön för att skicka
+//Om show error är 0 så visas inte fel
 //Returnerar 1 om det lyckades, 0 annars.
-uint8_t USARTPut (uint8_t elem){
+uint8_t USARTPut (uint8_t elem, uint8_t showError){
     //Avaktiverar avbrott för sändning för att inte tillåta avbrott under skrivning till buffern
     USART_ITConfig(USART1, USART_IT_TXE, DISABLE);
 
     //Lägger till den i bufferten om det går
     uint8_t retVal = bufferPut(txBuffer, elem);
+
+    //Om buffern blivift full skriver vi en stjärna för att visa problemet
+    if(showError && !retVal){
+        bufferOverrideLast(txBuffer, '*');
+    }
 
     //Aktiverar avbrott för sändning igen
     USART_ITConfig(USART1, USART_IT_TXE, ENABLE);
@@ -135,11 +141,23 @@ uint8_t USARTPrint(uint8_t *list){
     while (*list) {
         //Lägg till alla tecken en efter en
         //Misslyckas vi med en avbryter vi resten
-        if (!USARTPut(*list++)){
+        if (!USARTPut(*list++, 1)){
             return 0;
         }
     }
     return 1;
+}
+
+//Lägger till list till kön för att skicka.
+//Väntar till det lyckas.
+void USARTWaitPrint(uint8_t *list){
+    //En sträng avslutas med null så vi
+    //läser tills vi hittar den
+    while (*list) {
+        //Väntar tills tecknet är tillagt
+        while (!USARTPut(*list, 0));
+        list++;
+    }
 }
 
 //Lägger till num som enskilda nummer
@@ -162,7 +180,7 @@ uint8_t USARTPrintNumBase(uint32_t num, uint8_t base){
 
     //Printar
     while(index){
-         if(!USARTPut(digitArr[--index])){
+         if(!USARTPut(digitArr[--index], 1)){
              return 0;
          }
      }

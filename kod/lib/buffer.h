@@ -30,6 +30,10 @@ void bufferInit(FIFO *buffer);
 //Returnerar 1 om det lyckades, 0 annars.
 uint8_t bufferPut ( FIFO *buffer, uint8_t elem);
 
+//Skriver över föregående elem i buffern.
+//Ändrar inga indexeringsvariabler
+void bufferOverrideLast ( FIFO *buffer, uint8_t elem);
+
 //Hämtar ett element från buffern till dest.
 //Returnerar 1 om det lyckades, 0 annars.
 uint8_t bufferGet ( FIFO *buffer, uint8_t *dest);
