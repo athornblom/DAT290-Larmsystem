@@ -1,6 +1,8 @@
 #ifndef CAN_H
 #define CAN_H
 
+//CAN använder Port B pinnarna 8 och 9
+
 #include "stm32f4xx.h"
 #include "stm32f4xx_can.h"
 
@@ -27,6 +29,29 @@ typedef union {
     CANFilter filter;
 } filterUnion;
 
+//Struktur för omvandling mellan STDID och våran ID-uppdelning
+    typedef struct  {
+        //Padding för att hamna rätt i STDID
+        uint32_t __unused : 21;
+
+        //De 3 mest signifikanta bitarna beskriver meddelandetyp
+        uint8_t msgType : 3;
+
+        //En bit för meddelandets riktning
+        //1 om mottagaren är centralenheten, 0 annars
+        uint8_t toCentral : 1;
+
+        //7 bitar för ID. Om riktning är till centralenheten är bitarna sändarens ID.
+        //Om riktningen är från centralenheten beskriver bitarna mot-tagarens ID.
+        uint8_t ID : 7;
+    } Header;
+
+//Union för själva omvandlingen
+typedef union {
+    Header header;
+    uint32_t STDID;
+} STDIDtoHeader;
+
 //För att skicka can meddelande
 uint8_t send_can_message(CanTxMsg *msg);
 
@@ -40,6 +65,9 @@ uint8_t CANaddFilterHandler(void (*newHandler)(CanRxMsg *), CANFilter *filter, C
 
 //Avaktiverar CANFilterHandler med index index från handlerList
 void CANdisableFilterHandler(uint8_t index);
+
+//Avaktiverar alla CANFilterHandlers
+void CANdisableAllFilterHandlers(void);
 
 //För att initiera can1
 uint8_t can_init();

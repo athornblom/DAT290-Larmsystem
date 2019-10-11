@@ -4,6 +4,8 @@
 #include "stm32f4xx_rcc.h"
 #include "stm32f4xx_gpio.h"
 
+//CAN använder Port B pinnarna 8 och 9
+
 #define	CAN1_IRQ_VECTOR		(0x2001C000+0x90)
 #define __CAN_IRQ_PRIORITY		2
 
@@ -74,6 +76,13 @@ void CANdisableFilterHandler(uint8_t index){
         CAN_FilterInitStructure.CAN_FilterFIFOAssignment = 0;
         CAN_FilterInitStructure.CAN_FilterActivation = DISABLE;
         CAN_FilterInit(&CAN_FilterInitStructure);
+    }
+}
+
+//Avaktiverar alla CANFilterHandlers
+void CANdisableAllFilterHandlers(void){
+    for (uint8_t index = 0; index < HANDLERLISTSIZE; index++){
+        handlerList[index].state = DISABLE;
     }
 }
 
@@ -206,24 +215,35 @@ uint8_t handle_door_time_msg(CanRxMsg *msg) {
     //TODO: Gör grejer med tiderna
 }
 
-uint8_t encode_request_id(CanTxMsg *msg, uint32_t temp_id){
+/*
+ * CanTxMsg *msg: förslagsvis tomt meddeleande som görs till id-förfrågan
+ * uint32_t temp_id: temporärt, förslagsvis slumpgenererat id
+ * uint8_t device_type: 0 för dörrenhet, 1 för rörelseenhet
+ * uint8_t value_0: antal dörrar eller avståndssensorer
+ * uint8_t value_1: antal vibrationssensorer
+ */
+uint8_t encode_request_id(CanTxMsg *msg, uint32_t temp_id, uint8_t device_type, uint8_t value_0, uint8_t value_1){
     uint8_t *data_pointer =  &(msg->Data);
     
-    msg->StdId = 5;
-    msg->DLC = 4;
+    msg->StdId = 0b10110000000;
+    msg->DLC = 7;
     
     msg->IDE = CAN_Id_Standard; //Alternativen är CAN_Id_Standard eller FCAN_Id_Extended
     msg->RTR = CAN_RTR_Data;
     
     //Id skrivs in i bytearrayen för data
     *data_pointer = temp_id;
+    *(data_pointer + 4) = device_type;
+    *(data_pointer + 5) = value_0;
+    *(data_pointer + 6) = value_1;
+    
 }
 
-uint8_t encode_assign_id(CanTxMsg *msg, uint16_t id){
+uint8_t encode_assign_id(CanTxMsg *msg, uint8_t id){
     uint8_t *data_pointer =  &(msg->Data);
     
-    msg->StdId = 4;
-    msg->DLC = 4;
+    msg->StdId = 0b10000000000;
+    msg->DLC = 2;
     
     msg->IDE = CAN_Id_Standard; //Alternativen är CAN_Id_Standard eller FCAN_Id_Extended
     msg->RTR = CAN_RTR_Data;

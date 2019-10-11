@@ -37,43 +37,54 @@ void toggle_light() {
 
 
 
-
-can_irq_handler(void){
-    //TODO REMOVE
-    USARTPrint("In irq handler\n");
+can_handler(void){
+    blockingDelayMs(800); //TODO: Försök minska den här. Jag tycker USART-grejset borde fixa det istället
     
-    if(CAN_GetITStatus(CAN1, CAN_IT_FMP0)) {
-        if (CAN_MessagePending(CAN1, CAN_FIFO0)) {
-            CanRxMsg rxMsg;
-            CAN_Receive(CAN1, CAN_FIFO0, &rxMsg);
-            //TODO hantera meddelandet
-            
-            
-            if(rxMsg.StdId==4){
-                id = rxMsg.Data[0];
-                USARTPrint("Jag tilldelades id: ");
-                USARTPrintNum(id);
-                USARTPrint("\n");
-                requesting_id = 0; //Nollställ flaggan för att sluta begära id
-            }
-            else{
-                USARTPrint("\nNeeeej! rxMsg.StdId: ");
-                USARTPrintNum((uint32_t)rxMsg.StdId);
-            }
-            
-        }
-    }
+    CanRxMsg rxMsg;
+    CAN_Receive(CAN1, CAN_FIFO0, &rxMsg);
+    
+    
+    
+    id = rxMsg.Data[0];
+    USARTPrint("Jag tilldelades id: ");
+    USARTPrintNum(id);
+    USARTPrint("\n");
+    requesting_id = 0; //Nollställ flaggan för att sluta begära id
 }
 
 
 void main(void) {
     USARTConfig();
     can_init();
-    USARTPrint("\nstart periferi\n");
+    USARTPrint("\nGod morgon! Jag ar en periferienhet som inte kan saga a, a och o\n");
+    blockingDelayMs(400);
+    
+    
+    CANFilter filter;
+    filter.STDID = 0b10000000000;
+    filter.EXDID = 0;
+    filter.IDE = 0;
+    filter.RTR = 0;
+    uint8_t index;
+    
+    CANFilter mask;
+    mask.STDID = 0b11111111111;
+    mask.EXDID = 0;
+    mask.IDE = 0;
+    mask.RTR = 0;
+    
+    if (CANhandlerListNotFull()){
+        USARTPrint("handler list not full\n");
+        index = CANaddFilterHandler(can_handler, &filter, &mask);
+        USARTPrintNum(index);
+    }
+    
+    
+    
     CanTxMsg canMsg;
     uint32_t temp_id = 5;
     
-    encode_request_id(&canMsg, temp_id);
+    encode_request_id(&canMsg, temp_id, 0,42,0);
     
     while (requesting_id) {
         

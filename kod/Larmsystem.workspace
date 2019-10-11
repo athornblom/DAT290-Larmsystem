@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Workspace Name="Larmsystem" Database="" Version="10.0.0">
-  <Project Name="Centralenhet" Path="Centralenhet/Centralenhet.project" Active="Yes"/>
-  <Project Name="Rorelse" Path="Rorelse/Rorelse.project" Active="No"/>
+  <Project Name="Centralenhet" Path="Centralenhet/Centralenhet.project" Active="No"/>
+  <Project Name="Rorelse" Path="Rorelse/Rorelse.project" Active="Yes"/>
   <Project Name="Door" Path="Door/Door.project" Active="No"/>
   <Project Name="Periferienhet" Path="Periferienhet/Periferienhet.project" Active="No"/>
+  <Project Name="Brusfabrik" Path="Brusfabrik/Brusfabrik.project" Active="No"/>
+  <Project Name="Lyssnare" Path="Lyssnare/Lyssnare.project" Active="No"/>
   <BuildMatrix>
     <WorkspaceConfiguration Name="Debug" Selected="yes">
       <Environment/>
@@ -11,6 +13,8 @@
       <Project Name="Rorelse" ConfigName="Debug"/>
       <Project Name="Door" ConfigName="Debug"/>
       <Project Name="Periferienhet" ConfigName="Debug"/>
+      <Project Name="Brusfabrik" ConfigName="Debug"/>
+      <Project Name="Lyssnare" ConfigName="Debug"/>
     </WorkspaceConfiguration>
     <WorkspaceConfiguration Name="Release" Selected="yes">
       <Environment/>
@@ -18,6 +22,8 @@
       <Project Name="Rorelse" ConfigName="Release"/>
       <Project Name="Door" ConfigName="Release"/>
       <Project Name="Periferienhet" ConfigName="Release"/>
+      <Project Name="Brusfabrik" ConfigName="Release"/>
+      <Project Name="Lyssnare" ConfigName="Release"/>
     </WorkspaceConfiguration>
   </BuildMatrix>
 </CodeLite_Workspace>

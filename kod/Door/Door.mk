@@ -13,7 +13,7 @@ CurrentFileName        :=
 CurrentFilePath        :=
 CurrentFileFullPath    :=
 User                   :=Adamt
-Date                   :=27/09/2019
+Date                   :=10/10/2019
 CodeLitePath           :=C:/cseapp/CodeLite
 LinkerName             :=$(CodeLiteDir)/tools/gcc-arm/bin/arm-none-eabi-g++.exe
 SharedObjectLinkerName :=$(CodeLiteDir)/tools/gcc-arm/arm-none-eabi-g++.exe -shared -fPIC
@@ -66,7 +66,7 @@ ARM_V6LIB:=$(CodeLiteDir)/tools/gcc-arm/arm-none-eabi/lib/thumb/v6-m
 ARM_GCC_V6LIB:=$(CodeLiteDir)/tools/gcc-arm/lib/gcc/arm-none-eabi/7.2.1/thumb/v6-m
 ARM_M4FPLIB:=$(CodeLiteDir)/tools/gcc-arm/arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard
 ARM_GCC_M4FPLIB:=$(CodeLiteDir)/tools/gcc-arm/lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m
-Objects0=$(IntermediateDirectory)/startup.c$(ObjectSuffix) $(IntermediateDirectory)/up_lib_STM32F4_lib_STM32F4xx_StdPeriph_Driver_src_stm32f4xx_gpio.c$(ObjectSuffix) $(IntermediateDirectory)/up_lib_STM32F4_lib_STM32F4xx_StdPeriph_Driver_src_misc.c$(ObjectSuffix) $(IntermediateDirectory)/up_lib_buffer.c$(ObjectSuffix) $(IntermediateDirectory)/up_lib_STM32F4_lib_STM32F4xx_StdPeriph_Driver_src_stm32f4xx_usart.c$(ObjectSuffix) $(IntermediateDirectory)/up_lib_USART.c$(ObjectSuffix) 
+Objects0=$(IntermediateDirectory)/startup.c$(ObjectSuffix) $(IntermediateDirectory)/up_lib_STM32F4_lib_STM32F4xx_StdPeriph_Driver_src_stm32f4xx_gpio.c$(ObjectSuffix) $(IntermediateDirectory)/up_lib_STM32F4_lib_STM32F4xx_StdPeriph_Driver_src_misc.c$(ObjectSuffix) $(IntermediateDirectory)/up_lib_buffer.c$(ObjectSuffix) $(IntermediateDirectory)/up_lib_STM32F4_lib_STM32F4xx_StdPeriph_Driver_src_stm32f4xx_usart.c$(ObjectSuffix) 
 
 
 
@@ -142,14 +142,6 @@ $(IntermediateDirectory)/up_lib_STM32F4_lib_STM32F4xx_StdPeriph_Driver_src_stm32
 
 $(IntermediateDirectory)/up_lib_STM32F4_lib_STM32F4xx_StdPeriph_Driver_src_stm32f4xx_usart.c$(PreprocessSuffix): ../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_usart.c
 	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/up_lib_STM32F4_lib_STM32F4xx_StdPeriph_Driver_src_stm32f4xx_usart.c$(PreprocessSuffix) ../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_usart.c
-
-$(IntermediateDirectory)/up_lib_USART.c$(ObjectSuffix): ../lib/USART.c $(IntermediateDirectory)/up_lib_USART.c$(DependSuffix)
-	$(CC) $(SourceSwitch) "C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/lib/USART.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/up_lib_USART.c$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/up_lib_USART.c$(DependSuffix): ../lib/USART.c
-	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/up_lib_USART.c$(ObjectSuffix) -MF$(IntermediateDirectory)/up_lib_USART.c$(DependSuffix) -MM ../lib/USART.c
-
-$(IntermediateDirectory)/up_lib_USART.c$(PreprocessSuffix): ../lib/USART.c
-	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/up_lib_USART.c$(PreprocessSuffix) ../lib/USART.c
 
 
 -include $(IntermediateDirectory)/*$(DependSuffix)

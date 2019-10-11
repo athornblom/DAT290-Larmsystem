@@ -21,6 +21,7 @@
 
 #define DebugPrintInit() do { if (DEBUG_ENABLE) USARTConfig(); } while (0)
 #define DebugPrint(str) do { if (DEBUG_ENABLE) USARTPrint(str); } while (0)
+#define DebugWaitPrint(str) do { if (DEBUG_ENABLE) USARTWaitPrint(str); } while (0)
 #define DebugPrintNum(num) do { if (DEBUG_ENABLE) USARTPrintNum(num); } while (0)
 #define DebugPrintNumBase(num, base) do { if (DEBUG_ENABLE) USARTPrintNumBase(num, base); } while (0)
 
