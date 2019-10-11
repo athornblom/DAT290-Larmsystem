@@ -154,14 +154,14 @@ VibrationSensor vibration1v;
 	
 void init_Sensors(){
 	motion1.id 			= 0;
-	motion1.controlbits = 0x1 | 0x2;  // Sensorn är aktiv och är av typen motion
+	motion1.controlbits = 0x1 | 1 << 1;  // Sensorn är aktiv och är av typen motion
 	motion1.password 	= 2389;
 	motion1.port 		= GPIOA;
-	motion1.pinLamp 	= GPIO_Pin_2;
+	motion1.pinLamp 	= GPIO_Pin_5;
 	motion1.motion 		= motion1m;
 	
-	motion1m.pinTrig 	= GPIO_Pin_0;
-	motion1m.pinEcho 	= GPIO_Pin_1;
+	motion1m.pinTrig 	= GPIO_Pin_3;
+	motion1m.pinEcho 	= GPIO_Pin_4;
 	motion1m.pulseTrig 	= 0;
 	motion1m.pulseEcho 	= 0;
 	motion1m.pulseDelay = 0;
@@ -212,23 +212,22 @@ void init_app(){
 	DebugPrintInit();
 }
 
-void alarm() {
-	// bit 7 = 1
-	// skicka alaram över can med id
-	// tänd lampa
+void alarm(Sensor* sensor) {
+	sensor->controlbits |= 1 << 7; 					// Markera att larmet går
+	GPIO_SetBits(sensor->port, sensor->pinLamp); 	// Tänd lampa
+	// Todo notifiera centralneheten via CAN
 }
 
 void main(void){
 	init_app();
-	Sensor sensors[2] = {motion1, motion2};
-	
+	Sensor sensors[1] = {motion1};
+
 	while(1){
-		// Polling
-		// Itererar koden för alla sensorer
+	// Polling
+	// Itererar över alla sensorer
 	for(int i = 0; i*sizeof(sensors[0]) < sizeof(sensors); i++){
-		
 		// Är sensorn aktiverad och av typen motion? (controlbit 1 && 2)
-		if(sensors[i].controlbits & (1 & 1 << 1)){
+		if(sensors[i].controlbits & (1 | 1 << 1)){
 			MotionSensor* sensor = &sensors[i].motion;
 			
 			// Är triggfördröjningen klar?
@@ -244,14 +243,14 @@ void main(void){
 			}
 			
 			// Är echo hög för första gången?
-			if(!(sensors[i].controlbits & (1 << 2)) && GPIO_ReadInputDataBit(sensors[i].port, sensor->pinEcho)){ 			
+			if(!(sensors[i].controlbits & (1 << 2)) && GPIO_ReadInputDataBit(sensors[i].port, sensor->pinEcho)){
 				sensor->pulseEcho = microTicks; 					// Början av echopulsen.
-				sensors[i].controlbits |= 1 << 2;  					// Ettställer kontrollbit 1.
+				sensors[i].controlbits |= 1 << 2;  					// Ettställer kontrollbit 2.
 			}
 			// Är echo låg för första gången?
 			else if (sensors[i].controlbits & (1 << 2) && !GPIO_ReadInputDataBit(sensors[i].port, sensor->pinEcho)) {	
-				sensor->cm = (microTicks - sensor->pulseEcho)/58; 	// Sekunder tills echo kommer tillbaks.
-				sensors[i].controlbits &= ~(1 << 2);				// Nollställer kontrollbit 1.
+				sensor->cm = (microTicks - sensor->pulseEcho)/58; 	// Tid tills echo kommer tillbaks.
+				sensors[i].controlbits &= ~(1 << 2);				// Nollställer kontrollbit 2.
 			}
 			
 			// Upptäcker sensorn något som är för nära?
