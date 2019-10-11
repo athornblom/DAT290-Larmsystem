@@ -1,4 +1,4 @@
-typedef struct door
+typedef struct _door
 {
     char id;
     int controlbits; // 16 kontrollbitar tex den minst signifikanta biten är ifall dörren är upplåst eller ej
@@ -8,5 +8,4 @@ typedef struct door
     int GPIO_lamp;
     int GPIO_read;
     int larmTick; // msTick == larmState ? Larm
-    int GPIO_Type; //GPIOA = 0, osv
 } door;

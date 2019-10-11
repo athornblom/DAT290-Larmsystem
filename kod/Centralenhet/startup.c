@@ -303,12 +303,17 @@ uint8_t strStartsWith(uint8_t *str1, uint8_t *str2){
     return 1;
 }
 
-void Command(uint8_t *command){
+//Kör kommandot som finns i strängen command
+//Retrunrerar 1 det fanns ett kommando att köra. 0 annars.
+uint8_t Command(uint8_t *command){
     if (strEqual(command, "test")) {
         USARTPrint("Hanterar test\n");
+        return 1;
     }
+    return 0;
 }
 
+//Hanterar länken mellan USART och commando. Dvs kör de kommandon som skrivs från USART
 void USARTCommand(void) {
     //Lista för nuvarande kommando + 1 för att ha plats för terminering
     static uint8_t currentCommand[MAXCOMMANDLENGTH + 1];
@@ -329,7 +334,9 @@ void USARTCommand(void) {
             currentCommand[index] = 0;
             index = 0;
             newCommand = 1;
-            Command((uint8_t *)(&currentCommand[0]));
+            if (!Command((uint8_t *)(&currentCommand[0]))){
+                USARTPrint("Kommando hittades inte\n");
+            }
 
         } else {
             //Check om vi skriver ett för lång kommando
@@ -356,23 +363,10 @@ void main(void) {
     USARTConfig();
     can_init();
     USARTPrint("\nStart Central\n");
-    CanTxMsg canMsg;
-    uint8_t USARTmsg;/*
-    while (1) {
-        if (USARTGet(&USARTmsg)){
-            //code canMsg
-            //encode_door_time_config(&canMsg,5,12);
-            canMsg.StdId = 55;
-            canMsg.ExtId = 32;
-            canMsg.IDE = CAN_Id_Standard; //Alternativen är CAN_Id_Standard eller FCAN_Id_Extended
-            canMsg.RTR = CAN_RTR_Data;
-            canMsg.DLC = 1;
-            canMsg.Data[0] = USARTmsg;
-            if (send_can_message(&canMsg) == CAN_TxStatus_NoMailBox){
-                USARTPrint("no mailbox empty\n");
-            }
-        }
-    }*/
     
     add_id_request_handler();
+
+    while (1) {
+        USARTCommand();
+    }
 }
