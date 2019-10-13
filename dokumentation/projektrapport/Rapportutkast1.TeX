@@ -126,6 +126,43 @@ En överblick av mjukvarans tidsflöde finns i Figur \ref{fig:tidsflöde}.
     \label{fig:tidsflöde}
 \end{figure}
 
+
+\subsection{CAN-kommunikation}
+\label{can}
+\subsubsection{Protokoll}
+Protokollet som har skapats för kommunikationen mellan enheterna bygger på protokollet Controller Area Network (CAN).
+CAN är ett bussprotokoll som främst används för kommunikation mellan datorer och givare på fordon där det ställs höga krav på tillförlitlighet.
+För att undvika kollisioner och därmed öka tillförlitligheten har CAN en dominant logisk nivå (0) som dessutom ger automatisk prioritering av meddelanden då den dominanta nivån har företräde på bussen.
+Denna prioritering har använts för att ge brotskande meddelande företräde över meddelande som inte kräver kort responstid. I tabell \ref{tab:meddelandetyper} är de meddelandetyper som använts kortfattat beskrivna. För en mer detaljerad beskrivning av protokollet och dess meddelandetyper se bilaga \ref{bilaga:protokoll}.
+
+
+
+\begin{table}[H]
+	\centering
+	\begin{tabular}{|c|p{0.8\textwidth}|}
+		\hline
+		Meddelandetyp & Används till \\ \hline \hline
+		Bekräftelse		& Bekräftelse för senaste mottagna meddelandet. \\ \hline
+		Skicka larm		& Talar om för centralenheten om någon dörr eller sensor larmar. \\ \hline
+		Skicka konfiguration		& Används för att skicka konfigurationer. \\ \hline
+		Tilldelning av ID		& Används då centralenheten tilldelar en periferienhet dess ID. \\ \hline
+		ID-begäran		& Detta meddelande skickas som en begäran av ID. \\ \hline
+
+	\end{tabular}
+	\caption{Listar de meddelandetyper som används för datakommunikationen. Uppifrån och ned sjunkande prioritering.}
+	\label{tab:meddelandetyper}
+\end{table}
+
+
+\subsubsection{Implementation}
+För hantering av CAN-meddelanden har STM-biblioteket (se \ref{stm}) använts för inledande initiering, hantering av avbrott samt för att skicka meddelanden.
+Utöver detta har det skapats ett system för hantering av mottagana meddelanden.
+Detta har lösts med avbrott där hanteringsfunktionen paras ihop med filtret för tillhörande meddelande.
+Hanteringsfunktionen anropas sedan av avbrottsrutinen då ett meddelande passerat filtret.
+Denna lösning har valts då de flesta meddelanden naturligt hanteras med en kort hanteringsfunktion som inte kräver input från användaren.
+
+
+
 \subsection{Delsystem }
 \subsubsection{Centralenheten}
 %\label{subsec:centralenhet}
@@ -181,23 +218,6 @@ HC-SR04 kan mäta avstånd upp till 400cm och larmavståndet är justerbart frå
 \textbf{Vibrationssensorn}: Sensorn sänder ständigt en hög puls till MD407-kortet förutom när den känner av vibrationer, då den istället sänder en låg puls. 
 Sensorns känslighet justeras fysiskt genom en komparator på sensorn.
 
-\subsection{CAN-kommunikation}
-\label{can}
-Nedan finns dokumentationen av protokollet som tagits fram för
-kommunikationen mellan enheterna. Därefter följer en beskrivning av hur kommunikationen har implementerats.
-\subsubsection{Protokoll}
-\input{../protokoll/protokollInput.tex}
-\subsubsection{Implementation}
-För hantering av CAN-meddelanden har STM-biblioteket (se \ref{stm}) använts för inledande initiering, hantering av avbrott samt för att skicka meddelanden.
-Utöver detta har det skapats ett system för hantering av mottagana meddelanden.
-Detta har lösts med avbrott där hanteringsfunktionen paras ihop med filtret för tillhörande meddelande.
-Hanteringsfunktionen anropas sedan av avbrottsrutinen då ett meddelande passerat filtret.
-Denna lösning har valts då de flesta meddelanden naturligt hanteras med en kort hanteringsfunktion som inte kräver input från användaren.
-
-Ett fall som är mer invecklat än en direkt hanteringsfunktion är vid konfiguration av avståndsgivare på rörelselarmet. I detta fall krävs input från användaren... \todo[inline]{Här borde de}\todo[inline]{Skriv färdigt föregående todo}
-\todo[inline]{Här bör detta kapitel utökas när beskrivningarna av meddelandena är klar.}
-
-
 
 
 % Användarhandledning?
@@ -226,5 +246,7 @@ använts. Detta har används vid initieringar av GPIO-portar, Systick med mera.
 % Avslutningsvis så vill vi påminna om att projektets slutrapport, precis som projektplanen, ska vara projektintern, det väl säga att den ska beskriva det tekniska utvecklingsarbetet och bortse från att projektarbetet faktiskt organiserats inom ramen för en kurs.
 
 \section{Bilagor}
-
+    \subsection{Utförlig beskrivning av meddelandetyper kommunikationsprotokoll}
+    \label{bilaga:protokoll}
+        \input{../protokoll/protokollInput.tex}
 \end{document}
