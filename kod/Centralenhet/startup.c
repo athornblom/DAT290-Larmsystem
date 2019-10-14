@@ -7,6 +7,7 @@
 #include "stm32f4xx_rcc.h"
 #include "stm32f4xx_gpio.h"
 #include "delay.c"
+#include "stringFunc.h"
 
 #define MAXCOMMANDLENGTH 10
 
@@ -124,49 +125,40 @@ void id_request_handler(CanRxMsg *rxMsgP){
 
 }
 
-void add_id_request_handler(void){
-    
-    CANFilter filter;
-    filter.STDID = 0b10110000000;
-    filter.EXDID = 0;
-    filter.IDE = 0;
-    filter.RTR = 0;
-    uint8_t index;
-    
-    CANFilter mask;
-    mask.STDID = 0b11111111111;
-    mask.EXDID = 0;
-    mask.IDE = 0;
-    mask.RTR = 0;
-    
-    if (CANhandlerListNotFull()){
-        USARTPrint("handler list not full\n");
-        index = CANaddFilterHandler(id_request_handler, &filter, &mask);
-        USARTPrintNum(index);
+//Förslag på struktur för larmhanterare
+void larmHandler(CanRxMsg *rxMsg){
+    //Är datadelen kortare än 2 byte är något fel
+    if (rxMsg->DLC & 0xf < 2){
+        USARTPrint("Error: for kort larmmeddelande\n");
+        return;
     }
+    
+    STDIDtoHeader converter;
+    converter.STDID = rxMsg->StdId;
+    
+    switch (rxMsg->Data[0]) {
+        //Dörrsensor
+        case 0:
+            USARTPrint("Dörrsensor");
+            break;
+
+        //Avståndssensor
+        case 1:
+            USARTPrint("Rörelsesensor");
+            break;
+
+        //Vibrationssensor
+        case 2:
+            USARTPrint("Vibrationssensor");
+            break;
+    }
+
+    USARTPrint(" med ID: ");
+    USARTPrintNum(rxMsg->Data[1]);
+    USARTPrint(" larmar på enheten med ID: ");
+    USARTPrintNum(converter.header.ID);
+    USARTPrint("\n");
 }
-/*
-void add_handler(void){
-    
-    CANFilter filter;
-    filter.STDID = 0b10110000000;
-    filter.EXDID = 0;
-    filter.IDE = 0;
-    filter.RTR = 0;
-    uint8_t index;
-    
-    CANFilter mask;
-    mask.STDID = 0b11111111111;
-    mask.EXDID = 0;
-    mask.IDE = 0;
-    mask.RTR = 0;
-    
-    if (CANhandlerListNotFull()){
-        USARTPrint("handler list not full\n");
-        index = CANaddFilterHandler(can_handler, &filter, &mask);
-        USARTPrintNum(index);
-    }
-}*/
 
 uint8_t msgPrint(CanRxMsg *msg, uint8_t base){
     USARTPrint("New msg:\n");
@@ -192,11 +184,14 @@ void confMsg(CanRxMsg *msg){
     msgPrint(msg, 16);
 }
 
+//Aktiverar centralenhetens konfigurationsläge
+//Aktiverar ID-tilldelningshantering och initial konfiguration
+//returnerar 1 om det lyckades, 0 annars
 uint8_t enterConfMode (void){
-    uint8_t retIndex;
+    USARTWaitPrint("Startar konfigurations-mode. Aktiverar foljande handlers:\n");
     CANFilter filter;
     CANFilter mask;
-    mask.STDID = 0b11110000000;
+    mask.STDID = 0b11111111111;
     mask.EXDID = 0;
     mask.IDE = 1;
     mask.RTR = 1;
@@ -205,42 +200,46 @@ uint8_t enterConfMode (void){
     CANdisableAllFilterHandlers();
 
     //Filter för ID-Begäran
-    filter.STDID = 0b10010000000;
+    filter.STDID = 0b10110000000;
+    //TODO det är meddelande typ 5 med det har vi ingen???
+    //Borde det inte vara förljande (för meddelandetyp 4)?
+    //filter.STDID = 0b10010000000;
     filter.EXDID = 0;
     filter.IDE = 0;
     filter.RTR = 1;
 
     //Aktiverar handler för ID begäran
     if (CANhandlerListNotFull()){
-        //TODO skriv handler för ID och skriv klart raden nedan
-        //retIndex = CANaddFilterHandler(idHandler, &filter, &mask);
-        USARTPrintNum(retIndex);
-        USARTPrint("\n");
+        USARTWaitPrint("ID-begaran handler med handler index: ");
+        USARTPrintNum(CANaddFilterHandler(id_request_handler, &filter, &mask));
+        USARTWaitPrint("\n");
     } else {
-        USARTPrint("Error handler list not empty\n");
         return 0;
     }
 
     //Filter för mottagen konfiguration
-    filter.STDID = 0b01010000000;
+    /*filter.STDID = 0b01010000000;
     filter.EXDID = 0;
     filter.IDE = 0;
     filter.RTR = 1;
 
     //Aktiverar handler för ID begäran
     if (CANhandlerListNotFull()){
-        //TODO skriv handler för mottagen konfiguration och skriv klart raden nedan
-        //retIndex = CANaddFilterHandler(confHandler, &filter, &mask);
-        USARTPrintNum(retIndex);
+        USARTPrint("Mottagen konfigurations handler med handler index: ");
+        USARTPrintNum(CANaddFilterHandler(confHandler, &filter, &mask));
         USARTPrint("\n");
     } else {
-        USARTPrint("Error handler list not empty\n");
         return 0;
-    }
+    }*/
+
     return 1;
 }
 
+//Aktiverar centralenhetens standardläge
+//Aktiverar larmhantering och automatisk konfigurationsöversändning
+//returnerar 1 om det lyckades, 0 annars
 uint8_t enterStdMode (void){
+    USARTPrint("Startar standard-mode. Aktiverar foljande handlers:\n");
      uint8_t retIndex;
     CANFilter filter;
     CANFilter mask;
@@ -260,43 +259,11 @@ uint8_t enterStdMode (void){
 
     //Aktiverar handler för larm
     if (CANhandlerListNotFull()){
-        //TODO skriv handler för larm och skriv klart raden nedan
-        //retIndex = CANaddFilterHandler(larmHandler, &filter, &mask);
+        USARTPrint("Larm handler med handler index: ");
+        retIndex = CANaddFilterHandler(larmHandler, &filter, &mask);
         USARTPrintNum(retIndex);
         USARTPrint("\n");
     } else {
-        USARTPrint("Error handler list not empty\n");
-    }
-}
-
-//Jämför två strängar. Returnerar 1 om de är lika. 0 annars.
-uint8_t strEqual(uint8_t *str1, uint8_t *str2){
-    //Loopa så länge vi inte nått slutet på någon av strängarna
-    while (*str1 && *str2) {
-        //Skiljer sig tecknen åt, returnera 0
-        //Flyttar också pekarna
-        if (*str1++ != *str2++){
-            return 0;
-        }
-    }
-
-    //De är endast lika om de hitills varit lika och de slutar samtidigt
-    return *str1 == *str2;
-}
-
-//Kollar om str1 börjar med str2. Returnerar 1 om det är så. 0 annars.
-uint8_t strStartsWith(uint8_t *str1, uint8_t *str2){
-    //Loopa tills vi kommer till slutet av str2
-    while(*str1 && *str2){
-        //Skiljer sig tecknen åt returnera 0
-        //Flyttar också pekaren
-        if (*str1++ != *str2++){
-            return 0;
-        }
-    }
-
-    //str1 slutar innan str2, returnera 0
-    if (*str1 == 0 && *str2 != 0){
         return 0;
     }
 
@@ -306,10 +273,37 @@ uint8_t strStartsWith(uint8_t *str1, uint8_t *str2){
 //Kör kommandot som finns i strängen command
 //Retrunrerar 1 det fanns ett kommando att köra. 0 annars.
 uint8_t Command(uint8_t *command){
+    //Ett tomt komando är ett gilltigt kommando.
+    //Detta för att man ska kunna få en ny rad utan ogilltigt kommando utskrift
+    if (command[0] == 0){
+        return 1;
+    }
+
+    if (strEqual(command, "start")){
+        if (enterStdMode()){
+            USARTWaitPrint("Start av standard-mode lyckades\n");
+        } else {
+            USARTWaitPrint("Start av standard-mode misslyckades\n");
+        }
+        return 1;
+    }
+
     if (strEqual(command, "test")) {
         USARTPrint("Hanterar test\n");
         return 1;
     }
+
+    if (strStartsWith(command, "spam")){
+        if (command[4] != ' ' || command[4] == 0){
+            USARTWaitPrint("Anvand>> spam string\n");
+
+        } else {
+            while (USARTPrint(&command[5]));
+            USARTWaitPrint("\n");
+        }
+        return 1;
+    }
+
     return 0;
 }
 
@@ -322,7 +316,7 @@ void USARTCommand(void) {
 
     if (newCommand) {
         newCommand = 0;
-        USARTPrint(">>");
+        USARTWaitPrint(">>");
     }
 
     uint8_t uint8Read;
@@ -334,8 +328,10 @@ void USARTCommand(void) {
             currentCommand[index] = 0;
             index = 0;
             newCommand = 1;
-            if (!Command((uint8_t *)(&currentCommand[0]))){
-                USARTPrint("Kommando hittades inte\n");
+            if (!Command(currentCommand)){
+                USARTWaitPrint("Kommandot:");
+                USARTWaitPrint(currentCommand);
+                USARTWaitPrint(" hittades inte\n");
             }
 
         } else {
@@ -362,9 +358,13 @@ void USARTCommand(void) {
 void main(void) {
     USARTConfig();
     can_init();
-    USARTPrint("\nStart Central\n");
+    USARTPrint("\n");
     
-    add_id_request_handler();
+    if (enterConfMode()){
+        USARTWaitPrint("Start av konfigurations-mode lyckades\n");
+    } else {
+        USARTWaitPrint("Start av konfigurations-mode misslyckades\n");
+    }
 
     while (1) {
         USARTCommand();
