@@ -82,6 +82,12 @@ void delay_micro(uint32_t micros){
 	}
 }
 
+
+uint16_t GPIO_Pins[] = {
+	GPIO_Pin_0, GPIO_Pin_1, GPIO_Pin_2, GPIO_Pin_3, GPIO_Pin_4, GPIO_Pin_5,
+	GPIO_Pin_6, GPIO_Pin_7, GPIO_Pin_8, GPIO_Pin_9, GPIO_Pin_10, GPIO_Pin_11,
+	GPIO_Pin_12, GPIO_Pin_13, GPIO_Pin_14, GPIO_Pin_15};
+
 /**
  * @brief Konfigurera GPIO portarna
  *
@@ -191,7 +197,30 @@ void init_app(){
 void main(void){
 	init_app();
 	MotionSensor motionSensors[2] = {motion1, motion2};
-
+	MotionSensor motionArr[10];
+	uint32_t timeOut[10];
+	char firstLoW[10];
+	
+	char pin = 0;
+	for(int i = 0; i*sizeof(motion1) < sizeof(motionArr); i += 3){
+		char high = 0;
+		if(!firstLoW[i]){ // Första låga
+			GPIO_ResetBits(GPIOA, GPIO_Pins[i]);	// Avaktivera triggerpuls
+			firstLoW[i] = 0;
+		}
+		if(microTicks >= motionSensors[i].pulseDelay){  // Är triggfördröjningen klar?
+			GPIO_SetBits(GPIOA, motionSensors[i].pinTrig);	// Aktivera triggerpuls
+			motionSensors[i].pulseTrig = microTicks + 10; // Triggpuls 10µs
+			motionSensors[i].pulseDelay = microTicks + 60000;	// Fördröjning mellan triggerpulserna, 60ms
+		}
+		if(!(motionSensors[i].controlbits & (1 << 1)) && GPIO_ReadInputDataBit(GPIOA, motionSensors[i].pinEcho)){ // Är echo hög för första gången?
+			motionSensors[i].pulseEcho = microTicks; // Början av echopulsen.
+			motionSensors[i].controlbits |= 1 << 1;  // Ettställer kontrollbit 1.
+		}
+		
+	}
+	
+	
 	while(1){
 
 		// Pollingverision motionssensor
