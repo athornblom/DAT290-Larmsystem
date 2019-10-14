@@ -25,6 +25,8 @@ uint16_t GPIO_Pins[] = {
 	GPIO_Pin_6, GPIO_Pin_7, GPIO_Pin_8, GPIO_Pin_9, GPIO_Pin_10, GPIO_Pin_11,
 	GPIO_Pin_12, GPIO_Pin_13, GPIO_Pin_14, GPIO_Pin_15};
 
+GPIO_TypeDef* GPIO_Ports[] = {GPIOE, GPIOB};
+
 // ========================================= SYSTICK ================================================
 volatile uint32_t msTicks = 0; /* Variable to store millisecond ticks */
 void SysTick_Handler(void)
@@ -54,25 +56,31 @@ void main(void)
 	door all_doors[16] = {door1, door2, door3, door4, door5, door6, door8, door9 ,door10, door11, door12, door13,door14,door15,door16};
 
 	int amountOfActiveDoors = 0;
-	for (int i = 0; i < sizeof(GPIO_Pins) / sizeof(uint16_t); i = i + 2)
+	for (int j = 0; j < (sizeof(GPIO_Ports) /sizeof(GPIO_TypeDef *)); j++)
 	{
-		if(!GPIO_ReadInputDataBit(GPIOE, GPIO_Pins[i])){
-			amountOfActiveDoors++;
+		for (int i = 0; i < sizeof(GPIO_Pins) / sizeof(uint16_t); i = i + 2)
+		{
+			if(!GPIO_ReadInputDataBit(GPIO_Ports[j], GPIO_Pins[i])){
+				amountOfActiveDoors++;
+			}
 		}
 	}
 	door active_doors[amountOfActiveDoors];
 	int counter = 0;
-	
-	for (int i = 0; i < sizeof(GPIO_Pins) / sizeof(uint16_t); i = i + 2)
+	for (int j = 0; j < (sizeof(GPIO_Ports) /sizeof(GPIO_TypeDef *)); j++)
 	{
-		if(!GPIO_ReadInputDataBit(GPIOE, GPIO_Pins[i])){
-			all_doors[counter].GPIO_read = GPIO_Pins[i];
-			all_doors[counter].GPIO_lamp = GPIO_Pins[i+1];
-			all_doors[counter].controlbits = 0;
-			all_doors[counter].time_larm = 0;
-			all_doors[counter].time_central_larm = 2;
-			active_doors[counter] = all_doors[counter];
-			counter++;
+		for (int i = 0; i < sizeof(GPIO_Pins) / sizeof(uint16_t); i = i + 2)
+		{
+			if(!GPIO_ReadInputDataBit(GPIO_Ports[j], GPIO_Pins[i])){
+				all_doors[counter].GPIO_read = GPIO_Pins[i];
+				all_doors[counter].GPIO_lamp = GPIO_Pins[i+1];
+				all_doors[counter].controlbits = 0;
+				all_doors[counter].time_larm = 0;
+				all_doors[counter].time_central_larm = 2;
+				all_doors[counter].GPIO_type = GPIO_Ports[j];
+				active_doors[counter] = all_doors[counter];
+				counter++;
+			}
 		}
 	}
 
@@ -88,7 +96,7 @@ void main(void)
 	{
 		for (int i = 0; i < sizeof(active_doors)/sizeof(active_doors[0]); i++)
 		{
-			if (!GPIO_ReadInputDataBit(GPIOE, active_doors[i].GPIO_read)){ //GPIO pinnen är noll ifall dörren är stängd därför !
+			if (!GPIO_ReadInputDataBit(active_doors[i].GPIO_type, active_doors[i].GPIO_read)){ //GPIO pinnen är noll ifall dörren är stängd därför !
 				active_doors[i].controlbits &= 0xFFFE; //Nollställer kontrollbiten för ifall en dörr är öppen, när den detekteras som stängd
 			}
 			else{
@@ -102,11 +110,11 @@ void main(void)
 			{
 				if (active_doors[i].controlbits & 1 && msTicks > (active_doors[i].larmTick + 1000 * 10 * active_doors[i].time_larm))
 				{
-					GPIO_SetBits(GPIOE, active_doors[i].GPIO_lamp); // tänder lampan ifall tiden för att dörren ska larma har gått
+					GPIO_SetBits(active_doors[i].GPIO_type, active_doors[i].GPIO_lamp); // tänder lampan ifall tiden för att dörren ska larma har gått
 				}
 				else
 				{
-					GPIO_ResetBits(GPIOE, active_doors[i].GPIO_lamp);	// släcker lampan annars
+					GPIO_ResetBits(active_doors[i].GPIO_type, active_doors[i].GPIO_lamp);	// släcker lampan annars
 				}
 				if (active_doors[i].controlbits & 1 && msTicks > (active_doors[i].larmTick + 1000 * 10 * active_doors[i].time_central_larm))
 				{
