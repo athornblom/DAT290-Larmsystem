@@ -101,7 +101,7 @@ void id_request_handler(CanRxMsg *rxMsgP){
         
         CanTxMsg txMsg;
         encode_assign_id(&txMsg, next_id);
-        if (send_can_message(&txMsg) == CAN_TxStatus_NoMailBox){
+        if (CANsendMessage(&txMsg) == CAN_TxStatus_NoMailBox){
             USARTPrint("No mailbox empty\n");
         }
         else{

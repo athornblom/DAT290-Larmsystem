@@ -52,8 +52,8 @@ typedef union {
     uint32_t STDID;
 } STDIDtoHeader;
 
-//För att skicka can meddelande
-uint8_t send_can_message(CanTxMsg *msg);
+//Skickar ett meddelande med extended ID oavsett hur msg ser ut.
+uint8_t CANsendMessage(CanTxMsg *msg);
 
 //Kollar om det finns plats i handlerList
 //Returnerar 1 om det finns plats, 0 annars
@@ -68,6 +68,13 @@ void CANdisableFilterHandler(uint8_t index);
 
 //Avaktiverar alla CANFilterHandlers
 void CANdisableAllFilterHandlers(void);
+
+//Sätter session ID,  ändra även session ID för aktiva filter
+//Använder de första 18 bitarna av ID
+void setSessionId(uint32_t ID);
+
+//Avaktiverar session ID för aktiva filter och kommande filter
+void noSessionId(void);
 
 //För att initiera can1
 uint8_t can_init();
