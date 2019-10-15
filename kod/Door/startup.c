@@ -45,6 +45,10 @@ void systick_Init(void)
 		//typ reboot? bootloops är alltid kul
 	}
 }
+void delay (int mili){
+		int time = msTicks + mili;
+		while(time > msTicks);
+	}
 
 void main(void)
 {
@@ -83,14 +87,33 @@ void main(void)
 			}
 		}
 	}
+	// ================================== LIGHTS =========================================================
 	for (int i = 0; i < sizeof(active_doors)/sizeof(active_doors[0]); i++) //CHRISTMAST LIGHTS FTW
 	{
 		GPIO_SetBits(active_doors[i].GPIO_type, active_doors[i].GPIO_lamp);
-		int waitde = msTicks + 100;
-		while (msTicks < waitde);
+		delay(100);
 		GPIO_ResetBits(active_doors[i].GPIO_type, active_doors[i].GPIO_lamp);
 		
 	}
+	for (int i = sizeof(active_doors)/sizeof(active_doors[0]); i > 0 ; i--) //CHRISTMAST LIGHTS FTW
+	{
+		GPIO_SetBits(active_doors[i].GPIO_type, active_doors[i].GPIO_lamp);
+		delay(100);
+		GPIO_ResetBits(active_doors[i].GPIO_type, active_doors[i].GPIO_lamp);
+		
+	}
+	delay(100);
+	for (int i = 0; i < sizeof(active_doors)/sizeof(active_doors[0]); i++) //CHRISTMAST LIGHTS FTW
+	{
+		GPIO_SetBits(active_doors[i].GPIO_type, active_doors[i].GPIO_lamp);
+	}
+	delay(3000);
+	for (int i = 0; i < sizeof(active_doors)/sizeof(active_doors[0]); i++) //CHRISTMAST LIGHTS FTW
+	{
+		GPIO_ResetBits(active_doors[i].GPIO_type, active_doors[i].GPIO_lamp);
+	}
+	
+
 	GPIO_SetBits(GPIOB, GPIO_Pin_2);
 	//active_doors[2].controlbits |= 4;
 	while (1)
@@ -130,4 +153,4 @@ void main(void)
 			}
 		}
 	}
-}
+	}
