@@ -200,6 +200,25 @@ uint8_t USARTPrintNum(uint32_t num){
     USARTPrintNumBase(num, 10);
 }
 
+//Skriver ut en pointer av length bytes staratndes från ptr
+//Returerar 1 om det lyckades 0 annars
+uint8_t USARTPrintPtr(uint8_t *ptr, uint8_t length, uint8_t base){
+    for (uint8_t i = length; i > 0; i--){
+        //Skriver ut en byte
+        if (!USARTPrintNumBase(*(uint8_t *)(ptr + i - 1), base)){
+            return 0;
+        }
+
+        //Ett bindesträck mellan varje byte
+        if (i > 1){
+            if(!USARTPrint("-")){
+                return 0;
+            }
+        }
+    }
+    return 1;
+}
+
 //Hämta senaste mottagna meddelandet till dest
 //Gör ingen omvandling, dvs returnerar det tal som skickades över USART
 //Returnerar 1 om det lyckades, dvs det fanns ett meddelande att hämta 0 annars.
