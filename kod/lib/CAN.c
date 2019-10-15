@@ -7,8 +7,15 @@
 
 //CAN använder Port B pinnarna 8 och 9
 
+#define STDtoEXTLENGTHDIFF 18
 #define	CAN1_IRQ_VECTOR		(0x2001C000+0x90)
 #define __CAN_IRQ_PRIORITY		2
+
+//Används för omvandla ett filter till uint16_t
+typedef union {
+    uint16_t u16bits[2];
+    CANFilter filter;
+} filterUnion;
 
 typedef struct {
     void (*handler)(CanRxMsg *);
@@ -22,11 +29,9 @@ typedef struct {
 #define HANDLERLISTSIZE 14
 CANFilterHandler handlerList[HANDLERLISTSIZE];
 
-//Session ID längd 18
+//Session ID längd 10
 #define SESSIONIDACTIVE 1
 #define SESSIONIDINACTIVE 0
-#define SESSIONIDLENGTH 18
-#define SESSIONIDMASK 0x3FFFF
 uint8_t SessionIDActive;
 uint32_t SessionID;
 
@@ -65,22 +70,34 @@ void CANactivateFilterHandler (uint8_t index){
 }
 
 //Lägger till ett filter, returnerar index för filtret i handlerList
-//Om session ID är aktiverat används bara STDID från filtrer och masken
+//Om session ID är aktiverat läggs det automatiskt till i filtret
 //Kolla att det finns plats i handlerList innan med handlerListNotFull()
 uint8_t CANaddFilterHandler(void (*newHandler)(CanRxMsg *), CANFilter *filter, CANFilter *mask){
     for (uint8_t index = 0; index < HANDLERLISTSIZE; index++){
         if (handlerList[index].state == DISABLE){
+            //Aktiverar session ID om det är aktivt
+            if (SessionIDActive == SESSIONIDACTIVE){
+                //Används för omvandling och tilldeling av sessionID
+                Header header;
+
+                //Alla meddelanden med sessionID aktivt måste vara extended
+                filter->IDE = 1;
+                mask->IDE = 1;
+
+                //Skriver sessionID
+                UINT32toHEADER(filter->ID, header);
+                header.sessionID = SessionID;
+                HEADERtoUINT32(header, filter->ID);
+
+                //Skriver sessionID masken
+                UINT32toHEADER(mask->ID, header);
+                converter.sessionID = ~0;
+                HEADERtoUINT32(header, mask->ID);
+            }
+
             handlerList[index].filter = *filter;
             handlerList[index].mask = *mask;
             handlerList[index].handler = newHandler;
-
-            //Aktiverar session ID om det är aktivt
-            if (SessionIDActive == SESSIONIDACTIVE){
-                filter->EXDID = SessionID;
-                filter->IDE = 1;
-                mask->EXDID = SESSIONIDMASK;
-                mask->IDE = 1;
-            }
 
             //Aktiverar filtret
             CANactivateFilterHandler(index);
@@ -115,27 +132,31 @@ void CANdisableAllFilterHandlers(void){
     }
 }
 
-//Skickar ett meddelande med extended ID oavsett.
+//Skickar ett CAN-meddelande
+//Omvandlar till extended om det inte redan är det samt session ID är aktivt
+//Returnderar numret för mailboxen som används eller CAN_TxStatus_NoMailBox om det misslyckades
 uint8_t CANsendMessage(CanTxMsg *msg){
-    //Om standardmeddelande omvandla till extended
-    if (msg->IDE == CAN_Id_Standard){
-        msg->IDE = CAN_Id_Extended;
-        if(SessionIDActive == SESSIONIDACTIVE){
-            msg->ExtId = (msg->StdId << SESSIONIDLENGTH) | (SessionID & SESSIONIDMASK);
-        } else {
-            //Låt de utökade bitarna i Extid vara 0
-            msg->ExtId = (msg->StdId << SESSIONIDLENGTH);
+    //Justerar endas medelandet om sessionID är aktivt
+    if (SessionIDActive == SESSIONIDACTIVE){
+        //Används för omvandling och tilldeling av session ID
+        Header header;
+
+        //Om standardmeddelande omvandla till extended
+        if (msg->IDE == CAN_Id_Standard){
+            msg->IDE = CAN_Id_Extended;
+
+            //Skriver sessionID
+            UINT32toHEADER(msg->StdId << STDtoEXTLENGTHDIFF, header);
+            header.sessionID = SessionID;
+            HEADERtoUINT32(header, msg->ExtId);
         }
-    }
 
-    //Annars om det redan är ett extended justeras endast sessionbitarna
-    else if (msg->IDE == CAN_Id_Extended){
-        //Nollställ bitarna för session ID
-        msg->ExtId &= (~SESSIONIDMASK);
-
-        //Om session ID är aktivt så skriver vi det, annars förblir bitarna nollor
-        if (SessionIDActive == SESSIONIDACTIVE){
-            msg->ExtId |= (SessionID & SESSIONIDMASK);
+        //Annars om det redan är ett meddelande med extended ID
+        //justeras endast sessionsbitarna om sessions ID är aktivt
+        else if (msg->IDE == CAN_Id_Extended){
+            UINT32toHEADER(msg->ExtId, header);
+            header.sessionID = SessionID;
+            HEADERtoUINT32(header, msg->ExtId);
         }
     }
 
@@ -164,18 +185,32 @@ void can_irq_handler(void){
 }
 
 //Sätter session ID,  ändra även session ID för aktiva filter
-//Använder de första 18 bitarna av ID
-void setSessionId(uint32_t ID){
+//Använder de första 10 bitarna av ID
+void setSessionId(uint16_t ID){
     SessionIDActive = SESSIONIDACTIVE;
     SessionID = ID;
 
     for (uint8_t index = 0; index < HANDLERLISTSIZE; index++){
+        //Justerar filter som är aktiva
         if(handlerList[index].state == ENABLE){
-                handlerList[index].filter.EXDID = SessionID;
-                handlerList[index].filter.IDE = 1;
-                handlerList[index].mask.EXDID = 0x3ffff;
-                handlerList[index].mask.IDE = 1;
-                CANactivateFilterHandler(index);
+            //Används för omvandling
+            Header header;
+
+            //Filtrer och masken måste vara av typ extended
+            handlerList[index].filter.IDE = 1;
+            handlerList[index].mask.IDE = 1;
+
+            //Ändrar filter
+            UINT32toHEADER(handlerList[index].filter.ID, header);
+            header.sessionID = SessionID;
+            HEADERtoUINT32(header, handlerList[index].filter.ID);
+
+            //Ändrar masken
+            UINT32toHEADER(handlerList[index].mask.ID, header);
+            header.sessionID = ~0;
+            HEADERtoUINT32(header, handlerList[index].mask.ID);
+
+            CANactivateFilterHandler(index);
         }
     }
 }
@@ -185,10 +220,15 @@ void noSessionId(void){
     SessionIDActive = SESSIONIDINACTIVE;
 
     for (uint8_t index = 0; index < HANDLERLISTSIZE; index++){
+        //Avaktiverar filtering för sessionID på de aktiva filtren
         if(handlerList[index].state == ENABLE){
-                handlerList[index].mask.EXDID = 0;
-                handlerList[index].mask.IDE = 1;
-                CANactivateFilterHandler(index);
+            //Används för omvandling
+            Header header;
+
+            UINT32toHEADER(handlerList[index].mask.ID, header);
+            header.sessionID  = 0;
+            HEADERtoUINT32(header, handlerList[index].mask.ID);
+            CANactivateFilterHandler(index);
         }
     }
 }
@@ -201,7 +241,7 @@ uint8_t can_init() {
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_CAN1, ENABLE);
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_SYSCFG, ENABLE);
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
-	
+
 	// Connect CAN pins to AF9. See more below
 	GPIO_PinAFConfig(GPIOB, GPIO_PinSource9, GPIO_AF_CAN1);
     GPIO_PinAFConfig(GPIOB, GPIO_PinSource8, GPIO_AF_CAN1);  

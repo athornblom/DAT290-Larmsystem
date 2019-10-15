@@ -133,9 +133,6 @@ void larmHandler(CanRxMsg *rxMsg){
         return;
     }
     
-    STDIDtoHeader converter;
-    converter.STDID = rxMsg->StdId;
-    
     switch (rxMsg->Data[0]) {
         //Dörrsensor
         case 0:
@@ -153,10 +150,13 @@ void larmHandler(CanRxMsg *rxMsg){
             break;
     }
 
+    Header header;
+    UINT32toHEADER(rxMsg->ExtId, header);
+
     USARTPrint(" med ID: ");
     USARTPrintNum(rxMsg->Data[1]);
     USARTPrint(" larmar på enheten med ID: ");
-    USARTPrintNum(converter.header.ID);
+    USARTPrintNum(header.ID);
     USARTPrint("\n");
 }
 
@@ -191,22 +191,32 @@ uint8_t enterConfMode (void){
     USARTWaitPrint("Startar konfigurations-mode. Aktiverar foljande handlers:\n");
     CANFilter filter;
     CANFilter mask;
-    mask.STDID = 0b11111111111;
-    mask.EXDID = 0;
+
+    //Används för omvandling
+    Header header;
+
+    //Skriver mask
     mask.IDE = 1;
     mask.RTR = 1;
+    header.msgType = ~0;
+    header.toCentral = ~0;
+    header.ID = ~0;
+    //ingorera msgNum
+    header.msgNum = 0;
+    HEADERtoUINT32(header, mask.ID);
 
     //Avaktiverar alla filter
     CANdisableAllFilterHandlers();
 
     //Filter för ID-Begäran
-    filter.STDID = 0b10110000000;
+    filter.IDE = 1;
+    filter.RTR = 0;
     //TODO det är meddelande typ 5 med det har vi ingen???
-    //Borde det inte vara förljande (för meddelandetyp 4)?
-    //filter.STDID = 0b10010000000;
-    filter.EXDID = 0;
-    filter.IDE = 0;
-    filter.RTR = 1;
+    //Borde det inte vara meddelandetyp 4?
+    header.msgType = 0b101;
+    header.toCentral = 1;
+    header.ID = 0;
+    HEADERtoUINT32(header, filter.ID);
 
     //Aktiverar handler för ID begäran
     if (CANhandlerListNotFull()){
@@ -243,19 +253,30 @@ uint8_t enterStdMode (void){
      uint8_t retIndex;
     CANFilter filter;
     CANFilter mask;
-    mask.STDID = 0b11110000000;
-    mask.EXDID = 0;
+
+    //För omvandling
+    Header header;
+
+    //Skriver mask
     mask.IDE = 1;
-    mask.RTR = 1;
+    mask.RTR = 0;
+    header.msgType = ~0;
+    header.toCentral = ~0;
+    header.ID = ~0;
+    //ingorera msgNum
+    header.msgNum = 0;
+    HEADERtoUINT32(header, mask.ID);
 
     //Avaktiverar alla filter
     CANdisableAllFilterHandlers();
 
     //Filter för Larm
-    filter.STDID = 0b00110000000;
-    filter.EXDID = 0;
-    filter.IDE = 0;
-    filter.RTR = 1;
+    filter.IDE = 1;
+    filter.RTR = 0;
+    header.msgType = 0b001;
+    header.toCentral = 1;
+    header.ID = 0;
+    HEADERtoUINT32(header, filter.ID);
 
     //Aktiverar handler för larm
     if (CANhandlerListNotFull()){
@@ -359,7 +380,7 @@ void main(void) {
     USARTConfig();
     can_init();
     USARTPrint("\n");
-    
+
     if (enterConfMode()){
         USARTWaitPrint("Start av konfigurations-mode lyckades\n");
     } else {
