@@ -25,7 +25,7 @@ uint16_t GPIO_Pins[] = {
 	GPIO_Pin_6, GPIO_Pin_7, GPIO_Pin_8, GPIO_Pin_9, GPIO_Pin_10, GPIO_Pin_11,
 	GPIO_Pin_12, GPIO_Pin_13, GPIO_Pin_14, GPIO_Pin_15};
 
-GPIO_TypeDef* GPIO_Ports[] = {GPIOE, GPIOB};
+GPIO_TypeDef* GPIO_Ports[] = {GPIOE, GPIOA, GPIOC, GPIOD};
 
 // ========================================= SYSTICK ================================================
 volatile uint32_t msTicks = 0; /* Variable to store millisecond ticks */
@@ -45,6 +45,10 @@ void systick_Init(void)
 		//typ reboot? bootloops är alltid kul
 	}
 }
+void delay (int mili){
+		int time = msTicks + mili;
+		while(time > msTicks);
+	}
 
 void main(void)
 {
@@ -52,8 +56,8 @@ void main(void)
 	systick_Init();
 	while(msTicks < 2000);
 
-	door door1, door2, door3, door4, door5, door6, door8, door9 ,door10, door11, door12, door13,door14,door15,door16;
-	door all_doors[16] = {door1, door2, door3, door4, door5, door6, door8, door9 ,door10, door11, door12, door13,door14,door15,door16};
+	door door1, door2, door3, door4, door5, door6, door8, door9 ,door10, door11, door12, door13,door14,door15,door16, door17, door18, door19, door20, door21, door22, door23, door24 ,door25, door26, door27, door28,door29,door30,door31,door32;
+	door all_doors[32] = {door1, door2, door3, door4, door5, door6, door8, door9 ,door10, door11, door12, door13,door14,door15,door16, door17, door18, door19, door20, door21, door22, door23, door24 ,door25, door26, door27, door28,door29,door30,door31,door32};
 
 	int amountOfActiveDoors = 0;
 	for (int j = 0; j < (sizeof(GPIO_Ports) /sizeof(GPIO_TypeDef *)); j++)
@@ -83,44 +87,70 @@ void main(void)
 			}
 		}
 	}
-
-	/*door test1 = {.id = 0, .controlbits = 0, .time_larm = 0, .time_central_larm = 2, .password = 0, .GPIO_lamp = GPIO_Pin_3, .GPIO_read = GPIO_Pin_2, .larmTick = 0};
-	door test2 = {.id = 1, .controlbits = 0, .time_larm = 0, .time_central_larm = 2, .password = 0, .GPIO_lamp = GPIO_Pin_5, .GPIO_read = GPIO_Pin_4, .larmTick = 0};
-	door test3 = {.id = 2, .controlbits = 0, .time_larm = 0, .time_central_larm = 2, .password = 0, .GPIO_lamp = GPIO_Pin_9, .GPIO_read = GPIO_Pin_8, .larmTick = 0};
-	door test4 = {.id = 3, .controlbits = 0, .time_larm = 0, .time_central_larm = 2, .password = 0, .GPIO_lamp = GPIO_Pin_7, .GPIO_read = GPIO_Pin_6, .larmTick = 0};
-	*/
-	//door active_doors[4] = {test1,test2,test3,test4};
-	GPIO_SetBits(GPIOA, GPIO_Pin_2);
+	// ================================== LIGHTS =========================================================
+	for (int i = 0; i < sizeof(active_doors)/sizeof(active_doors[0]); i++) //CHRISTMAST LIGHTS FTW
+	{
+		GPIO_SetBits(active_doors[i].GPIO_type, active_doors[i].GPIO_lamp);
+		delay(100);
+		GPIO_ResetBits(active_doors[i].GPIO_type, active_doors[i].GPIO_lamp);
+		
+	}
+	for (int i = sizeof(active_doors)/sizeof(active_doors[0]); i > 0 ; i--) //CHRISTMAST LIGHTS FTW
+	{
+		GPIO_SetBits(active_doors[i].GPIO_type, active_doors[i].GPIO_lamp);
+		delay(100);
+		GPIO_ResetBits(active_doors[i].GPIO_type, active_doors[i].GPIO_lamp);
+		
+	}
+	delay(100);
+	for (int i = 0; i < sizeof(active_doors)/sizeof(active_doors[0]); i++) //CHRISTMAST LIGHTS FTW
+	{
+		GPIO_SetBits(active_doors[i].GPIO_type, active_doors[i].GPIO_lamp);
+	}
+	delay(3000);
+	for (int i = 0; i < sizeof(active_doors)/sizeof(active_doors[0]); i++) //CHRISTMAST LIGHTS FTW
+	{
+		GPIO_ResetBits(active_doors[i].GPIO_type, active_doors[i].GPIO_lamp);
+	}
 	
+
+	GPIO_SetBits(GPIOB, GPIO_Pin_2);
+	//active_doors[2].controlbits |= 4;
 	while (1)
 	{
 		for (int i = 0; i < sizeof(active_doors)/sizeof(active_doors[0]); i++)
 		{
-			if (!GPIO_ReadInputDataBit(active_doors[i].GPIO_type, active_doors[i].GPIO_read)){ //GPIO pinnen är noll ifall dörren är stängd därför !
-				active_doors[i].controlbits &= 0xFFFE; //Nollställer kontrollbiten för ifall en dörr är öppen, när den detekteras som stängd
-			}
-			else{
-				if (!active_doors[i].controlbits & 1) // Kollar så att dörren inte larmar sen innan så larmtick inte uppdateras hela tiden
+			if (!(active_doors[i].controlbits & 4))
 				{
-					active_doors[i].larmTick = msTicks;
+				if (!GPIO_ReadInputDataBit(active_doors[i].GPIO_type, active_doors[i].GPIO_read)){ //GPIO pinnen är noll ifall dörren är stängd därför !
+					active_doors[i].controlbits &= 0xFFFC; //Nollställer kontrollbiten för ifall en dörr är öppen och spam kontrollbiten för 
+					//att skicka medelande till centralenheten, när den detekteras som stängd
+					
 				}
-				active_doors[i].controlbits |= 1; // sätter dörrens larm kontrollbit till 1.
-			}
-			for (int i = 0; i < sizeof(active_doors)/sizeof(active_doors[0]); i++)
-			{
-				if (active_doors[i].controlbits & 1 && msTicks > (active_doors[i].larmTick + 1000 * 10 * active_doors[i].time_larm))
-				{
-					GPIO_SetBits(active_doors[i].GPIO_type, active_doors[i].GPIO_lamp); // tänder lampan ifall tiden för att dörren ska larma har gått
+				else{
+					if (!active_doors[i].controlbits & 1) // Kollar så att dörren inte larmar sen innan så larmtick inte uppdateras hela tiden
+					{
+						active_doors[i].larmTick = msTicks;
+					}
+					active_doors[i].controlbits |= 1; // sätter dörrens larm kontrollbit till 1.
 				}
-				else
+				for (int i = 0; i < sizeof(active_doors)/sizeof(active_doors[0]); i++)
 				{
-					GPIO_ResetBits(active_doors[i].GPIO_type, active_doors[i].GPIO_lamp);	// släcker lampan annars
-				}
-				if (active_doors[i].controlbits & 1 && msTicks > (active_doors[i].larmTick + 1000 * 10 * active_doors[i].time_central_larm))
-				{
-					// Något med CAN
+					if (active_doors[i].controlbits & 1 && msTicks > (active_doors[i].larmTick + 1000 * 10 * active_doors[i].time_larm))
+					{
+						GPIO_SetBits(active_doors[i].GPIO_type, active_doors[i].GPIO_lamp); // tänder lampan ifall tiden för att dörren ska larma har gått
+					}
+					else
+					{
+						GPIO_ResetBits(active_doors[i].GPIO_type, active_doors[i].GPIO_lamp);	// släcker lampan annars
+					}
+					if (active_doors[i].controlbits & 1 && msTicks > (active_doors[i].larmTick + 1000 * 10 * active_doors[i].time_central_larm) && active_doors[i].controlbits & 2)
+					{
+						active_doors[i].controlbits |= 2;
+						// Något med CAN
+					}
 				}
 			}
 		}
 	}
-}
+	}
