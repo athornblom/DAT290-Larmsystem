@@ -91,7 +91,7 @@ uint8_t CANaddFilterHandler(void (*newHandler)(CanRxMsg *), CANFilter *filter, C
 
                 //Skriver sessionID masken
                 UINT32toHEADER(mask->ID, header);
-                converter.sessionID = ~0;
+                header.sessionID = ~0;
                 HEADERtoUINT32(header, mask->ID);
             }
 
