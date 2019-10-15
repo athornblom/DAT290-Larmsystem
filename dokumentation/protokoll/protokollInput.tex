@@ -1,23 +1,25 @@
 Ett CAN-meddelande är uppbyggt av ett antal fält med olika funktioner. Det finns bland annat fält för startbitar, identifiering (ID), data, kontrollsummor samt stoppbitar. Av dessa fält är det i huvudsak ID och datafältet som bär den aktuella informationen.
 De övriga fälten används av CAN-protokollet för att åstadkomma tillförlitlig kommunikation.
 
-Den inbyggda prioriteringen av meddelanden har noga avvägts vid tilldelning av de 11 bitar som finns tillgängliga i ID-fältet.
+Den inbyggda prioriteringen av meddelanden har noga avvägts vid tilldelning av de 29 bitar som finns tillgängliga i ID-fältet.
 Då det är detta fält som avgör prioritringen för meddelanden på bussen så beskriver de i huvudsak meddelandetypen.
-De 11 bitarna har fördelats enligt tabell \ref{tab:idbitar}.
+De 29 bitarna har fördelats enligt tabell \ref{tab:idbitar}.
 
 \begin{table}[H]
 	\centering
 	\begin{tabular}{|c|p{0.8\textwidth}|}
 		\hline
 		Bitar 	& Används till \\ \hline \hline
-		0-2		& De 3 första bitarna beskriver meddelandetypen. \\ \hline
-		3		& En bit för riktning från/till centralenheten. \\ \hline
-		4-10	& 7 bitar:
+		28-26		& De 3 första bitarna beskriver meddelandetypen. \\ \hline
+		25		& En bit för riktning från/till centralenheten. \\ \hline
+		24-18	& 7 bitar:
 		Om riktning är till centralenheten är bitarna sändarens ID.
 		Om riktningen är från centralenheten beskriver bitarna mottagarens ID. \\ \hline
+		17-8 & 10 bitar för session ID, gemensamt ID för sessionen. Används för att förhindra replay attack. \\ \hline
+		7-0 & 8 bitar för meddelande nummer. Används för att identifiera vilket meddelande som bekräftades med ack. \\ \hline
 
 	\end{tabular}
-	\caption{Beskriver hur de 11 bitarna i ID-fältet av CAN-meddelandet används.}
+	\caption{Beskriver hur de 29 bitarna i ID-fältet av CAN-meddelandet används.}
 	\label{tab:idbitar}
 \end{table}
 
