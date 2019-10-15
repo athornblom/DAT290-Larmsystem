@@ -1924,8732 +1924,2280 @@
  155 00a4 10E000E0 		.word	-536813552
  156              		.cfi_endproc
  157              	.LFE119:
- 159              		.data
- 160              		.align	2
- 163              	APBAHBPrescTable:
- 164 0000 00       		.byte	0
- 165 0001 00       		.byte	0
- 166 0002 00       		.byte	0
- 167 0003 00       		.byte	0
- 168 0004 01       		.byte	1
- 169 0005 02       		.byte	2
- 170 0006 03       		.byte	3
- 171 0007 04       		.byte	4
- 172 0008 01       		.byte	1
- 173 0009 02       		.byte	2
- 174 000a 03       		.byte	3
- 175 000b 04       		.byte	4
- 176 000c 06       		.byte	6
- 177 000d 07       		.byte	7
- 178 000e 08       		.byte	8
- 179 000f 09       		.byte	9
- 180              		.text
- 181              		.align	1
- 182              		.global	RCC_DeInit
- 183              		.syntax unified
- 184              		.code	16
- 185              		.thumb_func
- 186              		.fpu softvfp
- 188              	RCC_DeInit:
- 189              	.LFB123:
- 190              		.file 2 "../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c"
-   1:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /**
-   2:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   ******************************************************************************
-   3:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @file    stm32f4xx_rcc.c
-   4:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @author  MCD Application Team
-   5:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @version V1.8.0
-   6:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @date    04-November-2016
-   7:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @brief   This file provides firmware functions to manage the following 
-   8:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          functionalities of the Reset and clock control (RCC) peripheral:
-   9:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *           + Internal/external clocks, PLL, CSS and MCO configuration
-  10:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *           + System, AHB and APB busses clocks configuration
-  11:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *           + Peripheral clocks configuration
-  12:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *           + Interrupts and flags management
-  13:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *
-  14:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  @verbatim
-  15:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  ===============================================================================
-  16:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****                       ##### RCC specific features #####
-  17:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  ===============================================================================
-  18:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     [..]  
-  19:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****       After reset the device is running from Internal High Speed oscillator 
-  20:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****       (HSI 16MHz) with Flash 0 wait state, Flash prefetch buffer, D-Cache 
-  21:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****       and I-Cache are disabled, and all peripherals are off except internal
-  22:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****       SRAM, Flash and JTAG.
-  23:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****       (+) There is no prescaler on High speed (AHB) and Low speed (APB) busses;
-  24:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****           all peripherals mapped on these busses are running at HSI speed.
-  25:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****       (+) The clock for all peripherals is switched off, except the SRAM and FLASH.
-  26:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****       (+) All GPIOs are in input floating state, except the JTAG pins which
-  27:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****           are assigned to be used for debug purpose.
-  28:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     [..]          
-  29:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****       Once the device started from reset, the user application has to:
-  30:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****       (+) Configure the clock source to be used to drive the System clock
-  31:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****           (if the application needs higher frequency/performance)
-  32:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****       (+) Configure the System clock frequency and Flash settings  
-  33:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****       (+) Configure the AHB and APB busses prescalers
-  34:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****       (+) Enable the clock for the peripheral(s) to be used
-  35:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****       (+) Configure the clock source(s) for peripherals which clocks are not
-  36:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****           derived from the System clock (I2S, RTC, ADC, USB OTG FS/SDIO/RNG)
-  37:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  @endverbatim    
-  38:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   ******************************************************************************
-  39:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @attention
-  40:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *
-  41:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * <h2><center>&copy; COPYRIGHT 2016 STMicroelectronics</center></h2>
-  42:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *
-  43:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * Licensed under MCD-ST Liberty SW License Agreement V2, (the "License");
-  44:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * You may not use this file except in compliance with the License.
-  45:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * You may obtain a copy of the License at:
-  46:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *
-  47:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *        http://www.st.com/software_license_agreement_liberty_v2
-  48:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *
-  49:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * Unless required by applicable law or agreed to in writing, software 
-  50:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * distributed under the License is distributed on an "AS IS" BASIS, 
-  51:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  52:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * See the License for the specific language governing permissions and
-  53:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * limitations under the License.
-  54:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *
-  55:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   ******************************************************************************
-  56:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */
-  57:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-  58:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /* Includes ------------------------------------------------------------------*/
-  59:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #include "stm32f4xx_rcc.h"
-  60:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-  61:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /** @addtogroup STM32F4xx_StdPeriph_Driver
-  62:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @{
-  63:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */
-  64:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-  65:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /** @defgroup RCC 
-  66:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @brief RCC driver modules
-  67:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @{
-  68:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */ 
-  69:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-  70:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /* Private typedef -----------------------------------------------------------*/
-  71:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /* Private define ------------------------------------------------------------*/
-  72:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /* ------------ RCC registers bit address in the alias region ----------- */
-  73:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #define RCC_OFFSET                (RCC_BASE - PERIPH_BASE)
-  74:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /* --- CR Register ---*/
-  75:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /* Alias word address of HSION bit */
-  76:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #define CR_OFFSET                 (RCC_OFFSET + 0x00)
-  77:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #define HSION_BitNumber           0x00
-  78:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #define CR_HSION_BB               (PERIPH_BB_BASE + (CR_OFFSET * 32) + (HSION_BitNumber * 4))
-  79:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /* Alias word address of CSSON bit */
-  80:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #define CSSON_BitNumber           0x13
-  81:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #define CR_CSSON_BB               (PERIPH_BB_BASE + (CR_OFFSET * 32) + (CSSON_BitNumber * 4))
-  82:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /* Alias word address of PLLON bit */
-  83:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #define PLLON_BitNumber           0x18
-  84:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #define CR_PLLON_BB               (PERIPH_BB_BASE + (CR_OFFSET * 32) + (PLLON_BitNumber * 4))
-  85:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /* Alias word address of PLLI2SON bit */
-  86:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #define PLLI2SON_BitNumber        0x1A
-  87:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #define CR_PLLI2SON_BB            (PERIPH_BB_BASE + (CR_OFFSET * 32) + (PLLI2SON_BitNumber * 4))
-  88:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-  89:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /* Alias word address of PLLSAION bit */
-  90:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #define PLLSAION_BitNumber        0x1C
-  91:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #define CR_PLLSAION_BB            (PERIPH_BB_BASE + (CR_OFFSET * 32) + (PLLSAION_BitNumber * 4))
-  92:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-  93:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /* --- CFGR Register ---*/
-  94:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /* Alias word address of I2SSRC bit */
-  95:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #define CFGR_OFFSET               (RCC_OFFSET + 0x08)
-  96:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #define I2SSRC_BitNumber          0x17
-  97:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #define CFGR_I2SSRC_BB            (PERIPH_BB_BASE + (CFGR_OFFSET * 32) + (I2SSRC_BitNumber * 4))
-  98:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-  99:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /* --- BDCR Register ---*/
- 100:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /* Alias word address of RTCEN bit */
- 101:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #define BDCR_OFFSET               (RCC_OFFSET + 0x70)
- 102:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #define RTCEN_BitNumber           0x0F
- 103:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #define BDCR_RTCEN_BB             (PERIPH_BB_BASE + (BDCR_OFFSET * 32) + (RTCEN_BitNumber * 4))
- 104:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /* Alias word address of BDRST bit */
- 105:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #define BDRST_BitNumber           0x10
- 106:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #define BDCR_BDRST_BB             (PERIPH_BB_BASE + (BDCR_OFFSET * 32) + (BDRST_BitNumber * 4))
- 107:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
- 108:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /* --- CSR Register ---*/
- 109:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /* Alias word address of LSION bit */
- 110:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #define CSR_OFFSET                (RCC_OFFSET + 0x74)
- 111:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #define LSION_BitNumber           0x00
- 112:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #define CSR_LSION_BB              (PERIPH_BB_BASE + (CSR_OFFSET * 32) + (LSION_BitNumber * 4))
- 113:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
- 114:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /* --- DCKCFGR Register ---*/
- 115:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /* Alias word address of TIMPRE bit */
- 116:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #define DCKCFGR_OFFSET            (RCC_OFFSET + 0x8C)
- 117:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #define TIMPRE_BitNumber          0x18
- 118:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #define DCKCFGR_TIMPRE_BB         (PERIPH_BB_BASE + (DCKCFGR_OFFSET * 32) + (TIMPRE_BitNumber * 4))
- 119:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     
- 120:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /* --- CFGR Register ---*/
- 121:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #define RCC_CFGR_OFFSET            (RCC_OFFSET + 0x08)
- 122:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  #if defined(STM32F410xx)
- 123:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /* Alias word address of MCO1EN bit */
- 124:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #define RCC_MCO1EN_BIT_NUMBER      0x8
- 125:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #define RCC_CFGR_MCO1EN_BB         (PERIPH_BB_BASE + (RCC_CFGR_OFFSET * 32) + (RCC_MCO1EN_BIT_NUMBE
- 126:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
- 127:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /* Alias word address of MCO2EN bit */
- 128:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #define RCC_MCO2EN_BIT_NUMBER      0x9
- 129:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #define RCC_CFGR_MCO2EN_BB         (PERIPH_BB_BASE + (RCC_CFGR_OFFSET * 32) + (RCC_MCO2EN_BIT_NUMBE
- 130:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #endif /* STM32F410xx */
- 131:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /* ---------------------- RCC registers bit mask ------------------------ */
- 132:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /* CFGR register bit mask */
- 133:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #define CFGR_MCO2_RESET_MASK      ((uint32_t)0x07FFFFFF)
- 134:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #define CFGR_MCO1_RESET_MASK      ((uint32_t)0xF89FFFFF)
- 135:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
- 136:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /* RCC Flag Mask */
- 137:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #define FLAG_MASK                 ((uint8_t)0x1F)
- 138:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
- 139:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /* CR register byte 3 (Bits[23:16]) base address */
- 140:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #define CR_BYTE3_ADDRESS          ((uint32_t)0x40023802)
- 141:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
- 142:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /* CIR register byte 2 (Bits[15:8]) base address */
- 143:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #define CIR_BYTE2_ADDRESS         ((uint32_t)(RCC_BASE + 0x0C + 0x01))
- 144:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
- 145:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /* CIR register byte 3 (Bits[23:16]) base address */
- 146:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #define CIR_BYTE3_ADDRESS         ((uint32_t)(RCC_BASE + 0x0C + 0x02))
- 147:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
- 148:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /* BDCR register base address */
- 149:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #define BDCR_ADDRESS              (PERIPH_BASE + BDCR_OFFSET)
- 150:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
- 151:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /* Private macro -------------------------------------------------------------*/
- 152:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /* Private variables ---------------------------------------------------------*/
- 153:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** static __I uint8_t APBAHBPrescTable[16] = {0, 0, 0, 0, 1, 2, 3, 4, 1, 2, 3, 4, 6, 7, 8, 9};
- 154:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
- 155:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /* Private function prototypes -----------------------------------------------*/
- 156:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /* Private functions ---------------------------------------------------------*/
- 157:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
- 158:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /** @defgroup RCC_Private_Functions
- 159:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @{
- 160:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */ 
- 161:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
- 162:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /** @defgroup RCC_Group1 Internal and external clocks, PLL, CSS and MCO configuration functions
- 163:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  *  @brief   Internal and external clocks, PLL, CSS and MCO configuration functions 
- 164:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  *
- 165:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** @verbatim   
- 166:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  ===================================================================================
- 167:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  ##### Internal and  external clocks, PLL, CSS and MCO configuration functions #####
- 168:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  ===================================================================================
- 169:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     [..]
- 170:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****       This section provide functions allowing to configure the internal/external clocks,
- 171:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****       PLLs, CSS and MCO pins.
- 172:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   
- 173:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****       (#) HSI (high-speed internal), 16 MHz factory-trimmed RC used directly or through
- 174:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****           the PLL as System clock source.
- 175:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
- 176:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****       (#) LSI (low-speed internal), 32 KHz low consumption RC used as IWDG and/or RTC
- 177:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****           clock source.
- 178:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
- 179:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****       (#) HSE (high-speed external), 4 to 26 MHz crystal oscillator used directly or
- 180:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****           through the PLL as System clock source. Can be used also as RTC clock source.
- 181:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
- 182:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****       (#) LSE (low-speed external), 32 KHz oscillator used as RTC clock source.   
- 183:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
- 184:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****       (#) PLL (clocked by HSI or HSE), featuring two different output clocks:
- 185:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****         (++) The first output is used to generate the high speed system clock (up to 168 MHz)
- 186:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****         (++) The second output is used to generate the clock for the USB OTG FS (48 MHz),
- 187:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****              the random analog generator (<=48 MHz) and the SDIO (<= 48 MHz).
- 188:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
- 189:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****       (#) PLLI2S (clocked by HSI or HSE), used to generate an accurate clock to achieve 
- 190:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****           high-quality audio performance on the I2S interface or SAI interface in case 
- 191:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****           of STM32F429x/439x devices.
- 192:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****      
- 193:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****       (#) PLLSAI clocked by (HSI or HSE), used to generate an accurate clock to SAI 
- 194:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****           interface and LCD TFT controller available only for STM32F42xxx/43xxx/446xx/469xx/479xx d
- 195:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   
- 196:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****       (#) CSS (Clock security system), once enable and if a HSE clock failure occurs 
- 197:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****          (HSE used directly or through PLL as System clock source), the System clock
- 198:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****          is automatically switched to HSI and an interrupt is generated if enabled. 
- 199:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****          The interrupt is linked to the Cortex-M4 NMI (Non-Maskable Interrupt) 
- 200:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****          exception vector.   
- 201:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
- 202:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****       (#) MCO1 (microcontroller clock output), used to output HSI, LSE, HSE or PLL
- 203:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****           clock (through a configurable prescaler) on PA8 pin.
- 204:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
- 205:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****       (#) MCO2 (microcontroller clock output), used to output HSE, PLL, SYSCLK or PLLI2S
- 206:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****           clock (through a configurable prescaler) on PC9 pin.
- 207:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  @endverbatim
- 208:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @{
- 209:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */
- 210:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
- 211:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /**
- 212:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @brief  Resets the RCC clock configuration to the default reset state.
- 213:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   The default reset state of the clock configuration is given below:
- 214:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            - HSI ON and used as system clock source
- 215:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            - HSE, PLL and PLLI2S OFF
- 216:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            - AHB, APB1 and APB2 prescaler set to 1.
- 217:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            - CSS, MCO1 and MCO2 OFF
- 218:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            - All interrupts disabled
- 219:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   This function doesn't modify the configuration of the
- 220:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            - Peripheral clocks  
- 221:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            - LSI, LSE and RTC clocks 
- 222:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  None
- 223:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @retval None
- 224:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */
- 225:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** void RCC_DeInit(void)
- 226:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** {
- 191              		.loc 2 226 0
- 192              		.cfi_startproc
- 193              		@ args = 0, pretend = 0, frame = 0
- 194              		@ frame_needed = 1, uses_anonymous_args = 0
- 195 00a8 80B5     		push	{r7, lr}
- 196              		.cfi_def_cfa_offset 8
- 197              		.cfi_offset 7, -8
- 198              		.cfi_offset 14, -4
- 199 00aa 00AF     		add	r7, sp, #0
- 200              		.cfi_def_cfa_register 7
- 227:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Set HSION bit */
- 228:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   RCC->CR |= (uint32_t)0x00000001;
- 201              		.loc 2 228 0
- 202 00ac 144B     		ldr	r3, .L13
- 203 00ae 1A68     		ldr	r2, [r3]
- 204 00b0 134B     		ldr	r3, .L13
- 205 00b2 0121     		movs	r1, #1
- 206 00b4 0A43     		orrs	r2, r1
- 207 00b6 1A60     		str	r2, [r3]
- 229:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
- 230:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Reset CFGR register */
- 231:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   RCC->CFGR = 0x00000000;
- 208              		.loc 2 231 0
- 209 00b8 114B     		ldr	r3, .L13
- 210 00ba 0022     		movs	r2, #0
- 211 00bc 9A60     		str	r2, [r3, #8]
- 232:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
- 233:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Reset HSEON, CSSON, PLLON, PLLI2S and PLLSAI(STM32F42xxx/43xxx/446xx/469xx/479xx devices) bits
- 234:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   RCC->CR &= (uint32_t)0xEAF6FFFF;
- 212              		.loc 2 234 0
- 213 00be 104B     		ldr	r3, .L13
- 214 00c0 1A68     		ldr	r2, [r3]
- 215 00c2 0F4B     		ldr	r3, .L13
- 216 00c4 0F49     		ldr	r1, .L13+4
- 217 00c6 0A40     		ands	r2, r1
- 218 00c8 1A60     		str	r2, [r3]
- 235:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   
- 236:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Reset PLLCFGR register */
- 237:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   RCC->PLLCFGR = 0x24003010;
- 219              		.loc 2 237 0
- 220 00ca 0D4B     		ldr	r3, .L13
- 221 00cc 0E4A     		ldr	r2, .L13+8
- 222 00ce 5A60     		str	r2, [r3, #4]
- 238:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
- 239:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #if defined(STM32F40_41xxx) || defined(STM32F427_437xx) || defined(STM32F429_439xx) || defined(STM3
- 240:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Reset PLLI2SCFGR register */
- 241:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   RCC->PLLI2SCFGR = 0x20003000;
- 223              		.loc 2 241 0
- 224 00d0 0B4A     		ldr	r2, .L13
- 225 00d2 8423     		movs	r3, #132
- 226 00d4 0D49     		ldr	r1, .L13+12
- 227 00d6 D150     		str	r1, [r2, r3]
- 242:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #endif /* STM32F40_41xxx || STM32F427_437xx || STM32F429_439xx || STM32F401xx || STM32F411xE || STM
- 243:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
- 244:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #if defined(STM32F40_41xxx) || defined(STM32F427_437xx) || defined(STM32F429_439xx) || defined(STM3
- 245:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Reset PLLSAICFGR register, only available for STM32F42xxx/43xxx/446xx/469xx/479xx devices */
- 246:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   RCC->PLLSAICFGR = 0x24003000;
- 228              		.loc 2 246 0
- 229 00d8 094A     		ldr	r2, .L13
- 230 00da 8823     		movs	r3, #136
- 231 00dc 0C49     		ldr	r1, .L13+16
- 232 00de D150     		str	r1, [r2, r3]
- 247:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #endif /* STM32F40_41xxx || STM32F427_437xx || STM32F429_439xx || STM32F446xx || STM32F469_479xx */
- 248:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   
- 249:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Reset HSEBYP bit */
- 250:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   RCC->CR &= (uint32_t)0xFFFBFFFF;
- 233              		.loc 2 250 0
- 234 00e0 074B     		ldr	r3, .L13
- 235 00e2 1A68     		ldr	r2, [r3]
- 236 00e4 064B     		ldr	r3, .L13
- 237 00e6 0B49     		ldr	r1, .L13+20
- 238 00e8 0A40     		ands	r2, r1
- 239 00ea 1A60     		str	r2, [r3]
- 251:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
- 252:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Disable all interrupts */
- 253:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   RCC->CIR = 0x00000000;
- 240              		.loc 2 253 0
- 241 00ec 044B     		ldr	r3, .L13
- 242 00ee 0022     		movs	r2, #0
- 243 00f0 DA60     		str	r2, [r3, #12]
- 254:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
- 255:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Disable Timers clock prescalers selection, only available for STM32F42/43xxx and STM32F413_423
- 256:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   RCC->DCKCFGR = 0x00000000;
- 244              		.loc 2 256 0
- 245 00f2 034A     		ldr	r2, .L13
- 246 00f4 8C23     		movs	r3, #140
- 247 00f6 0021     		movs	r1, #0
- 248 00f8 D150     		str	r1, [r2, r3]
- 257:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   
- 258:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #if defined(STM32F410xx) || defined(STM32F413_423xx)
- 259:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Disable LPTIM and FMPI2C clock prescalers selection, only available for STM32F410xx and STM32F
- 260:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   RCC->DCKCFGR2 = 0x00000000;
- 261:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #endif /* STM32F410xx || STM32F413_423xx */  
- 262:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** }
- 249              		.loc 2 262 0
- 250 00fa C046     		nop
- 251 00fc BD46     		mov	sp, r7
- 252              		@ sp needed
- 253 00fe 80BD     		pop	{r7, pc}
- 254              	.L14:
- 255              		.align	2
- 256              	.L13:
- 257 0100 00380240 		.word	1073887232
- 258 0104 FFFFF6EA 		.word	-352911361
- 259 0108 10300024 		.word	603992080
- 260 010c 00300020 		.word	536883200
- 261 0110 00300024 		.word	603992064
- 262 0114 FFFFFBFF 		.word	-262145
- 263              		.cfi_endproc
- 264              	.LFE123:
- 266              		.align	1
- 267              		.global	RCC_HSEConfig
- 268              		.syntax unified
- 269              		.code	16
- 270              		.thumb_func
- 271              		.fpu softvfp
- 273              	RCC_HSEConfig:
- 274              	.LFB124:
- 263:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
- 264:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /**
- 265:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @brief  Configures the External High Speed oscillator (HSE).
- 266:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   After enabling the HSE (RCC_HSE_ON or RCC_HSE_Bypass), the application
- 267:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         software should wait on HSERDY flag to be set indicating that HSE clock
- 268:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         is stable and can be used to clock the PLL and/or system clock.
- 269:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   HSE state can not be changed if it is used directly or through the
- 270:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         PLL as system clock. In this case, you have to select another source
- 271:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         of the system clock then change the HSE state (ex. disable it).
- 272:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   The HSE is stopped by hardware when entering STOP and STANDBY modes.  
- 273:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   This function reset the CSSON bit, so if the Clock security system(CSS)
- 274:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         was previously enabled you have to enable it again after calling this
- 275:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         function.    
- 276:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  RCC_HSE: specifies the new state of the HSE.
- 277:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter can be one of the following values:
- 278:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_HSE_OFF: turn OFF the HSE oscillator, HSERDY flag goes low after
- 279:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *                              6 HSE oscillator clock cycles.
- 280:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_HSE_ON: turn ON the HSE oscillator
- 281:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_HSE_Bypass: HSE oscillator bypassed with external clock
- 282:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @retval None
- 283:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */
- 284:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** void RCC_HSEConfig(uint8_t RCC_HSE)
- 285:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** {
- 275              		.loc 2 285 0
- 276              		.cfi_startproc
- 277              		@ args = 0, pretend = 0, frame = 8
- 278              		@ frame_needed = 1, uses_anonymous_args = 0
- 279 0118 80B5     		push	{r7, lr}
- 280              		.cfi_def_cfa_offset 8
- 281              		.cfi_offset 7, -8
- 282              		.cfi_offset 14, -4
- 283 011a 82B0     		sub	sp, sp, #8
- 284              		.cfi_def_cfa_offset 16
- 285 011c 00AF     		add	r7, sp, #0
- 286              		.cfi_def_cfa_register 7
- 287 011e 0200     		movs	r2, r0
- 288 0120 FB1D     		adds	r3, r7, #7
- 289 0122 1A70     		strb	r2, [r3]
- 286:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Check the parameters */
- 287:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_HSE(RCC_HSE));
- 288:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
- 289:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Reset HSEON and HSEBYP bits before configuring the HSE ------------------*/
- 290:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *(__IO uint8_t *) CR_BYTE3_ADDRESS = RCC_HSE_OFF;
- 290              		.loc 2 290 0
- 291 0124 054B     		ldr	r3, .L16
- 292 0126 0022     		movs	r2, #0
- 293 0128 1A70     		strb	r2, [r3]
- 291:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
- 292:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Set the new HSE configuration -------------------------------------------*/
- 293:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *(__IO uint8_t *) CR_BYTE3_ADDRESS = RCC_HSE;
- 294              		.loc 2 293 0
- 295 012a 044A     		ldr	r2, .L16
- 296 012c FB1D     		adds	r3, r7, #7
- 297 012e 1B78     		ldrb	r3, [r3]
- 298 0130 1370     		strb	r3, [r2]
- 294:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** }
- 299              		.loc 2 294 0
- 300 0132 C046     		nop
- 301 0134 BD46     		mov	sp, r7
- 302 0136 02B0     		add	sp, sp, #8
- 303              		@ sp needed
- 304 0138 80BD     		pop	{r7, pc}
- 305              	.L17:
- 306 013a C046     		.align	2
- 307              	.L16:
- 308 013c 02380240 		.word	1073887234
- 309              		.cfi_endproc
- 310              	.LFE124:
- 312              		.align	1
- 313              		.global	RCC_WaitForHSEStartUp
- 314              		.syntax unified
- 315              		.code	16
- 316              		.thumb_func
- 317              		.fpu softvfp
- 319              	RCC_WaitForHSEStartUp:
- 320              	.LFB125:
- 295:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
- 296:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /**
- 297:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @brief  Waits for HSE start-up.
- 298:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   This functions waits on HSERDY flag to be set and return SUCCESS if 
- 299:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         this flag is set, otherwise returns ERROR if the timeout is reached 
- 300:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         and this flag is not set. The timeout value is defined by the constant
- 301:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         HSE_STARTUP_TIMEOUT in stm32f4xx.h file. You can tailor it depending
- 302:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         on the HSE crystal used in your application. 
- 303:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  None
- 304:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @retval An ErrorStatus enumeration value:
- 305:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          - SUCCESS: HSE oscillator is stable and ready to use
- 306:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          - ERROR: HSE oscillator not yet ready
- 307:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */
- 308:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** ErrorStatus RCC_WaitForHSEStartUp(void)
- 309:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** {
- 321              		.loc 2 309 0
- 322              		.cfi_startproc
- 323              		@ args = 0, pretend = 0, frame = 8
- 324              		@ frame_needed = 1, uses_anonymous_args = 0
- 325 0140 90B5     		push	{r4, r7, lr}
- 326              		.cfi_def_cfa_offset 12
- 327              		.cfi_offset 4, -12
- 328              		.cfi_offset 7, -8
- 329              		.cfi_offset 14, -4
- 330 0142 83B0     		sub	sp, sp, #12
- 331              		.cfi_def_cfa_offset 24
- 332 0144 00AF     		add	r7, sp, #0
- 333              		.cfi_def_cfa_register 7
- 310:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   __IO uint32_t startupcounter = 0;
- 334              		.loc 2 310 0
- 335 0146 0023     		movs	r3, #0
- 336 0148 3B60     		str	r3, [r7]
- 311:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   ErrorStatus status = ERROR;
- 337              		.loc 2 311 0
- 338 014a FB1D     		adds	r3, r7, #7
- 339 014c 0022     		movs	r2, #0
- 340 014e 1A70     		strb	r2, [r3]
- 312:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   FlagStatus hsestatus = RESET;
- 341              		.loc 2 312 0
- 342 0150 BB1D     		adds	r3, r7, #6
- 343 0152 0022     		movs	r2, #0
- 344 0154 1A70     		strb	r2, [r3]
- 345              	.L20:
- 313:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Wait till HSE is ready and if Time out is reached exit */
- 314:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   do
- 315:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   {
- 316:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     hsestatus = RCC_GetFlagStatus(RCC_FLAG_HSERDY);
- 346              		.loc 2 316 0 discriminator 2
- 347 0156 BC1D     		adds	r4, r7, #6
- 348 0158 3120     		movs	r0, #49
- 349 015a FFF7FEFF 		bl	RCC_GetFlagStatus
- 350 015e 0300     		movs	r3, r0
- 351 0160 2370     		strb	r3, [r4]
- 317:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     startupcounter++;
- 352              		.loc 2 317 0 discriminator 2
- 353 0162 3B68     		ldr	r3, [r7]
- 354 0164 0133     		adds	r3, r3, #1
- 355 0166 3B60     		str	r3, [r7]
- 318:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   } while((startupcounter != HSE_STARTUP_TIMEOUT) && (hsestatus == RESET));
- 356              		.loc 2 318 0 discriminator 2
- 357 0168 3A68     		ldr	r2, [r7]
- 358 016a A023     		movs	r3, #160
- 359 016c DB01     		lsls	r3, r3, #7
- 360 016e 9A42     		cmp	r2, r3
- 361 0170 03D0     		beq	.L19
- 362              		.loc 2 318 0 is_stmt 0 discriminator 1
- 363 0172 BB1D     		adds	r3, r7, #6
- 364 0174 1B78     		ldrb	r3, [r3]
- 365 0176 002B     		cmp	r3, #0
- 366 0178 EDD0     		beq	.L20
- 367              	.L19:
- 319:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
- 320:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   if (RCC_GetFlagStatus(RCC_FLAG_HSERDY) != RESET)
- 368              		.loc 2 320 0 is_stmt 1
- 369 017a 3120     		movs	r0, #49
- 370 017c FFF7FEFF 		bl	RCC_GetFlagStatus
- 371 0180 031E     		subs	r3, r0, #0
- 372 0182 03D0     		beq	.L21
- 321:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   {
- 322:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     status = SUCCESS;
- 373              		.loc 2 322 0
- 374 0184 FB1D     		adds	r3, r7, #7
- 375 0186 0122     		movs	r2, #1
- 376 0188 1A70     		strb	r2, [r3]
- 377 018a 02E0     		b	.L22
- 378              	.L21:
- 323:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   }
- 324:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   else
- 325:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   {
- 326:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     status = ERROR;
- 379              		.loc 2 326 0
- 380 018c FB1D     		adds	r3, r7, #7
- 381 018e 0022     		movs	r2, #0
- 382 0190 1A70     		strb	r2, [r3]
- 383              	.L22:
- 327:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   }
- 328:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   return (status);
- 384              		.loc 2 328 0
- 385 0192 FB1D     		adds	r3, r7, #7
- 386 0194 1B78     		ldrb	r3, [r3]
- 329:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** }
- 387              		.loc 2 329 0
- 388 0196 1800     		movs	r0, r3
- 389 0198 BD46     		mov	sp, r7
- 390 019a 03B0     		add	sp, sp, #12
- 391              		@ sp needed
- 392 019c 90BD     		pop	{r4, r7, pc}
- 393              		.cfi_endproc
- 394              	.LFE125:
- 396              		.align	1
- 397              		.global	RCC_AdjustHSICalibrationValue
- 398              		.syntax unified
- 399              		.code	16
- 400              		.thumb_func
- 401              		.fpu softvfp
- 403              	RCC_AdjustHSICalibrationValue:
- 404              	.LFB126:
- 330:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
- 331:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /**
- 332:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @brief  Adjusts the Internal High Speed oscillator (HSI) calibration value.
- 333:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   The calibration is used to compensate for the variations in voltage
- 334:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         and temperature that influence the frequency of the internal HSI RC.
- 335:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  HSICalibrationValue: specifies the calibration trimming value.
- 336:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         This parameter must be a number between 0 and 0x1F.
- 337:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @retval None
- 338:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */
- 339:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** void RCC_AdjustHSICalibrationValue(uint8_t HSICalibrationValue)
- 340:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** {
- 405              		.loc 2 340 0
- 406              		.cfi_startproc
- 407              		@ args = 0, pretend = 0, frame = 16
- 408              		@ frame_needed = 1, uses_anonymous_args = 0
- 409 019e 80B5     		push	{r7, lr}
- 410              		.cfi_def_cfa_offset 8
- 411              		.cfi_offset 7, -8
- 412              		.cfi_offset 14, -4
- 413 01a0 84B0     		sub	sp, sp, #16
- 414              		.cfi_def_cfa_offset 24
- 415 01a2 00AF     		add	r7, sp, #0
- 416              		.cfi_def_cfa_register 7
- 417 01a4 0200     		movs	r2, r0
- 418 01a6 FB1D     		adds	r3, r7, #7
- 419 01a8 1A70     		strb	r2, [r3]
- 341:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   uint32_t tmpreg = 0;
- 420              		.loc 2 341 0
- 421 01aa 0023     		movs	r3, #0
- 422 01ac FB60     		str	r3, [r7, #12]
- 342:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Check the parameters */
- 343:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_CALIBRATION_VALUE(HSICalibrationValue));
- 344:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
- 345:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   tmpreg = RCC->CR;
- 423              		.loc 2 345 0
- 424 01ae 0A4B     		ldr	r3, .L25
- 425 01b0 1B68     		ldr	r3, [r3]
- 426 01b2 FB60     		str	r3, [r7, #12]
- 346:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
- 347:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Clear HSITRIM[4:0] bits */
- 348:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   tmpreg &= ~RCC_CR_HSITRIM;
- 427              		.loc 2 348 0
- 428 01b4 FB68     		ldr	r3, [r7, #12]
- 429 01b6 F822     		movs	r2, #248
- 430 01b8 9343     		bics	r3, r2
- 431 01ba FB60     		str	r3, [r7, #12]
- 349:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
- 350:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Set the HSITRIM[4:0] bits according to HSICalibrationValue value */
- 351:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   tmpreg |= (uint32_t)HSICalibrationValue << 3;
- 432              		.loc 2 351 0
- 433 01bc FB1D     		adds	r3, r7, #7
- 434 01be 1B78     		ldrb	r3, [r3]
- 435 01c0 DB00     		lsls	r3, r3, #3
- 436 01c2 FA68     		ldr	r2, [r7, #12]
- 437 01c4 1343     		orrs	r3, r2
- 438 01c6 FB60     		str	r3, [r7, #12]
- 352:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
- 353:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Store the new value */
- 354:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   RCC->CR = tmpreg;
- 439              		.loc 2 354 0
- 440 01c8 034B     		ldr	r3, .L25
- 441 01ca FA68     		ldr	r2, [r7, #12]
- 442 01cc 1A60     		str	r2, [r3]
- 355:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** }
- 443              		.loc 2 355 0
- 444 01ce C046     		nop
- 445 01d0 BD46     		mov	sp, r7
- 446 01d2 04B0     		add	sp, sp, #16
- 447              		@ sp needed
- 448 01d4 80BD     		pop	{r7, pc}
- 449              	.L26:
- 450 01d6 C046     		.align	2
- 451              	.L25:
- 452 01d8 00380240 		.word	1073887232
- 453              		.cfi_endproc
- 454              	.LFE126:
- 456              		.align	1
- 457              		.global	RCC_HSICmd
- 458              		.syntax unified
- 459              		.code	16
- 460              		.thumb_func
- 461              		.fpu softvfp
- 463              	RCC_HSICmd:
- 464              	.LFB127:
- 356:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
- 357:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /**
- 358:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @brief  Enables or disables the Internal High Speed oscillator (HSI).
- 359:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   The HSI is stopped by hardware when entering STOP and STANDBY modes.
- 360:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         It is used (enabled by hardware) as system clock source after startup
- 361:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         from Reset, wakeup from STOP and STANDBY mode, or in case of failure
- 362:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         of the HSE used directly or indirectly as system clock (if the Clock
- 363:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         Security System CSS is enabled).             
- 364:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   HSI can not be stopped if it is used as system clock source. In this case,
- 365:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         you have to select another source of the system clock then stop the HSI.  
- 366:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   After enabling the HSI, the application software should wait on HSIRDY
- 367:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         flag to be set indicating that HSI clock is stable and can be used as
- 368:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         system clock source.  
- 369:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  NewState: new state of the HSI.
- 370:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter can be: ENABLE or DISABLE.
- 371:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   When the HSI is stopped, HSIRDY flag goes low after 6 HSI oscillator
- 372:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         clock cycles.  
- 373:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @retval None
- 374:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */
- 375:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** void RCC_HSICmd(FunctionalState NewState)
- 376:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** {
- 465              		.loc 2 376 0
- 466              		.cfi_startproc
- 467              		@ args = 0, pretend = 0, frame = 8
- 468              		@ frame_needed = 1, uses_anonymous_args = 0
- 469 01dc 80B5     		push	{r7, lr}
- 470              		.cfi_def_cfa_offset 8
- 471              		.cfi_offset 7, -8
- 472              		.cfi_offset 14, -4
- 473 01de 82B0     		sub	sp, sp, #8
- 474              		.cfi_def_cfa_offset 16
- 475 01e0 00AF     		add	r7, sp, #0
- 476              		.cfi_def_cfa_register 7
- 477 01e2 0200     		movs	r2, r0
- 478 01e4 FB1D     		adds	r3, r7, #7
- 479 01e6 1A70     		strb	r2, [r3]
- 377:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Check the parameters */
- 378:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_FUNCTIONAL_STATE(NewState));
- 379:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
- 380:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *(__IO uint32_t *) CR_HSION_BB = (uint32_t)NewState;
- 480              		.loc 2 380 0
- 481 01e8 034B     		ldr	r3, .L28
- 482 01ea FA1D     		adds	r2, r7, #7
- 483 01ec 1278     		ldrb	r2, [r2]
- 484 01ee 1A60     		str	r2, [r3]
- 381:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** }
- 485              		.loc 2 381 0
- 486 01f0 C046     		nop
- 487 01f2 BD46     		mov	sp, r7
- 488 01f4 02B0     		add	sp, sp, #8
- 489              		@ sp needed
- 490 01f6 80BD     		pop	{r7, pc}
- 491              	.L29:
- 492              		.align	2
- 493              	.L28:
- 494 01f8 00004742 		.word	1111949312
- 495              		.cfi_endproc
- 496              	.LFE127:
- 498              		.align	1
- 499              		.global	RCC_LSEConfig
- 500              		.syntax unified
- 501              		.code	16
- 502              		.thumb_func
- 503              		.fpu softvfp
- 505              	RCC_LSEConfig:
- 506              	.LFB128:
- 382:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
- 383:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /**
- 384:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @brief  Configures the External Low Speed oscillator (LSE).
- 385:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   As the LSE is in the Backup domain and write access is denied to
- 386:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         this domain after reset, you have to enable write access using 
- 387:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         PWR_BackupAccessCmd(ENABLE) function before to configure the LSE
- 388:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         (to be done once after reset).  
- 389:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   After enabling the LSE (RCC_LSE_ON or RCC_LSE_Bypass), the application
- 390:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         software should wait on LSERDY flag to be set indicating that LSE clock
- 391:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         is stable and can be used to clock the RTC.
- 392:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  RCC_LSE: specifies the new state of the LSE.
- 393:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter can be one of the following values:
- 394:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_LSE_OFF: turn OFF the LSE oscillator, LSERDY flag goes low after
- 395:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *                              6 LSE oscillator clock cycles.
- 396:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_LSE_ON: turn ON the LSE oscillator
- 397:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_LSE_Bypass: LSE oscillator bypassed with external clock
- 398:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @retval None
- 399:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */
- 400:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** void RCC_LSEConfig(uint8_t RCC_LSE)
- 401:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** {
- 507              		.loc 2 401 0
- 508              		.cfi_startproc
- 509              		@ args = 0, pretend = 0, frame = 8
- 510              		@ frame_needed = 1, uses_anonymous_args = 0
- 511 01fc 80B5     		push	{r7, lr}
- 512              		.cfi_def_cfa_offset 8
- 513              		.cfi_offset 7, -8
- 514              		.cfi_offset 14, -4
- 515 01fe 82B0     		sub	sp, sp, #8
- 516              		.cfi_def_cfa_offset 16
- 517 0200 00AF     		add	r7, sp, #0
- 518              		.cfi_def_cfa_register 7
- 519 0202 0200     		movs	r2, r0
- 520 0204 FB1D     		adds	r3, r7, #7
- 521 0206 1A70     		strb	r2, [r3]
- 402:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Check the parameters */
- 403:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_LSE(RCC_LSE));
- 404:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
- 405:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Reset LSEON and LSEBYP bits before configuring the LSE ------------------*/
- 406:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Reset LSEON bit */
- 407:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *(__IO uint8_t *) BDCR_ADDRESS = RCC_LSE_OFF;
- 522              		.loc 2 407 0
- 523 0208 0C4B     		ldr	r3, .L35
- 524 020a 0022     		movs	r2, #0
- 525 020c 1A70     		strb	r2, [r3]
- 408:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
- 409:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Reset LSEBYP bit */
- 410:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *(__IO uint8_t *) BDCR_ADDRESS = RCC_LSE_OFF;
- 526              		.loc 2 410 0
- 527 020e 0B4B     		ldr	r3, .L35
- 528 0210 0022     		movs	r2, #0
- 529 0212 1A70     		strb	r2, [r3]
- 411:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
- 412:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Configure LSE (RCC_LSE_OFF is already covered by the code section above) */
- 413:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   switch (RCC_LSE)
- 530              		.loc 2 413 0
- 531 0214 FB1D     		adds	r3, r7, #7
- 532 0216 1B78     		ldrb	r3, [r3]
- 533 0218 012B     		cmp	r3, #1
- 534 021a 02D0     		beq	.L32
- 535 021c 042B     		cmp	r3, #4
- 536 021e 04D0     		beq	.L33
- 414:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   {
- 415:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     case RCC_LSE_ON:
- 416:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****       /* Set LSEON bit */
- 417:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****       *(__IO uint8_t *) BDCR_ADDRESS = RCC_LSE_ON;
- 418:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****       break;
- 419:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     case RCC_LSE_Bypass:
- 420:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****       /* Set LSEBYP and LSEON bits */
- 421:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****       *(__IO uint8_t *) BDCR_ADDRESS = RCC_LSE_Bypass | RCC_LSE_ON;
- 422:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****       break;
- 423:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     default:
- 424:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****       break;
- 537              		.loc 2 424 0
- 538 0220 07E0     		b	.L34
- 539              	.L32:
- 417:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****       break;
- 540              		.loc 2 417 0
- 541 0222 064B     		ldr	r3, .L35
- 542 0224 0122     		movs	r2, #1
- 543 0226 1A70     		strb	r2, [r3]
- 418:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     case RCC_LSE_Bypass:
- 544              		.loc 2 418 0
- 545 0228 03E0     		b	.L34
- 546              	.L33:
- 421:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****       break;
- 547              		.loc 2 421 0
- 548 022a 044B     		ldr	r3, .L35
- 549 022c 0522     		movs	r2, #5
- 550 022e 1A70     		strb	r2, [r3]
- 422:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     default:
- 551              		.loc 2 422 0
- 552 0230 C046     		nop
- 553              	.L34:
- 425:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   }
- 426:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** }
- 554              		.loc 2 426 0
- 555 0232 C046     		nop
- 556 0234 BD46     		mov	sp, r7
- 557 0236 02B0     		add	sp, sp, #8
- 558              		@ sp needed
- 559 0238 80BD     		pop	{r7, pc}
- 560              	.L36:
- 561 023a C046     		.align	2
- 562              	.L35:
- 563 023c 70380240 		.word	1073887344
- 564              		.cfi_endproc
- 565              	.LFE128:
- 567              		.align	1
- 568              		.global	RCC_LSICmd
- 569              		.syntax unified
- 570              		.code	16
- 571              		.thumb_func
- 572              		.fpu softvfp
- 574              	RCC_LSICmd:
- 575              	.LFB129:
- 427:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
- 428:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /**
- 429:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @brief  Enables or disables the Internal Low Speed oscillator (LSI).
- 430:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   After enabling the LSI, the application software should wait on 
- 431:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         LSIRDY flag to be set indicating that LSI clock is stable and can
- 432:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         be used to clock the IWDG and/or the RTC.
- 433:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   LSI can not be disabled if the IWDG is running.  
- 434:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  NewState: new state of the LSI.
- 435:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter can be: ENABLE or DISABLE.
- 436:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   When the LSI is stopped, LSIRDY flag goes low after 6 LSI oscillator
- 437:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         clock cycles. 
- 438:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @retval None
- 439:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */
- 440:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** void RCC_LSICmd(FunctionalState NewState)
- 441:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** {
- 576              		.loc 2 441 0
- 577              		.cfi_startproc
- 578              		@ args = 0, pretend = 0, frame = 8
- 579              		@ frame_needed = 1, uses_anonymous_args = 0
- 580 0240 80B5     		push	{r7, lr}
- 581              		.cfi_def_cfa_offset 8
- 582              		.cfi_offset 7, -8
- 583              		.cfi_offset 14, -4
- 584 0242 82B0     		sub	sp, sp, #8
- 585              		.cfi_def_cfa_offset 16
- 586 0244 00AF     		add	r7, sp, #0
- 587              		.cfi_def_cfa_register 7
- 588 0246 0200     		movs	r2, r0
- 589 0248 FB1D     		adds	r3, r7, #7
- 590 024a 1A70     		strb	r2, [r3]
- 442:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Check the parameters */
- 443:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_FUNCTIONAL_STATE(NewState));
- 444:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
- 445:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *(__IO uint32_t *) CSR_LSION_BB = (uint32_t)NewState;
- 591              		.loc 2 445 0
- 592 024c 034B     		ldr	r3, .L38
- 593 024e FA1D     		adds	r2, r7, #7
- 594 0250 1278     		ldrb	r2, [r2]
- 595 0252 1A60     		str	r2, [r3]
- 446:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** }
- 596              		.loc 2 446 0
- 597 0254 C046     		nop
- 598 0256 BD46     		mov	sp, r7
- 599 0258 02B0     		add	sp, sp, #8
- 600              		@ sp needed
- 601 025a 80BD     		pop	{r7, pc}
- 602              	.L39:
- 603              		.align	2
- 604              	.L38:
- 605 025c 800E4742 		.word	1111953024
- 606              		.cfi_endproc
- 607              	.LFE129:
- 609              		.align	1
- 610              		.global	RCC_PLLConfig
- 611              		.syntax unified
- 612              		.code	16
- 613              		.thumb_func
- 614              		.fpu softvfp
- 616              	RCC_PLLConfig:
- 617              	.LFB130:
- 447:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
- 448:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #if defined(STM32F410xx) || defined(STM32F412xG) || defined(STM32F413_423xx) || defined(STM32F446xx
- 449:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /**
- 450:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @brief  Configures the main PLL clock source, multiplication and division factors.
- 451:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   This function must be used only when the main PLL is disabled.
- 452:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *  
- 453:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  RCC_PLLSource: specifies the PLL entry clock source.
- 454:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter can be one of the following values:
- 455:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_PLLSource_HSI: HSI oscillator clock selected as PLL clock entry
- 456:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_PLLSource_HSE: HSE oscillator clock selected as PLL clock entry
- 457:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   This clock source (RCC_PLLSource) is common for the main PLL and PLLI2S.  
- 458:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *  
- 459:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  PLLM: specifies the division factor for PLL VCO input clock
- 460:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter must be a number between 0 and 63.
- 461:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   You have to set the PLLM parameter correctly to ensure that the VCO input
- 462:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         frequency ranges from 1 to 2 MHz. It is recommended to select a frequency
- 463:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         of 2 MHz to limit PLL jitter.
- 464:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *  
- 465:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  PLLN: specifies the multiplication factor for PLL VCO output clock
- 466:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter must be a number between 50 and 432.
- 467:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   You have to set the PLLN parameter correctly to ensure that the VCO
- 468:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         output frequency is between 100 and 432 MHz.
- 469:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *   
- 470:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  PLLP: specifies the division factor for main system clock (SYSCLK)
- 471:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter must be a number in the range {2, 4, 6, or 8}.
- 472:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   You have to set the PLLP parameter correctly to not exceed 168 MHz on
- 473:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         the System clock frequency.
- 474:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *  
- 475:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  PLLQ: specifies the division factor for OTG FS, SDIO and RNG clocks
- 476:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter must be a number between 4 and 15.
- 477:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *
- 478:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  PLLR: specifies the division factor for I2S, SAI, SYSTEM, SPDIF in STM32F446xx devices
- 479:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter must be a number between 2 and 7.
- 480:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *
- 481:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   If the USB OTG FS is used in your application, you have to set the
- 482:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         PLLQ parameter correctly to have 48 MHz clock for the USB. However,
- 483:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         the SDIO and RNG need a frequency lower than or equal to 48 MHz to work
- 484:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         correctly.
- 485:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *   
- 486:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @retval None
- 487:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */
- 488:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** void RCC_PLLConfig(uint32_t RCC_PLLSource, uint32_t PLLM, uint32_t PLLN, uint32_t PLLP, uint32_t PL
- 489:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** {
- 490:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Check the parameters */
- 491:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_PLL_SOURCE(RCC_PLLSource));
- 492:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_PLLM_VALUE(PLLM));
- 493:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_PLLN_VALUE(PLLN));
- 494:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_PLLP_VALUE(PLLP));
- 495:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_PLLQ_VALUE(PLLQ));
- 496:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_PLLR_VALUE(PLLR));
- 497:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   
- 498:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   RCC->PLLCFGR = PLLM | (PLLN << 6) | (((PLLP >> 1) -1) << 16) | (RCC_PLLSource) |
- 499:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****                  (PLLQ << 24) | (PLLR << 28);
- 500:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** }
- 501:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #endif /* STM32F410xx || STM32F412xG || STM32F413_423xx || STM32F446xx || STM32F469_479xx */
- 502:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
- 503:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #if defined(STM32F40_41xxx) || defined(STM32F427_437xx) || defined(STM32F429_439xx) || defined(STM3
- 504:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /**
- 505:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @brief  Configures the main PLL clock source, multiplication and division factors.
- 506:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   This function must be used only when the main PLL is disabled.
- 507:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *  
- 508:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  RCC_PLLSource: specifies the PLL entry clock source.
- 509:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter can be one of the following values:
- 510:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_PLLSource_HSI: HSI oscillator clock selected as PLL clock entry
- 511:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_PLLSource_HSE: HSE oscillator clock selected as PLL clock entry
- 512:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   This clock source (RCC_PLLSource) is common for the main PLL and PLLI2S.  
- 513:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *  
- 514:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  PLLM: specifies the division factor for PLL VCO input clock
- 515:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter must be a number between 0 and 63.
- 516:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   You have to set the PLLM parameter correctly to ensure that the VCO input
- 517:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         frequency ranges from 1 to 2 MHz. It is recommended to select a frequency
- 518:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         of 2 MHz to limit PLL jitter.
- 519:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *  
- 520:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  PLLN: specifies the multiplication factor for PLL VCO output clock
- 521:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter must be a number between 50 and 432.
- 522:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   You have to set the PLLN parameter correctly to ensure that the VCO
- 523:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         output frequency is between 100 and 432 MHz.
- 524:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *   
- 525:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  PLLP: specifies the division factor for main system clock (SYSCLK)
- 526:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter must be a number in the range {2, 4, 6, or 8}.
- 527:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   You have to set the PLLP parameter correctly to not exceed 168 MHz on
- 528:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         the System clock frequency.
- 529:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *  
- 530:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  PLLQ: specifies the division factor for OTG FS, SDIO and RNG clocks
- 531:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter must be a number between 4 and 15.
- 532:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   If the USB OTG FS is used in your application, you have to set the
- 533:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         PLLQ parameter correctly to have 48 MHz clock for the USB. However,
- 534:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         the SDIO and RNG need a frequency lower than or equal to 48 MHz to work
- 535:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         correctly.
- 536:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *   
- 537:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @retval None
- 538:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */
- 539:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** void RCC_PLLConfig(uint32_t RCC_PLLSource, uint32_t PLLM, uint32_t PLLN, uint32_t PLLP, uint32_t PL
- 540:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** {
- 618              		.loc 2 540 0
- 619              		.cfi_startproc
- 620              		@ args = 4, pretend = 0, frame = 16
- 621              		@ frame_needed = 1, uses_anonymous_args = 0
- 622 0260 80B5     		push	{r7, lr}
- 623              		.cfi_def_cfa_offset 8
- 624              		.cfi_offset 7, -8
- 625              		.cfi_offset 14, -4
- 626 0262 84B0     		sub	sp, sp, #16
- 627              		.cfi_def_cfa_offset 24
- 628 0264 00AF     		add	r7, sp, #0
- 629              		.cfi_def_cfa_register 7
- 630 0266 F860     		str	r0, [r7, #12]
- 631 0268 B960     		str	r1, [r7, #8]
- 632 026a 7A60     		str	r2, [r7, #4]
- 633 026c 3B60     		str	r3, [r7]
- 541:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Check the parameters */
- 542:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_PLL_SOURCE(RCC_PLLSource));
- 543:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_PLLM_VALUE(PLLM));
- 544:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_PLLN_VALUE(PLLN));
- 545:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_PLLP_VALUE(PLLP));
- 546:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_PLLQ_VALUE(PLLQ));
- 547:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
- 548:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   RCC->PLLCFGR = PLLM | (PLLN << 6) | (((PLLP >> 1) -1) << 16) | (RCC_PLLSource) |
- 634              		.loc 2 548 0
- 635 026e 7B68     		ldr	r3, [r7, #4]
- 636 0270 9A01     		lsls	r2, r3, #6
- 637 0272 BB68     		ldr	r3, [r7, #8]
- 638 0274 1A43     		orrs	r2, r3
- 639 0276 3B68     		ldr	r3, [r7]
- 640 0278 5B08     		lsrs	r3, r3, #1
- 641 027a 013B     		subs	r3, r3, #1
- 642 027c 1B04     		lsls	r3, r3, #16
- 643 027e 1A43     		orrs	r2, r3
- 644 0280 FB68     		ldr	r3, [r7, #12]
- 645 0282 1A43     		orrs	r2, r3
- 646 0284 1100     		movs	r1, r2
- 549:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****                  (PLLQ << 24);
- 647              		.loc 2 549 0
- 648 0286 BB69     		ldr	r3, [r7, #24]
- 649 0288 1A06     		lsls	r2, r3, #24
- 548:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****                  (PLLQ << 24);
- 650              		.loc 2 548 0
- 651 028a 034B     		ldr	r3, .L41
- 652 028c 0A43     		orrs	r2, r1
- 653 028e 5A60     		str	r2, [r3, #4]
- 550:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** }
- 654              		.loc 2 550 0
- 655 0290 C046     		nop
- 656 0292 BD46     		mov	sp, r7
- 657 0294 04B0     		add	sp, sp, #16
- 658              		@ sp needed
- 659 0296 80BD     		pop	{r7, pc}
- 660              	.L42:
- 661              		.align	2
- 662              	.L41:
- 663 0298 00380240 		.word	1073887232
- 664              		.cfi_endproc
- 665              	.LFE130:
- 667              		.align	1
- 668              		.global	RCC_PLLCmd
- 669              		.syntax unified
- 670              		.code	16
- 671              		.thumb_func
- 672              		.fpu softvfp
- 674              	RCC_PLLCmd:
- 675              	.LFB131:
- 551:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #endif /* STM32F40_41xxx || STM32F427_437xx || STM32F429_439xx || STM32F401xx || STM32F411xE */
- 552:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
- 553:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /**
- 554:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @brief  Enables or disables the main PLL.
- 555:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   After enabling the main PLL, the application software should wait on 
- 556:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         PLLRDY flag to be set indicating that PLL clock is stable and can
- 557:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         be used as system clock source.
- 558:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   The main PLL can not be disabled if it is used as system clock source
- 559:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   The main PLL is disabled by hardware when entering STOP and STANDBY modes.
- 560:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  NewState: new state of the main PLL. This parameter can be: ENABLE or DISABLE.
- 561:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @retval None
- 562:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */
- 563:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** void RCC_PLLCmd(FunctionalState NewState)
- 564:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** {
- 676              		.loc 2 564 0
- 677              		.cfi_startproc
- 678              		@ args = 0, pretend = 0, frame = 8
- 679              		@ frame_needed = 1, uses_anonymous_args = 0
- 680 029c 80B5     		push	{r7, lr}
- 681              		.cfi_def_cfa_offset 8
- 682              		.cfi_offset 7, -8
- 683              		.cfi_offset 14, -4
- 684 029e 82B0     		sub	sp, sp, #8
- 685              		.cfi_def_cfa_offset 16
- 686 02a0 00AF     		add	r7, sp, #0
- 687              		.cfi_def_cfa_register 7
- 688 02a2 0200     		movs	r2, r0
- 689 02a4 FB1D     		adds	r3, r7, #7
- 690 02a6 1A70     		strb	r2, [r3]
- 565:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Check the parameters */
- 566:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_FUNCTIONAL_STATE(NewState));
- 567:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *(__IO uint32_t *) CR_PLLON_BB = (uint32_t)NewState;
- 691              		.loc 2 567 0
- 692 02a8 034B     		ldr	r3, .L44
- 693 02aa FA1D     		adds	r2, r7, #7
- 694 02ac 1278     		ldrb	r2, [r2]
- 695 02ae 1A60     		str	r2, [r3]
- 568:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** }
- 696              		.loc 2 568 0
- 697 02b0 C046     		nop
- 698 02b2 BD46     		mov	sp, r7
- 699 02b4 02B0     		add	sp, sp, #8
- 700              		@ sp needed
- 701 02b6 80BD     		pop	{r7, pc}
- 702              	.L45:
- 703              		.align	2
- 704              	.L44:
- 705 02b8 60004742 		.word	1111949408
- 706              		.cfi_endproc
- 707              	.LFE131:
- 709              		.align	1
- 710              		.global	RCC_PLLI2SConfig
- 711              		.syntax unified
- 712              		.code	16
- 713              		.thumb_func
- 714              		.fpu softvfp
- 716              	RCC_PLLI2SConfig:
- 717              	.LFB132:
- 569:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
- 570:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #if defined(STM32F40_41xxx) || defined(STM32F401xx)
- 571:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /**
- 572:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @brief  Configures the PLLI2S clock multiplication and division factors.
- 573:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *  
- 574:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   This function can be used only for STM32F405xx/407xx, STM32F415xx/417xx 
- 575:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         or STM32F401xx devices. 
- 576:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *    
- 577:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   This function must be used only when the PLLI2S is disabled.
- 578:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   PLLI2S clock source is common with the main PLL (configured in 
- 579:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         RCC_PLLConfig function )  
- 580:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *             
- 581:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  PLLI2SN: specifies the multiplication factor for PLLI2S VCO output clock
- 582:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter must be a number between 50 and 432.
- 583:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   You have to set the PLLI2SN parameter correctly to ensure that the VCO 
- 584:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         output frequency is between 100 and 432 MHz.
- 585:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *    
- 586:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  PLLI2SR: specifies the division factor for I2S clock
- 587:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter must be a number between 2 and 7.
- 588:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   You have to set the PLLI2SR parameter correctly to not exceed 192 MHz
- 589:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         on the I2S clock frequency.
- 590:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *   
- 591:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @retval None
- 592:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */
- 593:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** void RCC_PLLI2SConfig(uint32_t PLLI2SN, uint32_t PLLI2SR)
- 594:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** {
- 718              		.loc 2 594 0
- 719              		.cfi_startproc
- 720              		@ args = 0, pretend = 0, frame = 8
- 721              		@ frame_needed = 1, uses_anonymous_args = 0
- 722 02bc 80B5     		push	{r7, lr}
- 723              		.cfi_def_cfa_offset 8
- 724              		.cfi_offset 7, -8
- 725              		.cfi_offset 14, -4
- 726 02be 82B0     		sub	sp, sp, #8
- 727              		.cfi_def_cfa_offset 16
- 728 02c0 00AF     		add	r7, sp, #0
- 729              		.cfi_def_cfa_register 7
- 730 02c2 7860     		str	r0, [r7, #4]
- 731 02c4 3960     		str	r1, [r7]
- 595:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Check the parameters */
- 596:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_PLLI2SN_VALUE(PLLI2SN));
- 597:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_PLLI2SR_VALUE(PLLI2SR));
- 598:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
- 599:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   RCC->PLLI2SCFGR = (PLLI2SN << 6) | (PLLI2SR << 28);
- 732              		.loc 2 599 0
- 733 02c6 7B68     		ldr	r3, [r7, #4]
- 734 02c8 9A01     		lsls	r2, r3, #6
- 735 02ca 3B68     		ldr	r3, [r7]
- 736 02cc 1B07     		lsls	r3, r3, #28
- 737 02ce 0449     		ldr	r1, .L47
- 738 02d0 1343     		orrs	r3, r2
- 739 02d2 8422     		movs	r2, #132
- 740 02d4 8B50     		str	r3, [r1, r2]
- 600:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** }
- 741              		.loc 2 600 0
- 742 02d6 C046     		nop
- 743 02d8 BD46     		mov	sp, r7
- 744 02da 02B0     		add	sp, sp, #8
- 745              		@ sp needed
- 746 02dc 80BD     		pop	{r7, pc}
- 747              	.L48:
- 748 02de C046     		.align	2
- 749              	.L47:
- 750 02e0 00380240 		.word	1073887232
- 751              		.cfi_endproc
- 752              	.LFE132:
- 754              		.align	1
- 755              		.global	RCC_PLLI2SCmd
- 756              		.syntax unified
- 757              		.code	16
- 758              		.thumb_func
- 759              		.fpu softvfp
- 761              	RCC_PLLI2SCmd:
- 762              	.LFB133:
- 601:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #endif /* STM32F40_41xxx || STM32F401xx */
- 602:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
- 603:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #if defined(STM32F411xE)
- 604:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /**
- 605:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @brief  Configures the PLLI2S clock multiplication and division factors.
- 606:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *  
- 607:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   This function can be used only for STM32F411xE devices. 
- 608:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *    
- 609:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   This function must be used only when the PLLI2S is disabled.
- 610:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   PLLI2S clock source is common with the main PLL (configured in 
- 611:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         RCC_PLLConfig function )  
- 612:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *
- 613:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  PLLI2SM: specifies the division factor for PLLI2S VCO input clock
- 614:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         This parameter must be a number between Min_Data = 2 and Max_Data = 63.
- 615:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   You have to set the PLLI2SM parameter correctly to ensure that the VCO input
- 616:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         frequency ranges from 1 to 2 MHz. It is recommended to select a frequency
- 617:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         of 2 MHz to limit PLLI2S jitter.
- 618:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *
- 619:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  PLLI2SN: specifies the multiplication factor for PLLI2S VCO output clock
- 620:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter must be a number between 50 and 432.
- 621:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   You have to set the PLLI2SN parameter correctly to ensure that the VCO 
- 622:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         output frequency is between 100 and 432 MHz.
- 623:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *    
- 624:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  PLLI2SR: specifies the division factor for I2S clock
- 625:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter must be a number between 2 and 7.
- 626:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   You have to set the PLLI2SR parameter correctly to not exceed 192 MHz
- 627:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         on the I2S clock frequency.
- 628:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *   
- 629:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @retval None
- 630:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */
- 631:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** void RCC_PLLI2SConfig(uint32_t PLLI2SN, uint32_t PLLI2SR, uint32_t PLLI2SM)
- 632:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** {
- 633:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Check the parameters */
- 634:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_PLLI2SN_VALUE(PLLI2SN));
- 635:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_PLLI2SM_VALUE(PLLI2SM));
- 636:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_PLLI2SR_VALUE(PLLI2SR));
- 637:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
- 638:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   RCC->PLLI2SCFGR = (PLLI2SN << 6) | (PLLI2SR << 28) | PLLI2SM;
- 639:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** }
- 640:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #endif /* STM32F411xE */
- 641:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
- 642:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #if defined(STM32F427_437xx) || defined(STM32F429_439xx) || defined(STM32F469_479xx)
- 643:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /**
- 644:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @brief  Configures the PLLI2S clock multiplication and division factors.
- 645:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * 
- 646:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   This function can be used only for STM32F42xxx/43xxx devices 
- 647:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         
- 648:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   This function must be used only when the PLLI2S is disabled.
- 649:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   PLLI2S clock source is common with the main PLL (configured in 
- 650:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         RCC_PLLConfig function )  
- 651:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *             
- 652:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  PLLI2SN: specifies the multiplication factor for PLLI2S VCO output clock
- 653:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter must be a number between 50 and 432.
- 654:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   You have to set the PLLI2SN parameter correctly to ensure that the VCO 
- 655:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         output frequency is between 100 and 432 MHz.
- 656:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * 
- 657:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  PLLI2SQ: specifies the division factor for SAI1 clock
- 658:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter must be a number between 2 and 15.
- 659:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *                 
- 660:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  PLLI2SR: specifies the division factor for I2S clock
- 661:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter must be a number between 2 and 7.
- 662:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   You have to set the PLLI2SR parameter correctly to not exceed 192 MHz
- 663:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         on the I2S clock frequency.
- 664:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *   
- 665:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @retval None
- 666:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */
- 667:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** void RCC_PLLI2SConfig(uint32_t PLLI2SN, uint32_t PLLI2SQ, uint32_t PLLI2SR)
- 668:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** {
- 669:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Check the parameters */
- 670:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_PLLI2SN_VALUE(PLLI2SN));
- 671:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_PLLI2SQ_VALUE(PLLI2SQ));
- 672:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_PLLI2SR_VALUE(PLLI2SR));
- 673:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
- 674:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   RCC->PLLI2SCFGR = (PLLI2SN << 6) | (PLLI2SQ << 24) | (PLLI2SR << 28);
- 675:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** }
- 676:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #endif /* STM32F427_437xx || STM32F429_439xx || STM32F469_479xx */
- 677:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
- 678:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #if defined(STM32F412xG ) || defined(STM32F413_423xx) || defined(STM32F446xx)
- 679:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /**
- 680:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @brief  Configures the PLLI2S clock multiplication and division factors.
- 681:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * 
- 682:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   This function can be used only for STM32F446xx devices 
- 683:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         
- 684:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   This function must be used only when the PLLI2S is disabled.
- 685:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   PLLI2S clock source is common with the main PLL (configured in 
- 686:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         RCC_PLLConfig function )  
- 687:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * 
- 688:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  PLLI2SM: specifies the division factor for PLLI2S VCO input clock
- 689:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         This parameter must be a number between Min_Data = 2 and Max_Data = 63.
- 690:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   You have to set the PLLI2SM parameter correctly to ensure that the VCO input
- 691:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         frequency ranges from 1 to 2 MHz. It is recommended to select a frequency
- 692:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         of 2 MHz to limit PLLI2S jitter.
- 693:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *
- 694:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  PLLI2SN: specifies the multiplication factor for PLLI2S VCO output clock
- 695:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter must be a number between 50 and 432.
- 696:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   You have to set the PLLI2SN parameter correctly to ensure that the VCO 
- 697:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         output frequency is between 100 and 432 MHz.
- 698:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *
- 699:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  PLLI2SP: specifies the division factor for PLL 48Mhz clock output
- 700:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter must be a number in the range {2, 4, 6, or 8}.
- 701:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *
- 702:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  PLLI2SQ: specifies the division factor for SAI1 clock
- 703:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter must be a number between 2 and 15.
- 704:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *                 
- 705:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  PLLI2SR: specifies the division factor for I2S clock
- 706:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter must be a number between 2 and 7.
- 707:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   You have to set the PLLI2SR parameter correctly to not exceed 192 MHz
- 708:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         on the I2S clock frequency.
- 709:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   the PLLI2SR parameter is only available with STM32F42xxx/43xxx devices.  
- 710:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *   
- 711:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @retval None
- 712:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */
- 713:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** void RCC_PLLI2SConfig(uint32_t PLLI2SM, uint32_t PLLI2SN, uint32_t PLLI2SP, uint32_t PLLI2SQ, uint3
- 714:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** {
- 715:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Check the parameters */
- 716:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_PLLI2SM_VALUE(PLLI2SM));
- 717:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_PLLI2SN_VALUE(PLLI2SN));
- 718:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_PLLI2SP_VALUE(PLLI2SP));
- 719:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_PLLI2SQ_VALUE(PLLI2SQ));
- 720:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_PLLI2SR_VALUE(PLLI2SR));
- 721:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
- 722:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   RCC->PLLI2SCFGR =  PLLI2SM | (PLLI2SN << 6) | (((PLLI2SP >> 1) -1) << 16) | (PLLI2SQ << 24) | (PL
- 723:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** }
- 724:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #endif /* STM32F412xG || STM32F413_423xx || STM32F446xx */
- 725:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
- 726:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /**
- 727:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @brief  Enables or disables the PLLI2S. 
- 728:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   The PLLI2S is disabled by hardware when entering STOP and STANDBY modes.  
- 729:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  NewState: new state of the PLLI2S. This parameter can be: ENABLE or DISABLE.
- 730:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @retval None
- 731:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */
- 732:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** void RCC_PLLI2SCmd(FunctionalState NewState)
- 733:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** {
- 763              		.loc 2 733 0
- 764              		.cfi_startproc
- 765              		@ args = 0, pretend = 0, frame = 8
- 766              		@ frame_needed = 1, uses_anonymous_args = 0
- 767 02e4 80B5     		push	{r7, lr}
- 768              		.cfi_def_cfa_offset 8
- 769              		.cfi_offset 7, -8
- 770              		.cfi_offset 14, -4
- 771 02e6 82B0     		sub	sp, sp, #8
- 772              		.cfi_def_cfa_offset 16
- 773 02e8 00AF     		add	r7, sp, #0
- 774              		.cfi_def_cfa_register 7
- 775 02ea 0200     		movs	r2, r0
- 776 02ec FB1D     		adds	r3, r7, #7
- 777 02ee 1A70     		strb	r2, [r3]
- 734:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Check the parameters */
- 735:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_FUNCTIONAL_STATE(NewState));
- 736:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *(__IO uint32_t *) CR_PLLI2SON_BB = (uint32_t)NewState;
- 778              		.loc 2 736 0
- 779 02f0 034B     		ldr	r3, .L50
- 780 02f2 FA1D     		adds	r2, r7, #7
- 781 02f4 1278     		ldrb	r2, [r2]
- 782 02f6 1A60     		str	r2, [r3]
- 737:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** }
- 783              		.loc 2 737 0
- 784 02f8 C046     		nop
- 785 02fa BD46     		mov	sp, r7
- 786 02fc 02B0     		add	sp, sp, #8
- 787              		@ sp needed
- 788 02fe 80BD     		pop	{r7, pc}
- 789              	.L51:
- 790              		.align	2
- 791              	.L50:
- 792 0300 68004742 		.word	1111949416
- 793              		.cfi_endproc
- 794              	.LFE133:
- 796              		.align	1
- 797              		.global	RCC_PLLSAIConfig
- 798              		.syntax unified
- 799              		.code	16
- 800              		.thumb_func
- 801              		.fpu softvfp
- 803              	RCC_PLLSAIConfig:
- 804              	.LFB134:
- 738:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
- 739:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #if defined(STM32F469_479xx)
- 740:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /**
- 741:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @brief  Configures the PLLSAI clock multiplication and division factors.
- 742:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *
- 743:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   This function can be used only for STM32F469_479xx devices 
- 744:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *        
- 745:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   This function must be used only when the PLLSAI is disabled.
- 746:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   PLLSAI clock source is common with the main PLL (configured in 
- 747:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         RCC_PLLConfig function )  
- 748:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *
- 749:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  PLLSAIN: specifies the multiplication factor for PLLSAI VCO output clock
- 750:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         This parameter must be a number between 50 and 432.
- 751:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   You have to set the PLLSAIN parameter correctly to ensure that the VCO 
- 752:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         output frequency is between 100 and 432 MHz.
- 753:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *
- 754:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  PLLSAIP: specifies the division factor for PLL 48Mhz clock output
- 755:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         This parameter must be a number in the range {2, 4, 6, or 8}..
- 756:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *           
- 757:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  PLLSAIQ: specifies the division factor for SAI1 clock
- 758:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         This parameter must be a number between 2 and 15.
- 759:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            
- 760:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  PLLSAIR: specifies the division factor for LTDC clock
- 761:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter must be a number between 2 and 7.
- 762:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *   
- 763:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @retval None
- 764:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */
- 765:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** void RCC_PLLSAIConfig(uint32_t PLLSAIN, uint32_t PLLSAIP, uint32_t PLLSAIQ, uint32_t PLLSAIR)
- 766:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** {
- 767:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Check the parameters */
- 768:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_PLLSAIN_VALUE(PLLSAIN));
- 769:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_PLLSAIP_VALUE(PLLSAIP));
- 770:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_PLLSAIQ_VALUE(PLLSAIQ));
- 771:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_PLLSAIR_VALUE(PLLSAIR));
- 772:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
- 773:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   RCC->PLLSAICFGR = (PLLSAIN << 6) | (((PLLSAIP >> 1) -1) << 16) | (PLLSAIQ << 24) | (PLLSAIR << 28
- 774:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** }
- 775:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #endif /* STM32F469_479xx */
- 776:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
- 777:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #if defined(STM32F446xx)
- 778:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /**
- 779:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @brief  Configures the PLLSAI clock multiplication and division factors.
- 780:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *
- 781:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   This function can be used only for STM32F446xx devices 
- 782:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *        
- 783:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   This function must be used only when the PLLSAI is disabled.
- 784:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   PLLSAI clock source is common with the main PLL (configured in 
- 785:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         RCC_PLLConfig function )  
- 786:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * 
- 787:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  PLLSAIM: specifies the division factor for PLLSAI VCO input clock
- 788:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         This parameter must be a number between Min_Data = 2 and Max_Data = 63.
- 789:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   You have to set the PLLSAIM parameter correctly to ensure that the VCO input
- 790:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         frequency ranges from 1 to 2 MHz. It is recommended to select a frequency
- 791:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         of 2 MHz to limit PLLSAI jitter.
- 792:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *
- 793:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  PLLSAIN: specifies the multiplication factor for PLLSAI VCO output clock
- 794:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         This parameter must be a number between 50 and 432.
- 795:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   You have to set the PLLSAIN parameter correctly to ensure that the VCO 
- 796:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         output frequency is between 100 and 432 MHz.
- 797:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * 
- 798:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  PLLSAIP: specifies the division factor for PLL 48Mhz clock output
- 799:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         This parameter must be a number in the range {2, 4, 6, or 8}.
- 800:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *
- 801:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  PLLSAIQ: specifies the division factor for SAI1 clock
- 802:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         This parameter must be a number between 2 and 15.
- 803:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *   
- 804:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @retval None
- 805:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */
- 806:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** void RCC_PLLSAIConfig(uint32_t PLLSAIM, uint32_t PLLSAIN, uint32_t PLLSAIP, uint32_t PLLSAIQ)
- 807:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** {
- 808:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Check the parameters */
- 809:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_PLLSAIM_VALUE(PLLSAIM));
- 810:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_PLLSAIN_VALUE(PLLSAIN));
- 811:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_PLLSAIP_VALUE(PLLSAIP));
- 812:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_PLLSAIQ_VALUE(PLLSAIQ));
- 813:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
- 814:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   RCC->PLLSAICFGR = PLLSAIM | (PLLSAIN << 6) | (((PLLSAIP >> 1) -1) << 16)  | (PLLSAIQ << 24);
- 815:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** }
- 816:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #endif /* STM32F446xx */
- 817:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
- 818:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #if defined(STM32F40_41xxx) || defined(STM32F427_437xx) || defined(STM32F429_439xx) || defined(STM3
- 819:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /**
- 820:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @brief  Configures the PLLSAI clock multiplication and division factors.
- 821:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *
- 822:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   This function can be used only for STM32F42xxx/43xxx devices 
- 823:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *        
- 824:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   This function must be used only when the PLLSAI is disabled.
- 825:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   PLLSAI clock source is common with the main PLL (configured in 
- 826:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         RCC_PLLConfig function )  
- 827:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *             
- 828:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  PLLSAIN: specifies the multiplication factor for PLLSAI VCO output clock
- 829:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter must be a number between 50 and 432.
- 830:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   You have to set the PLLSAIN parameter correctly to ensure that the VCO 
- 831:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         output frequency is between 100 and 432 MHz.
- 832:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *           
- 833:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  PLLSAIQ: specifies the division factor for SAI1 clock
- 834:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter must be a number between 2 and 15.
- 835:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            
- 836:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  PLLSAIR: specifies the division factor for LTDC clock
- 837:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter must be a number between 2 and 7.
- 838:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *   
- 839:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @retval None
- 840:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */
- 841:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** void RCC_PLLSAIConfig(uint32_t PLLSAIN, uint32_t PLLSAIQ, uint32_t PLLSAIR)
- 842:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** {
- 805              		.loc 2 842 0
- 806              		.cfi_startproc
- 807              		@ args = 0, pretend = 0, frame = 16
- 808              		@ frame_needed = 1, uses_anonymous_args = 0
- 809 0304 80B5     		push	{r7, lr}
- 810              		.cfi_def_cfa_offset 8
- 811              		.cfi_offset 7, -8
- 812              		.cfi_offset 14, -4
- 813 0306 84B0     		sub	sp, sp, #16
- 814              		.cfi_def_cfa_offset 24
- 815 0308 00AF     		add	r7, sp, #0
- 816              		.cfi_def_cfa_register 7
- 817 030a F860     		str	r0, [r7, #12]
- 818 030c B960     		str	r1, [r7, #8]
- 819 030e 7A60     		str	r2, [r7, #4]
- 843:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Check the parameters */
- 844:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_PLLSAIN_VALUE(PLLSAIN));
- 845:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_PLLSAIR_VALUE(PLLSAIR));
- 846:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_PLLSAIQ_VALUE(PLLSAIQ));
- 847:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   
- 848:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   RCC->PLLSAICFGR = (PLLSAIN << 6) | (PLLSAIQ << 24) | (PLLSAIR << 28);
- 820              		.loc 2 848 0
- 821 0310 FB68     		ldr	r3, [r7, #12]
- 822 0312 9A01     		lsls	r2, r3, #6
- 823 0314 BB68     		ldr	r3, [r7, #8]
- 824 0316 1B06     		lsls	r3, r3, #24
- 825 0318 1A43     		orrs	r2, r3
- 826 031a 7B68     		ldr	r3, [r7, #4]
- 827 031c 1B07     		lsls	r3, r3, #28
- 828 031e 0449     		ldr	r1, .L53
- 829 0320 1343     		orrs	r3, r2
- 830 0322 8822     		movs	r2, #136
- 831 0324 8B50     		str	r3, [r1, r2]
- 849:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** }
- 832              		.loc 2 849 0
- 833 0326 C046     		nop
- 834 0328 BD46     		mov	sp, r7
- 835 032a 04B0     		add	sp, sp, #16
- 836              		@ sp needed
- 837 032c 80BD     		pop	{r7, pc}
- 838              	.L54:
- 839 032e C046     		.align	2
- 840              	.L53:
- 841 0330 00380240 		.word	1073887232
- 842              		.cfi_endproc
- 843              	.LFE134:
- 845              		.align	1
- 846              		.global	RCC_PLLSAICmd
- 847              		.syntax unified
- 848              		.code	16
- 849              		.thumb_func
- 850              		.fpu softvfp
- 852              	RCC_PLLSAICmd:
- 853              	.LFB135:
- 850:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #endif /* STM32F40_41xxx || STM32F427_437xx || STM32F429_439xx || STM32F401xx || STM32F411xE */
- 851:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
- 852:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /**
- 853:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @brief  Enables or disables the PLLSAI. 
- 854:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * 
- 855:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   This function can be used only for STM32F42xxx/43xxx/446xx/469xx/479xx devices 
- 856:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *       
- 857:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   The PLLSAI is disabled by hardware when entering STOP and STANDBY modes.  
- 858:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  NewState: new state of the PLLSAI. This parameter can be: ENABLE or DISABLE.
- 859:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @retval None
- 860:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */
- 861:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** void RCC_PLLSAICmd(FunctionalState NewState)
- 862:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** {
- 854              		.loc 2 862 0
- 855              		.cfi_startproc
- 856              		@ args = 0, pretend = 0, frame = 8
- 857              		@ frame_needed = 1, uses_anonymous_args = 0
- 858 0334 80B5     		push	{r7, lr}
- 859              		.cfi_def_cfa_offset 8
- 860              		.cfi_offset 7, -8
- 861              		.cfi_offset 14, -4
- 862 0336 82B0     		sub	sp, sp, #8
- 863              		.cfi_def_cfa_offset 16
- 864 0338 00AF     		add	r7, sp, #0
- 865              		.cfi_def_cfa_register 7
- 866 033a 0200     		movs	r2, r0
- 867 033c FB1D     		adds	r3, r7, #7
- 868 033e 1A70     		strb	r2, [r3]
- 863:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Check the parameters */
- 864:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_FUNCTIONAL_STATE(NewState));
- 865:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *(__IO uint32_t *) CR_PLLSAION_BB = (uint32_t)NewState;
- 869              		.loc 2 865 0
- 870 0340 034B     		ldr	r3, .L56
- 871 0342 FA1D     		adds	r2, r7, #7
- 872 0344 1278     		ldrb	r2, [r2]
- 873 0346 1A60     		str	r2, [r3]
- 866:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** }
- 874              		.loc 2 866 0
- 875 0348 C046     		nop
- 876 034a BD46     		mov	sp, r7
- 877 034c 02B0     		add	sp, sp, #8
- 878              		@ sp needed
- 879 034e 80BD     		pop	{r7, pc}
- 880              	.L57:
- 881              		.align	2
- 882              	.L56:
- 883 0350 70004742 		.word	1111949424
- 884              		.cfi_endproc
- 885              	.LFE135:
- 887              		.align	1
- 888              		.global	RCC_ClockSecuritySystemCmd
- 889              		.syntax unified
- 890              		.code	16
- 891              		.thumb_func
- 892              		.fpu softvfp
- 894              	RCC_ClockSecuritySystemCmd:
- 895              	.LFB136:
- 867:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
- 868:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /**
- 869:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @brief  Enables or disables the Clock Security System.
- 870:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   If a failure is detected on the HSE oscillator clock, this oscillator
- 871:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         is automatically disabled and an interrupt is generated to inform the
- 872:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         software about the failure (Clock Security System Interrupt, CSSI),
- 873:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         allowing the MCU to perform rescue operations. The CSSI is linked to 
- 874:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         the Cortex-M4 NMI (Non-Maskable Interrupt) exception vector.  
- 875:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  NewState: new state of the Clock Security System.
- 876:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         This parameter can be: ENABLE or DISABLE.
- 877:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @retval None
- 878:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */
- 879:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** void RCC_ClockSecuritySystemCmd(FunctionalState NewState)
- 880:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** {
- 896              		.loc 2 880 0
- 897              		.cfi_startproc
- 898              		@ args = 0, pretend = 0, frame = 8
- 899              		@ frame_needed = 1, uses_anonymous_args = 0
- 900 0354 80B5     		push	{r7, lr}
- 901              		.cfi_def_cfa_offset 8
- 902              		.cfi_offset 7, -8
- 903              		.cfi_offset 14, -4
- 904 0356 82B0     		sub	sp, sp, #8
- 905              		.cfi_def_cfa_offset 16
- 906 0358 00AF     		add	r7, sp, #0
- 907              		.cfi_def_cfa_register 7
- 908 035a 0200     		movs	r2, r0
- 909 035c FB1D     		adds	r3, r7, #7
- 910 035e 1A70     		strb	r2, [r3]
- 881:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Check the parameters */
- 882:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_FUNCTIONAL_STATE(NewState));
- 883:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *(__IO uint32_t *) CR_CSSON_BB = (uint32_t)NewState;
- 911              		.loc 2 883 0
- 912 0360 034B     		ldr	r3, .L59
- 913 0362 FA1D     		adds	r2, r7, #7
- 914 0364 1278     		ldrb	r2, [r2]
- 915 0366 1A60     		str	r2, [r3]
- 884:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** }
- 916              		.loc 2 884 0
- 917 0368 C046     		nop
- 918 036a BD46     		mov	sp, r7
- 919 036c 02B0     		add	sp, sp, #8
- 920              		@ sp needed
- 921 036e 80BD     		pop	{r7, pc}
- 922              	.L60:
- 923              		.align	2
- 924              	.L59:
- 925 0370 4C004742 		.word	1111949388
- 926              		.cfi_endproc
- 927              	.LFE136:
- 929              		.align	1
- 930              		.global	RCC_MCO1Config
- 931              		.syntax unified
- 932              		.code	16
- 933              		.thumb_func
- 934              		.fpu softvfp
- 936              	RCC_MCO1Config:
- 937              	.LFB137:
- 885:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
- 886:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /**
- 887:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @brief  Selects the clock source to output on MCO1 pin(PA8).
- 888:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   PA8 should be configured in alternate function mode.
- 889:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  RCC_MCO1Source: specifies the clock source to output.
- 890:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter can be one of the following values:
- 891:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_MCO1Source_HSI: HSI clock selected as MCO1 source
- 892:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_MCO1Source_LSE: LSE clock selected as MCO1 source
- 893:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_MCO1Source_HSE: HSE clock selected as MCO1 source
- 894:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_MCO1Source_PLLCLK: main PLL clock selected as MCO1 source
- 895:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  RCC_MCO1Div: specifies the MCO1 prescaler.
- 896:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter can be one of the following values:
- 897:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_MCO1Div_1: no division applied to MCO1 clock
- 898:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_MCO1Div_2: division by 2 applied to MCO1 clock
- 899:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_MCO1Div_3: division by 3 applied to MCO1 clock
- 900:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_MCO1Div_4: division by 4 applied to MCO1 clock
- 901:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_MCO1Div_5: division by 5 applied to MCO1 clock
- 902:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @retval None
- 903:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */
- 904:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** void RCC_MCO1Config(uint32_t RCC_MCO1Source, uint32_t RCC_MCO1Div)
- 905:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** {
- 938              		.loc 2 905 0
- 939              		.cfi_startproc
- 940              		@ args = 0, pretend = 0, frame = 16
- 941              		@ frame_needed = 1, uses_anonymous_args = 0
- 942 0374 80B5     		push	{r7, lr}
- 943              		.cfi_def_cfa_offset 8
- 944              		.cfi_offset 7, -8
- 945              		.cfi_offset 14, -4
- 946 0376 84B0     		sub	sp, sp, #16
- 947              		.cfi_def_cfa_offset 24
- 948 0378 00AF     		add	r7, sp, #0
- 949              		.cfi_def_cfa_register 7
- 950 037a 7860     		str	r0, [r7, #4]
- 951 037c 3960     		str	r1, [r7]
- 906:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   uint32_t tmpreg = 0;
- 952              		.loc 2 906 0
- 953 037e 0023     		movs	r3, #0
- 954 0380 FB60     		str	r3, [r7, #12]
- 907:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   
- 908:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Check the parameters */
- 909:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_MCO1SOURCE(RCC_MCO1Source));
- 910:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_MCO1DIV(RCC_MCO1Div));  
- 911:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
- 912:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   tmpreg = RCC->CFGR;
- 955              		.loc 2 912 0
- 956 0382 0A4B     		ldr	r3, .L62
- 957 0384 9B68     		ldr	r3, [r3, #8]
- 958 0386 FB60     		str	r3, [r7, #12]
- 913:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
- 914:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Clear MCO1[1:0] and MCO1PRE[2:0] bits */
- 915:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   tmpreg &= CFGR_MCO1_RESET_MASK;
- 959              		.loc 2 915 0
- 960 0388 FB68     		ldr	r3, [r7, #12]
- 961 038a 094A     		ldr	r2, .L62+4
- 962 038c 1340     		ands	r3, r2
- 963 038e FB60     		str	r3, [r7, #12]
- 916:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
- 917:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Select MCO1 clock source and prescaler */
- 918:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   tmpreg |= RCC_MCO1Source | RCC_MCO1Div;
- 964              		.loc 2 918 0
- 965 0390 7A68     		ldr	r2, [r7, #4]
- 966 0392 3B68     		ldr	r3, [r7]
- 967 0394 1343     		orrs	r3, r2
- 968 0396 FA68     		ldr	r2, [r7, #12]
- 969 0398 1343     		orrs	r3, r2
- 970 039a FB60     		str	r3, [r7, #12]
- 919:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   
- 920:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Store the new value */
- 921:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   RCC->CFGR = tmpreg;
- 971              		.loc 2 921 0
- 972 039c 034B     		ldr	r3, .L62
- 973 039e FA68     		ldr	r2, [r7, #12]
- 974 03a0 9A60     		str	r2, [r3, #8]
- 922:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
- 923:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #if defined(STM32F410xx)
- 924:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   RCC_MCO1Cmd(ENABLE);
- 925:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #endif /* STM32F410xx */   
- 926:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** }
- 975              		.loc 2 926 0
- 976 03a2 C046     		nop
- 977 03a4 BD46     		mov	sp, r7
- 978 03a6 04B0     		add	sp, sp, #16
- 979              		@ sp needed
- 980 03a8 80BD     		pop	{r7, pc}
- 981              	.L63:
- 982 03aa C046     		.align	2
- 983              	.L62:
- 984 03ac 00380240 		.word	1073887232
- 985 03b0 FFFF9FF8 		.word	-123731969
- 986              		.cfi_endproc
- 987              	.LFE137:
- 989              		.align	1
- 990              		.global	RCC_MCO2Config
- 991              		.syntax unified
- 992              		.code	16
- 993              		.thumb_func
- 994              		.fpu softvfp
- 996              	RCC_MCO2Config:
- 997              	.LFB138:
- 927:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
- 928:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /**
- 929:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @brief  Selects the clock source to output on MCO2 pin(PC9).
- 930:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   PC9 should be configured in alternate function mode.
- 931:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  RCC_MCO2Source: specifies the clock source to output.
- 932:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter can be one of the following values:
- 933:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_MCO2Source_SYSCLK: System clock (SYSCLK) selected as MCO2 source
- 934:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_MCO2SOURCE_PLLI2SCLK: PLLI2S clock selected as MCO2 source, available for a
- 935:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_MCO2SOURCE_I2SCLK: I2SCLK clock selected as MCO2 source, available only for
- 936:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_MCO2Source_HSE: HSE clock selected as MCO2 source
- 937:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_MCO2Source_PLLCLK: main PLL clock selected as MCO2 source
- 938:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  RCC_MCO2Div: specifies the MCO2 prescaler.
- 939:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter can be one of the following values:
- 940:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_MCO2Div_1: no division applied to MCO2 clock
- 941:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_MCO2Div_2: division by 2 applied to MCO2 clock
- 942:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_MCO2Div_3: division by 3 applied to MCO2 clock
- 943:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_MCO2Div_4: division by 4 applied to MCO2 clock
- 944:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_MCO2Div_5: division by 5 applied to MCO2 clock
- 945:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note  For STM32F410xx devices to output I2SCLK clock on MCO2 you should have
- 946:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *        at last one of the SPI clocks enabled (SPI1, SPI2 or SPI5).
- 947:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @retval None
- 948:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */
- 949:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** void RCC_MCO2Config(uint32_t RCC_MCO2Source, uint32_t RCC_MCO2Div)
- 950:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** {
- 998              		.loc 2 950 0
- 999              		.cfi_startproc
- 1000              		@ args = 0, pretend = 0, frame = 16
- 1001              		@ frame_needed = 1, uses_anonymous_args = 0
- 1002 03b4 80B5     		push	{r7, lr}
- 1003              		.cfi_def_cfa_offset 8
- 1004              		.cfi_offset 7, -8
- 1005              		.cfi_offset 14, -4
- 1006 03b6 84B0     		sub	sp, sp, #16
- 1007              		.cfi_def_cfa_offset 24
- 1008 03b8 00AF     		add	r7, sp, #0
- 1009              		.cfi_def_cfa_register 7
- 1010 03ba 7860     		str	r0, [r7, #4]
- 1011 03bc 3960     		str	r1, [r7]
- 951:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   uint32_t tmpreg = 0;
- 1012              		.loc 2 951 0
- 1013 03be 0023     		movs	r3, #0
- 1014 03c0 FB60     		str	r3, [r7, #12]
- 952:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   
- 953:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Check the parameters */
- 954:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_MCO2SOURCE(RCC_MCO2Source));
- 955:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_MCO2DIV(RCC_MCO2Div));
- 956:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   
- 957:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   tmpreg = RCC->CFGR;
- 1015              		.loc 2 957 0
- 1016 03c2 0A4B     		ldr	r3, .L65
- 1017 03c4 9B68     		ldr	r3, [r3, #8]
- 1018 03c6 FB60     		str	r3, [r7, #12]
- 958:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   
- 959:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Clear MCO2 and MCO2PRE[2:0] bits */
- 960:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   tmpreg &= CFGR_MCO2_RESET_MASK;
- 1019              		.loc 2 960 0
- 1020 03c8 FB68     		ldr	r3, [r7, #12]
- 1021 03ca 5B01     		lsls	r3, r3, #5
- 1022 03cc 5B09     		lsrs	r3, r3, #5
- 1023 03ce FB60     		str	r3, [r7, #12]
- 961:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
- 962:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Select MCO2 clock source and prescaler */
- 963:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   tmpreg |= RCC_MCO2Source | RCC_MCO2Div;
- 1024              		.loc 2 963 0
- 1025 03d0 7A68     		ldr	r2, [r7, #4]
- 1026 03d2 3B68     		ldr	r3, [r7]
- 1027 03d4 1343     		orrs	r3, r2
- 1028 03d6 FA68     		ldr	r2, [r7, #12]
- 1029 03d8 1343     		orrs	r3, r2
- 1030 03da FB60     		str	r3, [r7, #12]
- 964:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   
- 965:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Store the new value */
- 966:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   RCC->CFGR = tmpreg;
- 1031              		.loc 2 966 0
- 1032 03dc 034B     		ldr	r3, .L65
- 1033 03de FA68     		ldr	r2, [r7, #12]
- 1034 03e0 9A60     		str	r2, [r3, #8]
- 967:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
- 968:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #if defined(STM32F410xx)
- 969:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   RCC_MCO2Cmd(ENABLE);
- 970:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #endif /* STM32F410xx */   
- 971:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** }
- 1035              		.loc 2 971 0
- 1036 03e2 C046     		nop
- 1037 03e4 BD46     		mov	sp, r7
- 1038 03e6 04B0     		add	sp, sp, #16
- 1039              		@ sp needed
- 1040 03e8 80BD     		pop	{r7, pc}
- 1041              	.L66:
- 1042 03ea C046     		.align	2
- 1043              	.L65:
- 1044 03ec 00380240 		.word	1073887232
- 1045              		.cfi_endproc
- 1046              	.LFE138:
- 1048              		.align	1
- 1049              		.global	RCC_SYSCLKConfig
- 1050              		.syntax unified
- 1051              		.code	16
- 1052              		.thumb_func
- 1053              		.fpu softvfp
- 1055              	RCC_SYSCLKConfig:
- 1056              	.LFB139:
- 972:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
- 973:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /**
- 974:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @}
- 975:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */
- 976:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
- 977:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /** @defgroup RCC_Group2 System AHB and APB busses clocks configuration functions
- 978:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  *  @brief   System, AHB and APB busses clocks configuration functions
- 979:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  *
- 980:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** @verbatim   
- 981:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  ===============================================================================
- 982:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****       ##### System, AHB and APB busses clocks configuration functions #####
- 983:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  ===============================================================================  
- 984:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     [..]
- 985:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****       This section provide functions allowing to configure the System, AHB, APB1 and 
- 986:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****       APB2 busses clocks.
- 987:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   
- 988:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****       (#) Several clock sources can be used to drive the System clock (SYSCLK): HSI,
- 989:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****           HSE and PLL.
- 990:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****           The AHB clock (HCLK) is derived from System clock through configurable 
- 991:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****           prescaler and used to clock the CPU, memory and peripherals mapped 
- 992:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****           on AHB bus (DMA, GPIO...). APB1 (PCLK1) and APB2 (PCLK2) clocks are derived 
- 993:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****           from AHB clock through configurable prescalers and used to clock 
- 994:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****           the peripherals mapped on these busses. You can use 
- 995:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****           "RCC_GetClocksFreq()" function to retrieve the frequencies of these clocks.  
- 996:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
- 997:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****       -@- All the peripheral clocks are derived from the System clock (SYSCLK) except:
- 998:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****         (+@) I2S: the I2S clock can be derived either from a specific PLL (PLLI2S) or
- 999:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****              from an external clock mapped on the I2S_CKIN pin. 
-1000:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****              You have to use RCC_I2SCLKConfig() function to configure this clock. 
-1001:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****         (+@) RTC: the RTC clock can be derived either from the LSI, LSE or HSE clock
-1002:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****              divided by 2 to 31. You have to use RCC_RTCCLKConfig() and RCC_RTCCLKCmd()
-1003:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****              functions to configure this clock. 
-1004:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****         (+@) USB OTG FS, SDIO and RTC: USB OTG FS require a frequency equal to 48 MHz
-1005:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****              to work correctly, while the SDIO require a frequency equal or lower than
-1006:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****              to 48. This clock is derived of the main PLL through PLLQ divider.
-1007:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****         (+@) IWDG clock which is always the LSI clock.
-1008:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****        
-1009:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****       (#) For STM32F405xx/407xx and STM32F415xx/417xx devices, the maximum frequency 
-1010:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****          of the SYSCLK and HCLK is 168 MHz, PCLK2 84 MHz and PCLK1 42 MHz. Depending 
-1011:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****          on the device voltage range, the maximum frequency should be adapted accordingly:
-1012:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  +-------------------------------------------------------------------------------------+
-1013:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  | Latency       |                HCLK clock frequency (MHz)                           |
-1014:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  |               |---------------------------------------------------------------------|
-1015:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  |               | voltage range  | voltage range  | voltage range   | voltage range   |
-1016:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  |               | 2.7 V - 3.6 V  | 2.4 V - 2.7 V  | 2.1 V - 2.4 V   | 1.8 V - 2.1 V   |
-1017:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  |---------------|----------------|----------------|-----------------|-----------------|
-1018:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  |0WS(1CPU cycle)|0 < HCLK <= 30  |0 < HCLK <= 24  |0 < HCLK <= 22   |0 < HCLK <= 20   |
-1019:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  |---------------|----------------|----------------|-----------------|-----------------|
-1020:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  |1WS(2CPU cycle)|30 < HCLK <= 60 |24 < HCLK <= 48 |22 < HCLK <= 44  |20 < HCLK <= 40  |
-1021:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  |---------------|----------------|----------------|-----------------|-----------------|
-1022:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  |2WS(3CPU cycle)|60 < HCLK <= 90 |48 < HCLK <= 72 |44 < HCLK <= 66  |40 < HCLK <= 60  |
-1023:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  |---------------|----------------|----------------|-----------------|-----------------|
-1024:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  |3WS(4CPU cycle)|90 < HCLK <= 120|72 < HCLK <= 96 |66 < HCLK <= 88  |60 < HCLK <= 80  |
-1025:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  |---------------|----------------|----------------|-----------------|-----------------|
-1026:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  |4WS(5CPU cycle)|120< HCLK <= 150|96 < HCLK <= 120|88 < HCLK <= 110 |80 < HCLK <= 100 |
-1027:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  |---------------|----------------|----------------|-----------------|-----------------|
-1028:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  |5WS(6CPU cycle)|150< HCLK <= 168|120< HCLK <= 144|110 < HCLK <= 132|100 < HCLK <= 120|
-1029:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  |---------------|----------------|----------------|-----------------|-----------------|
-1030:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  |6WS(7CPU cycle)|      NA        |144< HCLK <= 168|132 < HCLK <= 154|120 < HCLK <= 140|
-1031:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  |---------------|----------------|----------------|-----------------|-----------------|
-1032:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  |7WS(8CPU cycle)|      NA        |      NA        |154 < HCLK <= 168|140 < HCLK <= 160|
-1033:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  +---------------|----------------|----------------|-----------------|-----------------+
-1034:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****       (#) For STM32F42xxx/43xxx/469xx/479xx devices, the maximum frequency of the SYSCLK and HCLK i
-1035:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****           PCLK2 90 MHz and PCLK1 45 MHz. Depending on the device voltage range, the maximum 
-1036:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****           frequency should be adapted accordingly:
-1037:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  +-------------------------------------------------------------------------------------+
-1038:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  | Latency       |                HCLK clock frequency (MHz)                           |
-1039:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  |               |---------------------------------------------------------------------|
-1040:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  |               | voltage range  | voltage range  | voltage range   | voltage range   |
-1041:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  |               | 2.7 V - 3.6 V  | 2.4 V - 2.7 V  | 2.1 V - 2.4 V   | 1.8 V - 2.1 V   |
-1042:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  |---------------|----------------|----------------|-----------------|-----------------|
-1043:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  |0WS(1CPU cycle)|0 < HCLK <= 30  |0 < HCLK <= 24  |0 < HCLK <= 22   |0 < HCLK <= 20   |
-1044:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  |---------------|----------------|----------------|-----------------|-----------------|
-1045:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  |1WS(2CPU cycle)|30 < HCLK <= 60 |24 < HCLK <= 48 |22 < HCLK <= 44  |20 < HCLK <= 40  |
-1046:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  |---------------|----------------|----------------|-----------------|-----------------|
-1047:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  |2WS(3CPU cycle)|60 < HCLK <= 90 |48 < HCLK <= 72 |44 < HCLK <= 66  |40 < HCLK <= 60  |
-1048:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  |---------------|----------------|----------------|-----------------|-----------------|
-1049:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  |3WS(4CPU cycle)|90 < HCLK <= 120|72 < HCLK <= 96 |66 < HCLK <= 88  |60 < HCLK <= 80  |
-1050:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  |---------------|----------------|----------------|-----------------|-----------------|
-1051:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  |4WS(5CPU cycle)|120< HCLK <= 150|96 < HCLK <= 120|88 < HCLK <= 110 |80 < HCLK <= 100 |
-1052:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  |---------------|----------------|----------------|-----------------|-----------------|
-1053:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  |5WS(6CPU cycle)|120< HCLK <= 180|120< HCLK <= 144|110 < HCLK <= 132|100 < HCLK <= 120|
-1054:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  |---------------|----------------|----------------|-----------------|-----------------|
-1055:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  |6WS(7CPU cycle)|      NA        |144< HCLK <= 168|132 < HCLK <= 154|120 < HCLK <= 140|
-1056:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  |---------------|----------------|----------------|-----------------|-----------------|
-1057:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  |7WS(8CPU cycle)|      NA        |168< HCLK <= 180|154 < HCLK <= 176|140 < HCLK <= 160|
-1058:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  |---------------|----------------|----------------|-----------------|-----------------|
-1059:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  |8WS(9CPU cycle)|      NA        |      NA        |176 < HCLK <= 180|160 < HCLK <= 168|
-1060:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  +-------------------------------------------------------------------------------------+
-1061:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****    
-1062:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****       (#) For STM32F401xx devices, the maximum frequency of the SYSCLK and HCLK is 84 MHz, 
-1063:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****           PCLK2 84 MHz and PCLK1 42 MHz. Depending on the device voltage range, the maximum 
-1064:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****           frequency should be adapted accordingly:
-1065:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  +-------------------------------------------------------------------------------------+
-1066:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  | Latency       |                HCLK clock frequency (MHz)                           |
-1067:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  |               |---------------------------------------------------------------------|
-1068:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  |               | voltage range  | voltage range  | voltage range   | voltage range   |
-1069:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  |               | 2.7 V - 3.6 V  | 2.4 V - 2.7 V  | 2.1 V - 2.4 V   | 1.8 V - 2.1 V   |
-1070:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  |---------------|----------------|----------------|-----------------|-----------------|
-1071:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  |0WS(1CPU cycle)|0 < HCLK <= 30  |0 < HCLK <= 24  |0 < HCLK <= 22   |0 < HCLK <= 20   |
-1072:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  |---------------|----------------|----------------|-----------------|-----------------|
-1073:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  |1WS(2CPU cycle)|30 < HCLK <= 60 |24 < HCLK <= 48 |22 < HCLK <= 44  |20 < HCLK <= 40  |
-1074:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  |---------------|----------------|----------------|-----------------|-----------------|
-1075:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  |2WS(3CPU cycle)|60 < HCLK <= 84 |48 < HCLK <= 72 |44 < HCLK <= 66  |40 < HCLK <= 60  |
-1076:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  |---------------|----------------|----------------|-----------------|-----------------|
-1077:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  |3WS(4CPU cycle)|      NA        |72 < HCLK <= 84 |66 < HCLK <= 84  |60 < HCLK <= 80  |
-1078:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  |---------------|----------------|----------------|-----------------|-----------------|
-1079:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  |4WS(5CPU cycle)|      NA        |      NA        |      NA         |80 < HCLK <= 84  |
-1080:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  +-------------------------------------------------------------------------------------+
-1081:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-1082:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****       (#) For STM32F410xx/STM32F411xE devices, the maximum frequency of the SYSCLK and HCLK is 100 
-1083:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****           PCLK2 100 MHz and PCLK1 50 MHz. Depending on the device voltage range, the maximum 
-1084:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****           frequency should be adapted accordingly:
-1085:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  +-------------------------------------------------------------------------------------+
-1086:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  | Latency       |                HCLK clock frequency (MHz)                           |
-1087:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  |               |---------------------------------------------------------------------|
-1088:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  |               | voltage range  | voltage range  | voltage range   | voltage range   |
-1089:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  |               | 2.7 V - 3.6 V  | 2.4 V - 2.7 V  | 2.1 V - 2.4 V   | 1.8 V - 2.1 V   |
-1090:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  |---------------|----------------|----------------|-----------------|-----------------|
-1091:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  |0WS(1CPU cycle)|0 < HCLK <= 30  |0 < HCLK <= 24  |0 < HCLK <= 18   |0 < HCLK <= 16   |
-1092:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  |---------------|----------------|----------------|-----------------|-----------------|
-1093:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  |1WS(2CPU cycle)|30 < HCLK <= 64 |24 < HCLK <= 48 |18 < HCLK <= 36  |16 < HCLK <= 32  |
-1094:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  |---------------|----------------|----------------|-----------------|-----------------|
-1095:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  |2WS(3CPU cycle)|64 < HCLK <= 90 |48 < HCLK <= 72 |36 < HCLK <= 54  |32 < HCLK <= 48  |
-1096:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  |---------------|----------------|----------------|-----------------|-----------------|
-1097:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  |3WS(4CPU cycle)|90 < HCLK <= 100|72 < HCLK <= 96 |54 < HCLK <= 72  |48 < HCLK <= 64  |
-1098:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  |---------------|----------------|----------------|-----------------|-----------------|
-1099:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  |4WS(5CPU cycle)|      NA        |96 < HCLK <= 100|72 < HCLK <= 90  |64 < HCLK <= 80  |
-1100:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  |---------------|----------------|----------------|-----------------|-----------------|
-1101:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  |5WS(6CPU cycle)|      NA        |       NA       |90 < HCLK <= 100 |80 < HCLK <= 96  |
-1102:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  |---------------|----------------|----------------|-----------------|-----------------|
-1103:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  |6WS(7CPU cycle)|      NA        |       NA       |        NA       |96 < HCLK <= 100 |
-1104:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  +-------------------------------------------------------------------------------------+
-1105:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   
-1106:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****       -@- On STM32F405xx/407xx and STM32F415xx/417xx devices: 
-1107:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****            (++) when VOS = '0', the maximum value of fHCLK = 144MHz. 
-1108:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****            (++) when VOS = '1', the maximum value of fHCLK = 168MHz. 
-1109:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****           [..] 
-1110:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****           On STM32F42xxx/43xxx/469xx/479xx devices:
-1111:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****            (++) when VOS[1:0] = '0x01', the maximum value of fHCLK is 120MHz.
-1112:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****            (++) when VOS[1:0] = '0x10', the maximum value of fHCLK is 144MHz.
-1113:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****            (++) when VOS[1:0] = '0x11', the maximum value of f  is 168MHz 
-1114:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****           [..]  
-1115:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****           On STM32F401x devices:
-1116:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****            (++) when VOS[1:0] = '0x01', the maximum value of fHCLK is 64MHz.
-1117:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****            (++) when VOS[1:0] = '0x10', the maximum value of fHCLK is 84MHz.
-1118:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****           On STM32F410xx/STM32F411xE devices:
-1119:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****            (++) when VOS[1:0] = '0x01' the maximum value of fHCLK is 64MHz.
-1120:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****            (++) when VOS[1:0] = '0x10' the maximum value of fHCLK is 84MHz.
-1121:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****            (++) when VOS[1:0] = '0x11' the maximum value of fHCLK is 100MHz.
-1122:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-1123:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****        You can use PWR_MainRegulatorModeConfig() function to control VOS bits.
-1124:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-1125:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** @endverbatim
-1126:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @{
-1127:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */
-1128:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-1129:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /**
-1130:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @brief  Configures the system clock (SYSCLK).
-1131:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   The HSI is used (enabled by hardware) as system clock source after
-1132:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         startup from Reset, wake-up from STOP and STANDBY mode, or in case
-1133:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         of failure of the HSE used directly or indirectly as system clock
-1134:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         (if the Clock Security System CSS is enabled).
-1135:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   A switch from one clock source to another occurs only if the target
-1136:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         clock source is ready (clock stable after startup delay or PLL locked). 
-1137:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         If a clock source which is not yet ready is selected, the switch will
-1138:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         occur when the clock source will be ready. 
-1139:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         You can use RCC_GetSYSCLKSource() function to know which clock is
-1140:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         currently used as system clock source. 
-1141:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  RCC_SYSCLKSource: specifies the clock source used as system clock.
-1142:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter can be one of the following values:
-1143:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_SYSCLKSource_HSI: HSI selected as system clock source
-1144:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_SYSCLKSource_HSE: HSE selected as system clock source
-1145:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_SYSCLKSource_PLLCLK: PLL selected as system clock source (RCC_SYSCLKSource_
-1146:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_SYSCLKSource_PLLRCLK: PLL R selected as system clock source only for STM32F
-1147:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @retval None
-1148:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */
-1149:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** void RCC_SYSCLKConfig(uint32_t RCC_SYSCLKSource)
-1150:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** {
- 1057              		.loc 2 1150 0
- 1058              		.cfi_startproc
- 1059              		@ args = 0, pretend = 0, frame = 16
- 1060              		@ frame_needed = 1, uses_anonymous_args = 0
- 1061 03f0 80B5     		push	{r7, lr}
- 1062              		.cfi_def_cfa_offset 8
- 1063              		.cfi_offset 7, -8
- 1064              		.cfi_offset 14, -4
- 1065 03f2 84B0     		sub	sp, sp, #16
- 1066              		.cfi_def_cfa_offset 24
- 1067 03f4 00AF     		add	r7, sp, #0
- 1068              		.cfi_def_cfa_register 7
- 1069 03f6 7860     		str	r0, [r7, #4]
-1151:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   uint32_t tmpreg = 0;
- 1070              		.loc 2 1151 0
- 1071 03f8 0023     		movs	r3, #0
- 1072 03fa FB60     		str	r3, [r7, #12]
-1152:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-1153:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Check the parameters */
-1154:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_SYSCLK_SOURCE(RCC_SYSCLKSource));
-1155:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-1156:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   tmpreg = RCC->CFGR;
- 1073              		.loc 2 1156 0
- 1074 03fc 084B     		ldr	r3, .L68
- 1075 03fe 9B68     		ldr	r3, [r3, #8]
- 1076 0400 FB60     		str	r3, [r7, #12]
-1157:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-1158:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Clear SW[1:0] bits */
-1159:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   tmpreg &= ~RCC_CFGR_SW;
- 1077              		.loc 2 1159 0
- 1078 0402 FB68     		ldr	r3, [r7, #12]
- 1079 0404 0322     		movs	r2, #3
- 1080 0406 9343     		bics	r3, r2
- 1081 0408 FB60     		str	r3, [r7, #12]
-1160:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-1161:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Set SW[1:0] bits according to RCC_SYSCLKSource value */
-1162:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   tmpreg |= RCC_SYSCLKSource;
- 1082              		.loc 2 1162 0
- 1083 040a FA68     		ldr	r2, [r7, #12]
- 1084 040c 7B68     		ldr	r3, [r7, #4]
- 1085 040e 1343     		orrs	r3, r2
- 1086 0410 FB60     		str	r3, [r7, #12]
-1163:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-1164:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Store the new value */
-1165:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   RCC->CFGR = tmpreg;
- 1087              		.loc 2 1165 0
- 1088 0412 034B     		ldr	r3, .L68
- 1089 0414 FA68     		ldr	r2, [r7, #12]
- 1090 0416 9A60     		str	r2, [r3, #8]
-1166:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** }
- 1091              		.loc 2 1166 0
- 1092 0418 C046     		nop
- 1093 041a BD46     		mov	sp, r7
- 1094 041c 04B0     		add	sp, sp, #16
- 1095              		@ sp needed
- 1096 041e 80BD     		pop	{r7, pc}
- 1097              	.L69:
- 1098              		.align	2
- 1099              	.L68:
- 1100 0420 00380240 		.word	1073887232
- 1101              		.cfi_endproc
- 1102              	.LFE139:
- 1104              		.align	1
- 1105              		.global	RCC_GetSYSCLKSource
- 1106              		.syntax unified
- 1107              		.code	16
- 1108              		.thumb_func
- 1109              		.fpu softvfp
- 1111              	RCC_GetSYSCLKSource:
- 1112              	.LFB140:
-1167:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-1168:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /**
-1169:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @brief  Returns the clock source used as system clock.
-1170:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  None
-1171:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @retval The clock source used as system clock. The returned value can be one
-1172:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         of the following:
-1173:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *              - 0x00: HSI used as system clock
-1174:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *              - 0x04: HSE used as system clock
-1175:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *              - 0x08: PLL used as system clock (PLL P for STM32F446xx devices)
-1176:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *              - 0x0C: PLL R used as system clock (only for STM32F412xG, STM32F413_423xx and STM3
-1177:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */
-1178:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** uint8_t RCC_GetSYSCLKSource(void)
-1179:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** {
- 1113              		.loc 2 1179 0
- 1114              		.cfi_startproc
- 1115              		@ args = 0, pretend = 0, frame = 0
- 1116              		@ frame_needed = 1, uses_anonymous_args = 0
- 1117 0424 80B5     		push	{r7, lr}
- 1118              		.cfi_def_cfa_offset 8
- 1119              		.cfi_offset 7, -8
- 1120              		.cfi_offset 14, -4
- 1121 0426 00AF     		add	r7, sp, #0
- 1122              		.cfi_def_cfa_register 7
-1180:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   return ((uint8_t)(RCC->CFGR & RCC_CFGR_SWS));
- 1123              		.loc 2 1180 0
- 1124 0428 044B     		ldr	r3, .L72
- 1125 042a 9B68     		ldr	r3, [r3, #8]
- 1126 042c DBB2     		uxtb	r3, r3
- 1127 042e 0C22     		movs	r2, #12
- 1128 0430 1340     		ands	r3, r2
- 1129 0432 DBB2     		uxtb	r3, r3
-1181:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** }
- 1130              		.loc 2 1181 0
- 1131 0434 1800     		movs	r0, r3
- 1132 0436 BD46     		mov	sp, r7
- 1133              		@ sp needed
- 1134 0438 80BD     		pop	{r7, pc}
- 1135              	.L73:
- 1136 043a C046     		.align	2
- 1137              	.L72:
- 1138 043c 00380240 		.word	1073887232
- 1139              		.cfi_endproc
- 1140              	.LFE140:
- 1142              		.align	1
- 1143              		.global	RCC_HCLKConfig
- 1144              		.syntax unified
- 1145              		.code	16
- 1146              		.thumb_func
- 1147              		.fpu softvfp
- 1149              	RCC_HCLKConfig:
- 1150              	.LFB141:
-1182:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-1183:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /**
-1184:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @brief  Configures the AHB clock (HCLK).
-1185:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   Depending on the device voltage range, the software has to set correctly
-1186:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         these bits to ensure that HCLK not exceed the maximum allowed frequency
-1187:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         (for more details refer to section above
-1188:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *           "CPU, AHB and APB busses clocks configuration functions")
-1189:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  RCC_SYSCLK: defines the AHB clock divider. This clock is derived from 
-1190:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         the system clock (SYSCLK).
-1191:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter can be one of the following values:
-1192:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_SYSCLK_Div1: AHB clock = SYSCLK
-1193:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_SYSCLK_Div2: AHB clock = SYSCLK/2
-1194:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_SYSCLK_Div4: AHB clock = SYSCLK/4
-1195:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_SYSCLK_Div8: AHB clock = SYSCLK/8
-1196:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_SYSCLK_Div16: AHB clock = SYSCLK/16
-1197:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_SYSCLK_Div64: AHB clock = SYSCLK/64
-1198:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_SYSCLK_Div128: AHB clock = SYSCLK/128
-1199:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_SYSCLK_Div256: AHB clock = SYSCLK/256
-1200:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_SYSCLK_Div512: AHB clock = SYSCLK/512
-1201:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @retval None
-1202:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */
-1203:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** void RCC_HCLKConfig(uint32_t RCC_SYSCLK)
-1204:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** {
- 1151              		.loc 2 1204 0
- 1152              		.cfi_startproc
- 1153              		@ args = 0, pretend = 0, frame = 16
- 1154              		@ frame_needed = 1, uses_anonymous_args = 0
- 1155 0440 80B5     		push	{r7, lr}
- 1156              		.cfi_def_cfa_offset 8
- 1157              		.cfi_offset 7, -8
- 1158              		.cfi_offset 14, -4
- 1159 0442 84B0     		sub	sp, sp, #16
- 1160              		.cfi_def_cfa_offset 24
- 1161 0444 00AF     		add	r7, sp, #0
- 1162              		.cfi_def_cfa_register 7
- 1163 0446 7860     		str	r0, [r7, #4]
-1205:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   uint32_t tmpreg = 0;
- 1164              		.loc 2 1205 0
- 1165 0448 0023     		movs	r3, #0
- 1166 044a FB60     		str	r3, [r7, #12]
-1206:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   
-1207:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Check the parameters */
-1208:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_HCLK(RCC_SYSCLK));
-1209:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-1210:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   tmpreg = RCC->CFGR;
- 1167              		.loc 2 1210 0
- 1168 044c 084B     		ldr	r3, .L75
- 1169 044e 9B68     		ldr	r3, [r3, #8]
- 1170 0450 FB60     		str	r3, [r7, #12]
-1211:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-1212:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Clear HPRE[3:0] bits */
-1213:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   tmpreg &= ~RCC_CFGR_HPRE;
- 1171              		.loc 2 1213 0
- 1172 0452 FB68     		ldr	r3, [r7, #12]
- 1173 0454 F022     		movs	r2, #240
- 1174 0456 9343     		bics	r3, r2
- 1175 0458 FB60     		str	r3, [r7, #12]
-1214:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-1215:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Set HPRE[3:0] bits according to RCC_SYSCLK value */
-1216:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   tmpreg |= RCC_SYSCLK;
- 1176              		.loc 2 1216 0
- 1177 045a FA68     		ldr	r2, [r7, #12]
- 1178 045c 7B68     		ldr	r3, [r7, #4]
- 1179 045e 1343     		orrs	r3, r2
- 1180 0460 FB60     		str	r3, [r7, #12]
-1217:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-1218:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Store the new value */
-1219:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   RCC->CFGR = tmpreg;
- 1181              		.loc 2 1219 0
- 1182 0462 034B     		ldr	r3, .L75
- 1183 0464 FA68     		ldr	r2, [r7, #12]
- 1184 0466 9A60     		str	r2, [r3, #8]
-1220:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** }
- 1185              		.loc 2 1220 0
- 1186 0468 C046     		nop
- 1187 046a BD46     		mov	sp, r7
- 1188 046c 04B0     		add	sp, sp, #16
- 1189              		@ sp needed
- 1190 046e 80BD     		pop	{r7, pc}
- 1191              	.L76:
- 1192              		.align	2
- 1193              	.L75:
- 1194 0470 00380240 		.word	1073887232
- 1195              		.cfi_endproc
- 1196              	.LFE141:
- 1198              		.align	1
- 1199              		.global	RCC_PCLK1Config
- 1200              		.syntax unified
- 1201              		.code	16
- 1202              		.thumb_func
- 1203              		.fpu softvfp
- 1205              	RCC_PCLK1Config:
- 1206              	.LFB142:
-1221:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-1222:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /**
-1223:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @brief  Configures the Low Speed APB clock (PCLK1).
-1224:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  RCC_HCLK: defines the APB1 clock divider. This clock is derived from 
-1225:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         the AHB clock (HCLK).
-1226:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter can be one of the following values:
-1227:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_HCLK_Div1:  APB1 clock = HCLK
-1228:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_HCLK_Div2:  APB1 clock = HCLK/2
-1229:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_HCLK_Div4:  APB1 clock = HCLK/4
-1230:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_HCLK_Div8:  APB1 clock = HCLK/8
-1231:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_HCLK_Div16: APB1 clock = HCLK/16
-1232:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @retval None
-1233:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */
-1234:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** void RCC_PCLK1Config(uint32_t RCC_HCLK)
-1235:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** {
- 1207              		.loc 2 1235 0
- 1208              		.cfi_startproc
- 1209              		@ args = 0, pretend = 0, frame = 16
- 1210              		@ frame_needed = 1, uses_anonymous_args = 0
- 1211 0474 80B5     		push	{r7, lr}
- 1212              		.cfi_def_cfa_offset 8
- 1213              		.cfi_offset 7, -8
- 1214              		.cfi_offset 14, -4
- 1215 0476 84B0     		sub	sp, sp, #16
- 1216              		.cfi_def_cfa_offset 24
- 1217 0478 00AF     		add	r7, sp, #0
- 1218              		.cfi_def_cfa_register 7
- 1219 047a 7860     		str	r0, [r7, #4]
-1236:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   uint32_t tmpreg = 0;
- 1220              		.loc 2 1236 0
- 1221 047c 0023     		movs	r3, #0
- 1222 047e FB60     		str	r3, [r7, #12]
-1237:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-1238:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Check the parameters */
-1239:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_PCLK(RCC_HCLK));
-1240:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-1241:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   tmpreg = RCC->CFGR;
- 1223              		.loc 2 1241 0
- 1224 0480 084B     		ldr	r3, .L78
- 1225 0482 9B68     		ldr	r3, [r3, #8]
- 1226 0484 FB60     		str	r3, [r7, #12]
-1242:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-1243:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Clear PPRE1[2:0] bits */
-1244:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   tmpreg &= ~RCC_CFGR_PPRE1;
- 1227              		.loc 2 1244 0
- 1228 0486 FB68     		ldr	r3, [r7, #12]
- 1229 0488 074A     		ldr	r2, .L78+4
- 1230 048a 1340     		ands	r3, r2
- 1231 048c FB60     		str	r3, [r7, #12]
-1245:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-1246:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Set PPRE1[2:0] bits according to RCC_HCLK value */
-1247:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   tmpreg |= RCC_HCLK;
- 1232              		.loc 2 1247 0
- 1233 048e FA68     		ldr	r2, [r7, #12]
- 1234 0490 7B68     		ldr	r3, [r7, #4]
- 1235 0492 1343     		orrs	r3, r2
- 1236 0494 FB60     		str	r3, [r7, #12]
-1248:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-1249:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Store the new value */
-1250:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   RCC->CFGR = tmpreg;
- 1237              		.loc 2 1250 0
- 1238 0496 034B     		ldr	r3, .L78
- 1239 0498 FA68     		ldr	r2, [r7, #12]
- 1240 049a 9A60     		str	r2, [r3, #8]
-1251:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** }
- 1241              		.loc 2 1251 0
- 1242 049c C046     		nop
- 1243 049e BD46     		mov	sp, r7
- 1244 04a0 04B0     		add	sp, sp, #16
- 1245              		@ sp needed
- 1246 04a2 80BD     		pop	{r7, pc}
- 1247              	.L79:
- 1248              		.align	2
- 1249              	.L78:
- 1250 04a4 00380240 		.word	1073887232
- 1251 04a8 FFE3FFFF 		.word	-7169
- 1252              		.cfi_endproc
- 1253              	.LFE142:
- 1255              		.align	1
- 1256              		.global	RCC_PCLK2Config
- 1257              		.syntax unified
- 1258              		.code	16
- 1259              		.thumb_func
- 1260              		.fpu softvfp
- 1262              	RCC_PCLK2Config:
- 1263              	.LFB143:
-1252:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-1253:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /**
-1254:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @brief  Configures the High Speed APB clock (PCLK2).
-1255:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  RCC_HCLK: defines the APB2 clock divider. This clock is derived from 
-1256:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         the AHB clock (HCLK).
-1257:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter can be one of the following values:
-1258:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_HCLK_Div1:  APB2 clock = HCLK
-1259:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_HCLK_Div2:  APB2 clock = HCLK/2
-1260:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_HCLK_Div4:  APB2 clock = HCLK/4
-1261:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_HCLK_Div8:  APB2 clock = HCLK/8
-1262:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_HCLK_Div16: APB2 clock = HCLK/16
-1263:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @retval None
-1264:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */
-1265:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** void RCC_PCLK2Config(uint32_t RCC_HCLK)
-1266:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** {
- 1264              		.loc 2 1266 0
- 1265              		.cfi_startproc
- 1266              		@ args = 0, pretend = 0, frame = 16
- 1267              		@ frame_needed = 1, uses_anonymous_args = 0
- 1268 04ac 80B5     		push	{r7, lr}
- 1269              		.cfi_def_cfa_offset 8
- 1270              		.cfi_offset 7, -8
- 1271              		.cfi_offset 14, -4
- 1272 04ae 84B0     		sub	sp, sp, #16
- 1273              		.cfi_def_cfa_offset 24
- 1274 04b0 00AF     		add	r7, sp, #0
- 1275              		.cfi_def_cfa_register 7
- 1276 04b2 7860     		str	r0, [r7, #4]
-1267:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   uint32_t tmpreg = 0;
- 1277              		.loc 2 1267 0
- 1278 04b4 0023     		movs	r3, #0
- 1279 04b6 FB60     		str	r3, [r7, #12]
-1268:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-1269:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Check the parameters */
-1270:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_PCLK(RCC_HCLK));
-1271:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-1272:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   tmpreg = RCC->CFGR;
- 1280              		.loc 2 1272 0
- 1281 04b8 094B     		ldr	r3, .L81
- 1282 04ba 9B68     		ldr	r3, [r3, #8]
- 1283 04bc FB60     		str	r3, [r7, #12]
-1273:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-1274:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Clear PPRE2[2:0] bits */
-1275:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   tmpreg &= ~RCC_CFGR_PPRE2;
- 1284              		.loc 2 1275 0
- 1285 04be FB68     		ldr	r3, [r7, #12]
- 1286 04c0 084A     		ldr	r2, .L81+4
- 1287 04c2 1340     		ands	r3, r2
- 1288 04c4 FB60     		str	r3, [r7, #12]
-1276:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-1277:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Set PPRE2[2:0] bits according to RCC_HCLK value */
-1278:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   tmpreg |= RCC_HCLK << 3;
- 1289              		.loc 2 1278 0
- 1290 04c6 7B68     		ldr	r3, [r7, #4]
- 1291 04c8 DB00     		lsls	r3, r3, #3
- 1292 04ca FA68     		ldr	r2, [r7, #12]
- 1293 04cc 1343     		orrs	r3, r2
- 1294 04ce FB60     		str	r3, [r7, #12]
-1279:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-1280:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Store the new value */
-1281:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   RCC->CFGR = tmpreg;
- 1295              		.loc 2 1281 0
- 1296 04d0 034B     		ldr	r3, .L81
- 1297 04d2 FA68     		ldr	r2, [r7, #12]
- 1298 04d4 9A60     		str	r2, [r3, #8]
-1282:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** }
- 1299              		.loc 2 1282 0
- 1300 04d6 C046     		nop
- 1301 04d8 BD46     		mov	sp, r7
- 1302 04da 04B0     		add	sp, sp, #16
- 1303              		@ sp needed
- 1304 04dc 80BD     		pop	{r7, pc}
- 1305              	.L82:
- 1306 04de C046     		.align	2
- 1307              	.L81:
- 1308 04e0 00380240 		.word	1073887232
- 1309 04e4 FF1FFFFF 		.word	-57345
- 1310              		.cfi_endproc
- 1311              	.LFE143:
- 1313              		.global	__aeabi_uidiv
- 1314              		.align	1
- 1315              		.global	RCC_GetClocksFreq
- 1316              		.syntax unified
- 1317              		.code	16
- 1318              		.thumb_func
- 1319              		.fpu softvfp
- 1321              	RCC_GetClocksFreq:
- 1322              	.LFB144:
-1283:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-1284:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /**
-1285:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @brief  Returns the frequencies of different on chip clocks; SYSCLK, HCLK, 
-1286:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         PCLK1 and PCLK2.
-1287:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * 
-1288:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   The system frequency computed by this function is not the real 
-1289:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         frequency in the chip. It is calculated based on the predefined 
-1290:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         constant and the selected clock source:
-1291:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note     If SYSCLK source is HSI, function returns values based on HSI_VALUE(*)
-1292:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note     If SYSCLK source is HSE, function returns values based on HSE_VALUE(**)
-1293:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note     If SYSCLK source is PLL, function returns values based on HSE_VALUE(**) 
-1294:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *           or HSI_VALUE(*) multiplied/divided by the PLL factors.         
-1295:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note     (*) HSI_VALUE is a constant defined in stm32f4xx.h file (default value
-1296:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *               16 MHz) but the real value may vary depending on the variations
-1297:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *               in voltage and temperature.
-1298:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note     (**) HSE_VALUE is a constant defined in stm32f4xx.h file (default value
-1299:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *                25 MHz), user has to ensure that HSE_VALUE is same as the real
-1300:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *                frequency of the crystal used. Otherwise, this function may
-1301:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *                have wrong result.
-1302:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *                
-1303:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   The result of this function could be not correct when using fractional
-1304:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         value for HSE crystal.
-1305:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *   
-1306:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  RCC_Clocks: pointer to a RCC_ClocksTypeDef structure which will hold
-1307:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          the clocks frequencies.
-1308:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *     
-1309:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   This function can be used by the user application to compute the 
-1310:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         baudrate for the communication peripherals or configure other parameters.
-1311:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   Each time SYSCLK, HCLK, PCLK1 and/or PCLK2 clock changes, this function
-1312:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         must be called to update the structure's field. Otherwise, any
-1313:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         configuration based on this function will be incorrect.
-1314:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *    
-1315:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @retval None
-1316:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */
-1317:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** void RCC_GetClocksFreq(RCC_ClocksTypeDef* RCC_Clocks)
-1318:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** {
- 1323              		.loc 2 1318 0
- 1324              		.cfi_startproc
- 1325              		@ args = 0, pretend = 0, frame = 32
- 1326              		@ frame_needed = 1, uses_anonymous_args = 0
- 1327 04e8 80B5     		push	{r7, lr}
- 1328              		.cfi_def_cfa_offset 8
- 1329              		.cfi_offset 7, -8
- 1330              		.cfi_offset 14, -4
- 1331 04ea 88B0     		sub	sp, sp, #32
- 1332              		.cfi_def_cfa_offset 40
- 1333 04ec 00AF     		add	r7, sp, #0
- 1334              		.cfi_def_cfa_register 7
- 1335 04ee 7860     		str	r0, [r7, #4]
-1319:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   uint32_t tmp = 0, presc = 0, pllvco = 0, pllp = 2, pllsource = 0, pllm = 2;
- 1336              		.loc 2 1319 0
- 1337 04f0 0023     		movs	r3, #0
- 1338 04f2 BB61     		str	r3, [r7, #24]
- 1339 04f4 0023     		movs	r3, #0
- 1340 04f6 7B61     		str	r3, [r7, #20]
- 1341 04f8 0023     		movs	r3, #0
- 1342 04fa FB61     		str	r3, [r7, #28]
- 1343 04fc 0223     		movs	r3, #2
- 1344 04fe 3B61     		str	r3, [r7, #16]
- 1345 0500 0023     		movs	r3, #0
- 1346 0502 FB60     		str	r3, [r7, #12]
- 1347 0504 0223     		movs	r3, #2
- 1348 0506 BB60     		str	r3, [r7, #8]
-1320:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #if defined(STM32F412xG) || defined(STM32F413_423xx) || defined(STM32F446xx)  
-1321:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   uint32_t pllr = 2;
-1322:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #endif /* STM32F412xG || STM32F413_423xx || STM32F446xx */
-1323:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   
-1324:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Get SYSCLK source -------------------------------------------------------*/
-1325:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   tmp = RCC->CFGR & RCC_CFGR_SWS;
- 1349              		.loc 2 1325 0
- 1350 0508 494B     		ldr	r3, .L92
- 1351 050a 9B68     		ldr	r3, [r3, #8]
- 1352 050c 0C22     		movs	r2, #12
- 1353 050e 1340     		ands	r3, r2
- 1354 0510 BB61     		str	r3, [r7, #24]
-1326:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   
-1327:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   switch (tmp)
- 1355              		.loc 2 1327 0
- 1356 0512 BB69     		ldr	r3, [r7, #24]
- 1357 0514 042B     		cmp	r3, #4
- 1358 0516 07D0     		beq	.L85
- 1359 0518 082B     		cmp	r3, #8
- 1360 051a 09D0     		beq	.L86
- 1361 051c 002B     		cmp	r3, #0
- 1362 051e 41D1     		bne	.L91
-1328:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   {
-1329:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   case 0x00:  /* HSI used as system clock source */
-1330:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     RCC_Clocks->SYSCLK_Frequency = HSI_VALUE;
- 1363              		.loc 2 1330 0
- 1364 0520 7B68     		ldr	r3, [r7, #4]
- 1365 0522 444A     		ldr	r2, .L92+4
- 1366 0524 1A60     		str	r2, [r3]
-1331:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     break;
- 1367              		.loc 2 1331 0
- 1368 0526 41E0     		b	.L88
- 1369              	.L85:
-1332:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   case 0x04:  /* HSE used as system clock  source */
-1333:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     RCC_Clocks->SYSCLK_Frequency = HSE_VALUE;
- 1370              		.loc 2 1333 0
- 1371 0528 7B68     		ldr	r3, [r7, #4]
- 1372 052a 434A     		ldr	r2, .L92+8
- 1373 052c 1A60     		str	r2, [r3]
-1334:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     break;
- 1374              		.loc 2 1334 0
- 1375 052e 3DE0     		b	.L88
- 1376              	.L86:
-1335:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   case 0x08:  /* PLL P used as system clock  source */
-1336:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     
-1337:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     /* PLL_VCO = (HSE_VALUE or HSI_VALUE / PLLM) * PLLN
-1338:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     SYSCLK = PLL_VCO / PLLP
-1339:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     */    
-1340:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     pllsource = (RCC->PLLCFGR & RCC_PLLCFGR_PLLSRC) >> 22;
- 1377              		.loc 2 1340 0
- 1378 0530 3F4B     		ldr	r3, .L92
- 1379 0532 5B68     		ldr	r3, [r3, #4]
- 1380 0534 9B0D     		lsrs	r3, r3, #22
- 1381 0536 0122     		movs	r2, #1
- 1382 0538 1340     		ands	r3, r2
- 1383 053a FB60     		str	r3, [r7, #12]
-1341:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     pllm = RCC->PLLCFGR & RCC_PLLCFGR_PLLM;
- 1384              		.loc 2 1341 0
- 1385 053c 3C4B     		ldr	r3, .L92
- 1386 053e 5B68     		ldr	r3, [r3, #4]
- 1387 0540 3F22     		movs	r2, #63
- 1388 0542 1340     		ands	r3, r2
- 1389 0544 BB60     		str	r3, [r7, #8]
-1342:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     
-1343:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     if (pllsource != 0)
- 1390              		.loc 2 1343 0
- 1391 0546 FB68     		ldr	r3, [r7, #12]
- 1392 0548 002B     		cmp	r3, #0
- 1393 054a 0DD0     		beq	.L89
-1344:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     {
-1345:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****       /* HSE used as PLL clock source */
-1346:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****       pllvco = (HSE_VALUE / pllm) * ((RCC->PLLCFGR & RCC_PLLCFGR_PLLN) >> 6);
- 1394              		.loc 2 1346 0
- 1395 054c B968     		ldr	r1, [r7, #8]
- 1396 054e 3A48     		ldr	r0, .L92+8
- 1397 0550 FFF7FEFF 		bl	__aeabi_uidiv
- 1398              	.LVL0:
- 1399 0554 0300     		movs	r3, r0
- 1400 0556 1A00     		movs	r2, r3
- 1401 0558 354B     		ldr	r3, .L92
- 1402 055a 5B68     		ldr	r3, [r3, #4]
- 1403 055c 9B09     		lsrs	r3, r3, #6
- 1404 055e DB05     		lsls	r3, r3, #23
- 1405 0560 DB0D     		lsrs	r3, r3, #23
- 1406 0562 5343     		muls	r3, r2
- 1407 0564 FB61     		str	r3, [r7, #28]
- 1408 0566 0CE0     		b	.L90
- 1409              	.L89:
-1347:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     }
-1348:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     else
-1349:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     {
-1350:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****       /* HSI used as PLL clock source */
-1351:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****       pllvco = (HSI_VALUE / pllm) * ((RCC->PLLCFGR & RCC_PLLCFGR_PLLN) >> 6);      
- 1410              		.loc 2 1351 0
- 1411 0568 B968     		ldr	r1, [r7, #8]
- 1412 056a 3248     		ldr	r0, .L92+4
- 1413 056c FFF7FEFF 		bl	__aeabi_uidiv
- 1414              	.LVL1:
- 1415 0570 0300     		movs	r3, r0
- 1416 0572 1A00     		movs	r2, r3
- 1417 0574 2E4B     		ldr	r3, .L92
- 1418 0576 5B68     		ldr	r3, [r3, #4]
- 1419 0578 9B09     		lsrs	r3, r3, #6
- 1420 057a DB05     		lsls	r3, r3, #23
- 1421 057c DB0D     		lsrs	r3, r3, #23
- 1422 057e 5343     		muls	r3, r2
- 1423 0580 FB61     		str	r3, [r7, #28]
- 1424              	.L90:
-1352:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     }
-1353:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     
-1354:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     pllp = (((RCC->PLLCFGR & RCC_PLLCFGR_PLLP) >>16) + 1 ) *2;
- 1425              		.loc 2 1354 0
- 1426 0582 2B4B     		ldr	r3, .L92
- 1427 0584 5B68     		ldr	r3, [r3, #4]
- 1428 0586 1B0C     		lsrs	r3, r3, #16
- 1429 0588 0322     		movs	r2, #3
- 1430 058a 1340     		ands	r3, r2
- 1431 058c 0133     		adds	r3, r3, #1
- 1432 058e 5B00     		lsls	r3, r3, #1
- 1433 0590 3B61     		str	r3, [r7, #16]
-1355:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     RCC_Clocks->SYSCLK_Frequency = pllvco/pllp;
- 1434              		.loc 2 1355 0
- 1435 0592 3969     		ldr	r1, [r7, #16]
- 1436 0594 F869     		ldr	r0, [r7, #28]
- 1437 0596 FFF7FEFF 		bl	__aeabi_uidiv
- 1438              	.LVL2:
- 1439 059a 0300     		movs	r3, r0
- 1440 059c 1A00     		movs	r2, r3
- 1441 059e 7B68     		ldr	r3, [r7, #4]
- 1442 05a0 1A60     		str	r2, [r3]
-1356:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     break;
- 1443              		.loc 2 1356 0
- 1444 05a2 03E0     		b	.L88
- 1445              	.L91:
-1357:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-1358:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #if defined(STM32F412xG) || defined(STM32F413_423xx) || defined(STM32F446xx)
-1359:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   case 0x0C:  /* PLL R used as system clock  source */
-1360:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     /* PLL_VCO = (HSE_VALUE or HSI_VALUE / PLLM) * PLLN
-1361:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     SYSCLK = PLL_VCO / PLLR
-1362:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     */    
-1363:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     pllsource = (RCC->PLLCFGR & RCC_PLLCFGR_PLLSRC) >> 22;
-1364:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     pllm = RCC->PLLCFGR & RCC_PLLCFGR_PLLM;
-1365:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     
-1366:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     if (pllsource != 0)
-1367:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     {
-1368:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****       /* HSE used as PLL clock source */
-1369:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****       pllvco = (HSE_VALUE / pllm) * ((RCC->PLLCFGR & RCC_PLLCFGR_PLLN) >> 6);
-1370:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     }
-1371:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     else
-1372:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     {
-1373:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****       /* HSI used as PLL clock source */
-1374:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****       pllvco = (HSI_VALUE / pllm) * ((RCC->PLLCFGR & RCC_PLLCFGR_PLLN) >> 6);      
-1375:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     }
-1376:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     
-1377:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     pllr = (((RCC->PLLCFGR & RCC_PLLCFGR_PLLR) >>28) + 1 ) *2;
-1378:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     RCC_Clocks->SYSCLK_Frequency = pllvco/pllr;    
-1379:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     break;
-1380:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #endif /* STM32F412xG || STM32F413_423xx || STM32F446xx */
-1381:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     
-1382:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   default:
-1383:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     RCC_Clocks->SYSCLK_Frequency = HSI_VALUE;
- 1446              		.loc 2 1383 0
- 1447 05a4 7B68     		ldr	r3, [r7, #4]
- 1448 05a6 234A     		ldr	r2, .L92+4
- 1449 05a8 1A60     		str	r2, [r3]
-1384:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     break;
- 1450              		.loc 2 1384 0
- 1451 05aa C046     		nop
- 1452              	.L88:
-1385:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   }
-1386:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Compute HCLK, PCLK1 and PCLK2 clocks frequencies ------------------------*/
-1387:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   
-1388:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Get HCLK prescaler */
-1389:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   tmp = RCC->CFGR & RCC_CFGR_HPRE;
- 1453              		.loc 2 1389 0
- 1454 05ac 204B     		ldr	r3, .L92
- 1455 05ae 9B68     		ldr	r3, [r3, #8]
- 1456 05b0 F022     		movs	r2, #240
- 1457 05b2 1340     		ands	r3, r2
- 1458 05b4 BB61     		str	r3, [r7, #24]
-1390:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   tmp = tmp >> 4;
- 1459              		.loc 2 1390 0
- 1460 05b6 BB69     		ldr	r3, [r7, #24]
- 1461 05b8 1B09     		lsrs	r3, r3, #4
- 1462 05ba BB61     		str	r3, [r7, #24]
-1391:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   presc = APBAHBPrescTable[tmp];
- 1463              		.loc 2 1391 0
- 1464 05bc 1F4A     		ldr	r2, .L92+12
- 1465 05be BB69     		ldr	r3, [r7, #24]
- 1466 05c0 D318     		adds	r3, r2, r3
- 1467 05c2 1B78     		ldrb	r3, [r3]
- 1468 05c4 DBB2     		uxtb	r3, r3
- 1469 05c6 7B61     		str	r3, [r7, #20]
-1392:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* HCLK clock frequency */
-1393:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   RCC_Clocks->HCLK_Frequency = RCC_Clocks->SYSCLK_Frequency >> presc;
- 1470              		.loc 2 1393 0
- 1471 05c8 7B68     		ldr	r3, [r7, #4]
- 1472 05ca 1A68     		ldr	r2, [r3]
- 1473 05cc 7B69     		ldr	r3, [r7, #20]
- 1474 05ce DA40     		lsrs	r2, r2, r3
- 1475 05d0 7B68     		ldr	r3, [r7, #4]
- 1476 05d2 5A60     		str	r2, [r3, #4]
-1394:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-1395:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Get PCLK1 prescaler */
-1396:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   tmp = RCC->CFGR & RCC_CFGR_PPRE1;
- 1477              		.loc 2 1396 0
- 1478 05d4 164B     		ldr	r3, .L92
- 1479 05d6 9A68     		ldr	r2, [r3, #8]
- 1480 05d8 E023     		movs	r3, #224
- 1481 05da 5B01     		lsls	r3, r3, #5
- 1482 05dc 1340     		ands	r3, r2
- 1483 05de BB61     		str	r3, [r7, #24]
-1397:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   tmp = tmp >> 10;
- 1484              		.loc 2 1397 0
- 1485 05e0 BB69     		ldr	r3, [r7, #24]
- 1486 05e2 9B0A     		lsrs	r3, r3, #10
- 1487 05e4 BB61     		str	r3, [r7, #24]
-1398:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   presc = APBAHBPrescTable[tmp];
- 1488              		.loc 2 1398 0
- 1489 05e6 154A     		ldr	r2, .L92+12
- 1490 05e8 BB69     		ldr	r3, [r7, #24]
- 1491 05ea D318     		adds	r3, r2, r3
- 1492 05ec 1B78     		ldrb	r3, [r3]
- 1493 05ee DBB2     		uxtb	r3, r3
- 1494 05f0 7B61     		str	r3, [r7, #20]
-1399:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* PCLK1 clock frequency */
-1400:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   RCC_Clocks->PCLK1_Frequency = RCC_Clocks->HCLK_Frequency >> presc;
- 1495              		.loc 2 1400 0
- 1496 05f2 7B68     		ldr	r3, [r7, #4]
- 1497 05f4 5A68     		ldr	r2, [r3, #4]
- 1498 05f6 7B69     		ldr	r3, [r7, #20]
- 1499 05f8 DA40     		lsrs	r2, r2, r3
- 1500 05fa 7B68     		ldr	r3, [r7, #4]
- 1501 05fc 9A60     		str	r2, [r3, #8]
-1401:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-1402:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Get PCLK2 prescaler */
-1403:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   tmp = RCC->CFGR & RCC_CFGR_PPRE2;
- 1502              		.loc 2 1403 0
- 1503 05fe 0C4B     		ldr	r3, .L92
- 1504 0600 9A68     		ldr	r2, [r3, #8]
- 1505 0602 E023     		movs	r3, #224
- 1506 0604 1B02     		lsls	r3, r3, #8
- 1507 0606 1340     		ands	r3, r2
- 1508 0608 BB61     		str	r3, [r7, #24]
-1404:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   tmp = tmp >> 13;
- 1509              		.loc 2 1404 0
- 1510 060a BB69     		ldr	r3, [r7, #24]
- 1511 060c 5B0B     		lsrs	r3, r3, #13
- 1512 060e BB61     		str	r3, [r7, #24]
-1405:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   presc = APBAHBPrescTable[tmp];
- 1513              		.loc 2 1405 0
- 1514 0610 0A4A     		ldr	r2, .L92+12
- 1515 0612 BB69     		ldr	r3, [r7, #24]
- 1516 0614 D318     		adds	r3, r2, r3
- 1517 0616 1B78     		ldrb	r3, [r3]
- 1518 0618 DBB2     		uxtb	r3, r3
- 1519 061a 7B61     		str	r3, [r7, #20]
-1406:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* PCLK2 clock frequency */
-1407:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   RCC_Clocks->PCLK2_Frequency = RCC_Clocks->HCLK_Frequency >> presc;
- 1520              		.loc 2 1407 0
- 1521 061c 7B68     		ldr	r3, [r7, #4]
- 1522 061e 5A68     		ldr	r2, [r3, #4]
- 1523 0620 7B69     		ldr	r3, [r7, #20]
- 1524 0622 DA40     		lsrs	r2, r2, r3
- 1525 0624 7B68     		ldr	r3, [r7, #4]
- 1526 0626 DA60     		str	r2, [r3, #12]
-1408:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** }
- 1527              		.loc 2 1408 0
- 1528 0628 C046     		nop
- 1529 062a BD46     		mov	sp, r7
- 1530 062c 08B0     		add	sp, sp, #32
- 1531              		@ sp needed
- 1532 062e 80BD     		pop	{r7, pc}
- 1533              	.L93:
- 1534              		.align	2
- 1535              	.L92:
- 1536 0630 00380240 		.word	1073887232
- 1537 0634 0024F400 		.word	16000000
- 1538 0638 40787D01 		.word	25000000
- 1539 063c 00000000 		.word	APBAHBPrescTable
- 1540              		.cfi_endproc
- 1541              	.LFE144:
- 1543              		.align	1
- 1544              		.global	RCC_RTCCLKConfig
- 1545              		.syntax unified
- 1546              		.code	16
- 1547              		.thumb_func
- 1548              		.fpu softvfp
- 1550              	RCC_RTCCLKConfig:
- 1551              	.LFB145:
-1409:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-1410:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /**
-1411:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @}
-1412:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */
-1413:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-1414:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /** @defgroup RCC_Group3 Peripheral clocks configuration functions
-1415:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  *  @brief   Peripheral clocks configuration functions 
-1416:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  *
-1417:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** @verbatim   
-1418:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  ===============================================================================
-1419:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****               ##### Peripheral clocks configuration functions #####
-1420:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  ===============================================================================  
-1421:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     [..] This section provide functions allowing to configure the Peripheral clocks. 
-1422:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   
-1423:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****       (#) The RTC clock which is derived from the LSI, LSE or HSE clock divided 
-1424:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****           by 2 to 31.
-1425:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****      
-1426:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****       (#) After restart from Reset or wakeup from STANDBY, all peripherals are off
-1427:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****           except internal SRAM, Flash and JTAG. Before to start using a peripheral 
-1428:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****           you have to enable its interface clock. You can do this using 
-1429:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****           RCC_AHBPeriphClockCmd(), RCC_APB2PeriphClockCmd() and RCC_APB1PeriphClockCmd() functions.
-1430:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-1431:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****       (#) To reset the peripherals configuration (to the default state after device reset)
-1432:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****           you can use RCC_AHBPeriphResetCmd(), RCC_APB2PeriphResetCmd() and 
-1433:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****           RCC_APB1PeriphResetCmd() functions.
-1434:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****      
-1435:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****       (#) To further reduce power consumption in SLEEP mode the peripheral clocks 
-1436:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****           can be disabled prior to executing the WFI or WFE instructions. 
-1437:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****           You can do this using RCC_AHBPeriphClockLPModeCmd(), 
-1438:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****           RCC_APB2PeriphClockLPModeCmd() and RCC_APB1PeriphClockLPModeCmd() functions.  
-1439:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-1440:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** @endverbatim
-1441:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @{
-1442:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */
-1443:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-1444:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /**
-1445:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @brief  Configures the RTC clock (RTCCLK).
-1446:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   As the RTC clock configuration bits are in the Backup domain and write
-1447:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         access is denied to this domain after reset, you have to enable write
-1448:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         access using PWR_BackupAccessCmd(ENABLE) function before to configure
-1449:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         the RTC clock source (to be done once after reset).    
-1450:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   Once the RTC clock is configured it can't be changed unless the  
-1451:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         Backup domain is reset using RCC_BackupResetCmd() function, or by
-1452:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         a Power On Reset (POR).
-1453:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *    
-1454:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  RCC_RTCCLKSource: specifies the RTC clock source.
-1455:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter can be one of the following values:
-1456:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_RTCCLKSource_LSE: LSE selected as RTC clock
-1457:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_RTCCLKSource_LSI: LSI selected as RTC clock
-1458:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_RTCCLKSource_HSE_Divx: HSE clock divided by x selected
-1459:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *                                            as RTC clock, where x:[2,31]
-1460:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *  
-1461:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   If the LSE or LSI is used as RTC clock source, the RTC continues to
-1462:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         work in STOP and STANDBY modes, and can be used as wakeup source.
-1463:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         However, when the HSE clock is used as RTC clock source, the RTC
-1464:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         cannot be used in STOP and STANDBY modes.    
-1465:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   The maximum input clock frequency for RTC is 1MHz (when using HSE as
-1466:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         RTC clock source).
-1467:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *  
-1468:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @retval None
-1469:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */
-1470:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** void RCC_RTCCLKConfig(uint32_t RCC_RTCCLKSource)
-1471:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** {
- 1552              		.loc 2 1471 0
- 1553              		.cfi_startproc
- 1554              		@ args = 0, pretend = 0, frame = 16
- 1555              		@ frame_needed = 1, uses_anonymous_args = 0
- 1556 0640 80B5     		push	{r7, lr}
- 1557              		.cfi_def_cfa_offset 8
- 1558              		.cfi_offset 7, -8
- 1559              		.cfi_offset 14, -4
- 1560 0642 84B0     		sub	sp, sp, #16
- 1561              		.cfi_def_cfa_offset 24
- 1562 0644 00AF     		add	r7, sp, #0
- 1563              		.cfi_def_cfa_register 7
- 1564 0646 7860     		str	r0, [r7, #4]
-1472:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   uint32_t tmpreg = 0;
- 1565              		.loc 2 1472 0
- 1566 0648 0023     		movs	r3, #0
- 1567 064a FB60     		str	r3, [r7, #12]
-1473:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-1474:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Check the parameters */
-1475:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_RTCCLK_SOURCE(RCC_RTCCLKSource));
-1476:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-1477:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   if ((RCC_RTCCLKSource & 0x00000300) == 0x00000300)
- 1568              		.loc 2 1477 0
- 1569 064c 7A68     		ldr	r2, [r7, #4]
- 1570 064e C023     		movs	r3, #192
- 1571 0650 9B00     		lsls	r3, r3, #2
- 1572 0652 1A40     		ands	r2, r3
- 1573 0654 C023     		movs	r3, #192
- 1574 0656 9B00     		lsls	r3, r3, #2
- 1575 0658 9A42     		cmp	r2, r3
- 1576 065a 0FD1     		bne	.L95
-1478:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   { /* If HSE is selected as RTC clock source, configure HSE division factor for RTC clock */
-1479:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     tmpreg = RCC->CFGR;
- 1577              		.loc 2 1479 0
- 1578 065c 0D4B     		ldr	r3, .L96
- 1579 065e 9B68     		ldr	r3, [r3, #8]
- 1580 0660 FB60     		str	r3, [r7, #12]
-1480:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-1481:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     /* Clear RTCPRE[4:0] bits */
-1482:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     tmpreg &= ~RCC_CFGR_RTCPRE;
- 1581              		.loc 2 1482 0
- 1582 0662 FB68     		ldr	r3, [r7, #12]
- 1583 0664 0C4A     		ldr	r2, .L96+4
- 1584 0666 1340     		ands	r3, r2
- 1585 0668 FB60     		str	r3, [r7, #12]
-1483:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-1484:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     /* Configure HSE division factor for RTC clock */
-1485:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     tmpreg |= (RCC_RTCCLKSource & 0xFFFFCFF);
- 1586              		.loc 2 1485 0
- 1587 066a 7B68     		ldr	r3, [r7, #4]
- 1588 066c 0B4A     		ldr	r2, .L96+8
- 1589 066e 1340     		ands	r3, r2
- 1590 0670 FA68     		ldr	r2, [r7, #12]
- 1591 0672 1343     		orrs	r3, r2
- 1592 0674 FB60     		str	r3, [r7, #12]
-1486:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-1487:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     /* Store the new value */
-1488:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     RCC->CFGR = tmpreg;
- 1593              		.loc 2 1488 0
- 1594 0676 074B     		ldr	r3, .L96
- 1595 0678 FA68     		ldr	r2, [r7, #12]
- 1596 067a 9A60     		str	r2, [r3, #8]
- 1597              	.L95:
-1489:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   }
-1490:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     
-1491:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Select the RTC clock source */
-1492:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   RCC->BDCR |= (RCC_RTCCLKSource & 0x00000FFF);
- 1598              		.loc 2 1492 0
- 1599 067c 054B     		ldr	r3, .L96
- 1600 067e 196F     		ldr	r1, [r3, #112]
- 1601 0680 7B68     		ldr	r3, [r7, #4]
- 1602 0682 1B05     		lsls	r3, r3, #20
- 1603 0684 1A0D     		lsrs	r2, r3, #20
- 1604 0686 034B     		ldr	r3, .L96
- 1605 0688 0A43     		orrs	r2, r1
- 1606 068a 1A67     		str	r2, [r3, #112]
-1493:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** }
- 1607              		.loc 2 1493 0
- 1608 068c C046     		nop
- 1609 068e BD46     		mov	sp, r7
- 1610 0690 04B0     		add	sp, sp, #16
- 1611              		@ sp needed
- 1612 0692 80BD     		pop	{r7, pc}
- 1613              	.L97:
- 1614              		.align	2
- 1615              	.L96:
- 1616 0694 00380240 		.word	1073887232
- 1617 0698 FFFFE0FF 		.word	-2031617
- 1618 069c FFFCFF0F 		.word	268434687
- 1619              		.cfi_endproc
- 1620              	.LFE145:
- 1622              		.align	1
- 1623              		.global	RCC_RTCCLKCmd
- 1624              		.syntax unified
- 1625              		.code	16
- 1626              		.thumb_func
- 1627              		.fpu softvfp
- 1629              	RCC_RTCCLKCmd:
- 1630              	.LFB146:
-1494:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-1495:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /**
-1496:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @brief  Enables or disables the RTC clock.
-1497:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   This function must be used only after the RTC clock source was selected
-1498:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         using the RCC_RTCCLKConfig function.
-1499:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  NewState: new state of the RTC clock. This parameter can be: ENABLE or DISABLE.
-1500:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @retval None
-1501:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */
-1502:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** void RCC_RTCCLKCmd(FunctionalState NewState)
-1503:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** {
- 1631              		.loc 2 1503 0
- 1632              		.cfi_startproc
- 1633              		@ args = 0, pretend = 0, frame = 8
- 1634              		@ frame_needed = 1, uses_anonymous_args = 0
- 1635 06a0 80B5     		push	{r7, lr}
- 1636              		.cfi_def_cfa_offset 8
- 1637              		.cfi_offset 7, -8
- 1638              		.cfi_offset 14, -4
- 1639 06a2 82B0     		sub	sp, sp, #8
- 1640              		.cfi_def_cfa_offset 16
- 1641 06a4 00AF     		add	r7, sp, #0
- 1642              		.cfi_def_cfa_register 7
- 1643 06a6 0200     		movs	r2, r0
- 1644 06a8 FB1D     		adds	r3, r7, #7
- 1645 06aa 1A70     		strb	r2, [r3]
-1504:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Check the parameters */
-1505:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_FUNCTIONAL_STATE(NewState));
-1506:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-1507:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *(__IO uint32_t *) BDCR_RTCEN_BB = (uint32_t)NewState;
- 1646              		.loc 2 1507 0
- 1647 06ac 034B     		ldr	r3, .L99
- 1648 06ae FA1D     		adds	r2, r7, #7
- 1649 06b0 1278     		ldrb	r2, [r2]
- 1650 06b2 1A60     		str	r2, [r3]
-1508:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** }
- 1651              		.loc 2 1508 0
- 1652 06b4 C046     		nop
- 1653 06b6 BD46     		mov	sp, r7
- 1654 06b8 02B0     		add	sp, sp, #8
- 1655              		@ sp needed
- 1656 06ba 80BD     		pop	{r7, pc}
- 1657              	.L100:
- 1658              		.align	2
- 1659              	.L99:
- 1660 06bc 3C0E4742 		.word	1111952956
- 1661              		.cfi_endproc
- 1662              	.LFE146:
- 1664              		.align	1
- 1665              		.global	RCC_BackupResetCmd
- 1666              		.syntax unified
- 1667              		.code	16
- 1668              		.thumb_func
- 1669              		.fpu softvfp
- 1671              	RCC_BackupResetCmd:
- 1672              	.LFB147:
-1509:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-1510:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /**
-1511:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @brief  Forces or releases the Backup domain reset.
-1512:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   This function resets the RTC peripheral (including the backup registers)
-1513:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         and the RTC clock source selection in RCC_CSR register.
-1514:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   The BKPSRAM is not affected by this reset.    
-1515:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  NewState: new state of the Backup domain reset.
-1516:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter can be: ENABLE or DISABLE.
-1517:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @retval None
-1518:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */
-1519:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** void RCC_BackupResetCmd(FunctionalState NewState)
-1520:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** {
- 1673              		.loc 2 1520 0
- 1674              		.cfi_startproc
- 1675              		@ args = 0, pretend = 0, frame = 8
- 1676              		@ frame_needed = 1, uses_anonymous_args = 0
- 1677 06c0 80B5     		push	{r7, lr}
- 1678              		.cfi_def_cfa_offset 8
- 1679              		.cfi_offset 7, -8
- 1680              		.cfi_offset 14, -4
- 1681 06c2 82B0     		sub	sp, sp, #8
- 1682              		.cfi_def_cfa_offset 16
- 1683 06c4 00AF     		add	r7, sp, #0
- 1684              		.cfi_def_cfa_register 7
- 1685 06c6 0200     		movs	r2, r0
- 1686 06c8 FB1D     		adds	r3, r7, #7
- 1687 06ca 1A70     		strb	r2, [r3]
-1521:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Check the parameters */
-1522:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_FUNCTIONAL_STATE(NewState));
-1523:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *(__IO uint32_t *) BDCR_BDRST_BB = (uint32_t)NewState;
- 1688              		.loc 2 1523 0
- 1689 06cc 034B     		ldr	r3, .L102
- 1690 06ce FA1D     		adds	r2, r7, #7
- 1691 06d0 1278     		ldrb	r2, [r2]
- 1692 06d2 1A60     		str	r2, [r3]
-1524:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** }
- 1693              		.loc 2 1524 0
- 1694 06d4 C046     		nop
- 1695 06d6 BD46     		mov	sp, r7
- 1696 06d8 02B0     		add	sp, sp, #8
- 1697              		@ sp needed
- 1698 06da 80BD     		pop	{r7, pc}
- 1699              	.L103:
- 1700              		.align	2
- 1701              	.L102:
- 1702 06dc 400E4742 		.word	1111952960
- 1703              		.cfi_endproc
- 1704              	.LFE147:
- 1706              		.align	1
- 1707              		.global	RCC_I2SCLKConfig
- 1708              		.syntax unified
- 1709              		.code	16
- 1710              		.thumb_func
- 1711              		.fpu softvfp
- 1713              	RCC_I2SCLKConfig:
- 1714              	.LFB148:
-1525:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-1526:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #if defined (STM32F412xG) || defined(STM32F413_423xx) || defined(STM32F446xx)
-1527:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /**
-1528:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @brief  Configures the I2S clock source (I2SCLK).
-1529:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   This function must be called before enabling the I2S APB clock.
-1530:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *
-1531:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  RCC_I2SAPBx: specifies the APBx I2S clock source.
-1532:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter can be one of the following values:
-1533:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_I2SBus_APB1: I2S peripheral instance is on APB1 Bus
-1534:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_I2SBus_APB2: I2S peripheral instance is on APB2 Bus
-1535:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *
-1536:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  RCC_I2SCLKSource: specifies the I2S clock source.
-1537:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter can be one of the following values:
-1538:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_I2SCLKSource_PLLI2S: PLLI2S clock used as I2S clock source
-1539:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_I2SCLKSource_Ext: External clock mapped on the I2S_CKIN pin
-1540:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *                                        used as I2S clock source
-1541:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_I2SCLKSource_PLL: PLL clock used as I2S clock source
-1542:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_I2SCLKSource_HSI_HSE: HSI or HSE depends on PLLSRC used as I2S clock source
-1543:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @retval None
-1544:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */
-1545:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** void RCC_I2SCLKConfig(uint32_t RCC_I2SAPBx, uint32_t RCC_I2SCLKSource)
-1546:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** {
-1547:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Check the parameters */
-1548:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_I2SCLK_SOURCE(RCC_I2SCLKSource));
-1549:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_I2S_APBx(RCC_I2SAPBx));
-1550:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   
-1551:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   if(RCC_I2SAPBx == RCC_I2SBus_APB1)
-1552:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   {
-1553:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     /* Clear APB1 I2Sx clock source selection bits */
-1554:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     RCC->DCKCFGR &= ~RCC_DCKCFGR_I2S1SRC;
-1555:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     /* Set new APB1 I2Sx clock source*/
-1556:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     RCC->DCKCFGR |= RCC_I2SCLKSource;
-1557:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   }
-1558:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   else
-1559:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   {
-1560:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     /* Clear APB2 I2Sx clock source selection  bits */
-1561:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     RCC->DCKCFGR &= ~RCC_DCKCFGR_I2S2SRC;
-1562:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     /* Set new APB2 I2Sx clock source */
-1563:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     RCC->DCKCFGR |= (RCC_I2SCLKSource << 2);
-1564:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   }
-1565:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** }
-1566:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #if defined(STM32F446xx)
-1567:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /**
-1568:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @brief  Configures the SAIx clock source (SAIxCLK).
-1569:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   This function must be called before enabling the SAIx APB clock.
-1570:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *
-1571:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  RCC_SAIInstance: specifies the SAIx clock source.
-1572:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter can be one of the following values:
-1573:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_SAIInstance_SAI1: SAI1 clock source selection
-1574:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_SAIInstance_SAI2: SAI2 clock source selections
-1575:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *
-1576:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  RCC_SAICLKSource: specifies the SAI clock source.
-1577:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter can be one of the following values:
-1578:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_SAICLKSource_PLLSAI: PLLSAI clock used as SAI clock source
-1579:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_SAICLKSource_PLLI2S: PLLI2S clock used as SAI clock source
-1580:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_SAICLKSource_PLL: PLL clock used as SAI clock source
-1581:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_SAICLKSource_HSI_HSE: HSI or HSE depends on PLLSRC used as SAI clock source
-1582:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @retval None
-1583:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */
-1584:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** void RCC_SAICLKConfig(uint32_t RCC_SAIInstance, uint32_t RCC_SAICLKSource)
-1585:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** {
-1586:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Check the parameters */
-1587:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_SAICLK_SOURCE(RCC_SAICLKSource));
-1588:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_SAI_INSTANCE(RCC_SAIInstance));
-1589:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   
-1590:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   if(RCC_SAIInstance == RCC_SAIInstance_SAI1)
-1591:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   {
-1592:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     /* Clear SAI1 clock source selection bits */
-1593:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     RCC->DCKCFGR &= ~RCC_DCKCFGR_SAI1SRC;
-1594:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     /* Set new SAI1 clock source */
-1595:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     RCC->DCKCFGR |= RCC_SAICLKSource;
-1596:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   }
-1597:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   else
-1598:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   {
-1599:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     /* Clear SAI2 clock source selection bits */
-1600:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     RCC->DCKCFGR &= ~RCC_DCKCFGR_SAI2SRC;
-1601:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     /* Set new SAI2 clock source */
-1602:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     RCC->DCKCFGR |= (RCC_SAICLKSource << 2);
-1603:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   }
-1604:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** }
-1605:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #endif /* STM32F446xx */
-1606:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-1607:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #if defined(STM32F413_423xx)
-1608:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /**
-1609:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @brief  Configures SAI1BlockA clock source selection.      
-1610:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   This function must be called before enabling PLLSAI, PLLI2S and  
-1611:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         the SAI clock.
-1612:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  RCC_SAIBlockACLKSource: specifies the SAI Block A clock source.
-1613:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter can be one of the following values:
-1614:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_SAIACLKSource_PLLI2SR: PLLI2SR clock used as SAI clock source
-1615:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_SAIACLKSource_PLLI2S: PLLI2S clock used as SAI clock source
-1616:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_SAIACLKSource_PLL: PLL clock used as SAI clock source
-1617:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_SAIACLKSource_HSI_HSE: HSI or HSE depends on PLLSRC used as SAI clock sourc
-1618:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @retval None
-1619:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */
-1620:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** void RCC_SAIBlockACLKConfig(uint32_t RCC_SAIBlockACLKSource)
-1621:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** {
-1622:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   uint32_t tmpreg = 0;
-1623:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   
-1624:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Check the parameters */
-1625:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_SAIACLK_SOURCE(RCC_SAIBlockACLKSource));
-1626:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   
-1627:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   tmpreg = RCC->DCKCFGR;
-1628:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-1629:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Clear RCC_DCKCFGR_SAI1ASRC[1:0] bits */
-1630:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   tmpreg &= ~RCC_DCKCFGR_SAI1ASRC;
-1631:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-1632:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Set SAI Block A source selection value */
-1633:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   tmpreg |= RCC_SAIBlockACLKSource;
-1634:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-1635:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Store the new value */
-1636:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   RCC->DCKCFGR = tmpreg;
-1637:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** }
-1638:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-1639:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /**
-1640:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @brief  Configures SAI1BlockB clock source selection.      
-1641:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   This function must be called before enabling PLLSAI, PLLI2S and  
-1642:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         the SAI clock.
-1643:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  RCC_SAIBlockBCLKSource: specifies the SAI Block B clock source.
-1644:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter can be one of the following values:
-1645:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_SAIBCLKSource_PLLI2SR: PLLI2SR clock used as SAI clock source
-1646:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_SAIBCLKSource_PLLI2S: PLLI2S clock used as SAI clock source
-1647:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_SAIBCLKSource_PLL: PLL clock used as SAI clock source
-1648:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_SAIBCLKSource_HSI_HSE: HSI or HSE depends on PLLSRC used as SAI clock sourc
-1649:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @retval None
-1650:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */
-1651:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** void RCC_SAIBlockBCLKConfig(uint32_t RCC_SAIBlockBCLKSource)
-1652:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** {
-1653:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   uint32_t tmpreg = 0;
-1654:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   
-1655:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Check the parameters */
-1656:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_SAIBCLK_SOURCE(RCC_SAIBlockBCLKSource));
-1657:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   
-1658:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   tmpreg = RCC->DCKCFGR;
-1659:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-1660:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Clear RCC_DCKCFGR_SAI1ASRC[1:0] bits */
-1661:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   tmpreg &= ~RCC_DCKCFGR_SAI1BSRC;
-1662:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-1663:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Set SAI Block B source selection value */
-1664:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   tmpreg |= RCC_SAIBlockBCLKSource;
-1665:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-1666:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Store the new value */
-1667:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   RCC->DCKCFGR = tmpreg;
-1668:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** }
-1669:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #endif /* STM32F413_423xx */
-1670:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #endif /* STM32F412xG || STM32F413_423xx || STM32F446xx */
-1671:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-1672:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #if defined(STM32F410xx)
-1673:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /**
-1674:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @brief  Configures the I2S clock source (I2SCLK).
-1675:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   This function must be called before enabling the I2S clock.
-1676:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *
-1677:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  RCC_I2SCLKSource: specifies the I2S clock source.
-1678:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         This parameter can be one of the following values:
-1679:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_I2SAPBCLKSOURCE_PLLR: PLL VCO output clock divided by PLLR.
-1680:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_I2SAPBCLKSOURCE_EXT: External clock mapped on the I2S_CKIN pin.
-1681:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_I2SAPBCLKSOURCE_PLLSRC: HSI/HSE depends on PLLSRC.
-1682:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @retval None
-1683:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */
-1684:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** void RCC_I2SCLKConfig(uint32_t RCC_I2SCLKSource)
-1685:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** {
-1686:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Check the parameters */
-1687:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_I2SCLK_SOURCE(RCC_I2SCLKSource));
-1688:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   
-1689:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Clear I2Sx clock source selection bits */
-1690:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   RCC->DCKCFGR &= ~RCC_DCKCFGR_I2SSRC;
-1691:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Set new I2Sx clock source*/
-1692:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   RCC->DCKCFGR |= RCC_I2SCLKSource;
-1693:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** }
-1694:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #endif /* STM32F410xx */
-1695:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-1696:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #if defined(STM32F40_41xxx) || defined(STM32F427_437xx) || defined(STM32F429_439xx) || defined(STM3
-1697:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /**
-1698:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @brief  Configures the I2S clock source (I2SCLK).
-1699:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   This function must be called before enabling the I2S APB clock.
-1700:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  RCC_I2SCLKSource: specifies the I2S clock source.
-1701:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter can be one of the following values:
-1702:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_I2S2CLKSource_PLLI2S: PLLI2S clock used as I2S clock source
-1703:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_I2S2CLKSource_Ext: External clock mapped on the I2S_CKIN pin
-1704:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *                                        used as I2S clock source
-1705:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @retval None
-1706:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */
-1707:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** void RCC_I2SCLKConfig(uint32_t RCC_I2SCLKSource)
-1708:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** {
- 1715              		.loc 2 1708 0
- 1716              		.cfi_startproc
- 1717              		@ args = 0, pretend = 0, frame = 8
- 1718              		@ frame_needed = 1, uses_anonymous_args = 0
- 1719 06e0 80B5     		push	{r7, lr}
- 1720              		.cfi_def_cfa_offset 8
- 1721              		.cfi_offset 7, -8
- 1722              		.cfi_offset 14, -4
- 1723 06e2 82B0     		sub	sp, sp, #8
- 1724              		.cfi_def_cfa_offset 16
- 1725 06e4 00AF     		add	r7, sp, #0
- 1726              		.cfi_def_cfa_register 7
- 1727 06e6 7860     		str	r0, [r7, #4]
-1709:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Check the parameters */
-1710:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_I2SCLK_SOURCE(RCC_I2SCLKSource));
-1711:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-1712:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *(__IO uint32_t *) CFGR_I2SSRC_BB = RCC_I2SCLKSource;  
- 1728              		.loc 2 1712 0
- 1729 06e8 034B     		ldr	r3, .L105
- 1730 06ea 7A68     		ldr	r2, [r7, #4]
- 1731 06ec 1A60     		str	r2, [r3]
-1713:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** }
- 1732              		.loc 2 1713 0
- 1733 06ee C046     		nop
- 1734 06f0 BD46     		mov	sp, r7
- 1735 06f2 02B0     		add	sp, sp, #8
- 1736              		@ sp needed
- 1737 06f4 80BD     		pop	{r7, pc}
- 1738              	.L106:
- 1739 06f6 C046     		.align	2
- 1740              	.L105:
- 1741 06f8 5C014742 		.word	1111949660
- 1742              		.cfi_endproc
- 1743              	.LFE148:
- 1745              		.align	1
- 1746              		.global	RCC_SAIBlockACLKConfig
- 1747              		.syntax unified
- 1748              		.code	16
- 1749              		.thumb_func
- 1750              		.fpu softvfp
- 1752              	RCC_SAIBlockACLKConfig:
- 1753              	.LFB149:
-1714:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #endif /* STM32F40_41xxx || STM32F427_437xx || STM32F429_439xx || STM32F401xx || STM32F411xE || STM
-1715:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-1716:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #if defined(STM32F40_41xxx) || defined(STM32F427_437xx) || defined(STM32F429_439xx) || defined(STM3
-1717:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /**
-1718:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @brief  Configures SAI1BlockA clock source selection.
-1719:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * 
-1720:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   This function can be used only for STM32F42xxx/43xxx/469xx/479xx devices.
-1721:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *       
-1722:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   This function must be called before enabling PLLSAI, PLLI2S and  
-1723:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         the SAI clock.
-1724:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  RCC_SAIBlockACLKSource: specifies the SAI Block A clock source.
-1725:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter can be one of the following values:
-1726:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_SAIACLKSource_PLLI2S: PLLI2S_Q clock divided by PLLI2SDIVQ used 
-1727:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *                                           as SAI1 Block A clock 
-1728:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_SAIACLKSource_PLLSAI: PLLISAI_Q clock divided by PLLSAIDIVQ used 
-1729:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *                                           as SAI1 Block A clock 
-1730:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_SAIACLKSource_Ext: External clock mapped on the I2S_CKIN pin
-1731:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *                                        used as SAI1 Block A clock
-1732:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @retval None
-1733:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */
-1734:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** void RCC_SAIBlockACLKConfig(uint32_t RCC_SAIBlockACLKSource)
-1735:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** {
- 1754              		.loc 2 1735 0
- 1755              		.cfi_startproc
- 1756              		@ args = 0, pretend = 0, frame = 16
- 1757              		@ frame_needed = 1, uses_anonymous_args = 0
- 1758 06fc 80B5     		push	{r7, lr}
- 1759              		.cfi_def_cfa_offset 8
- 1760              		.cfi_offset 7, -8
- 1761              		.cfi_offset 14, -4
- 1762 06fe 84B0     		sub	sp, sp, #16
- 1763              		.cfi_def_cfa_offset 24
- 1764 0700 00AF     		add	r7, sp, #0
- 1765              		.cfi_def_cfa_register 7
- 1766 0702 7860     		str	r0, [r7, #4]
-1736:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   uint32_t tmpreg = 0;
- 1767              		.loc 2 1736 0
- 1768 0704 0023     		movs	r3, #0
- 1769 0706 FB60     		str	r3, [r7, #12]
-1737:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   
-1738:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Check the parameters */
-1739:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_SAIACLK_SOURCE(RCC_SAIBlockACLKSource));
-1740:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   
-1741:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   tmpreg = RCC->DCKCFGR;
- 1770              		.loc 2 1741 0
- 1771 0708 094A     		ldr	r2, .L108
- 1772 070a 8C23     		movs	r3, #140
- 1773 070c D358     		ldr	r3, [r2, r3]
- 1774 070e FB60     		str	r3, [r7, #12]
-1742:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-1743:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Clear RCC_DCKCFGR_SAI1ASRC[1:0] bits */
-1744:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   tmpreg &= ~RCC_DCKCFGR_SAI1ASRC;
- 1775              		.loc 2 1744 0
- 1776 0710 FB68     		ldr	r3, [r7, #12]
- 1777 0712 084A     		ldr	r2, .L108+4
- 1778 0714 1340     		ands	r3, r2
- 1779 0716 FB60     		str	r3, [r7, #12]
-1745:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-1746:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Set SAI Block A source selection value */
-1747:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   tmpreg |= RCC_SAIBlockACLKSource;
- 1780              		.loc 2 1747 0
- 1781 0718 FA68     		ldr	r2, [r7, #12]
- 1782 071a 7B68     		ldr	r3, [r7, #4]
- 1783 071c 1343     		orrs	r3, r2
- 1784 071e FB60     		str	r3, [r7, #12]
-1748:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-1749:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Store the new value */
-1750:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   RCC->DCKCFGR = tmpreg;
- 1785              		.loc 2 1750 0
- 1786 0720 0349     		ldr	r1, .L108
- 1787 0722 8C22     		movs	r2, #140
- 1788 0724 FB68     		ldr	r3, [r7, #12]
- 1789 0726 8B50     		str	r3, [r1, r2]
-1751:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** }
- 1790              		.loc 2 1751 0
- 1791 0728 C046     		nop
- 1792 072a BD46     		mov	sp, r7
- 1793 072c 04B0     		add	sp, sp, #16
- 1794              		@ sp needed
- 1795 072e 80BD     		pop	{r7, pc}
- 1796              	.L109:
- 1797              		.align	2
- 1798              	.L108:
- 1799 0730 00380240 		.word	1073887232
- 1800 0734 FFFFCFFF 		.word	-3145729
- 1801              		.cfi_endproc
- 1802              	.LFE149:
- 1804              		.align	1
- 1805              		.global	RCC_SAIBlockBCLKConfig
- 1806              		.syntax unified
- 1807              		.code	16
- 1808              		.thumb_func
- 1809              		.fpu softvfp
- 1811              	RCC_SAIBlockBCLKConfig:
- 1812              	.LFB150:
-1752:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-1753:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /**
-1754:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @brief  Configures SAI1BlockB clock source selection.
-1755:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * 
-1756:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   This function can be used only for STM32F42xxx/43xxx/469xx/479xx devices.
-1757:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *       
-1758:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   This function must be called before enabling PLLSAI, PLLI2S and  
-1759:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         the SAI clock.
-1760:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  RCC_SAIBlockBCLKSource: specifies the SAI Block B clock source.
-1761:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter can be one of the following values:
-1762:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_SAIBCLKSource_PLLI2S: PLLI2S_Q clock divided by PLLI2SDIVQ used 
-1763:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *                                           as SAI1 Block B clock 
-1764:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_SAIBCLKSource_PLLSAI: PLLISAI_Q clock divided by PLLSAIDIVQ used 
-1765:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *                                           as SAI1 Block B clock 
-1766:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_SAIBCLKSource_Ext: External clock mapped on the I2S_CKIN pin
-1767:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *                                        used as SAI1 Block B clock
-1768:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @retval None
-1769:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */
-1770:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** void RCC_SAIBlockBCLKConfig(uint32_t RCC_SAIBlockBCLKSource)
-1771:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** {
- 1813              		.loc 2 1771 0
- 1814              		.cfi_startproc
- 1815              		@ args = 0, pretend = 0, frame = 16
- 1816              		@ frame_needed = 1, uses_anonymous_args = 0
- 1817 0738 80B5     		push	{r7, lr}
- 1818              		.cfi_def_cfa_offset 8
- 1819              		.cfi_offset 7, -8
- 1820              		.cfi_offset 14, -4
- 1821 073a 84B0     		sub	sp, sp, #16
- 1822              		.cfi_def_cfa_offset 24
- 1823 073c 00AF     		add	r7, sp, #0
- 1824              		.cfi_def_cfa_register 7
- 1825 073e 7860     		str	r0, [r7, #4]
-1772:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   uint32_t tmpreg = 0;
- 1826              		.loc 2 1772 0
- 1827 0740 0023     		movs	r3, #0
- 1828 0742 FB60     		str	r3, [r7, #12]
-1773:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   
-1774:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Check the parameters */
-1775:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_SAIBCLK_SOURCE(RCC_SAIBlockBCLKSource));
-1776:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   
-1777:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   tmpreg = RCC->DCKCFGR;
- 1829              		.loc 2 1777 0
- 1830 0744 094A     		ldr	r2, .L111
- 1831 0746 8C23     		movs	r3, #140
- 1832 0748 D358     		ldr	r3, [r2, r3]
- 1833 074a FB60     		str	r3, [r7, #12]
-1778:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-1779:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Clear RCC_DCKCFGR_SAI1BSRC[1:0] bits */
-1780:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   tmpreg &= ~RCC_DCKCFGR_SAI1BSRC;
- 1834              		.loc 2 1780 0
- 1835 074c FB68     		ldr	r3, [r7, #12]
- 1836 074e 084A     		ldr	r2, .L111+4
- 1837 0750 1340     		ands	r3, r2
- 1838 0752 FB60     		str	r3, [r7, #12]
-1781:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-1782:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Set SAI Block B source selection value */
-1783:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   tmpreg |= RCC_SAIBlockBCLKSource;
- 1839              		.loc 2 1783 0
- 1840 0754 FA68     		ldr	r2, [r7, #12]
- 1841 0756 7B68     		ldr	r3, [r7, #4]
- 1842 0758 1343     		orrs	r3, r2
- 1843 075a FB60     		str	r3, [r7, #12]
-1784:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-1785:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Store the new value */
-1786:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   RCC->DCKCFGR = tmpreg;
- 1844              		.loc 2 1786 0
- 1845 075c 0349     		ldr	r1, .L111
- 1846 075e 8C22     		movs	r2, #140
- 1847 0760 FB68     		ldr	r3, [r7, #12]
- 1848 0762 8B50     		str	r3, [r1, r2]
-1787:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** }
- 1849              		.loc 2 1787 0
- 1850 0764 C046     		nop
- 1851 0766 BD46     		mov	sp, r7
- 1852 0768 04B0     		add	sp, sp, #16
- 1853              		@ sp needed
- 1854 076a 80BD     		pop	{r7, pc}
- 1855              	.L112:
- 1856              		.align	2
- 1857              	.L111:
- 1858 076c 00380240 		.word	1073887232
- 1859 0770 FFFF3FFF 		.word	-12582913
- 1860              		.cfi_endproc
- 1861              	.LFE150:
- 1863              		.align	1
- 1864              		.global	RCC_SAIPLLI2SClkDivConfig
- 1865              		.syntax unified
- 1866              		.code	16
- 1867              		.thumb_func
- 1868              		.fpu softvfp
- 1870              	RCC_SAIPLLI2SClkDivConfig:
- 1871              	.LFB151:
-1788:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #endif /* STM32F40_41xxx || STM32F427_437xx || STM32F429_439xx || STM32F469_479xx */
-1789:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-1790:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /**
-1791:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @brief  Configures the SAI clock Divider coming from PLLI2S.
-1792:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * 
-1793:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   This function can be used only for STM32F42xxx/43xxx/446xx/469xx/479xx devices.
-1794:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *   
-1795:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   This function must be called before enabling the PLLI2S.
-1796:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *              
-1797:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  RCC_PLLI2SDivQ: specifies the PLLI2S division factor for SAI1 clock .
-1798:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter must be a number between 1 and 32.
-1799:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          SAI1 clock frequency = f(PLLI2S_Q) / RCC_PLLI2SDivQ 
-1800:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *              
-1801:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @retval None
-1802:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */
-1803:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** void RCC_SAIPLLI2SClkDivConfig(uint32_t RCC_PLLI2SDivQ)  
-1804:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** {
- 1872              		.loc 2 1804 0
- 1873              		.cfi_startproc
- 1874              		@ args = 0, pretend = 0, frame = 16
- 1875              		@ frame_needed = 1, uses_anonymous_args = 0
- 1876 0774 80B5     		push	{r7, lr}
- 1877              		.cfi_def_cfa_offset 8
- 1878              		.cfi_offset 7, -8
- 1879              		.cfi_offset 14, -4
- 1880 0776 84B0     		sub	sp, sp, #16
- 1881              		.cfi_def_cfa_offset 24
- 1882 0778 00AF     		add	r7, sp, #0
- 1883              		.cfi_def_cfa_register 7
- 1884 077a 7860     		str	r0, [r7, #4]
-1805:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   uint32_t tmpreg = 0;
- 1885              		.loc 2 1805 0
- 1886 077c 0023     		movs	r3, #0
- 1887 077e FB60     		str	r3, [r7, #12]
-1806:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   
-1807:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Check the parameters */
-1808:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_PLLI2S_DIVQ_VALUE(RCC_PLLI2SDivQ));
-1809:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   
-1810:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   tmpreg = RCC->DCKCFGR;
- 1888              		.loc 2 1810 0
- 1889 0780 0A4A     		ldr	r2, .L114
- 1890 0782 8C23     		movs	r3, #140
- 1891 0784 D358     		ldr	r3, [r2, r3]
- 1892 0786 FB60     		str	r3, [r7, #12]
-1811:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-1812:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Clear PLLI2SDIVQ[4:0] bits */
-1813:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   tmpreg &= ~(RCC_DCKCFGR_PLLI2SDIVQ);
- 1893              		.loc 2 1813 0
- 1894 0788 FB68     		ldr	r3, [r7, #12]
- 1895 078a 1F22     		movs	r2, #31
- 1896 078c 9343     		bics	r3, r2
- 1897 078e FB60     		str	r3, [r7, #12]
-1814:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-1815:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Set PLLI2SDIVQ values */
-1816:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   tmpreg |= (RCC_PLLI2SDivQ - 1);
- 1898              		.loc 2 1816 0
- 1899 0790 7B68     		ldr	r3, [r7, #4]
- 1900 0792 013B     		subs	r3, r3, #1
- 1901 0794 FA68     		ldr	r2, [r7, #12]
- 1902 0796 1343     		orrs	r3, r2
- 1903 0798 FB60     		str	r3, [r7, #12]
-1817:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-1818:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Store the new value */
-1819:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   RCC->DCKCFGR = tmpreg;
- 1904              		.loc 2 1819 0
- 1905 079a 0449     		ldr	r1, .L114
- 1906 079c 8C22     		movs	r2, #140
- 1907 079e FB68     		ldr	r3, [r7, #12]
- 1908 07a0 8B50     		str	r3, [r1, r2]
-1820:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** }
- 1909              		.loc 2 1820 0
- 1910 07a2 C046     		nop
- 1911 07a4 BD46     		mov	sp, r7
- 1912 07a6 04B0     		add	sp, sp, #16
- 1913              		@ sp needed
- 1914 07a8 80BD     		pop	{r7, pc}
- 1915              	.L115:
- 1916 07aa C046     		.align	2
- 1917              	.L114:
- 1918 07ac 00380240 		.word	1073887232
- 1919              		.cfi_endproc
- 1920              	.LFE151:
- 1922              		.align	1
- 1923              		.global	RCC_SAIPLLSAIClkDivConfig
- 1924              		.syntax unified
- 1925              		.code	16
- 1926              		.thumb_func
- 1927              		.fpu softvfp
- 1929              	RCC_SAIPLLSAIClkDivConfig:
- 1930              	.LFB152:
-1821:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-1822:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /**
-1823:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @brief  Configures the SAI clock Divider coming from PLLSAI.
-1824:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * 
-1825:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   This function can be used only for STM32F42xxx/43xxx/446xx/469xx/479xx devices.
-1826:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *        
-1827:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   This function must be called before enabling the PLLSAI.
-1828:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *   
-1829:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  RCC_PLLSAIDivQ: specifies the PLLSAI division factor for SAI1 clock .
-1830:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter must be a number between 1 and 32.
-1831:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          SAI1 clock frequency = f(PLLSAI_Q) / RCC_PLLSAIDivQ  
-1832:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *              
-1833:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @retval None
-1834:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */
-1835:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** void RCC_SAIPLLSAIClkDivConfig(uint32_t RCC_PLLSAIDivQ)  
-1836:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** {
- 1931              		.loc 2 1836 0
- 1932              		.cfi_startproc
- 1933              		@ args = 0, pretend = 0, frame = 16
- 1934              		@ frame_needed = 1, uses_anonymous_args = 0
- 1935 07b0 80B5     		push	{r7, lr}
- 1936              		.cfi_def_cfa_offset 8
- 1937              		.cfi_offset 7, -8
- 1938              		.cfi_offset 14, -4
- 1939 07b2 84B0     		sub	sp, sp, #16
- 1940              		.cfi_def_cfa_offset 24
- 1941 07b4 00AF     		add	r7, sp, #0
- 1942              		.cfi_def_cfa_register 7
- 1943 07b6 7860     		str	r0, [r7, #4]
-1837:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   uint32_t tmpreg = 0;
- 1944              		.loc 2 1837 0
- 1945 07b8 0023     		movs	r3, #0
- 1946 07ba FB60     		str	r3, [r7, #12]
-1838:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   
-1839:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Check the parameters */
-1840:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_PLLSAI_DIVQ_VALUE(RCC_PLLSAIDivQ));
-1841:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   
-1842:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   tmpreg = RCC->DCKCFGR;
- 1947              		.loc 2 1842 0
- 1948 07bc 0A4A     		ldr	r2, .L117
- 1949 07be 8C23     		movs	r3, #140
- 1950 07c0 D358     		ldr	r3, [r2, r3]
- 1951 07c2 FB60     		str	r3, [r7, #12]
-1843:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-1844:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Clear PLLI2SDIVQ[4:0] and PLLSAIDIVQ[4:0] bits */
-1845:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   tmpreg &= ~(RCC_DCKCFGR_PLLSAIDIVQ);
- 1952              		.loc 2 1845 0
- 1953 07c4 FB68     		ldr	r3, [r7, #12]
- 1954 07c6 094A     		ldr	r2, .L117+4
- 1955 07c8 1340     		ands	r3, r2
- 1956 07ca FB60     		str	r3, [r7, #12]
-1846:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-1847:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Set PLLSAIDIVQ values */
-1848:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   tmpreg |= ((RCC_PLLSAIDivQ - 1) << 8);
- 1957              		.loc 2 1848 0
- 1958 07cc 7B68     		ldr	r3, [r7, #4]
- 1959 07ce 013B     		subs	r3, r3, #1
- 1960 07d0 1B02     		lsls	r3, r3, #8
- 1961 07d2 FA68     		ldr	r2, [r7, #12]
- 1962 07d4 1343     		orrs	r3, r2
- 1963 07d6 FB60     		str	r3, [r7, #12]
-1849:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-1850:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Store the new value */
-1851:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   RCC->DCKCFGR = tmpreg;
- 1964              		.loc 2 1851 0
- 1965 07d8 0349     		ldr	r1, .L117
- 1966 07da 8C22     		movs	r2, #140
- 1967 07dc FB68     		ldr	r3, [r7, #12]
- 1968 07de 8B50     		str	r3, [r1, r2]
-1852:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** }
- 1969              		.loc 2 1852 0
- 1970 07e0 C046     		nop
- 1971 07e2 BD46     		mov	sp, r7
- 1972 07e4 04B0     		add	sp, sp, #16
- 1973              		@ sp needed
- 1974 07e6 80BD     		pop	{r7, pc}
- 1975              	.L118:
- 1976              		.align	2
- 1977              	.L117:
- 1978 07e8 00380240 		.word	1073887232
- 1979 07ec FFE0FFFF 		.word	-7937
- 1980              		.cfi_endproc
- 1981              	.LFE152:
- 1983              		.align	1
- 1984              		.global	RCC_LTDCCLKDivConfig
- 1985              		.syntax unified
- 1986              		.code	16
- 1987              		.thumb_func
- 1988              		.fpu softvfp
- 1990              	RCC_LTDCCLKDivConfig:
- 1991              	.LFB153:
-1853:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-1854:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #if defined(STM32F413_423xx)
-1855:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /**
-1856:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @brief  Configures the SAI clock Divider coming from PLLI2S.
-1857:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * 
-1858:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   This function can be used only for STM32F413_423xx
-1859:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *   
-1860:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param   RCC_PLLI2SDivR: specifies the PLLI2S division factor for SAI1 clock.
-1861:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter must be a number between 1 and 32.
-1862:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          SAI1 clock frequency = f(PLLI2SR) / RCC_PLLI2SDivR 
-1863:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @retval None
-1864:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */
-1865:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** void RCC_SAIPLLI2SRClkDivConfig(uint32_t RCC_PLLI2SDivR)  
-1866:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** {
-1867:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   uint32_t tmpreg = 0;
-1868:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   
-1869:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Check the parameters */
-1870:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_PLLI2S_DIVR_VALUE(RCC_PLLI2SDivR));
-1871:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   
-1872:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   tmpreg = RCC->DCKCFGR;
-1873:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-1874:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Clear PLLI2SDIVR[4:0] bits */
-1875:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   tmpreg &= ~(RCC_DCKCFGR_PLLI2SDIVR);
-1876:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-1877:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Set PLLI2SDIVR values */
-1878:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   tmpreg |= (RCC_PLLI2SDivR-1);
-1879:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-1880:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Store the new value */
-1881:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   RCC->DCKCFGR = tmpreg;
-1882:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** }
-1883:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-1884:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /**
-1885:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @brief  Configures the SAI clock Divider coming from PLL.
-1886:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * 
-1887:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   This function can be used only for STM32F413_423xx
-1888:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *        
-1889:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   This function must be called before enabling the PLLSAI.
-1890:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *   
-1891:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  RCC_PLLDivR: specifies the PLL division factor for SAI1 clock.
-1892:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter must be a number between 1 and 32.
-1893:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          SAI1 clock frequency = f(PLLR) / RCC_PLLDivR 
-1894:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *              
-1895:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @retval None
-1896:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */
-1897:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** void RCC_SAIPLLRClkDivConfig(uint32_t RCC_PLLDivR)  
-1898:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** {
-1899:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   uint32_t tmpreg = 0;
-1900:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   
-1901:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Check the parameters */
-1902:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_PLL_DIVR_VALUE(RCC_PLLDivR));
-1903:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   
-1904:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   tmpreg = RCC->DCKCFGR;
-1905:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-1906:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Clear PLLDIVR[12:8] */
-1907:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   tmpreg &= ~(RCC_DCKCFGR_PLLDIVR);
-1908:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-1909:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Set PLLDivR values */
-1910:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   tmpreg |= ((RCC_PLLDivR - 1 ) << 8);
-1911:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-1912:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Store the new value */
-1913:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   RCC->DCKCFGR = tmpreg;
-1914:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** }
-1915:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #endif /* STM32F413_423xx */
-1916:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-1917:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /**
-1918:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @brief  Configures the LTDC clock Divider coming from PLLSAI.
-1919:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * 
-1920:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   The LTDC peripheral is only available with STM32F42xxx/43xxx/446xx/469xx/479xx Devices.
-1921:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *      
-1922:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   This function must be called before enabling the PLLSAI.
-1923:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *   
-1924:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  RCC_PLLSAIDivR: specifies the PLLSAI division factor for LTDC clock .
-1925:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          LTDC clock frequency = f(PLLSAI_R) / RCC_PLLSAIDivR  
-1926:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter can be one of the following values:
-1927:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_PLLSAIDivR_Div2: LTDC clock = f(PLLSAI_R)/2
-1928:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_PLLSAIDivR_Div4: LTDC clock = f(PLLSAI_R)/4
-1929:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_PLLSAIDivR_Div8: LTDC clock = f(PLLSAI_R)/8
-1930:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_PLLSAIDivR_Div16: LTDC clock = f(PLLSAI_R)/16
-1931:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            
-1932:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @retval None
-1933:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */
-1934:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** void RCC_LTDCCLKDivConfig(uint32_t RCC_PLLSAIDivR)
-1935:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** {
- 1992              		.loc 2 1935 0
- 1993              		.cfi_startproc
- 1994              		@ args = 0, pretend = 0, frame = 16
- 1995              		@ frame_needed = 1, uses_anonymous_args = 0
- 1996 07f0 80B5     		push	{r7, lr}
- 1997              		.cfi_def_cfa_offset 8
- 1998              		.cfi_offset 7, -8
- 1999              		.cfi_offset 14, -4
- 2000 07f2 84B0     		sub	sp, sp, #16
- 2001              		.cfi_def_cfa_offset 24
- 2002 07f4 00AF     		add	r7, sp, #0
- 2003              		.cfi_def_cfa_register 7
- 2004 07f6 7860     		str	r0, [r7, #4]
-1936:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   uint32_t tmpreg = 0;
- 2005              		.loc 2 1936 0
- 2006 07f8 0023     		movs	r3, #0
- 2007 07fa FB60     		str	r3, [r7, #12]
-1937:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   
-1938:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Check the parameters */
-1939:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_PLLSAI_DIVR_VALUE(RCC_PLLSAIDivR));
-1940:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   
-1941:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   tmpreg = RCC->DCKCFGR;
- 2008              		.loc 2 1941 0
- 2009 07fc 094A     		ldr	r2, .L120
- 2010 07fe 8C23     		movs	r3, #140
- 2011 0800 D358     		ldr	r3, [r2, r3]
- 2012 0802 FB60     		str	r3, [r7, #12]
-1942:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-1943:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Clear PLLSAIDIVR[2:0] bits */
-1944:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   tmpreg &= ~RCC_DCKCFGR_PLLSAIDIVR;
- 2013              		.loc 2 1944 0
- 2014 0804 FB68     		ldr	r3, [r7, #12]
- 2015 0806 084A     		ldr	r2, .L120+4
- 2016 0808 1340     		ands	r3, r2
- 2017 080a FB60     		str	r3, [r7, #12]
-1945:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-1946:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Set PLLSAIDIVR values */
-1947:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   tmpreg |= RCC_PLLSAIDivR;
- 2018              		.loc 2 1947 0
- 2019 080c FA68     		ldr	r2, [r7, #12]
- 2020 080e 7B68     		ldr	r3, [r7, #4]
- 2021 0810 1343     		orrs	r3, r2
- 2022 0812 FB60     		str	r3, [r7, #12]
-1948:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-1949:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Store the new value */
-1950:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   RCC->DCKCFGR = tmpreg;
- 2023              		.loc 2 1950 0
- 2024 0814 0349     		ldr	r1, .L120
- 2025 0816 8C22     		movs	r2, #140
- 2026 0818 FB68     		ldr	r3, [r7, #12]
- 2027 081a 8B50     		str	r3, [r1, r2]
-1951:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** }
- 2028              		.loc 2 1951 0
- 2029 081c C046     		nop
- 2030 081e BD46     		mov	sp, r7
- 2031 0820 04B0     		add	sp, sp, #16
- 2032              		@ sp needed
- 2033 0822 80BD     		pop	{r7, pc}
- 2034              	.L121:
- 2035              		.align	2
- 2036              	.L120:
- 2037 0824 00380240 		.word	1073887232
- 2038 0828 FFFFFCFF 		.word	-196609
- 2039              		.cfi_endproc
- 2040              	.LFE153:
- 2042              		.align	1
- 2043              		.global	RCC_TIMCLKPresConfig
- 2044              		.syntax unified
- 2045              		.code	16
- 2046              		.thumb_func
- 2047              		.fpu softvfp
- 2049              	RCC_TIMCLKPresConfig:
- 2050              	.LFB154:
-1952:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-1953:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #if defined(STM32F412xG) || defined(STM32F413_423xx)
-1954:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /**
-1955:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @brief  Configures the DFSDM clock source (DFSDMCLK).
-1956:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   This function must be called before enabling the DFSDM APB clock.
-1957:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  RCC_DFSDMCLKSource: specifies the DFSDM clock source.
-1958:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter can be one of the following values:
-1959:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_DFSDMCLKSource_APB: APB clock used as DFSDM clock source.
-1960:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_DFSDMCLKSource_SYS: System clock used as DFSDM clock source.
-1961:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *                                        
-1962:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @retval None
-1963:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */
-1964:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** void RCC_DFSDM1CLKConfig(uint32_t RCC_DFSDMCLKSource)
-1965:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** {
-1966:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   uint32_t tmpreg = 0;
-1967:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   
-1968:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Check the parameters */
-1969:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_DFSDM1CLK_SOURCE(RCC_DFSDMCLKSource));
-1970:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   
-1971:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   tmpreg = RCC->DCKCFGR;
-1972:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-1973:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Clear CKDFSDM-SEL  bit */
-1974:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   tmpreg &= ~RCC_DCKCFGR_CKDFSDM1SEL;
-1975:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-1976:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Set CKDFSDM-SEL bit according to RCC_DFSDMCLKSource value */
-1977:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   tmpreg |= (RCC_DFSDMCLKSource << 31) ;
-1978:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-1979:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Store the new value */
-1980:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   RCC->DCKCFGR = tmpreg;
-1981:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** }
-1982:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-1983:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /**
-1984:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @brief  Configures the DFSDM Audio clock source (DFSDMACLK).
-1985:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   This function must be called before enabling the DFSDM APB clock.
-1986:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  RCC_DFSDM1ACLKSource: specifies the DFSDM clock source.
-1987:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter can be one of the following values:
-1988:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_DFSDM1AUDIOCLKSOURCE_I2SAPB1: APB clock used as DFSDM clock source.
-1989:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_DFSDM1AUDIOCLKSOURCE_I2SAPB2: System clock used as DFSDM clock source.
-1990:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *                                        
-1991:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @retval None
-1992:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */
-1993:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** void RCC_DFSDM1ACLKConfig(uint32_t RCC_DFSDM1ACLKSource)
-1994:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** {
-1995:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   uint32_t tmpreg = 0;
-1996:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   
-1997:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Check the parameters */
-1998:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_DFSDMACLK_SOURCE(RCC_DFSDM1ACLKSource));
-1999:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   
-2000:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   tmpreg = RCC->DCKCFGR;
-2001:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-2002:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Clear CKDFSDMA SEL  bit */
-2003:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   tmpreg &= ~RCC_DCKCFGR_CKDFSDM1ASEL;
-2004:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-2005:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Set CKDFSDM-SEL   bt according to RCC_DFSDMCLKSource value */
-2006:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   tmpreg |= RCC_DFSDM1ACLKSource;
-2007:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-2008:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Store the new value */
-2009:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   RCC->DCKCFGR = tmpreg;
-2010:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** }
-2011:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-2012:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #if defined(STM32F413_423xx)
-2013:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /**
-2014:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @brief  Configures the DFSDM Audio clock source (DFSDMACLK).
-2015:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   This function must be called before enabling the DFSDM APB clock.
-2016:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  RCC_DFSDM2ACLKSource: specifies the DFSDM clock source.
-2017:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter can be one of the following values:
-2018:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_DFSDM2AUDIOCLKSOURCE_I2SAPB1: APB clock used as DFSDM clock source.
-2019:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_DFSDM2AUDIOCLKSOURCE_I2SAPB2: System clock used as DFSDM clock source.
-2020:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *                                        
-2021:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @retval None
-2022:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */
-2023:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** void RCC_DFSDM2ACLKConfig(uint32_t RCC_DFSDMACLKSource)
-2024:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** {
-2025:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   uint32_t tmpreg = 0;
-2026:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   
-2027:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Check the parameters */
-2028:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_DFSDMCLK_SOURCE(RCC_DFSDMACLKSource));
-2029:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   
-2030:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   tmpreg = RCC->DCKCFGR;
-2031:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-2032:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Clear CKDFSDMA SEL  bit */
-2033:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   tmpreg &= ~RCC_DCKCFGR_CKDFSDM1ASEL;
-2034:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-2035:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Set CKDFSDM-SEL   bt according to RCC_DFSDMCLKSource value */
-2036:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   tmpreg |= RCC_DFSDMACLKSource;
-2037:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-2038:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Store the new value */
-2039:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   RCC->DCKCFGR = tmpreg;
-2040:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** }
-2041:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #endif /* STM32F413_423xx */
-2042:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #endif /* STM32F412xG || STM32F413_423xx */
-2043:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-2044:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /**
-2045:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @brief  Configures the Timers clocks prescalers selection.
-2046:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * 
-2047:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   This function can be used only for STM32F42xxx/43xxx and STM32F401xx/411xE devices. 
-2048:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *   
-2049:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  RCC_TIMCLKPrescaler : specifies the Timers clocks prescalers selection
-2050:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         This parameter can be one of the following values:
-2051:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_TIMPrescDesactivated: The Timers kernels clocks prescaler is 
-2052:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *                 equal to HPRE if PPREx is corresponding to division by 1 or 2, 
-2053:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *                 else it is equal to [(HPRE * PPREx) / 2] if PPREx is corresponding to 
-2054:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *                 division by 4 or more.
-2055:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *                   
-2056:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_TIMPrescActivated: The Timers kernels clocks prescaler is 
-2057:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *                 equal to HPRE if PPREx is corresponding to division by 1, 2 or 4, 
-2058:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *                 else it is equal to [(HPRE * PPREx) / 4] if PPREx is corresponding 
-2059:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *                 to division by 8 or more.
-2060:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @retval None
-2061:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */
-2062:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** void RCC_TIMCLKPresConfig(uint32_t RCC_TIMCLKPrescaler)
-2063:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** {
- 2051              		.loc 2 2063 0
- 2052              		.cfi_startproc
- 2053              		@ args = 0, pretend = 0, frame = 8
- 2054              		@ frame_needed = 1, uses_anonymous_args = 0
- 2055 082c 80B5     		push	{r7, lr}
- 2056              		.cfi_def_cfa_offset 8
- 2057              		.cfi_offset 7, -8
- 2058              		.cfi_offset 14, -4
- 2059 082e 82B0     		sub	sp, sp, #8
- 2060              		.cfi_def_cfa_offset 16
- 2061 0830 00AF     		add	r7, sp, #0
- 2062              		.cfi_def_cfa_register 7
- 2063 0832 7860     		str	r0, [r7, #4]
-2064:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Check the parameters */
-2065:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_TIMCLK_PRESCALER(RCC_TIMCLKPrescaler));
-2066:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-2067:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *(__IO uint32_t *) DCKCFGR_TIMPRE_BB = RCC_TIMCLKPrescaler;
- 2064              		.loc 2 2067 0
- 2065 0834 034B     		ldr	r3, .L123
- 2066 0836 7A68     		ldr	r2, [r7, #4]
- 2067 0838 1A60     		str	r2, [r3]
-2068:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** }
- 2068              		.loc 2 2068 0
- 2069 083a C046     		nop
- 2070 083c BD46     		mov	sp, r7
- 2071 083e 02B0     		add	sp, sp, #8
- 2072              		@ sp needed
- 2073 0840 80BD     		pop	{r7, pc}
- 2074              	.L124:
- 2075 0842 C046     		.align	2
- 2076              	.L123:
- 2077 0844 E0114742 		.word	1111953888
- 2078              		.cfi_endproc
- 2079              	.LFE154:
- 2081              		.align	1
- 2082              		.global	RCC_AHB1PeriphClockCmd
- 2083              		.syntax unified
- 2084              		.code	16
- 2085              		.thumb_func
- 2086              		.fpu softvfp
- 2088              	RCC_AHB1PeriphClockCmd:
- 2089              	.LFB155:
-2069:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-2070:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /**
-2071:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @brief  Enables or disables the AHB1 peripheral clock.
-2072:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   After reset, the peripheral clock (used for registers read/write access)
-2073:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         is disabled and the application software has to enable this clock before 
-2074:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         using it.   
-2075:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  RCC_AHBPeriph: specifies the AHB1 peripheral to gates its clock.
-2076:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter can be any combination of the following values:
-2077:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_AHB1Periph_GPIOA:       GPIOA clock
-2078:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_AHB1Periph_GPIOB:       GPIOB clock 
-2079:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_AHB1Periph_GPIOC:       GPIOC clock
-2080:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_AHB1Periph_GPIOD:       GPIOD clock
-2081:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_AHB1Periph_GPIOE:       GPIOE clock
-2082:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_AHB1Periph_GPIOF:       GPIOF clock
-2083:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_AHB1Periph_GPIOG:       GPIOG clock
-2084:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_AHB1Periph_GPIOG:       GPIOG clock
-2085:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_AHB1Periph_GPIOI:       GPIOI clock
-2086:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_AHB1Periph_GPIOJ:       GPIOJ clock (STM32F42xxx/43xxx devices) 
-2087:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_AHB1Periph_GPIOK:       GPIOK clock (STM32F42xxx/43xxx devices)  
-2088:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_AHB1Periph_CRC:         CRC clock
-2089:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_AHB1Periph_BKPSRAM:     BKPSRAM interface clock
-2090:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_AHB1Periph_CCMDATARAMEN CCM data RAM interface clock
-2091:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_AHB1Periph_DMA1:        DMA1 clock
-2092:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_AHB1Periph_DMA2:        DMA2 clock
-2093:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_AHB1Periph_DMA2D:       DMA2D clock (STM32F429xx/439xx devices)  
-2094:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_AHB1Periph_ETH_MAC:     Ethernet MAC clock
-2095:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_AHB1Periph_ETH_MAC_Tx:  Ethernet Transmission clock
-2096:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_AHB1Periph_ETH_MAC_Rx:  Ethernet Reception clock
-2097:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_AHB1Periph_ETH_MAC_PTP: Ethernet PTP clock
-2098:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_AHB1Periph_OTG_HS:      USB OTG HS clock
-2099:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_AHB1Periph_OTG_HS_ULPI: USB OTG HS ULPI clock
-2100:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  NewState: new state of the specified peripheral clock.
-2101:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter can be: ENABLE or DISABLE.
-2102:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @retval None
-2103:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */
-2104:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** void RCC_AHB1PeriphClockCmd(uint32_t RCC_AHB1Periph, FunctionalState NewState)
-2105:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** {
- 2090              		.loc 2 2105 0
- 2091              		.cfi_startproc
- 2092              		@ args = 0, pretend = 0, frame = 8
- 2093              		@ frame_needed = 1, uses_anonymous_args = 0
- 2094 0848 80B5     		push	{r7, lr}
- 2095              		.cfi_def_cfa_offset 8
- 2096              		.cfi_offset 7, -8
- 2097              		.cfi_offset 14, -4
- 2098 084a 82B0     		sub	sp, sp, #8
- 2099              		.cfi_def_cfa_offset 16
- 2100 084c 00AF     		add	r7, sp, #0
- 2101              		.cfi_def_cfa_register 7
- 2102 084e 7860     		str	r0, [r7, #4]
- 2103 0850 0A00     		movs	r2, r1
- 2104 0852 FB1C     		adds	r3, r7, #3
- 2105 0854 1A70     		strb	r2, [r3]
-2106:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Check the parameters */
-2107:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_AHB1_CLOCK_PERIPH(RCC_AHB1Periph));
-2108:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-2109:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_FUNCTIONAL_STATE(NewState));
-2110:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   if (NewState != DISABLE)
- 2106              		.loc 2 2110 0
- 2107 0856 FB1C     		adds	r3, r7, #3
- 2108 0858 1B78     		ldrb	r3, [r3]
- 2109 085a 002B     		cmp	r3, #0
- 2110 085c 06D0     		beq	.L126
-2111:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   {
-2112:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     RCC->AHB1ENR |= RCC_AHB1Periph;
- 2111              		.loc 2 2112 0
- 2112 085e 094B     		ldr	r3, .L129
- 2113 0860 196B     		ldr	r1, [r3, #48]
- 2114 0862 084B     		ldr	r3, .L129
- 2115 0864 7A68     		ldr	r2, [r7, #4]
- 2116 0866 0A43     		orrs	r2, r1
- 2117 0868 1A63     		str	r2, [r3, #48]
-2113:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   }
-2114:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   else
-2115:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   {
-2116:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     RCC->AHB1ENR &= ~RCC_AHB1Periph;
-2117:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   }
-2118:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** }
- 2118              		.loc 2 2118 0
- 2119 086a 06E0     		b	.L128
- 2120              	.L126:
-2116:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   }
- 2121              		.loc 2 2116 0
- 2122 086c 054B     		ldr	r3, .L129
- 2123 086e 1A6B     		ldr	r2, [r3, #48]
- 2124 0870 7B68     		ldr	r3, [r7, #4]
- 2125 0872 D943     		mvns	r1, r3
- 2126 0874 034B     		ldr	r3, .L129
- 2127 0876 0A40     		ands	r2, r1
- 2128 0878 1A63     		str	r2, [r3, #48]
- 2129              	.L128:
- 2130              		.loc 2 2118 0
- 2131 087a C046     		nop
- 2132 087c BD46     		mov	sp, r7
- 2133 087e 02B0     		add	sp, sp, #8
- 2134              		@ sp needed
- 2135 0880 80BD     		pop	{r7, pc}
- 2136              	.L130:
- 2137 0882 C046     		.align	2
- 2138              	.L129:
- 2139 0884 00380240 		.word	1073887232
- 2140              		.cfi_endproc
- 2141              	.LFE155:
- 2143              		.align	1
- 2144              		.global	RCC_AHB2PeriphClockCmd
- 2145              		.syntax unified
- 2146              		.code	16
- 2147              		.thumb_func
- 2148              		.fpu softvfp
- 2150              	RCC_AHB2PeriphClockCmd:
- 2151              	.LFB156:
-2119:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-2120:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /**
-2121:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @brief  Enables or disables the AHB2 peripheral clock.
-2122:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   After reset, the peripheral clock (used for registers read/write access)
-2123:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         is disabled and the application software has to enable this clock before 
-2124:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         using it. 
-2125:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  RCC_AHBPeriph: specifies the AHB2 peripheral to gates its clock.
-2126:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter can be any combination of the following values:
-2127:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_AHB2Periph_DCMI:   DCMI clock
-2128:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_AHB2Periph_CRYP:   CRYP clock
-2129:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_AHB2Periph_HASH:   HASH clock
-2130:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_AHB2Periph_RNG:    RNG clock
-2131:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_AHB2Periph_OTG_FS: USB OTG FS clock
-2132:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  NewState: new state of the specified peripheral clock.
-2133:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter can be: ENABLE or DISABLE.
-2134:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @retval None
-2135:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */
-2136:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** void RCC_AHB2PeriphClockCmd(uint32_t RCC_AHB2Periph, FunctionalState NewState)
-2137:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** {
- 2152              		.loc 2 2137 0
- 2153              		.cfi_startproc
- 2154              		@ args = 0, pretend = 0, frame = 8
- 2155              		@ frame_needed = 1, uses_anonymous_args = 0
- 2156 0888 80B5     		push	{r7, lr}
- 2157              		.cfi_def_cfa_offset 8
- 2158              		.cfi_offset 7, -8
- 2159              		.cfi_offset 14, -4
- 2160 088a 82B0     		sub	sp, sp, #8
- 2161              		.cfi_def_cfa_offset 16
- 2162 088c 00AF     		add	r7, sp, #0
- 2163              		.cfi_def_cfa_register 7
- 2164 088e 7860     		str	r0, [r7, #4]
- 2165 0890 0A00     		movs	r2, r1
- 2166 0892 FB1C     		adds	r3, r7, #3
- 2167 0894 1A70     		strb	r2, [r3]
-2138:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Check the parameters */
-2139:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_AHB2_PERIPH(RCC_AHB2Periph));
-2140:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_FUNCTIONAL_STATE(NewState));
-2141:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-2142:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   if (NewState != DISABLE)
- 2168              		.loc 2 2142 0
- 2169 0896 FB1C     		adds	r3, r7, #3
- 2170 0898 1B78     		ldrb	r3, [r3]
- 2171 089a 002B     		cmp	r3, #0
- 2172 089c 06D0     		beq	.L132
-2143:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   {
-2144:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     RCC->AHB2ENR |= RCC_AHB2Periph;
- 2173              		.loc 2 2144 0
- 2174 089e 094B     		ldr	r3, .L135
- 2175 08a0 596B     		ldr	r1, [r3, #52]
- 2176 08a2 084B     		ldr	r3, .L135
- 2177 08a4 7A68     		ldr	r2, [r7, #4]
- 2178 08a6 0A43     		orrs	r2, r1
- 2179 08a8 5A63     		str	r2, [r3, #52]
-2145:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   }
-2146:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   else
-2147:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   {
-2148:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     RCC->AHB2ENR &= ~RCC_AHB2Periph;
-2149:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   }
-2150:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** }
- 2180              		.loc 2 2150 0
- 2181 08aa 06E0     		b	.L134
- 2182              	.L132:
-2148:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   }
- 2183              		.loc 2 2148 0
- 2184 08ac 054B     		ldr	r3, .L135
- 2185 08ae 5A6B     		ldr	r2, [r3, #52]
- 2186 08b0 7B68     		ldr	r3, [r7, #4]
- 2187 08b2 D943     		mvns	r1, r3
- 2188 08b4 034B     		ldr	r3, .L135
- 2189 08b6 0A40     		ands	r2, r1
- 2190 08b8 5A63     		str	r2, [r3, #52]
- 2191              	.L134:
- 2192              		.loc 2 2150 0
- 2193 08ba C046     		nop
- 2194 08bc BD46     		mov	sp, r7
- 2195 08be 02B0     		add	sp, sp, #8
- 2196              		@ sp needed
- 2197 08c0 80BD     		pop	{r7, pc}
- 2198              	.L136:
- 2199 08c2 C046     		.align	2
- 2200              	.L135:
- 2201 08c4 00380240 		.word	1073887232
- 2202              		.cfi_endproc
- 2203              	.LFE156:
- 2205              		.align	1
- 2206              		.global	RCC_AHB3PeriphClockCmd
- 2207              		.syntax unified
- 2208              		.code	16
- 2209              		.thumb_func
- 2210              		.fpu softvfp
- 2212              	RCC_AHB3PeriphClockCmd:
- 2213              	.LFB157:
-2151:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-2152:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #if defined(STM32F40_41xxx) || defined(STM32F412xG) || defined(STM32F413_423xx) || defined(STM32F42
-2153:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /**
-2154:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @brief  Enables or disables the AHB3 peripheral clock.
-2155:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   After reset, the peripheral clock (used for registers read/write access)
-2156:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         is disabled and the application software has to enable this clock before 
-2157:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         using it. 
-2158:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  RCC_AHBPeriph: specifies the AHB3 peripheral to gates its clock.
-2159:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter must be: 
-2160:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *           - RCC_AHB3Periph_FSMC or RCC_AHB3Periph_FMC (STM32F412xG/STM32F413_423xx/STM32F429x/4
-2161:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *           - RCC_AHB3Periph_QSPI (STM32F412xG/STM32F413_423xx/STM32F446xx/STM32F469_479xx device
-2162:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  NewState: new state of the specified peripheral clock.
-2163:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter can be: ENABLE or DISABLE.
-2164:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @retval None
-2165:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */
-2166:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** void RCC_AHB3PeriphClockCmd(uint32_t RCC_AHB3Periph, FunctionalState NewState)
-2167:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** {
- 2214              		.loc 2 2167 0
- 2215              		.cfi_startproc
- 2216              		@ args = 0, pretend = 0, frame = 8
- 2217              		@ frame_needed = 1, uses_anonymous_args = 0
- 2218 08c8 80B5     		push	{r7, lr}
- 2219              		.cfi_def_cfa_offset 8
- 2220              		.cfi_offset 7, -8
- 2221              		.cfi_offset 14, -4
- 2222 08ca 82B0     		sub	sp, sp, #8
- 2223              		.cfi_def_cfa_offset 16
- 2224 08cc 00AF     		add	r7, sp, #0
- 2225              		.cfi_def_cfa_register 7
- 2226 08ce 7860     		str	r0, [r7, #4]
- 2227 08d0 0A00     		movs	r2, r1
- 2228 08d2 FB1C     		adds	r3, r7, #3
- 2229 08d4 1A70     		strb	r2, [r3]
-2168:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Check the parameters */
-2169:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_AHB3_PERIPH(RCC_AHB3Periph));  
-2170:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_FUNCTIONAL_STATE(NewState));
-2171:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-2172:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   if (NewState != DISABLE)
- 2230              		.loc 2 2172 0
- 2231 08d6 FB1C     		adds	r3, r7, #3
- 2232 08d8 1B78     		ldrb	r3, [r3]
- 2233 08da 002B     		cmp	r3, #0
- 2234 08dc 06D0     		beq	.L138
-2173:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   {
-2174:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     RCC->AHB3ENR |= RCC_AHB3Periph;
- 2235              		.loc 2 2174 0
- 2236 08de 094B     		ldr	r3, .L141
- 2237 08e0 996B     		ldr	r1, [r3, #56]
- 2238 08e2 084B     		ldr	r3, .L141
- 2239 08e4 7A68     		ldr	r2, [r7, #4]
- 2240 08e6 0A43     		orrs	r2, r1
- 2241 08e8 9A63     		str	r2, [r3, #56]
-2175:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   }
-2176:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   else
-2177:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   {
-2178:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     RCC->AHB3ENR &= ~RCC_AHB3Periph;
-2179:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   }
-2180:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** }
- 2242              		.loc 2 2180 0
- 2243 08ea 06E0     		b	.L140
- 2244              	.L138:
-2178:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   }
- 2245              		.loc 2 2178 0
- 2246 08ec 054B     		ldr	r3, .L141
- 2247 08ee 9A6B     		ldr	r2, [r3, #56]
- 2248 08f0 7B68     		ldr	r3, [r7, #4]
- 2249 08f2 D943     		mvns	r1, r3
- 2250 08f4 034B     		ldr	r3, .L141
- 2251 08f6 0A40     		ands	r2, r1
- 2252 08f8 9A63     		str	r2, [r3, #56]
- 2253              	.L140:
- 2254              		.loc 2 2180 0
- 2255 08fa C046     		nop
- 2256 08fc BD46     		mov	sp, r7
- 2257 08fe 02B0     		add	sp, sp, #8
- 2258              		@ sp needed
- 2259 0900 80BD     		pop	{r7, pc}
- 2260              	.L142:
- 2261 0902 C046     		.align	2
- 2262              	.L141:
- 2263 0904 00380240 		.word	1073887232
- 2264              		.cfi_endproc
- 2265              	.LFE157:
- 2267              		.align	1
- 2268              		.global	RCC_APB1PeriphClockCmd
- 2269              		.syntax unified
- 2270              		.code	16
- 2271              		.thumb_func
- 2272              		.fpu softvfp
- 2274              	RCC_APB1PeriphClockCmd:
- 2275              	.LFB158:
-2181:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #endif /* STM32F40_41xxx || STM32F412xG || STM32F413_423xx || STM32F427_437xx || STM32F429_439xx ||
-2182:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-2183:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /**
-2184:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @brief  Enables or disables the Low Speed APB (APB1) peripheral clock.
-2185:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   After reset, the peripheral clock (used for registers read/write access)
-2186:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         is disabled and the application software has to enable this clock before 
-2187:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         using it. 
-2188:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  RCC_APB1Periph: specifies the APB1 peripheral to gates its clock.
-2189:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter can be any combination of the following values:
-2190:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB1Periph_TIM2:   TIM2 clock
-2191:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB1Periph_TIM3:   TIM3 clock
-2192:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB1Periph_TIM4:   TIM4 clock
-2193:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB1Periph_TIM5:   TIM5 clock
-2194:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB1Periph_TIM6:   TIM6 clock
-2195:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB1Periph_TIM7:   TIM7 clock
-2196:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB1Periph_TIM12:  TIM12 clock
-2197:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB1Periph_TIM13:  TIM13 clock
-2198:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB1Periph_TIM14:  TIM14 clock
-2199:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB1Periph_LPTIM1: LPTIM1 clock (STM32F410xx and STM32F413_423xx devices) 
-2200:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB1Periph_WWDG:   WWDG clock
-2201:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB1Periph_SPI2:   SPI2 clock
-2202:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB1Periph_SPI3:   SPI3 clock
-2203:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB1Periph_SPDIF:  SPDIF RX clock (STM32F446xx devices) 
-2204:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB1Periph_USART2: USART2 clock
-2205:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB1Periph_USART3: USART3 clock
-2206:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB1Periph_UART4:  UART4 clock
-2207:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB1Periph_UART5:  UART5 clock
-2208:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB1Periph_I2C1:   I2C1 clock
-2209:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB1Periph_I2C2:   I2C2 clock
-2210:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB1Periph_I2C3:   I2C3 clock
-2211:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB1Periph_FMPI2C1:FMPI2C1 clock
-2212:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB1Periph_CAN1:   CAN1 clock
-2213:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB1Periph_CAN2:   CAN2 clock
-2214:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB1Periph_CEC:    CEC clock (STM32F446xx devices)
-2215:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB1Periph_PWR:    PWR clock
-2216:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB1Periph_DAC:    DAC clock
-2217:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB1Periph_UART7:  UART7 clock
-2218:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB1Periph_UART8:  UART8 clock
-2219:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  NewState: new state of the specified peripheral clock.
-2220:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter can be: ENABLE or DISABLE.
-2221:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @retval None
-2222:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */
-2223:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** void RCC_APB1PeriphClockCmd(uint32_t RCC_APB1Periph, FunctionalState NewState)
-2224:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** {
- 2276              		.loc 2 2224 0
- 2277              		.cfi_startproc
- 2278              		@ args = 0, pretend = 0, frame = 8
- 2279              		@ frame_needed = 1, uses_anonymous_args = 0
- 2280 0908 80B5     		push	{r7, lr}
- 2281              		.cfi_def_cfa_offset 8
- 2282              		.cfi_offset 7, -8
- 2283              		.cfi_offset 14, -4
- 2284 090a 82B0     		sub	sp, sp, #8
- 2285              		.cfi_def_cfa_offset 16
- 2286 090c 00AF     		add	r7, sp, #0
- 2287              		.cfi_def_cfa_register 7
- 2288 090e 7860     		str	r0, [r7, #4]
- 2289 0910 0A00     		movs	r2, r1
- 2290 0912 FB1C     		adds	r3, r7, #3
- 2291 0914 1A70     		strb	r2, [r3]
-2225:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Check the parameters */
-2226:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_APB1_PERIPH(RCC_APB1Periph));  
-2227:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_FUNCTIONAL_STATE(NewState));
-2228:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-2229:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   if (NewState != DISABLE)
- 2292              		.loc 2 2229 0
- 2293 0916 FB1C     		adds	r3, r7, #3
- 2294 0918 1B78     		ldrb	r3, [r3]
- 2295 091a 002B     		cmp	r3, #0
- 2296 091c 06D0     		beq	.L144
-2230:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   {
-2231:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     RCC->APB1ENR |= RCC_APB1Periph;
- 2297              		.loc 2 2231 0
- 2298 091e 094B     		ldr	r3, .L147
- 2299 0920 196C     		ldr	r1, [r3, #64]
- 2300 0922 084B     		ldr	r3, .L147
- 2301 0924 7A68     		ldr	r2, [r7, #4]
- 2302 0926 0A43     		orrs	r2, r1
- 2303 0928 1A64     		str	r2, [r3, #64]
-2232:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   }
-2233:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   else
-2234:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   {
-2235:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     RCC->APB1ENR &= ~RCC_APB1Periph;
-2236:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   }
-2237:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** }
- 2304              		.loc 2 2237 0
- 2305 092a 06E0     		b	.L146
- 2306              	.L144:
-2235:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   }
- 2307              		.loc 2 2235 0
- 2308 092c 054B     		ldr	r3, .L147
- 2309 092e 1A6C     		ldr	r2, [r3, #64]
- 2310 0930 7B68     		ldr	r3, [r7, #4]
- 2311 0932 D943     		mvns	r1, r3
- 2312 0934 034B     		ldr	r3, .L147
- 2313 0936 0A40     		ands	r2, r1
- 2314 0938 1A64     		str	r2, [r3, #64]
- 2315              	.L146:
- 2316              		.loc 2 2237 0
- 2317 093a C046     		nop
- 2318 093c BD46     		mov	sp, r7
- 2319 093e 02B0     		add	sp, sp, #8
- 2320              		@ sp needed
- 2321 0940 80BD     		pop	{r7, pc}
- 2322              	.L148:
- 2323 0942 C046     		.align	2
- 2324              	.L147:
- 2325 0944 00380240 		.word	1073887232
- 2326              		.cfi_endproc
- 2327              	.LFE158:
- 2329              		.align	1
- 2330              		.global	RCC_APB2PeriphClockCmd
- 2331              		.syntax unified
- 2332              		.code	16
- 2333              		.thumb_func
- 2334              		.fpu softvfp
- 2336              	RCC_APB2PeriphClockCmd:
- 2337              	.LFB159:
-2238:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-2239:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /**
-2240:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @brief  Enables or disables the High Speed APB (APB2) peripheral clock.
-2241:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   After reset, the peripheral clock (used for registers read/write access)
-2242:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         is disabled and the application software has to enable this clock before 
-2243:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         using it.
-2244:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  RCC_APB2Periph: specifies the APB2 peripheral to gates its clock.
-2245:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter can be any combination of the following values:
-2246:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB2Periph_TIM1:   TIM1 clock
-2247:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB2Periph_TIM8:   TIM8 clock
-2248:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB2Periph_USART1: USART1 clock
-2249:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB2Periph_USART6: USART6 clock
-2250:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB2Periph_ADC1:   ADC1 clock
-2251:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB2Periph_ADC2:   ADC2 clock
-2252:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB2Periph_ADC3:   ADC3 clock
-2253:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB2Periph_SDIO:   SDIO clock
-2254:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB2Periph_SPI1:   SPI1 clock
-2255:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB2Periph_SPI4:   SPI4 clock
-2256:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB2Periph_SYSCFG: SYSCFG clock
-2257:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB2Periph_EXTIT:  EXTIIT clock
-2258:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB2Periph_TIM9:   TIM9 clock
-2259:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB2Periph_TIM10:  TIM10 clock
-2260:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB2Periph_TIM11:  TIM11 clock
-2261:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB2Periph_SPI5:   SPI5 clock
-2262:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB2Periph_SPI6:   SPI6 clock
-2263:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB2Periph_SAI1:   SAI1 clock (STM32F42xxx/43xxx/446xx/469xx/479xx/413_423x
-2264:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB2Periph_SAI2:   SAI2 clock (STM32F446xx devices) 
-2265:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB2Periph_LTDC:   LTDC clock (STM32F429xx/439xx devices)
-2266:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB2Periph_DSI:    DSI clock (STM32F469_479xx devices)
-2267:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB2Periph_DFSDM1: DFSDM Clock (STM32F412xG and STM32F413_423xx Devices)
-2268:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB2Periph_DFSDM2: DFSDM2 Clock (STM32F413_423xx Devices)
-2269:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB2Periph_UART9:  UART9 Clock (STM32F413_423xx Devices)
-2270:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB2Periph_UART10: UART10 Clock (STM32F413_423xx Devices)
-2271:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  NewState: new state of the specified peripheral clock.
-2272:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter can be: ENABLE or DISABLE.
-2273:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @retval None
-2274:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */
-2275:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** void RCC_APB2PeriphClockCmd(uint32_t RCC_APB2Periph, FunctionalState NewState)
-2276:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** {
- 2338              		.loc 2 2276 0
- 2339              		.cfi_startproc
- 2340              		@ args = 0, pretend = 0, frame = 8
- 2341              		@ frame_needed = 1, uses_anonymous_args = 0
- 2342 0948 80B5     		push	{r7, lr}
- 2343              		.cfi_def_cfa_offset 8
- 2344              		.cfi_offset 7, -8
- 2345              		.cfi_offset 14, -4
- 2346 094a 82B0     		sub	sp, sp, #8
- 2347              		.cfi_def_cfa_offset 16
- 2348 094c 00AF     		add	r7, sp, #0
- 2349              		.cfi_def_cfa_register 7
- 2350 094e 7860     		str	r0, [r7, #4]
- 2351 0950 0A00     		movs	r2, r1
- 2352 0952 FB1C     		adds	r3, r7, #3
- 2353 0954 1A70     		strb	r2, [r3]
-2277:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Check the parameters */
-2278:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_APB2_PERIPH(RCC_APB2Periph));
-2279:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_FUNCTIONAL_STATE(NewState));
-2280:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-2281:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   if (NewState != DISABLE)
- 2354              		.loc 2 2281 0
- 2355 0956 FB1C     		adds	r3, r7, #3
- 2356 0958 1B78     		ldrb	r3, [r3]
- 2357 095a 002B     		cmp	r3, #0
- 2358 095c 06D0     		beq	.L150
-2282:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   {
-2283:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     RCC->APB2ENR |= RCC_APB2Periph;
- 2359              		.loc 2 2283 0
- 2360 095e 094B     		ldr	r3, .L153
- 2361 0960 596C     		ldr	r1, [r3, #68]
- 2362 0962 084B     		ldr	r3, .L153
- 2363 0964 7A68     		ldr	r2, [r7, #4]
- 2364 0966 0A43     		orrs	r2, r1
- 2365 0968 5A64     		str	r2, [r3, #68]
-2284:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   }
-2285:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   else
-2286:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   {
-2287:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     RCC->APB2ENR &= ~RCC_APB2Periph;
-2288:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   }
-2289:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** }
- 2366              		.loc 2 2289 0
- 2367 096a 06E0     		b	.L152
- 2368              	.L150:
-2287:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   }
- 2369              		.loc 2 2287 0
- 2370 096c 054B     		ldr	r3, .L153
- 2371 096e 5A6C     		ldr	r2, [r3, #68]
- 2372 0970 7B68     		ldr	r3, [r7, #4]
- 2373 0972 D943     		mvns	r1, r3
- 2374 0974 034B     		ldr	r3, .L153
- 2375 0976 0A40     		ands	r2, r1
- 2376 0978 5A64     		str	r2, [r3, #68]
- 2377              	.L152:
- 2378              		.loc 2 2289 0
- 2379 097a C046     		nop
- 2380 097c BD46     		mov	sp, r7
- 2381 097e 02B0     		add	sp, sp, #8
- 2382              		@ sp needed
- 2383 0980 80BD     		pop	{r7, pc}
- 2384              	.L154:
- 2385 0982 C046     		.align	2
- 2386              	.L153:
- 2387 0984 00380240 		.word	1073887232
- 2388              		.cfi_endproc
- 2389              	.LFE159:
- 2391              		.align	1
- 2392              		.global	RCC_AHB1PeriphResetCmd
- 2393              		.syntax unified
- 2394              		.code	16
- 2395              		.thumb_func
- 2396              		.fpu softvfp
- 2398              	RCC_AHB1PeriphResetCmd:
- 2399              	.LFB160:
-2290:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-2291:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /**
-2292:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @brief  Forces or releases AHB1 peripheral reset.
-2293:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  RCC_AHB1Periph: specifies the AHB1 peripheral to reset.
-2294:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter can be any combination of the following values:
-2295:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_AHB1Periph_GPIOA:   GPIOA clock
-2296:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_AHB1Periph_GPIOB:   GPIOB clock 
-2297:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_AHB1Periph_GPIOC:   GPIOC clock
-2298:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_AHB1Periph_GPIOD:   GPIOD clock
-2299:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_AHB1Periph_GPIOE:   GPIOE clock
-2300:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_AHB1Periph_GPIOF:   GPIOF clock
-2301:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_AHB1Periph_GPIOG:   GPIOG clock
-2302:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_AHB1Periph_GPIOG:   GPIOG clock
-2303:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_AHB1Periph_GPIOI:   GPIOI clock
-2304:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_AHB1Periph_GPIOJ:   GPIOJ clock (STM32F42xxx/43xxx devices) 
-2305:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_AHB1Periph_GPIOK:   GPIOK clock (STM32F42xxx/43xxxdevices)   
-2306:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_AHB1Periph_CRC:     CRC clock
-2307:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_AHB1Periph_DMA1:    DMA1 clock
-2308:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_AHB1Periph_DMA2:    DMA2 clock
-2309:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_AHB1Periph_DMA2D:   DMA2D clock (STM32F429xx/439xx devices)   
-2310:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_AHB1Periph_ETH_MAC: Ethernet MAC clock
-2311:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_AHB1Periph_OTG_HS:  USB OTG HS clock
-2312:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_AHB1Periph_RNG:     RNG clock for STM32F410xx devices   
-2313:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  NewState: new state of the specified peripheral reset.
-2314:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter can be: ENABLE or DISABLE.
-2315:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @retval None
-2316:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */
-2317:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** void RCC_AHB1PeriphResetCmd(uint32_t RCC_AHB1Periph, FunctionalState NewState)
-2318:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** {
- 2400              		.loc 2 2318 0
- 2401              		.cfi_startproc
- 2402              		@ args = 0, pretend = 0, frame = 8
- 2403              		@ frame_needed = 1, uses_anonymous_args = 0
- 2404 0988 80B5     		push	{r7, lr}
- 2405              		.cfi_def_cfa_offset 8
- 2406              		.cfi_offset 7, -8
- 2407              		.cfi_offset 14, -4
- 2408 098a 82B0     		sub	sp, sp, #8
- 2409              		.cfi_def_cfa_offset 16
- 2410 098c 00AF     		add	r7, sp, #0
- 2411              		.cfi_def_cfa_register 7
- 2412 098e 7860     		str	r0, [r7, #4]
- 2413 0990 0A00     		movs	r2, r1
- 2414 0992 FB1C     		adds	r3, r7, #3
- 2415 0994 1A70     		strb	r2, [r3]
-2319:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Check the parameters */
-2320:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_AHB1_RESET_PERIPH(RCC_AHB1Periph));
-2321:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_FUNCTIONAL_STATE(NewState));
-2322:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-2323:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   if (NewState != DISABLE)
- 2416              		.loc 2 2323 0
- 2417 0996 FB1C     		adds	r3, r7, #3
- 2418 0998 1B78     		ldrb	r3, [r3]
- 2419 099a 002B     		cmp	r3, #0
- 2420 099c 06D0     		beq	.L156
-2324:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   {
-2325:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     RCC->AHB1RSTR |= RCC_AHB1Periph;
- 2421              		.loc 2 2325 0
- 2422 099e 094B     		ldr	r3, .L159
- 2423 09a0 1969     		ldr	r1, [r3, #16]
- 2424 09a2 084B     		ldr	r3, .L159
- 2425 09a4 7A68     		ldr	r2, [r7, #4]
- 2426 09a6 0A43     		orrs	r2, r1
- 2427 09a8 1A61     		str	r2, [r3, #16]
-2326:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   }
-2327:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   else
-2328:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   {
-2329:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     RCC->AHB1RSTR &= ~RCC_AHB1Periph;
-2330:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   }
-2331:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** }
- 2428              		.loc 2 2331 0
- 2429 09aa 06E0     		b	.L158
- 2430              	.L156:
-2329:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   }
- 2431              		.loc 2 2329 0
- 2432 09ac 054B     		ldr	r3, .L159
- 2433 09ae 1A69     		ldr	r2, [r3, #16]
- 2434 09b0 7B68     		ldr	r3, [r7, #4]
- 2435 09b2 D943     		mvns	r1, r3
- 2436 09b4 034B     		ldr	r3, .L159
- 2437 09b6 0A40     		ands	r2, r1
- 2438 09b8 1A61     		str	r2, [r3, #16]
- 2439              	.L158:
- 2440              		.loc 2 2331 0
- 2441 09ba C046     		nop
- 2442 09bc BD46     		mov	sp, r7
- 2443 09be 02B0     		add	sp, sp, #8
- 2444              		@ sp needed
- 2445 09c0 80BD     		pop	{r7, pc}
- 2446              	.L160:
- 2447 09c2 C046     		.align	2
- 2448              	.L159:
- 2449 09c4 00380240 		.word	1073887232
- 2450              		.cfi_endproc
- 2451              	.LFE160:
- 2453              		.align	1
- 2454              		.global	RCC_AHB2PeriphResetCmd
- 2455              		.syntax unified
- 2456              		.code	16
- 2457              		.thumb_func
- 2458              		.fpu softvfp
- 2460              	RCC_AHB2PeriphResetCmd:
- 2461              	.LFB161:
-2332:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-2333:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /**
-2334:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @brief  Forces or releases AHB2 peripheral reset.
-2335:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  RCC_AHB2Periph: specifies the AHB2 peripheral to reset.
-2336:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter can be any combination of the following values:
-2337:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_AHB2Periph_DCMI:   DCMI clock
-2338:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_AHB2Periph_CRYP:   CRYP clock
-2339:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_AHB2Periph_HASH:   HASH clock
-2340:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_AHB2Periph_RNG:    RNG clock for STM32F40_41xxx/STM32F412xG/STM32F413_423xx
-2341:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_AHB2Periph_OTG_FS: USB OTG FS clock
-2342:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  NewState: new state of the specified peripheral reset.
-2343:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter can be: ENABLE or DISABLE.
-2344:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @retval None
-2345:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */
-2346:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** void RCC_AHB2PeriphResetCmd(uint32_t RCC_AHB2Periph, FunctionalState NewState)
-2347:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** {
- 2462              		.loc 2 2347 0
- 2463              		.cfi_startproc
- 2464              		@ args = 0, pretend = 0, frame = 8
- 2465              		@ frame_needed = 1, uses_anonymous_args = 0
- 2466 09c8 80B5     		push	{r7, lr}
- 2467              		.cfi_def_cfa_offset 8
- 2468              		.cfi_offset 7, -8
- 2469              		.cfi_offset 14, -4
- 2470 09ca 82B0     		sub	sp, sp, #8
- 2471              		.cfi_def_cfa_offset 16
- 2472 09cc 00AF     		add	r7, sp, #0
- 2473              		.cfi_def_cfa_register 7
- 2474 09ce 7860     		str	r0, [r7, #4]
- 2475 09d0 0A00     		movs	r2, r1
- 2476 09d2 FB1C     		adds	r3, r7, #3
- 2477 09d4 1A70     		strb	r2, [r3]
-2348:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Check the parameters */
-2349:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_AHB2_PERIPH(RCC_AHB2Periph));
-2350:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_FUNCTIONAL_STATE(NewState));
-2351:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-2352:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   if (NewState != DISABLE)
- 2478              		.loc 2 2352 0
- 2479 09d6 FB1C     		adds	r3, r7, #3
- 2480 09d8 1B78     		ldrb	r3, [r3]
- 2481 09da 002B     		cmp	r3, #0
- 2482 09dc 06D0     		beq	.L162
-2353:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   {
-2354:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     RCC->AHB2RSTR |= RCC_AHB2Periph;
- 2483              		.loc 2 2354 0
- 2484 09de 094B     		ldr	r3, .L165
- 2485 09e0 5969     		ldr	r1, [r3, #20]
- 2486 09e2 084B     		ldr	r3, .L165
- 2487 09e4 7A68     		ldr	r2, [r7, #4]
- 2488 09e6 0A43     		orrs	r2, r1
- 2489 09e8 5A61     		str	r2, [r3, #20]
-2355:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   }
-2356:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   else
-2357:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   {
-2358:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     RCC->AHB2RSTR &= ~RCC_AHB2Periph;
-2359:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   }
-2360:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** }
- 2490              		.loc 2 2360 0
- 2491 09ea 06E0     		b	.L164
- 2492              	.L162:
-2358:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   }
- 2493              		.loc 2 2358 0
- 2494 09ec 054B     		ldr	r3, .L165
- 2495 09ee 5A69     		ldr	r2, [r3, #20]
- 2496 09f0 7B68     		ldr	r3, [r7, #4]
- 2497 09f2 D943     		mvns	r1, r3
- 2498 09f4 034B     		ldr	r3, .L165
- 2499 09f6 0A40     		ands	r2, r1
- 2500 09f8 5A61     		str	r2, [r3, #20]
- 2501              	.L164:
- 2502              		.loc 2 2360 0
- 2503 09fa C046     		nop
- 2504 09fc BD46     		mov	sp, r7
- 2505 09fe 02B0     		add	sp, sp, #8
- 2506              		@ sp needed
- 2507 0a00 80BD     		pop	{r7, pc}
- 2508              	.L166:
- 2509 0a02 C046     		.align	2
- 2510              	.L165:
- 2511 0a04 00380240 		.word	1073887232
- 2512              		.cfi_endproc
- 2513              	.LFE161:
- 2515              		.align	1
- 2516              		.global	RCC_AHB3PeriphResetCmd
- 2517              		.syntax unified
- 2518              		.code	16
- 2519              		.thumb_func
- 2520              		.fpu softvfp
- 2522              	RCC_AHB3PeriphResetCmd:
- 2523              	.LFB162:
-2361:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-2362:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #if defined(STM32F40_41xxx) || defined(STM32F412xG) || defined(STM32F413_423xx) || defined(STM32F42
-2363:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /**
-2364:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @brief  Forces or releases AHB3 peripheral reset.
-2365:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  RCC_AHB3Periph: specifies the AHB3 peripheral to reset.
-2366:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter must be: 
-2367:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *           - RCC_AHB3Periph_FSMC or RCC_AHB3Periph_FMC (STM32F412xG, STM32F413_423xx and STM32F4
-2368:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *           - RCC_AHB3Periph_QSPI (STM32F412xG/STM32F446xx/STM32F469_479xx devices)
-2369:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  NewState: new state of the specified peripheral reset.
-2370:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter can be: ENABLE or DISABLE.
-2371:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @retval None
-2372:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */
-2373:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** void RCC_AHB3PeriphResetCmd(uint32_t RCC_AHB3Periph, FunctionalState NewState)
-2374:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** {
- 2524              		.loc 2 2374 0
- 2525              		.cfi_startproc
- 2526              		@ args = 0, pretend = 0, frame = 8
- 2527              		@ frame_needed = 1, uses_anonymous_args = 0
- 2528 0a08 80B5     		push	{r7, lr}
- 2529              		.cfi_def_cfa_offset 8
- 2530              		.cfi_offset 7, -8
- 2531              		.cfi_offset 14, -4
- 2532 0a0a 82B0     		sub	sp, sp, #8
- 2533              		.cfi_def_cfa_offset 16
- 2534 0a0c 00AF     		add	r7, sp, #0
- 2535              		.cfi_def_cfa_register 7
- 2536 0a0e 7860     		str	r0, [r7, #4]
- 2537 0a10 0A00     		movs	r2, r1
- 2538 0a12 FB1C     		adds	r3, r7, #3
- 2539 0a14 1A70     		strb	r2, [r3]
-2375:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Check the parameters */
-2376:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_AHB3_PERIPH(RCC_AHB3Periph));
-2377:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_FUNCTIONAL_STATE(NewState));
-2378:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-2379:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   if (NewState != DISABLE)
- 2540              		.loc 2 2379 0
- 2541 0a16 FB1C     		adds	r3, r7, #3
- 2542 0a18 1B78     		ldrb	r3, [r3]
- 2543 0a1a 002B     		cmp	r3, #0
- 2544 0a1c 06D0     		beq	.L168
-2380:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   {
-2381:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     RCC->AHB3RSTR |= RCC_AHB3Periph;
- 2545              		.loc 2 2381 0
- 2546 0a1e 094B     		ldr	r3, .L171
- 2547 0a20 9969     		ldr	r1, [r3, #24]
- 2548 0a22 084B     		ldr	r3, .L171
- 2549 0a24 7A68     		ldr	r2, [r7, #4]
- 2550 0a26 0A43     		orrs	r2, r1
- 2551 0a28 9A61     		str	r2, [r3, #24]
-2382:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   }
-2383:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   else
-2384:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   {
-2385:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     RCC->AHB3RSTR &= ~RCC_AHB3Periph;
-2386:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   }
-2387:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** }
- 2552              		.loc 2 2387 0
- 2553 0a2a 06E0     		b	.L170
- 2554              	.L168:
-2385:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   }
- 2555              		.loc 2 2385 0
- 2556 0a2c 054B     		ldr	r3, .L171
- 2557 0a2e 9A69     		ldr	r2, [r3, #24]
- 2558 0a30 7B68     		ldr	r3, [r7, #4]
- 2559 0a32 D943     		mvns	r1, r3
- 2560 0a34 034B     		ldr	r3, .L171
- 2561 0a36 0A40     		ands	r2, r1
- 2562 0a38 9A61     		str	r2, [r3, #24]
- 2563              	.L170:
- 2564              		.loc 2 2387 0
- 2565 0a3a C046     		nop
- 2566 0a3c BD46     		mov	sp, r7
- 2567 0a3e 02B0     		add	sp, sp, #8
- 2568              		@ sp needed
- 2569 0a40 80BD     		pop	{r7, pc}
- 2570              	.L172:
- 2571 0a42 C046     		.align	2
- 2572              	.L171:
- 2573 0a44 00380240 		.word	1073887232
- 2574              		.cfi_endproc
- 2575              	.LFE162:
- 2577              		.align	1
- 2578              		.global	RCC_APB1PeriphResetCmd
- 2579              		.syntax unified
- 2580              		.code	16
- 2581              		.thumb_func
- 2582              		.fpu softvfp
- 2584              	RCC_APB1PeriphResetCmd:
- 2585              	.LFB163:
-2388:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #endif /* STM32F40_41xxx || STM32F412xG || STM32F413_423xx || STM32F427_437xx || STM32F429_439xx ||
-2389:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-2390:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /**
-2391:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @brief  Forces or releases Low Speed APB (APB1) peripheral reset.
-2392:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  RCC_APB1Periph: specifies the APB1 peripheral to reset.
-2393:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter can be any combination of the following values:
-2394:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB1Periph_TIM2:   TIM2 clock
-2395:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB1Periph_TIM3:   TIM3 clock
-2396:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB1Periph_TIM4:   TIM4 clock
-2397:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB1Periph_TIM5:   TIM5 clock
-2398:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB1Periph_TIM6:   TIM6 clock
-2399:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB1Periph_TIM7:   TIM7 clock
-2400:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB1Periph_TIM12:  TIM12 clock
-2401:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB1Periph_TIM13:  TIM13 clock
-2402:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB1Periph_TIM14:  TIM14 clock
-2403:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB1Periph_LPTIM1: LPTIM1 clock (STM32F410xx and STM32F413_423xx devices) 
-2404:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB1Periph_WWDG:   WWDG clock
-2405:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB1Periph_SPI2:   SPI2 clock
-2406:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB1Periph_SPI3:   SPI3 clock
-2407:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB1Periph_SPDIF:  SPDIF RX clock (STM32F446xx devices) 
-2408:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB1Periph_USART2: USART2 clock
-2409:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB1Periph_USART3: USART3 clock
-2410:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB1Periph_UART4:  UART4 clock
-2411:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB1Periph_UART5:  UART5 clock
-2412:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB1Periph_I2C1:   I2C1 clock
-2413:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB1Periph_I2C2:   I2C2 clock
-2414:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB1Periph_I2C3:   I2C3 clock
-2415:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB1Periph_FMPI2C1:FMPI2C1 clock
-2416:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB1Periph_CAN1:   CAN1 clock
-2417:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB1Periph_CAN2:   CAN2 clock
-2418:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB1Periph_CEC:    CEC clock(STM32F446xx devices)
-2419:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB1Periph_PWR:    PWR clock
-2420:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB1Periph_DAC:    DAC clock
-2421:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB1Periph_UART7:  UART7 clock
-2422:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB1Periph_UART8:  UART8 clock  
-2423:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  NewState: new state of the specified peripheral reset.
-2424:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter can be: ENABLE or DISABLE.
-2425:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @retval None
-2426:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */
-2427:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** void RCC_APB1PeriphResetCmd(uint32_t RCC_APB1Periph, FunctionalState NewState)
-2428:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** {
- 2586              		.loc 2 2428 0
- 2587              		.cfi_startproc
- 2588              		@ args = 0, pretend = 0, frame = 8
- 2589              		@ frame_needed = 1, uses_anonymous_args = 0
- 2590 0a48 80B5     		push	{r7, lr}
- 2591              		.cfi_def_cfa_offset 8
- 2592              		.cfi_offset 7, -8
- 2593              		.cfi_offset 14, -4
- 2594 0a4a 82B0     		sub	sp, sp, #8
- 2595              		.cfi_def_cfa_offset 16
- 2596 0a4c 00AF     		add	r7, sp, #0
- 2597              		.cfi_def_cfa_register 7
- 2598 0a4e 7860     		str	r0, [r7, #4]
- 2599 0a50 0A00     		movs	r2, r1
- 2600 0a52 FB1C     		adds	r3, r7, #3
- 2601 0a54 1A70     		strb	r2, [r3]
-2429:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Check the parameters */
-2430:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_APB1_PERIPH(RCC_APB1Periph));
-2431:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_FUNCTIONAL_STATE(NewState));
-2432:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   if (NewState != DISABLE)
- 2602              		.loc 2 2432 0
- 2603 0a56 FB1C     		adds	r3, r7, #3
- 2604 0a58 1B78     		ldrb	r3, [r3]
- 2605 0a5a 002B     		cmp	r3, #0
- 2606 0a5c 06D0     		beq	.L174
-2433:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   {
-2434:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     RCC->APB1RSTR |= RCC_APB1Periph;
- 2607              		.loc 2 2434 0
- 2608 0a5e 094B     		ldr	r3, .L177
- 2609 0a60 196A     		ldr	r1, [r3, #32]
- 2610 0a62 084B     		ldr	r3, .L177
- 2611 0a64 7A68     		ldr	r2, [r7, #4]
- 2612 0a66 0A43     		orrs	r2, r1
- 2613 0a68 1A62     		str	r2, [r3, #32]
-2435:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   }
-2436:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   else
-2437:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   {
-2438:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     RCC->APB1RSTR &= ~RCC_APB1Periph;
-2439:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   }
-2440:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** }
- 2614              		.loc 2 2440 0
- 2615 0a6a 06E0     		b	.L176
- 2616              	.L174:
-2438:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   }
- 2617              		.loc 2 2438 0
- 2618 0a6c 054B     		ldr	r3, .L177
- 2619 0a6e 1A6A     		ldr	r2, [r3, #32]
- 2620 0a70 7B68     		ldr	r3, [r7, #4]
- 2621 0a72 D943     		mvns	r1, r3
- 2622 0a74 034B     		ldr	r3, .L177
- 2623 0a76 0A40     		ands	r2, r1
- 2624 0a78 1A62     		str	r2, [r3, #32]
- 2625              	.L176:
- 2626              		.loc 2 2440 0
- 2627 0a7a C046     		nop
- 2628 0a7c BD46     		mov	sp, r7
- 2629 0a7e 02B0     		add	sp, sp, #8
- 2630              		@ sp needed
- 2631 0a80 80BD     		pop	{r7, pc}
- 2632              	.L178:
- 2633 0a82 C046     		.align	2
- 2634              	.L177:
- 2635 0a84 00380240 		.word	1073887232
- 2636              		.cfi_endproc
- 2637              	.LFE163:
- 2639              		.align	1
- 2640              		.global	RCC_APB2PeriphResetCmd
- 2641              		.syntax unified
- 2642              		.code	16
- 2643              		.thumb_func
- 2644              		.fpu softvfp
- 2646              	RCC_APB2PeriphResetCmd:
- 2647              	.LFB164:
-2441:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-2442:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /**
-2443:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @brief  Forces or releases High Speed APB (APB2) peripheral reset.
-2444:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  RCC_APB2Periph: specifies the APB2 peripheral to reset.
-2445:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter can be any combination of the following values:
-2446:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB2Periph_TIM1:   TIM1 clock
-2447:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB2Periph_TIM8:   TIM8 clock
-2448:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB2Periph_USART1: USART1 clock
-2449:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB2Periph_USART6: USART6 clock
-2450:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB2Periph_ADC1:   ADC1 clock
-2451:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB2Periph_ADC2:   ADC2 clock
-2452:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB2Periph_ADC3:   ADC3 clock
-2453:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB2Periph_SDIO:   SDIO clock
-2454:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB2Periph_SPI1:   SPI1 clock
-2455:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB2Periph_SPI4:   SPI4 clock  
-2456:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB2Periph_SYSCFG: SYSCFG clock
-2457:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB2Periph_TIM9:   TIM9 clock
-2458:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB2Periph_TIM10:  TIM10 clock
-2459:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB2Periph_TIM11:  TIM11 clock
-2460:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB2Periph_SPI5:   SPI5 clock
-2461:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB2Periph_SPI6:   SPI6 clock
-2462:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB2Periph_SAI1:   SAI1 clock (STM32F42xxx/43xxx/446xx/469xx/479xx/413_423x
-2463:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB2Periph_SAI2:   SAI2 clock (STM32F446xx devices) 
-2464:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB2Periph_LTDC:   LTDC clock (STM32F429xx/439xx devices)
-2465:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB2Periph_DSI:    DSI clock (STM32F469_479xx devices)
-2466:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB2Periph_DFSDM1: DFSDM Clock (STM32F412xG and STM32F413_423xx Devices)
-2467:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB2Periph_DFSDM2: DFSDM2 Clock (STM32F413_423xx Devices)
-2468:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB2Periph_UART9:  UART9 Clock (STM32F413_423xx Devices)
-2469:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB2Periph_UART10: UART10 Clock (STM32F413_423xx Devices)
-2470:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  NewState: new state of the specified peripheral reset.
-2471:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter can be: ENABLE or DISABLE.
-2472:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @retval None
-2473:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */
-2474:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** void RCC_APB2PeriphResetCmd(uint32_t RCC_APB2Periph, FunctionalState NewState)
-2475:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** {
- 2648              		.loc 2 2475 0
- 2649              		.cfi_startproc
- 2650              		@ args = 0, pretend = 0, frame = 8
- 2651              		@ frame_needed = 1, uses_anonymous_args = 0
- 2652 0a88 80B5     		push	{r7, lr}
- 2653              		.cfi_def_cfa_offset 8
- 2654              		.cfi_offset 7, -8
- 2655              		.cfi_offset 14, -4
- 2656 0a8a 82B0     		sub	sp, sp, #8
- 2657              		.cfi_def_cfa_offset 16
- 2658 0a8c 00AF     		add	r7, sp, #0
- 2659              		.cfi_def_cfa_register 7
- 2660 0a8e 7860     		str	r0, [r7, #4]
- 2661 0a90 0A00     		movs	r2, r1
- 2662 0a92 FB1C     		adds	r3, r7, #3
- 2663 0a94 1A70     		strb	r2, [r3]
-2476:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Check the parameters */
-2477:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_APB2_RESET_PERIPH(RCC_APB2Periph));
-2478:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_FUNCTIONAL_STATE(NewState));
-2479:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   if (NewState != DISABLE)
- 2664              		.loc 2 2479 0
- 2665 0a96 FB1C     		adds	r3, r7, #3
- 2666 0a98 1B78     		ldrb	r3, [r3]
- 2667 0a9a 002B     		cmp	r3, #0
- 2668 0a9c 06D0     		beq	.L180
-2480:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   {
-2481:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     RCC->APB2RSTR |= RCC_APB2Periph;
- 2669              		.loc 2 2481 0
- 2670 0a9e 094B     		ldr	r3, .L183
- 2671 0aa0 596A     		ldr	r1, [r3, #36]
- 2672 0aa2 084B     		ldr	r3, .L183
- 2673 0aa4 7A68     		ldr	r2, [r7, #4]
- 2674 0aa6 0A43     		orrs	r2, r1
- 2675 0aa8 5A62     		str	r2, [r3, #36]
-2482:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   }
-2483:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   else
-2484:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   {
-2485:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     RCC->APB2RSTR &= ~RCC_APB2Periph;
-2486:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   }
-2487:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** }
- 2676              		.loc 2 2487 0
- 2677 0aaa 06E0     		b	.L182
- 2678              	.L180:
-2485:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   }
- 2679              		.loc 2 2485 0
- 2680 0aac 054B     		ldr	r3, .L183
- 2681 0aae 5A6A     		ldr	r2, [r3, #36]
- 2682 0ab0 7B68     		ldr	r3, [r7, #4]
- 2683 0ab2 D943     		mvns	r1, r3
- 2684 0ab4 034B     		ldr	r3, .L183
- 2685 0ab6 0A40     		ands	r2, r1
- 2686 0ab8 5A62     		str	r2, [r3, #36]
- 2687              	.L182:
- 2688              		.loc 2 2487 0
- 2689 0aba C046     		nop
- 2690 0abc BD46     		mov	sp, r7
- 2691 0abe 02B0     		add	sp, sp, #8
- 2692              		@ sp needed
- 2693 0ac0 80BD     		pop	{r7, pc}
- 2694              	.L184:
- 2695 0ac2 C046     		.align	2
- 2696              	.L183:
- 2697 0ac4 00380240 		.word	1073887232
- 2698              		.cfi_endproc
- 2699              	.LFE164:
- 2701              		.align	1
- 2702              		.global	RCC_AHB1PeriphClockLPModeCmd
- 2703              		.syntax unified
- 2704              		.code	16
- 2705              		.thumb_func
- 2706              		.fpu softvfp
- 2708              	RCC_AHB1PeriphClockLPModeCmd:
- 2709              	.LFB165:
-2488:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-2489:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /**
-2490:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @brief  Enables or disables the AHB1 peripheral clock during Low Power (Sleep) mode.
-2491:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   Peripheral clock gating in SLEEP mode can be used to further reduce
-2492:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         power consumption.
-2493:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   After wakeup from SLEEP mode, the peripheral clock is enabled again.
-2494:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   By default, all peripheral clocks are enabled during SLEEP mode.
-2495:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  RCC_AHBPeriph: specifies the AHB1 peripheral to gates its clock.
-2496:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter can be any combination of the following values:
-2497:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_AHB1Periph_GPIOA:       GPIOA clock
-2498:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_AHB1Periph_GPIOB:       GPIOB clock 
-2499:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_AHB1Periph_GPIOC:       GPIOC clock
-2500:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_AHB1Periph_GPIOD:       GPIOD clock
-2501:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_AHB1Periph_GPIOE:       GPIOE clock
-2502:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_AHB1Periph_GPIOF:       GPIOF clock
-2503:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_AHB1Periph_GPIOG:       GPIOG clock
-2504:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_AHB1Periph_GPIOG:       GPIOG clock
-2505:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_AHB1Periph_GPIOI:       GPIOI clock
-2506:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_AHB1Periph_GPIOJ:       GPIOJ clock (STM32F42xxx/43xxx devices) 
-2507:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_AHB1Periph_GPIOK:       GPIOK clock (STM32F42xxx/43xxx devices)   
-2508:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_AHB1Periph_CRC:         CRC clock
-2509:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_AHB1Periph_BKPSRAM:     BKPSRAM interface clock
-2510:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_AHB1Periph_DMA1:        DMA1 clock
-2511:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_AHB1Periph_DMA2:        DMA2 clock
-2512:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_AHB1Periph_DMA2D:       DMA2D clock (STM32F429xx/439xx devices) 
-2513:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_AHB1Periph_ETH_MAC:     Ethernet MAC clock
-2514:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_AHB1Periph_ETH_MAC_Tx:  Ethernet Transmission clock
-2515:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_AHB1Periph_ETH_MAC_Rx:  Ethernet Reception clock
-2516:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_AHB1Periph_ETH_MAC_PTP: Ethernet PTP clock
-2517:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_AHB1Periph_OTG_HS:      USB OTG HS clock
-2518:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_AHB1Periph_OTG_HS_ULPI: USB OTG HS ULPI clock
-2519:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  NewState: new state of the specified peripheral clock.
-2520:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter can be: ENABLE or DISABLE.
-2521:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @retval None
-2522:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */
-2523:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** void RCC_AHB1PeriphClockLPModeCmd(uint32_t RCC_AHB1Periph, FunctionalState NewState)
-2524:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** {
- 2710              		.loc 2 2524 0
- 2711              		.cfi_startproc
- 2712              		@ args = 0, pretend = 0, frame = 8
- 2713              		@ frame_needed = 1, uses_anonymous_args = 0
- 2714 0ac8 80B5     		push	{r7, lr}
- 2715              		.cfi_def_cfa_offset 8
- 2716              		.cfi_offset 7, -8
- 2717              		.cfi_offset 14, -4
- 2718 0aca 82B0     		sub	sp, sp, #8
- 2719              		.cfi_def_cfa_offset 16
- 2720 0acc 00AF     		add	r7, sp, #0
- 2721              		.cfi_def_cfa_register 7
- 2722 0ace 7860     		str	r0, [r7, #4]
- 2723 0ad0 0A00     		movs	r2, r1
- 2724 0ad2 FB1C     		adds	r3, r7, #3
- 2725 0ad4 1A70     		strb	r2, [r3]
-2525:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Check the parameters */
-2526:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_AHB1_LPMODE_PERIPH(RCC_AHB1Periph));
-2527:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_FUNCTIONAL_STATE(NewState));
-2528:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   if (NewState != DISABLE)
- 2726              		.loc 2 2528 0
- 2727 0ad6 FB1C     		adds	r3, r7, #3
- 2728 0ad8 1B78     		ldrb	r3, [r3]
- 2729 0ada 002B     		cmp	r3, #0
- 2730 0adc 06D0     		beq	.L186
-2529:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   {
-2530:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     RCC->AHB1LPENR |= RCC_AHB1Periph;
- 2731              		.loc 2 2530 0
- 2732 0ade 094B     		ldr	r3, .L189
- 2733 0ae0 196D     		ldr	r1, [r3, #80]
- 2734 0ae2 084B     		ldr	r3, .L189
- 2735 0ae4 7A68     		ldr	r2, [r7, #4]
- 2736 0ae6 0A43     		orrs	r2, r1
- 2737 0ae8 1A65     		str	r2, [r3, #80]
-2531:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   }
-2532:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   else
-2533:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   {
-2534:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     RCC->AHB1LPENR &= ~RCC_AHB1Periph;
-2535:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   }
-2536:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** }
- 2738              		.loc 2 2536 0
- 2739 0aea 06E0     		b	.L188
- 2740              	.L186:
-2534:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   }
- 2741              		.loc 2 2534 0
- 2742 0aec 054B     		ldr	r3, .L189
- 2743 0aee 1A6D     		ldr	r2, [r3, #80]
- 2744 0af0 7B68     		ldr	r3, [r7, #4]
- 2745 0af2 D943     		mvns	r1, r3
- 2746 0af4 034B     		ldr	r3, .L189
- 2747 0af6 0A40     		ands	r2, r1
- 2748 0af8 1A65     		str	r2, [r3, #80]
- 2749              	.L188:
- 2750              		.loc 2 2536 0
- 2751 0afa C046     		nop
- 2752 0afc BD46     		mov	sp, r7
- 2753 0afe 02B0     		add	sp, sp, #8
- 2754              		@ sp needed
- 2755 0b00 80BD     		pop	{r7, pc}
- 2756              	.L190:
- 2757 0b02 C046     		.align	2
- 2758              	.L189:
- 2759 0b04 00380240 		.word	1073887232
- 2760              		.cfi_endproc
- 2761              	.LFE165:
- 2763              		.align	1
- 2764              		.global	RCC_AHB2PeriphClockLPModeCmd
- 2765              		.syntax unified
- 2766              		.code	16
- 2767              		.thumb_func
- 2768              		.fpu softvfp
- 2770              	RCC_AHB2PeriphClockLPModeCmd:
- 2771              	.LFB166:
-2537:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-2538:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /**
-2539:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @brief  Enables or disables the AHB2 peripheral clock during Low Power (Sleep) mode.
-2540:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   Peripheral clock gating in SLEEP mode can be used to further reduce
-2541:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *           power consumption.
-2542:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   After wakeup from SLEEP mode, the peripheral clock is enabled again.
-2543:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   By default, all peripheral clocks are enabled during SLEEP mode.
-2544:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  RCC_AHBPeriph: specifies the AHB2 peripheral to gates its clock.
-2545:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter can be any combination of the following values:
-2546:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_AHB2Periph_DCMI:   DCMI clock
-2547:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_AHB2Periph_CRYP:   CRYP clock
-2548:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_AHB2Periph_HASH:   HASH clock
-2549:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_AHB2Periph_RNG:    RNG clock
-2550:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_AHB2Periph_OTG_FS: USB OTG FS clock  
-2551:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  NewState: new state of the specified peripheral clock.
-2552:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter can be: ENABLE or DISABLE.
-2553:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @retval None
-2554:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */
-2555:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** void RCC_AHB2PeriphClockLPModeCmd(uint32_t RCC_AHB2Periph, FunctionalState NewState)
-2556:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** {
- 2772              		.loc 2 2556 0
- 2773              		.cfi_startproc
- 2774              		@ args = 0, pretend = 0, frame = 8
- 2775              		@ frame_needed = 1, uses_anonymous_args = 0
- 2776 0b08 80B5     		push	{r7, lr}
- 2777              		.cfi_def_cfa_offset 8
- 2778              		.cfi_offset 7, -8
- 2779              		.cfi_offset 14, -4
- 2780 0b0a 82B0     		sub	sp, sp, #8
- 2781              		.cfi_def_cfa_offset 16
- 2782 0b0c 00AF     		add	r7, sp, #0
- 2783              		.cfi_def_cfa_register 7
- 2784 0b0e 7860     		str	r0, [r7, #4]
- 2785 0b10 0A00     		movs	r2, r1
- 2786 0b12 FB1C     		adds	r3, r7, #3
- 2787 0b14 1A70     		strb	r2, [r3]
-2557:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Check the parameters */
-2558:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_AHB2_PERIPH(RCC_AHB2Periph));
-2559:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_FUNCTIONAL_STATE(NewState));
-2560:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   if (NewState != DISABLE)
- 2788              		.loc 2 2560 0
- 2789 0b16 FB1C     		adds	r3, r7, #3
- 2790 0b18 1B78     		ldrb	r3, [r3]
- 2791 0b1a 002B     		cmp	r3, #0
- 2792 0b1c 06D0     		beq	.L192
-2561:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   {
-2562:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     RCC->AHB2LPENR |= RCC_AHB2Periph;
- 2793              		.loc 2 2562 0
- 2794 0b1e 094B     		ldr	r3, .L195
- 2795 0b20 596D     		ldr	r1, [r3, #84]
- 2796 0b22 084B     		ldr	r3, .L195
- 2797 0b24 7A68     		ldr	r2, [r7, #4]
- 2798 0b26 0A43     		orrs	r2, r1
- 2799 0b28 5A65     		str	r2, [r3, #84]
-2563:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   }
-2564:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   else
-2565:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   {
-2566:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     RCC->AHB2LPENR &= ~RCC_AHB2Periph;
-2567:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   }
-2568:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** }
- 2800              		.loc 2 2568 0
- 2801 0b2a 06E0     		b	.L194
- 2802              	.L192:
-2566:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   }
- 2803              		.loc 2 2566 0
- 2804 0b2c 054B     		ldr	r3, .L195
- 2805 0b2e 5A6D     		ldr	r2, [r3, #84]
- 2806 0b30 7B68     		ldr	r3, [r7, #4]
- 2807 0b32 D943     		mvns	r1, r3
- 2808 0b34 034B     		ldr	r3, .L195
- 2809 0b36 0A40     		ands	r2, r1
- 2810 0b38 5A65     		str	r2, [r3, #84]
- 2811              	.L194:
- 2812              		.loc 2 2568 0
- 2813 0b3a C046     		nop
- 2814 0b3c BD46     		mov	sp, r7
- 2815 0b3e 02B0     		add	sp, sp, #8
- 2816              		@ sp needed
- 2817 0b40 80BD     		pop	{r7, pc}
- 2818              	.L196:
- 2819 0b42 C046     		.align	2
- 2820              	.L195:
- 2821 0b44 00380240 		.word	1073887232
- 2822              		.cfi_endproc
- 2823              	.LFE166:
- 2825              		.align	1
- 2826              		.global	RCC_AHB3PeriphClockLPModeCmd
- 2827              		.syntax unified
- 2828              		.code	16
- 2829              		.thumb_func
- 2830              		.fpu softvfp
- 2832              	RCC_AHB3PeriphClockLPModeCmd:
- 2833              	.LFB167:
-2569:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-2570:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #if defined(STM32F40_41xxx) || defined(STM32F412xG) || defined(STM32F413_423xx) || defined(STM32F42
-2571:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /**
-2572:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @brief  Enables or disables the AHB3 peripheral clock during Low Power (Sleep) mode.
-2573:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   Peripheral clock gating in SLEEP mode can be used to further reduce
-2574:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         power consumption.
-2575:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   After wakeup from SLEEP mode, the peripheral clock is enabled again.
-2576:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   By default, all peripheral clocks are enabled during SLEEP mode.
-2577:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  RCC_AHBPeriph: specifies the AHB3 peripheral to gates its clock.
-2578:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter must be: 
-2579:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *           - RCC_AHB3Periph_FSMC or RCC_AHB3Periph_FMC (STM32F412xG/STM32F413_423xx/STM32F429x/4
-2580:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *           - RCC_AHB3Periph_QSPI (STM32F412xG/STM32F413_423xx/STM32F446xx/STM32F469_479xx device
-2581:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  NewState: new state of the specified peripheral clock.
-2582:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter can be: ENABLE or DISABLE.
-2583:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @retval None
-2584:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */
-2585:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** void RCC_AHB3PeriphClockLPModeCmd(uint32_t RCC_AHB3Periph, FunctionalState NewState)
-2586:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** {
- 2834              		.loc 2 2586 0
- 2835              		.cfi_startproc
- 2836              		@ args = 0, pretend = 0, frame = 8
- 2837              		@ frame_needed = 1, uses_anonymous_args = 0
- 2838 0b48 80B5     		push	{r7, lr}
- 2839              		.cfi_def_cfa_offset 8
- 2840              		.cfi_offset 7, -8
- 2841              		.cfi_offset 14, -4
- 2842 0b4a 82B0     		sub	sp, sp, #8
- 2843              		.cfi_def_cfa_offset 16
- 2844 0b4c 00AF     		add	r7, sp, #0
- 2845              		.cfi_def_cfa_register 7
- 2846 0b4e 7860     		str	r0, [r7, #4]
- 2847 0b50 0A00     		movs	r2, r1
- 2848 0b52 FB1C     		adds	r3, r7, #3
- 2849 0b54 1A70     		strb	r2, [r3]
-2587:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Check the parameters */
-2588:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_AHB3_PERIPH(RCC_AHB3Periph));
-2589:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_FUNCTIONAL_STATE(NewState));
-2590:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   if (NewState != DISABLE)
- 2850              		.loc 2 2590 0
- 2851 0b56 FB1C     		adds	r3, r7, #3
- 2852 0b58 1B78     		ldrb	r3, [r3]
- 2853 0b5a 002B     		cmp	r3, #0
- 2854 0b5c 06D0     		beq	.L198
-2591:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   {
-2592:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     RCC->AHB3LPENR |= RCC_AHB3Periph;
- 2855              		.loc 2 2592 0
- 2856 0b5e 094B     		ldr	r3, .L201
- 2857 0b60 996D     		ldr	r1, [r3, #88]
- 2858 0b62 084B     		ldr	r3, .L201
- 2859 0b64 7A68     		ldr	r2, [r7, #4]
- 2860 0b66 0A43     		orrs	r2, r1
- 2861 0b68 9A65     		str	r2, [r3, #88]
-2593:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   }
-2594:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   else
-2595:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   {
-2596:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     RCC->AHB3LPENR &= ~RCC_AHB3Periph;
-2597:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   }
-2598:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** }
- 2862              		.loc 2 2598 0
- 2863 0b6a 06E0     		b	.L200
- 2864              	.L198:
-2596:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   }
- 2865              		.loc 2 2596 0
- 2866 0b6c 054B     		ldr	r3, .L201
- 2867 0b6e 9A6D     		ldr	r2, [r3, #88]
- 2868 0b70 7B68     		ldr	r3, [r7, #4]
- 2869 0b72 D943     		mvns	r1, r3
- 2870 0b74 034B     		ldr	r3, .L201
- 2871 0b76 0A40     		ands	r2, r1
- 2872 0b78 9A65     		str	r2, [r3, #88]
- 2873              	.L200:
- 2874              		.loc 2 2598 0
- 2875 0b7a C046     		nop
- 2876 0b7c BD46     		mov	sp, r7
- 2877 0b7e 02B0     		add	sp, sp, #8
- 2878              		@ sp needed
- 2879 0b80 80BD     		pop	{r7, pc}
- 2880              	.L202:
- 2881 0b82 C046     		.align	2
- 2882              	.L201:
- 2883 0b84 00380240 		.word	1073887232
- 2884              		.cfi_endproc
- 2885              	.LFE167:
- 2887              		.align	1
- 2888              		.global	RCC_APB1PeriphClockLPModeCmd
- 2889              		.syntax unified
- 2890              		.code	16
- 2891              		.thumb_func
- 2892              		.fpu softvfp
- 2894              	RCC_APB1PeriphClockLPModeCmd:
- 2895              	.LFB168:
-2599:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #endif /* STM32F40_41xxx || STM32F412xG || STM32F413_423xx || STM32F427_437xx || STM32F429_439xx ||
-2600:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-2601:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /**
-2602:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @brief  Enables or disables the APB1 peripheral clock during Low Power (Sleep) mode.
-2603:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   Peripheral clock gating in SLEEP mode can be used to further reduce
-2604:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         power consumption.
-2605:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   After wakeup from SLEEP mode, the peripheral clock is enabled again.
-2606:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   By default, all peripheral clocks are enabled during SLEEP mode.
-2607:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  RCC_APB1Periph: specifies the APB1 peripheral to gates its clock.
-2608:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter can be any combination of the following values:
-2609:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB1Periph_TIM2:   TIM2 clock
-2610:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB1Periph_TIM3:   TIM3 clock
-2611:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB1Periph_TIM4:   TIM4 clock
-2612:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB1Periph_TIM5:   TIM5 clock
-2613:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB1Periph_TIM6:   TIM6 clock
-2614:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB1Periph_TIM7:   TIM7 clock
-2615:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB1Periph_TIM12:  TIM12 clock
-2616:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB1Periph_TIM13:  TIM13 clock
-2617:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB1Periph_TIM14:  TIM14 clock
-2618:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB1Periph_LPTIM1: LPTIM1 clock (STM32F410xx and STM32F413_423xx devices) 
-2619:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB1Periph_WWDG:   WWDG clock
-2620:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB1Periph_SPI2:   SPI2 clock
-2621:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB1Periph_SPI3:   SPI3 clock
-2622:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB1Periph_SPDIF:   SPDIF RX clock (STM32F446xx devices) 
-2623:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB1Periph_USART2: USART2 clock
-2624:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB1Periph_USART3: USART3 clock
-2625:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB1Periph_UART4:  UART4 clock
-2626:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB1Periph_UART5:  UART5 clock
-2627:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB1Periph_I2C1:   I2C1 clock
-2628:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB1Periph_I2C2:   I2C2 clock
-2629:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB1Periph_I2C3:   I2C3 clock
-2630:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB1Periph_FMPI2C1:   FMPI2C1 clock
-2631:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB1Periph_CAN1:   CAN1 clock
-2632:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB1Periph_CAN2:   CAN2 clock
-2633:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB1Periph_CEC:    CEC clock (STM32F446xx devices)
-2634:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB1Periph_PWR:    PWR clock
-2635:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB1Periph_DAC:    DAC clock
-2636:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB1Periph_UART7:  UART7 clock
-2637:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB1Periph_UART8:  UART8 clock
-2638:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  NewState: new state of the specified peripheral clock.
-2639:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter can be: ENABLE or DISABLE.
-2640:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @retval None
-2641:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */
-2642:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** void RCC_APB1PeriphClockLPModeCmd(uint32_t RCC_APB1Periph, FunctionalState NewState)
-2643:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** {
- 2896              		.loc 2 2643 0
- 2897              		.cfi_startproc
- 2898              		@ args = 0, pretend = 0, frame = 8
- 2899              		@ frame_needed = 1, uses_anonymous_args = 0
- 2900 0b88 80B5     		push	{r7, lr}
- 2901              		.cfi_def_cfa_offset 8
- 2902              		.cfi_offset 7, -8
- 2903              		.cfi_offset 14, -4
- 2904 0b8a 82B0     		sub	sp, sp, #8
- 2905              		.cfi_def_cfa_offset 16
- 2906 0b8c 00AF     		add	r7, sp, #0
- 2907              		.cfi_def_cfa_register 7
- 2908 0b8e 7860     		str	r0, [r7, #4]
- 2909 0b90 0A00     		movs	r2, r1
- 2910 0b92 FB1C     		adds	r3, r7, #3
- 2911 0b94 1A70     		strb	r2, [r3]
-2644:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Check the parameters */
-2645:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_APB1_PERIPH(RCC_APB1Periph));
-2646:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_FUNCTIONAL_STATE(NewState));
-2647:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   if (NewState != DISABLE)
- 2912              		.loc 2 2647 0
- 2913 0b96 FB1C     		adds	r3, r7, #3
- 2914 0b98 1B78     		ldrb	r3, [r3]
- 2915 0b9a 002B     		cmp	r3, #0
- 2916 0b9c 06D0     		beq	.L204
-2648:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   {
-2649:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     RCC->APB1LPENR |= RCC_APB1Periph;
- 2917              		.loc 2 2649 0
- 2918 0b9e 094B     		ldr	r3, .L207
- 2919 0ba0 196E     		ldr	r1, [r3, #96]
- 2920 0ba2 084B     		ldr	r3, .L207
- 2921 0ba4 7A68     		ldr	r2, [r7, #4]
- 2922 0ba6 0A43     		orrs	r2, r1
- 2923 0ba8 1A66     		str	r2, [r3, #96]
-2650:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   }
-2651:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   else
-2652:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   {
-2653:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     RCC->APB1LPENR &= ~RCC_APB1Periph;
-2654:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   }
-2655:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** }
- 2924              		.loc 2 2655 0
- 2925 0baa 06E0     		b	.L206
- 2926              	.L204:
-2653:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   }
- 2927              		.loc 2 2653 0
- 2928 0bac 054B     		ldr	r3, .L207
- 2929 0bae 1A6E     		ldr	r2, [r3, #96]
- 2930 0bb0 7B68     		ldr	r3, [r7, #4]
- 2931 0bb2 D943     		mvns	r1, r3
- 2932 0bb4 034B     		ldr	r3, .L207
- 2933 0bb6 0A40     		ands	r2, r1
- 2934 0bb8 1A66     		str	r2, [r3, #96]
- 2935              	.L206:
- 2936              		.loc 2 2655 0
- 2937 0bba C046     		nop
- 2938 0bbc BD46     		mov	sp, r7
- 2939 0bbe 02B0     		add	sp, sp, #8
- 2940              		@ sp needed
- 2941 0bc0 80BD     		pop	{r7, pc}
- 2942              	.L208:
- 2943 0bc2 C046     		.align	2
- 2944              	.L207:
- 2945 0bc4 00380240 		.word	1073887232
- 2946              		.cfi_endproc
- 2947              	.LFE168:
- 2949              		.align	1
- 2950              		.global	RCC_APB2PeriphClockLPModeCmd
- 2951              		.syntax unified
- 2952              		.code	16
- 2953              		.thumb_func
- 2954              		.fpu softvfp
- 2956              	RCC_APB2PeriphClockLPModeCmd:
- 2957              	.LFB169:
-2656:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-2657:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /**
-2658:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @brief  Enables or disables the APB2 peripheral clock during Low Power (Sleep) mode.
-2659:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   Peripheral clock gating in SLEEP mode can be used to further reduce
-2660:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         power consumption.
-2661:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   After wakeup from SLEEP mode, the peripheral clock is enabled again.
-2662:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note   By default, all peripheral clocks are enabled during SLEEP mode.
-2663:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  RCC_APB2Periph: specifies the APB2 peripheral to gates its clock.
-2664:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter can be any combination of the following values:
-2665:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB2Periph_TIM1:   TIM1 clock
-2666:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB2Periph_TIM8:   TIM8 clock
-2667:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB2Periph_USART1: USART1 clock
-2668:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB2Periph_USART6: USART6 clock
-2669:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB2Periph_ADC1:   ADC1 clock
-2670:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB2Periph_ADC2:   ADC2 clock
-2671:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB2Periph_ADC3:   ADC3 clock
-2672:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB2Periph_SDIO:   SDIO clock
-2673:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB2Periph_SPI1:   SPI1 clock
-2674:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB2Periph_SPI4:   SPI4 clock
-2675:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB2Periph_SYSCFG: SYSCFG clock
-2676:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB2Periph_EXTIT:  EXTIIT clock
-2677:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB2Periph_TIM9:   TIM9 clock
-2678:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB2Periph_TIM10:  TIM10 clock
-2679:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB2Periph_TIM11:  TIM11 clock
-2680:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB2Periph_SPI5:   SPI5 clock
-2681:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB2Periph_SPI6:   SPI6 clock
-2682:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB2Periph_SAI1:   SAI1 clock (STM32F42xxx/43xxx/446xx/469xx/479xx/413_423x
-2683:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB2Periph_SAI2:   SAI2 clock (STM32F446xx devices)
-2684:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB2Periph_LTDC:   LTDC clock (STM32F429xx/439xx devices)
-2685:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB2Periph_DSI:    DSI clock (STM32F469_479xx devices)
-2686:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB2Periph_DFSDM1: DFSDM Clock (STM32F412xG and STM32F413_423xx Devices)
-2687:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB2Periph_DFSDM2: DFSDM2 Clock (STM32F413_423xx Devices)
-2688:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB2Periph_UART9:  UART9 Clock (STM32F413_423xx Devices)
-2689:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_APB2Periph_UART10: UART10 Clock (STM32F413_423xx Devices)
-2690:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  NewState: new state of the specified peripheral clock.
-2691:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter can be: ENABLE or DISABLE.
-2692:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @retval None
-2693:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */
-2694:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** void RCC_APB2PeriphClockLPModeCmd(uint32_t RCC_APB2Periph, FunctionalState NewState)
-2695:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** {
- 2958              		.loc 2 2695 0
- 2959              		.cfi_startproc
- 2960              		@ args = 0, pretend = 0, frame = 8
- 2961              		@ frame_needed = 1, uses_anonymous_args = 0
- 2962 0bc8 80B5     		push	{r7, lr}
- 2963              		.cfi_def_cfa_offset 8
- 2964              		.cfi_offset 7, -8
- 2965              		.cfi_offset 14, -4
- 2966 0bca 82B0     		sub	sp, sp, #8
- 2967              		.cfi_def_cfa_offset 16
- 2968 0bcc 00AF     		add	r7, sp, #0
- 2969              		.cfi_def_cfa_register 7
- 2970 0bce 7860     		str	r0, [r7, #4]
- 2971 0bd0 0A00     		movs	r2, r1
- 2972 0bd2 FB1C     		adds	r3, r7, #3
- 2973 0bd4 1A70     		strb	r2, [r3]
-2696:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Check the parameters */
-2697:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_APB2_PERIPH(RCC_APB2Periph));
-2698:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_FUNCTIONAL_STATE(NewState));
-2699:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   if (NewState != DISABLE)
- 2974              		.loc 2 2699 0
- 2975 0bd6 FB1C     		adds	r3, r7, #3
- 2976 0bd8 1B78     		ldrb	r3, [r3]
- 2977 0bda 002B     		cmp	r3, #0
- 2978 0bdc 06D0     		beq	.L210
-2700:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   {
-2701:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     RCC->APB2LPENR |= RCC_APB2Periph;
- 2979              		.loc 2 2701 0
- 2980 0bde 094B     		ldr	r3, .L213
- 2981 0be0 596E     		ldr	r1, [r3, #100]
- 2982 0be2 084B     		ldr	r3, .L213
- 2983 0be4 7A68     		ldr	r2, [r7, #4]
- 2984 0be6 0A43     		orrs	r2, r1
- 2985 0be8 5A66     		str	r2, [r3, #100]
-2702:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   }
-2703:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   else
-2704:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   {
-2705:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     RCC->APB2LPENR &= ~RCC_APB2Periph;
-2706:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   }
-2707:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** }
- 2986              		.loc 2 2707 0
- 2987 0bea 06E0     		b	.L212
- 2988              	.L210:
-2705:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   }
- 2989              		.loc 2 2705 0
- 2990 0bec 054B     		ldr	r3, .L213
- 2991 0bee 5A6E     		ldr	r2, [r3, #100]
- 2992 0bf0 7B68     		ldr	r3, [r7, #4]
- 2993 0bf2 D943     		mvns	r1, r3
- 2994 0bf4 034B     		ldr	r3, .L213
- 2995 0bf6 0A40     		ands	r2, r1
- 2996 0bf8 5A66     		str	r2, [r3, #100]
- 2997              	.L212:
- 2998              		.loc 2 2707 0
- 2999 0bfa C046     		nop
- 3000 0bfc BD46     		mov	sp, r7
- 3001 0bfe 02B0     		add	sp, sp, #8
- 3002              		@ sp needed
- 3003 0c00 80BD     		pop	{r7, pc}
- 3004              	.L214:
- 3005 0c02 C046     		.align	2
- 3006              	.L213:
- 3007 0c04 00380240 		.word	1073887232
- 3008              		.cfi_endproc
- 3009              	.LFE169:
- 3011              		.align	1
- 3012              		.global	RCC_LSEModeConfig
- 3013              		.syntax unified
- 3014              		.code	16
- 3015              		.thumb_func
- 3016              		.fpu softvfp
- 3018              	RCC_LSEModeConfig:
- 3019              	.LFB170:
-2708:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-2709:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /**
-2710:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @brief Configures the External Low Speed oscillator mode (LSE mode).
-2711:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note This mode is only available for STM32F410xx/STM32F411xx/STM32F446xx/STM32F469_479xx devic
-2712:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  Mode: specifies the LSE mode.
-2713:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter can be one of the following values:
-2714:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_LSE_LOWPOWER_MODE:  LSE oscillator in low power mode.
-2715:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_LSE_HIGHDRIVE_MODE: LSE oscillator in High Drive mode.
-2716:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @retval None
-2717:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */
-2718:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** void RCC_LSEModeConfig(uint8_t RCC_Mode)
-2719:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** {
- 3020              		.loc 2 2719 0
- 3021              		.cfi_startproc
- 3022              		@ args = 0, pretend = 0, frame = 8
- 3023              		@ frame_needed = 1, uses_anonymous_args = 0
- 3024 0c08 80B5     		push	{r7, lr}
- 3025              		.cfi_def_cfa_offset 8
- 3026              		.cfi_offset 7, -8
- 3027              		.cfi_offset 14, -4
- 3028 0c0a 82B0     		sub	sp, sp, #8
- 3029              		.cfi_def_cfa_offset 16
- 3030 0c0c 00AF     		add	r7, sp, #0
- 3031              		.cfi_def_cfa_register 7
- 3032 0c0e 0200     		movs	r2, r0
- 3033 0c10 FB1D     		adds	r3, r7, #7
- 3034 0c12 1A70     		strb	r2, [r3]
-2720:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Check the parameters */
-2721:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_LSE_MODE(RCC_Mode));
-2722:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   
-2723:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   if(RCC_Mode == RCC_LSE_HIGHDRIVE_MODE)
- 3035              		.loc 2 2723 0
- 3036 0c14 FB1D     		adds	r3, r7, #7
- 3037 0c16 1B78     		ldrb	r3, [r3]
- 3038 0c18 012B     		cmp	r3, #1
- 3039 0c1a 06D1     		bne	.L216
-2724:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   {
-2725:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     SET_BIT(RCC->BDCR, RCC_BDCR_LSEMOD);
- 3040              		.loc 2 2725 0
- 3041 0c1c 084B     		ldr	r3, .L219
- 3042 0c1e 1A6F     		ldr	r2, [r3, #112]
- 3043 0c20 074B     		ldr	r3, .L219
- 3044 0c22 0821     		movs	r1, #8
- 3045 0c24 0A43     		orrs	r2, r1
- 3046 0c26 1A67     		str	r2, [r3, #112]
-2726:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   }
-2727:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   else
-2728:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   {
-2729:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     CLEAR_BIT(RCC->BDCR, RCC_BDCR_LSEMOD);
-2730:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   }
-2731:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** }
- 3047              		.loc 2 2731 0
- 3048 0c28 05E0     		b	.L218
- 3049              	.L216:
-2729:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   }
- 3050              		.loc 2 2729 0
- 3051 0c2a 054B     		ldr	r3, .L219
- 3052 0c2c 1A6F     		ldr	r2, [r3, #112]
- 3053 0c2e 044B     		ldr	r3, .L219
- 3054 0c30 0821     		movs	r1, #8
- 3055 0c32 8A43     		bics	r2, r1
- 3056 0c34 1A67     		str	r2, [r3, #112]
- 3057              	.L218:
- 3058              		.loc 2 2731 0
- 3059 0c36 C046     		nop
- 3060 0c38 BD46     		mov	sp, r7
- 3061 0c3a 02B0     		add	sp, sp, #8
- 3062              		@ sp needed
- 3063 0c3c 80BD     		pop	{r7, pc}
- 3064              	.L220:
- 3065 0c3e C046     		.align	2
- 3066              	.L219:
- 3067 0c40 00380240 		.word	1073887232
- 3068              		.cfi_endproc
- 3069              	.LFE170:
- 3071              		.align	1
- 3072              		.global	RCC_ITConfig
- 3073              		.syntax unified
- 3074              		.code	16
- 3075              		.thumb_func
- 3076              		.fpu softvfp
- 3078              	RCC_ITConfig:
- 3079              	.LFB171:
-2732:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-2733:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #if defined(STM32F410xx) || defined(STM32F413_423xx)
-2734:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /**
-2735:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @brief Configures the LPTIM1 clock Source.
-2736:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note This feature is only available for STM32F410xx devices.
-2737:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param RCC_ClockSource: specifies the LPTIM1 clock Source.
-2738:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter can be one of the following values:
-2739:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_LPTIM1CLKSOURCE_PCLK: LPTIM1 clock from APB1 selected.
-2740:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_LPTIM1CLKSOURCE_HSI:  LPTIM1 clock from HSI selected.
-2741:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_LPTIM1CLKSOURCE_LSI:  LPTIM1 clock from LSI selected.
-2742:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_LPTIM1CLKSOURCE_LSE:  LPTIM1 clock from LSE selected.
-2743:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @retval None
-2744:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */
-2745:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** void RCC_LPTIM1ClockSourceConfig(uint32_t RCC_ClockSource)
-2746:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** {
-2747:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Check the parameters */
-2748:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_LPTIM1_CLOCKSOURCE(RCC_ClockSource));
-2749:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-2750:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Clear LPTIM1 clock source selection source bits */
-2751:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   RCC->DCKCFGR2 &= ~RCC_DCKCFGR2_LPTIM1SEL;
-2752:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Set new LPTIM1 clock source */
-2753:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   RCC->DCKCFGR2 |= RCC_ClockSource;
-2754:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** }
-2755:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #endif /* STM32F410xx || STM32F413_423xx */
-2756:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-2757:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #if defined(STM32F469_479xx)
-2758:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /**
-2759:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @brief Configures the DSI clock Source.
-2760:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note This feature is only available for STM32F469_479xx devices.
-2761:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param RCC_ClockSource: specifies the DSI clock Source.
-2762:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter can be one of the following values:
-2763:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_DSICLKSource_PHY: DSI-PHY used as DSI byte lane clock source (usual case).
-2764:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_DSICLKSource_PLLR: PLL_R used as DSI byte lane clock source, used in case D
-2765:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @retval None
-2766:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */
-2767:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** void RCC_DSIClockSourceConfig(uint8_t RCC_ClockSource)
-2768:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** {
-2769:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Check the parameters */
-2770:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_DSI_CLOCKSOURCE(RCC_ClockSource));
-2771:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   
-2772:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   if(RCC_ClockSource == RCC_DSICLKSource_PLLR)
-2773:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   {
-2774:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     SET_BIT(RCC->DCKCFGR, RCC_DCKCFGR_DSISEL);
-2775:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   }
-2776:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   else
-2777:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   {
-2778:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     CLEAR_BIT(RCC->DCKCFGR, RCC_DCKCFGR_DSISEL);
-2779:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   }
-2780:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** }
-2781:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #endif /*  STM32F469_479xx */
-2782:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-2783:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #if defined(STM32F412xG) || defined(STM32F413_423xx) || defined(STM32F446xx) || defined(STM32F469_4
-2784:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /**
-2785:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @brief Configures the 48MHz clock Source.
-2786:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note This feature is only available for STM32F446xx/STM32F469_479xx devices.
-2787:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param RCC_ClockSource: specifies the 48MHz clock Source.
-2788:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter can be one of the following values:
-2789:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_48MHZCLKSource_PLL: 48MHz from PLL selected.
-2790:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_48MHZCLKSource_PLLSAI: 48MHz from PLLSAI selected.
-2791:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_CK48CLKSOURCE_PLLI2SQ : 48MHz from PLLI2SQ
-2792:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @retval None
-2793:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */
-2794:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** void RCC_48MHzClockSourceConfig(uint8_t RCC_ClockSource)
-2795:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** {
-2796:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Check the parameters */
-2797:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_48MHZ_CLOCKSOURCE(RCC_ClockSource));
-2798:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #if defined(STM32F469_479xx) 
-2799:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   if(RCC_ClockSource == RCC_48MHZCLKSource_PLLSAI)
-2800:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   {
-2801:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     SET_BIT(RCC->DCKCFGR, RCC_DCKCFGR_CK48MSEL);
-2802:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   }
-2803:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   else
-2804:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   {
-2805:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     CLEAR_BIT(RCC->DCKCFGR, RCC_DCKCFGR_CK48MSEL);
-2806:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   }
-2807:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #elif  defined(STM32F446xx)
-2808:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   if(RCC_ClockSource == RCC_48MHZCLKSource_PLLSAI)
-2809:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   {
-2810:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     SET_BIT(RCC->DCKCFGR2, RCC_DCKCFGR2_CK48MSEL);
-2811:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   }
-2812:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   else
-2813:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   {
-2814:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     CLEAR_BIT(RCC->DCKCFGR2, RCC_DCKCFGR2_CK48MSEL);
-2815:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   }
-2816:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #elif defined(STM32F412xG) || defined(STM32F413_423xx)
-2817:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   if(RCC_ClockSource == RCC_CK48CLKSOURCE_PLLI2SQ)
-2818:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   {
-2819:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     SET_BIT(RCC->DCKCFGR2, RCC_DCKCFGR2_CK48MSEL);
-2820:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   }
-2821:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   else
-2822:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   {
-2823:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     CLEAR_BIT(RCC->DCKCFGR2, RCC_DCKCFGR2_CK48MSEL);
-2824:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   }
-2825:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #else
-2826:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #endif /* STM32F469_479xx */  
-2827:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** }
-2828:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-2829:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /**
-2830:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @brief Configures the SDIO clock Source.
-2831:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note This feature is only available for STM32F469_479xx/STM32F446xx devices.
-2832:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param RCC_ClockSource: specifies the SDIO clock Source.
-2833:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter can be one of the following values:
-2834:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_SDIOCLKSource_48MHZ: 48MHz clock selected.
-2835:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_SDIOCLKSource_SYSCLK: system clock selected.
-2836:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @retval None
-2837:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */
-2838:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** void RCC_SDIOClockSourceConfig(uint8_t RCC_ClockSource)
-2839:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** {
-2840:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Check the parameters */
-2841:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_SDIO_CLOCKSOURCE(RCC_ClockSource));
-2842:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #if defined(STM32F469_479xx)   
-2843:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   if(RCC_ClockSource == RCC_SDIOCLKSource_SYSCLK)
-2844:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   {
-2845:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     SET_BIT(RCC->DCKCFGR, RCC_DCKCFGR_SDIOSEL);
-2846:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   }
-2847:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   else
-2848:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   {
-2849:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     CLEAR_BIT(RCC->DCKCFGR, RCC_DCKCFGR_SDIOSEL);
-2850:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   }
-2851:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #elif defined(STM32F412xG) || defined(STM32F413_423xx) || defined(STM32F446xx)
-2852:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   if(RCC_ClockSource == RCC_SDIOCLKSource_SYSCLK)
-2853:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   {
-2854:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     SET_BIT(RCC->DCKCFGR2, RCC_DCKCFGR2_SDIOSEL);
-2855:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   }
-2856:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   else
-2857:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   {
-2858:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     CLEAR_BIT(RCC->DCKCFGR2, RCC_DCKCFGR2_SDIOSEL);
-2859:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   }
-2860:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #else
-2861:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #endif /* STM32F469_479xx */ 
-2862:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** }
-2863:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #endif /* STM32F412xG || STM32F413_423xx || STM32F446xx || STM32F469_479xx */
-2864:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-2865:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #if defined(STM32F446xx)
-2866:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /**
-2867:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @brief  Enables or disables the AHB1 clock gating for the specified IPs.
-2868:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note This feature is only available for STM32F446xx devices.
-2869:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  RCC_AHB1ClockGating: specifies the AHB1 clock gating.
-2870:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter can be any combination of the following values:
-2871:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_AHB1ClockGating_APB1Bridge: AHB1 to APB1 clock
-2872:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_AHB1ClockGating_APB2Bridge: AHB1 to APB2 clock 
-2873:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_AHB1ClockGating_CM4DBG: Cortex M4 ETM clock
-2874:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_AHB1ClockGating_SPARE: Spare clock
-2875:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_AHB1ClockGating_SRAM: SRAM controller clock
-2876:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_AHB1ClockGating_FLITF: Flash interface clock
-2877:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_AHB1ClockGating_RCC: RCC clock
-2878:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  NewState: new state of the specified peripheral clock.
-2879:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter can be: ENABLE or DISABLE.
-2880:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @retval None
-2881:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */
-2882:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** void RCC_AHB1ClockGatingCmd(uint32_t RCC_AHB1ClockGating, FunctionalState NewState)
-2883:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** {
-2884:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Check the parameters */
-2885:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_AHB1_CLOCKGATING(RCC_AHB1ClockGating));
-2886:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-2887:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_FUNCTIONAL_STATE(NewState));
-2888:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   if (NewState != DISABLE)
-2889:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   {
-2890:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     RCC->CKGATENR &= ~RCC_AHB1ClockGating;
-2891:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   }
-2892:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   else
-2893:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   {
-2894:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     RCC->CKGATENR |= RCC_AHB1ClockGating;
-2895:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   }
-2896:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** }
-2897:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-2898:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /**
-2899:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @brief Configures the SPDIFRX clock Source.
-2900:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note This feature is only available for STM32F446xx devices.
-2901:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param RCC_ClockSource: specifies the SPDIFRX clock Source.
-2902:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter can be one of the following values:
-2903:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_SPDIFRXCLKSource_PLLR: SPDIFRX clock from PLL_R selected.
-2904:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_SPDIFRXCLKSource_PLLI2SP: SPDIFRX clock from PLLI2S_P selected.
-2905:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @retval None
-2906:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */
-2907:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** void RCC_SPDIFRXClockSourceConfig(uint8_t RCC_ClockSource)
-2908:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** {
-2909:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Check the parameters */
-2910:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_SPDIFRX_CLOCKSOURCE(RCC_ClockSource));
-2911:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   
-2912:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   if(RCC_ClockSource == RCC_SPDIFRXCLKSource_PLLI2SP)
-2913:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   {
-2914:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     SET_BIT(RCC->DCKCFGR2, RCC_DCKCFGR2_SPDIFRXSEL);
-2915:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   }
-2916:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   else
-2917:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   {
-2918:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     CLEAR_BIT(RCC->DCKCFGR2, RCC_DCKCFGR2_SPDIFRXSEL);
-2919:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   }
-2920:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** }
-2921:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-2922:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /**
-2923:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @brief Configures the CEC clock Source.
-2924:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note This feature is only available for STM32F446xx devices.
-2925:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param RCC_ClockSource: specifies the CEC clock Source.
-2926:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter can be one of the following values:
-2927:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_CECCLKSource_HSIDiv488: CEC clock from HSI/488 selected.
-2928:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_CECCLKSource_LSE: CEC clock from LSE selected.
-2929:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @retval None
-2930:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */
-2931:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** void RCC_CECClockSourceConfig(uint8_t RCC_ClockSource)
-2932:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** {
-2933:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Check the parameters */
-2934:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_CEC_CLOCKSOURCE(RCC_ClockSource));
-2935:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   
-2936:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   if(RCC_ClockSource == RCC_CECCLKSource_LSE)
-2937:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   {
-2938:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     SET_BIT(RCC->DCKCFGR2, RCC_DCKCFGR2_CECSEL);
-2939:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   }
-2940:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   else
-2941:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   {
-2942:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     CLEAR_BIT(RCC->DCKCFGR2, RCC_DCKCFGR2_CECSEL);
-2943:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   }
-2944:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** }
-2945:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #endif /* STM32F446xx */
-2946:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-2947:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #if defined(STM32F410xx) || defined(STM32F412xG) || defined(STM32F413_423xx) || defined(STM32F446xx
-2948:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /**
-2949:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @brief Configures the FMPI2C1 clock Source.
-2950:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @note This feature is only available for STM32F446xx devices.
-2951:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param RCC_ClockSource: specifies the FMPI2C1 clock Source.
-2952:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter can be one of the following values:
-2953:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_FMPI2C1CLKSource_APB1: FMPI2C1 clock from APB1 selected.
-2954:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_FMPI2C1CLKSource_SYSCLK: FMPI2C1 clock from Sytem clock selected.
-2955:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_FMPI2C1CLKSource_HSI: FMPI2C1 clock from HSI selected.
-2956:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @retval None
-2957:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */
-2958:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** void RCC_FMPI2C1ClockSourceConfig(uint32_t RCC_ClockSource)
-2959:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** {
-2960:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Check the parameters */
-2961:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_FMPI2C1_CLOCKSOURCE(RCC_ClockSource));
-2962:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-2963:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Clear FMPI2C1 clock source selection source bits */
-2964:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   RCC->DCKCFGR2 &= ~RCC_DCKCFGR2_FMPI2C1SEL;
-2965:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Set new FMPI2C1 clock source */
-2966:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   RCC->DCKCFGR2 |= RCC_ClockSource;
-2967:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** }
-2968:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #endif /* STM32F410xx || STM32F412xG || STM32F413_423xx || STM32F446xx */
-2969:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /**
-2970:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @}
-2971:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */
-2972:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-2973:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #if defined(STM32F410xx)
-2974:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /**
-2975:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @brief  Enables or disables the MCO1.
-2976:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  NewState: new state of the MCO1.
-2977:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter can be: ENABLE or DISABLE.
-2978:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @retval None
-2979:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */
-2980:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** void RCC_MCO1Cmd(FunctionalState NewState)
-2981:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** {
-2982:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Check the parameters */
-2983:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_FUNCTIONAL_STATE(NewState));
-2984:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-2985:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *(__IO uint32_t *) RCC_CFGR_MCO1EN_BB = (uint32_t)NewState;
-2986:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** }
-2987:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-2988:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /**
-2989:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @brief  Enables or disables the MCO2.
-2990:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  NewState: new state of the MCO2.
-2991:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter can be: ENABLE or DISABLE.
-2992:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @retval None
-2993:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */
-2994:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** void RCC_MCO2Cmd(FunctionalState NewState)
-2995:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** {
-2996:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Check the parameters */
-2997:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_FUNCTIONAL_STATE(NewState));
-2998:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-2999:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *(__IO uint32_t *) RCC_CFGR_MCO2EN_BB = (uint32_t)NewState;
-3000:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** }
-3001:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** #endif /* STM32F410xx */
-3002:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-3003:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /** @defgroup RCC_Group4 Interrupts and flags management functions
-3004:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  *  @brief   Interrupts and flags management functions 
-3005:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  *
-3006:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** @verbatim   
-3007:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  ===============================================================================
-3008:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****                 ##### Interrupts and flags management functions #####
-3009:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****  ===============================================================================  
-3010:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-3011:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** @endverbatim
-3012:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @{
-3013:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */
-3014:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-3015:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /**
-3016:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @brief  Enables or disables the specified RCC interrupts.
-3017:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  RCC_IT: specifies the RCC interrupt sources to be enabled or disabled.
-3018:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter can be any combination of the following values:
-3019:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_IT_LSIRDY: LSI ready interrupt
-3020:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_IT_LSERDY: LSE ready interrupt
-3021:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_IT_HSIRDY: HSI ready interrupt
-3022:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_IT_HSERDY: HSE ready interrupt
-3023:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_IT_PLLRDY: main PLL ready interrupt
-3024:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_IT_PLLI2SRDY: PLLI2S ready interrupt
-3025:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_IT_PLLSAIRDY: PLLSAI ready interrupt (only for STM32F42xxx/43xxx/446xx/469x
-3026:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  NewState: new state of the specified RCC interrupts.
-3027:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter can be: ENABLE or DISABLE.
-3028:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @retval None
-3029:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */
-3030:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** void RCC_ITConfig(uint8_t RCC_IT, FunctionalState NewState)
-3031:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** {
- 3080              		.loc 2 3031 0
- 3081              		.cfi_startproc
- 3082              		@ args = 0, pretend = 0, frame = 8
- 3083              		@ frame_needed = 1, uses_anonymous_args = 0
- 3084 0c44 80B5     		push	{r7, lr}
- 3085              		.cfi_def_cfa_offset 8
- 3086              		.cfi_offset 7, -8
- 3087              		.cfi_offset 14, -4
- 3088 0c46 82B0     		sub	sp, sp, #8
- 3089              		.cfi_def_cfa_offset 16
- 3090 0c48 00AF     		add	r7, sp, #0
- 3091              		.cfi_def_cfa_register 7
- 3092 0c4a 0200     		movs	r2, r0
- 3093 0c4c FB1D     		adds	r3, r7, #7
- 3094 0c4e 1A70     		strb	r2, [r3]
- 3095 0c50 BB1D     		adds	r3, r7, #6
- 3096 0c52 0A1C     		adds	r2, r1, #0
- 3097 0c54 1A70     		strb	r2, [r3]
-3032:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Check the parameters */
-3033:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_IT(RCC_IT));
-3034:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_FUNCTIONAL_STATE(NewState));
-3035:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   if (NewState != DISABLE)
- 3098              		.loc 2 3035 0
- 3099 0c56 BB1D     		adds	r3, r7, #6
- 3100 0c58 1B78     		ldrb	r3, [r3]
- 3101 0c5a 002B     		cmp	r3, #0
- 3102 0c5c 09D0     		beq	.L222
-3036:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   {
-3037:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     /* Perform Byte access to RCC_CIR[14:8] bits to enable the selected interrupts */
-3038:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     *(__IO uint8_t *) CIR_BYTE2_ADDRESS |= RCC_IT;
- 3103              		.loc 2 3038 0
- 3104 0c5e 0C4B     		ldr	r3, .L225
- 3105 0c60 1B78     		ldrb	r3, [r3]
- 3106 0c62 DAB2     		uxtb	r2, r3
- 3107 0c64 0A49     		ldr	r1, .L225
- 3108 0c66 FB1D     		adds	r3, r7, #7
- 3109 0c68 1B78     		ldrb	r3, [r3]
- 3110 0c6a 1343     		orrs	r3, r2
- 3111 0c6c DBB2     		uxtb	r3, r3
- 3112 0c6e 0B70     		strb	r3, [r1]
-3039:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   }
-3040:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   else
-3041:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   {
-3042:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     /* Perform Byte access to RCC_CIR[14:8] bits to disable the selected interrupts */
-3043:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     *(__IO uint8_t *) CIR_BYTE2_ADDRESS &= (uint8_t)~RCC_IT;
-3044:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   }
-3045:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** }
- 3113              		.loc 2 3045 0
- 3114 0c70 0AE0     		b	.L224
- 3115              	.L222:
-3043:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   }
- 3116              		.loc 2 3043 0
- 3117 0c72 074B     		ldr	r3, .L225
- 3118 0c74 1B78     		ldrb	r3, [r3]
- 3119 0c76 DBB2     		uxtb	r3, r3
- 3120 0c78 FA1D     		adds	r2, r7, #7
- 3121 0c7a 1278     		ldrb	r2, [r2]
- 3122 0c7c D243     		mvns	r2, r2
- 3123 0c7e D2B2     		uxtb	r2, r2
- 3124 0c80 0349     		ldr	r1, .L225
- 3125 0c82 1340     		ands	r3, r2
- 3126 0c84 DBB2     		uxtb	r3, r3
- 3127 0c86 0B70     		strb	r3, [r1]
- 3128              	.L224:
- 3129              		.loc 2 3045 0
- 3130 0c88 C046     		nop
- 3131 0c8a BD46     		mov	sp, r7
- 3132 0c8c 02B0     		add	sp, sp, #8
- 3133              		@ sp needed
- 3134 0c8e 80BD     		pop	{r7, pc}
- 3135              	.L226:
- 3136              		.align	2
- 3137              	.L225:
- 3138 0c90 0D380240 		.word	1073887245
- 3139              		.cfi_endproc
- 3140              	.LFE171:
- 3142              		.align	1
- 3143              		.global	RCC_GetFlagStatus
- 3144              		.syntax unified
- 3145              		.code	16
- 3146              		.thumb_func
- 3147              		.fpu softvfp
- 3149              	RCC_GetFlagStatus:
- 3150              	.LFB172:
-3046:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-3047:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /**
-3048:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @brief  Checks whether the specified RCC flag is set or not.
-3049:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  RCC_FLAG: specifies the flag to check.
-3050:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter can be one of the following values:
-3051:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_FLAG_HSIRDY: HSI oscillator clock ready
-3052:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_FLAG_HSERDY: HSE oscillator clock ready
-3053:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_FLAG_PLLRDY: main PLL clock ready
-3054:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_FLAG_PLLI2SRDY: PLLI2S clock ready
-3055:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_FLAG_PLLSAIRDY: PLLSAI clock ready (only for STM32F42xxx/43xxx/446xx/469xx/
-3056:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_FLAG_LSERDY: LSE oscillator clock ready
-3057:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_FLAG_LSIRDY: LSI oscillator clock ready
-3058:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_FLAG_BORRST: POR/PDR or BOR reset
-3059:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_FLAG_PINRST: Pin reset
-3060:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_FLAG_PORRST: POR/PDR reset
-3061:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_FLAG_SFTRST: Software reset
-3062:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_FLAG_IWDGRST: Independent Watchdog reset
-3063:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_FLAG_WWDGRST: Window Watchdog reset
-3064:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_FLAG_LPWRRST: Low Power reset
-3065:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @retval The new state of RCC_FLAG (SET or RESET).
-3066:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */
-3067:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** FlagStatus RCC_GetFlagStatus(uint8_t RCC_FLAG)
-3068:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** {
- 3151              		.loc 2 3068 0
- 3152              		.cfi_startproc
- 3153              		@ args = 0, pretend = 0, frame = 24
- 3154              		@ frame_needed = 1, uses_anonymous_args = 0
- 3155 0c94 80B5     		push	{r7, lr}
- 3156              		.cfi_def_cfa_offset 8
- 3157              		.cfi_offset 7, -8
- 3158              		.cfi_offset 14, -4
- 3159 0c96 86B0     		sub	sp, sp, #24
- 3160              		.cfi_def_cfa_offset 32
- 3161 0c98 00AF     		add	r7, sp, #0
- 3162              		.cfi_def_cfa_register 7
- 3163 0c9a 0200     		movs	r2, r0
- 3164 0c9c FB1D     		adds	r3, r7, #7
- 3165 0c9e 1A70     		strb	r2, [r3]
-3069:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   uint32_t tmp = 0;
- 3166              		.loc 2 3069 0
- 3167 0ca0 0023     		movs	r3, #0
- 3168 0ca2 FB60     		str	r3, [r7, #12]
-3070:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   uint32_t statusreg = 0;
- 3169              		.loc 2 3070 0
- 3170 0ca4 0023     		movs	r3, #0
- 3171 0ca6 7B61     		str	r3, [r7, #20]
-3071:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   FlagStatus bitstatus = RESET;
- 3172              		.loc 2 3071 0
- 3173 0ca8 1323     		movs	r3, #19
- 3174 0caa FB18     		adds	r3, r7, r3
- 3175 0cac 0022     		movs	r2, #0
- 3176 0cae 1A70     		strb	r2, [r3]
-3072:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-3073:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Check the parameters */
-3074:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_FLAG(RCC_FLAG));
-3075:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-3076:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Get the RCC register index */
-3077:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   tmp = RCC_FLAG >> 5;
- 3177              		.loc 2 3077 0
- 3178 0cb0 FB1D     		adds	r3, r7, #7
- 3179 0cb2 1B78     		ldrb	r3, [r3]
- 3180 0cb4 5B09     		lsrs	r3, r3, #5
- 3181 0cb6 DBB2     		uxtb	r3, r3
- 3182 0cb8 FB60     		str	r3, [r7, #12]
-3078:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   if (tmp == 1)               /* The flag to check is in CR register */
- 3183              		.loc 2 3078 0
- 3184 0cba FB68     		ldr	r3, [r7, #12]
- 3185 0cbc 012B     		cmp	r3, #1
- 3186 0cbe 03D1     		bne	.L228
-3079:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   {
-3080:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     statusreg = RCC->CR;
- 3187              		.loc 2 3080 0
- 3188 0cc0 144B     		ldr	r3, .L234
- 3189 0cc2 1B68     		ldr	r3, [r3]
- 3190 0cc4 7B61     		str	r3, [r7, #20]
- 3191 0cc6 09E0     		b	.L229
- 3192              	.L228:
-3081:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   }
-3082:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   else if (tmp == 2)          /* The flag to check is in BDCR register */
- 3193              		.loc 2 3082 0
- 3194 0cc8 FB68     		ldr	r3, [r7, #12]
- 3195 0cca 022B     		cmp	r3, #2
- 3196 0ccc 03D1     		bne	.L230
-3083:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   {
-3084:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     statusreg = RCC->BDCR;
- 3197              		.loc 2 3084 0
- 3198 0cce 114B     		ldr	r3, .L234
- 3199 0cd0 1B6F     		ldr	r3, [r3, #112]
- 3200 0cd2 7B61     		str	r3, [r7, #20]
- 3201 0cd4 02E0     		b	.L229
- 3202              	.L230:
-3085:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   }
-3086:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   else                       /* The flag to check is in CSR register */
-3087:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   {
-3088:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     statusreg = RCC->CSR;
- 3203              		.loc 2 3088 0
- 3204 0cd6 0F4B     		ldr	r3, .L234
- 3205 0cd8 5B6F     		ldr	r3, [r3, #116]
- 3206 0cda 7B61     		str	r3, [r7, #20]
- 3207              	.L229:
-3089:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   }
-3090:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-3091:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Get the flag position */
-3092:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   tmp = RCC_FLAG & FLAG_MASK;
- 3208              		.loc 2 3092 0
- 3209 0cdc FB1D     		adds	r3, r7, #7
- 3210 0cde 1B78     		ldrb	r3, [r3]
- 3211 0ce0 1F22     		movs	r2, #31
- 3212 0ce2 1340     		ands	r3, r2
- 3213 0ce4 FB60     		str	r3, [r7, #12]
-3093:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   if ((statusreg & ((uint32_t)1 << tmp)) != (uint32_t)RESET)
- 3214              		.loc 2 3093 0
- 3215 0ce6 7A69     		ldr	r2, [r7, #20]
- 3216 0ce8 FB68     		ldr	r3, [r7, #12]
- 3217 0cea DA40     		lsrs	r2, r2, r3
- 3218 0cec 1300     		movs	r3, r2
- 3219 0cee 0122     		movs	r2, #1
- 3220 0cf0 1340     		ands	r3, r2
- 3221 0cf2 04D0     		beq	.L231
-3094:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   {
-3095:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     bitstatus = SET;
- 3222              		.loc 2 3095 0
- 3223 0cf4 1323     		movs	r3, #19
- 3224 0cf6 FB18     		adds	r3, r7, r3
- 3225 0cf8 0122     		movs	r2, #1
- 3226 0cfa 1A70     		strb	r2, [r3]
- 3227 0cfc 03E0     		b	.L232
- 3228              	.L231:
-3096:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   }
-3097:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   else
-3098:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   {
-3099:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     bitstatus = RESET;
- 3229              		.loc 2 3099 0
- 3230 0cfe 1323     		movs	r3, #19
- 3231 0d00 FB18     		adds	r3, r7, r3
- 3232 0d02 0022     		movs	r2, #0
- 3233 0d04 1A70     		strb	r2, [r3]
- 3234              	.L232:
-3100:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   }
-3101:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Return the flag status */
-3102:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   return bitstatus;
- 3235              		.loc 2 3102 0
- 3236 0d06 1323     		movs	r3, #19
- 3237 0d08 FB18     		adds	r3, r7, r3
- 3238 0d0a 1B78     		ldrb	r3, [r3]
-3103:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** }
- 3239              		.loc 2 3103 0
- 3240 0d0c 1800     		movs	r0, r3
- 3241 0d0e BD46     		mov	sp, r7
- 3242 0d10 06B0     		add	sp, sp, #24
- 3243              		@ sp needed
- 3244 0d12 80BD     		pop	{r7, pc}
- 3245              	.L235:
- 3246              		.align	2
- 3247              	.L234:
- 3248 0d14 00380240 		.word	1073887232
- 3249              		.cfi_endproc
- 3250              	.LFE172:
- 3252              		.align	1
- 3253              		.global	RCC_ClearFlag
- 3254              		.syntax unified
- 3255              		.code	16
- 3256              		.thumb_func
- 3257              		.fpu softvfp
- 3259              	RCC_ClearFlag:
- 3260              	.LFB173:
-3104:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-3105:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /**
-3106:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @brief  Clears the RCC reset flags.
-3107:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         The reset flags are: RCC_FLAG_PINRST, RCC_FLAG_PORRST,  RCC_FLAG_SFTRST,
-3108:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *         RCC_FLAG_IWDGRST, RCC_FLAG_WWDGRST, RCC_FLAG_LPWRRST
-3109:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  None
-3110:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @retval None
-3111:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */
-3112:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** void RCC_ClearFlag(void)
-3113:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** {
- 3261              		.loc 2 3113 0
- 3262              		.cfi_startproc
- 3263              		@ args = 0, pretend = 0, frame = 0
- 3264              		@ frame_needed = 1, uses_anonymous_args = 0
- 3265 0d18 80B5     		push	{r7, lr}
- 3266              		.cfi_def_cfa_offset 8
- 3267              		.cfi_offset 7, -8
- 3268              		.cfi_offset 14, -4
- 3269 0d1a 00AF     		add	r7, sp, #0
- 3270              		.cfi_def_cfa_register 7
-3114:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Set RMVF bit to clear the reset flags */
-3115:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   RCC->CSR |= RCC_CSR_RMVF;
- 3271              		.loc 2 3115 0
- 3272 0d1c 044B     		ldr	r3, .L237
- 3273 0d1e 5A6F     		ldr	r2, [r3, #116]
- 3274 0d20 034B     		ldr	r3, .L237
- 3275 0d22 8021     		movs	r1, #128
- 3276 0d24 4904     		lsls	r1, r1, #17
- 3277 0d26 0A43     		orrs	r2, r1
- 3278 0d28 5A67     		str	r2, [r3, #116]
-3116:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** }
- 3279              		.loc 2 3116 0
- 3280 0d2a C046     		nop
- 3281 0d2c BD46     		mov	sp, r7
- 3282              		@ sp needed
- 3283 0d2e 80BD     		pop	{r7, pc}
- 3284              	.L238:
- 3285              		.align	2
- 3286              	.L237:
- 3287 0d30 00380240 		.word	1073887232
- 3288              		.cfi_endproc
- 3289              	.LFE173:
- 3291              		.align	1
- 3292              		.global	RCC_GetITStatus
- 3293              		.syntax unified
- 3294              		.code	16
- 3295              		.thumb_func
- 3296              		.fpu softvfp
- 3298              	RCC_GetITStatus:
- 3299              	.LFB174:
-3117:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-3118:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /**
-3119:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @brief  Checks whether the specified RCC interrupt has occurred or not.
-3120:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  RCC_IT: specifies the RCC interrupt source to check.
-3121:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter can be one of the following values:
-3122:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_IT_LSIRDY: LSI ready interrupt
-3123:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_IT_LSERDY: LSE ready interrupt
-3124:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_IT_HSIRDY: HSI ready interrupt
-3125:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_IT_HSERDY: HSE ready interrupt
-3126:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_IT_PLLRDY: main PLL ready interrupt
-3127:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_IT_PLLI2SRDY: PLLI2S ready interrupt
-3128:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_IT_PLLSAIRDY: PLLSAI clock ready interrupt (only for STM32F42xxx/43xxx/446x
-3129:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_IT_CSS: Clock Security System interrupt
-3130:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @retval The new state of RCC_IT (SET or RESET).
-3131:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */
-3132:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** ITStatus RCC_GetITStatus(uint8_t RCC_IT)
-3133:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** {
- 3300              		.loc 2 3133 0
- 3301              		.cfi_startproc
- 3302              		@ args = 0, pretend = 0, frame = 16
- 3303              		@ frame_needed = 1, uses_anonymous_args = 0
- 3304 0d34 80B5     		push	{r7, lr}
- 3305              		.cfi_def_cfa_offset 8
- 3306              		.cfi_offset 7, -8
- 3307              		.cfi_offset 14, -4
- 3308 0d36 84B0     		sub	sp, sp, #16
- 3309              		.cfi_def_cfa_offset 24
- 3310 0d38 00AF     		add	r7, sp, #0
- 3311              		.cfi_def_cfa_register 7
- 3312 0d3a 0200     		movs	r2, r0
- 3313 0d3c FB1D     		adds	r3, r7, #7
- 3314 0d3e 1A70     		strb	r2, [r3]
-3134:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   ITStatus bitstatus = RESET;
- 3315              		.loc 2 3134 0
- 3316 0d40 0F23     		movs	r3, #15
- 3317 0d42 FB18     		adds	r3, r7, r3
- 3318 0d44 0022     		movs	r2, #0
- 3319 0d46 1A70     		strb	r2, [r3]
-3135:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-3136:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Check the parameters */
-3137:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_GET_IT(RCC_IT));
-3138:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-3139:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Check the status of the specified RCC interrupt */
-3140:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   if ((RCC->CIR & RCC_IT) != (uint32_t)RESET)
- 3320              		.loc 2 3140 0
- 3321 0d48 0A4B     		ldr	r3, .L243
- 3322 0d4a DB68     		ldr	r3, [r3, #12]
- 3323 0d4c FA1D     		adds	r2, r7, #7
- 3324 0d4e 1278     		ldrb	r2, [r2]
- 3325 0d50 1340     		ands	r3, r2
- 3326 0d52 04D0     		beq	.L240
-3141:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   {
-3142:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     bitstatus = SET;
- 3327              		.loc 2 3142 0
- 3328 0d54 0F23     		movs	r3, #15
- 3329 0d56 FB18     		adds	r3, r7, r3
- 3330 0d58 0122     		movs	r2, #1
- 3331 0d5a 1A70     		strb	r2, [r3]
- 3332 0d5c 03E0     		b	.L241
- 3333              	.L240:
-3143:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   }
-3144:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   else
-3145:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   {
-3146:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****     bitstatus = RESET;
- 3334              		.loc 2 3146 0
- 3335 0d5e 0F23     		movs	r3, #15
- 3336 0d60 FB18     		adds	r3, r7, r3
- 3337 0d62 0022     		movs	r2, #0
- 3338 0d64 1A70     		strb	r2, [r3]
- 3339              	.L241:
-3147:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   }
-3148:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Return the RCC_IT status */
-3149:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   return  bitstatus;
- 3340              		.loc 2 3149 0
- 3341 0d66 0F23     		movs	r3, #15
- 3342 0d68 FB18     		adds	r3, r7, r3
- 3343 0d6a 1B78     		ldrb	r3, [r3]
-3150:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** }
- 3344              		.loc 2 3150 0
- 3345 0d6c 1800     		movs	r0, r3
- 3346 0d6e BD46     		mov	sp, r7
- 3347 0d70 04B0     		add	sp, sp, #16
- 3348              		@ sp needed
- 3349 0d72 80BD     		pop	{r7, pc}
- 3350              	.L244:
- 3351              		.align	2
- 3352              	.L243:
- 3353 0d74 00380240 		.word	1073887232
- 3354              		.cfi_endproc
- 3355              	.LFE174:
- 3357              		.align	1
- 3358              		.global	RCC_ClearITPendingBit
- 3359              		.syntax unified
- 3360              		.code	16
- 3361              		.thumb_func
- 3362              		.fpu softvfp
- 3364              	RCC_ClearITPendingBit:
- 3365              	.LFB175:
-3151:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-3152:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** /**
-3153:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @brief  Clears the RCC's interrupt pending bits.
-3154:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @param  RCC_IT: specifies the interrupt pending bit to clear.
-3155:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *          This parameter can be any combination of the following values:
-3156:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_IT_LSIRDY: LSI ready interrupt
-3157:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_IT_LSERDY: LSE ready interrupt
-3158:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_IT_HSIRDY: HSI ready interrupt
-3159:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_IT_HSERDY: HSE ready interrupt
-3160:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_IT_PLLRDY: main PLL ready interrupt
-3161:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_IT_PLLI2SRDY: PLLI2S ready interrupt  
-3162:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_IT_PLLSAIRDY: PLLSAI ready interrupt (only for STM32F42xxx/43xxx/446xx/469x
-3163:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *            @arg RCC_IT_CSS: Clock Security System interrupt
-3164:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   * @retval None
-3165:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   */
-3166:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** void RCC_ClearITPendingBit(uint8_t RCC_IT)
-3167:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** {
- 3366              		.loc 2 3167 0
- 3367              		.cfi_startproc
- 3368              		@ args = 0, pretend = 0, frame = 8
- 3369              		@ frame_needed = 1, uses_anonymous_args = 0
- 3370 0d78 80B5     		push	{r7, lr}
- 3371              		.cfi_def_cfa_offset 8
- 3372              		.cfi_offset 7, -8
- 3373              		.cfi_offset 14, -4
- 3374 0d7a 82B0     		sub	sp, sp, #8
- 3375              		.cfi_def_cfa_offset 16
- 3376 0d7c 00AF     		add	r7, sp, #0
- 3377              		.cfi_def_cfa_register 7
- 3378 0d7e 0200     		movs	r2, r0
- 3379 0d80 FB1D     		adds	r3, r7, #7
- 3380 0d82 1A70     		strb	r2, [r3]
-3168:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Check the parameters */
-3169:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   assert_param(IS_RCC_CLEAR_IT(RCC_IT));
-3170:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** 
-3171:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   /* Perform Byte access to RCC_CIR[23:16] bits to clear the selected interrupt
-3172:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****      pending bits */
-3173:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c ****   *(__IO uint8_t *) CIR_BYTE3_ADDRESS = RCC_IT;
- 3381              		.loc 2 3173 0
- 3382 0d84 034A     		ldr	r2, .L246
- 3383 0d86 FB1D     		adds	r3, r7, #7
- 3384 0d88 1B78     		ldrb	r3, [r3]
- 3385 0d8a 1370     		strb	r3, [r2]
-3174:../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c **** }
- 3386              		.loc 2 3174 0
- 3387 0d8c C046     		nop
- 3388 0d8e BD46     		mov	sp, r7
- 3389 0d90 02B0     		add	sp, sp, #8
- 3390              		@ sp needed
- 3391 0d92 80BD     		pop	{r7, pc}
- 3392              	.L247:
- 3393              		.align	2
- 3394              	.L246:
- 3395 0d94 0E380240 		.word	1073887246
- 3396              		.cfi_endproc
- 3397              	.LFE175:
- 3399              		.align	1
- 3400              		.global	init_GPIO_Ports
- 3401              		.syntax unified
- 3402              		.code	16
- 3403              		.thumb_func
- 3404              		.fpu softvfp
- 3406              	init_GPIO_Ports:
- 3407              	.LFB176:
- 3408              		.file 3 "C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door/init.h"
+ 159              		.align	1
+ 160              		.global	init_GPIO_Ports
+ 161              		.syntax unified
+ 162              		.code	16
+ 163              		.thumb_func
+ 164              		.fpu softvfp
+ 166              	init_GPIO_Ports:
+ 167              	.LFB123:
+ 168              		.file 2 "C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door/init.h"
    1:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\init.h **** //======================================GPIO=======================================================
    2:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\init.h **** void init_GPIO_Ports()
    3:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\init.h **** {
- 3409              		.loc 3 3 0
- 3410              		.cfi_startproc
- 3411              		@ args = 0, pretend = 0, frame = 8
- 3412              		@ frame_needed = 1, uses_anonymous_args = 0
- 3413 0d98 80B5     		push	{r7, lr}
- 3414              		.cfi_def_cfa_offset 8
- 3415              		.cfi_offset 7, -8
- 3416              		.cfi_offset 14, -4
- 3417 0d9a 82B0     		sub	sp, sp, #8
- 3418              		.cfi_def_cfa_offset 16
- 3419 0d9c 00AF     		add	r7, sp, #0
- 3420              		.cfi_def_cfa_register 7
+ 169              		.loc 2 3 0
+ 170              		.cfi_startproc
+ 171              		@ args = 0, pretend = 0, frame = 8
+ 172              		@ frame_needed = 1, uses_anonymous_args = 0
+ 173 00a8 80B5     		push	{r7, lr}
+ 174              		.cfi_def_cfa_offset 8
+ 175              		.cfi_offset 7, -8
+ 176              		.cfi_offset 14, -4
+ 177 00aa 82B0     		sub	sp, sp, #8
+ 178              		.cfi_def_cfa_offset 16
+ 179 00ac 00AF     		add	r7, sp, #0
+ 180              		.cfi_def_cfa_register 7
    4:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\init.h **** 	/*  Function used to set the GPIO configuration to the default reset state ****/
    5:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\init.h **** 	GPIO_InitTypeDef init;
    6:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\init.h **** 	//GPIO E UTPORTAR
    7:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\init.h **** 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOE, ENABLE);
- 3421              		.loc 3 7 0
- 3422 0d9e 0121     		movs	r1, #1
- 3423 0da0 1020     		movs	r0, #16
- 3424 0da2 FFF7FEFF 		bl	RCC_AHB1PeriphClockCmd
+ 181              		.loc 2 7 0
+ 182 00ae 0121     		movs	r1, #1
+ 183 00b0 1020     		movs	r0, #16
+ 184 00b2 FFF7FEFF 		bl	RCC_AHB1PeriphClockCmd
    8:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\init.h **** 	GPIO_StructInit(&init);
- 3425              		.loc 3 8 0
- 3426 0da6 3B00     		movs	r3, r7
- 3427 0da8 1800     		movs	r0, r3
- 3428 0daa FFF7FEFF 		bl	GPIO_StructInit
+ 185              		.loc 2 8 0
+ 186 00b6 3B00     		movs	r3, r7
+ 187 00b8 1800     		movs	r0, r3
+ 188 00ba FFF7FEFF 		bl	GPIO_StructInit
    9:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\init.h **** 	init.GPIO_Pin = GPIO_Pin_1 | GPIO_Pin_3 | GPIO_Pin_5 | GPIO_Pin_7 | GPIO_Pin_9 | GPIO_Pin_11 | GPI
- 3429              		.loc 3 9 0
- 3430 0dae 3B00     		movs	r3, r7
- 3431 0db0 644A     		ldr	r2, .L249
- 3432 0db2 1A60     		str	r2, [r3]
+ 189              		.loc 2 9 0
+ 190 00be 3B00     		movs	r3, r7
+ 191 00c0 644A     		ldr	r2, .L13
+ 192 00c2 1A60     		str	r2, [r3]
   10:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\init.h **** 	init.GPIO_Mode = GPIO_Mode_OUT;
- 3433              		.loc 3 10 0
- 3434 0db4 3B00     		movs	r3, r7
- 3435 0db6 0122     		movs	r2, #1
- 3436 0db8 1A71     		strb	r2, [r3, #4]
+ 193              		.loc 2 10 0
+ 194 00c4 3B00     		movs	r3, r7
+ 195 00c6 0122     		movs	r2, #1
+ 196 00c8 1A71     		strb	r2, [r3, #4]
   11:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\init.h **** 	init.GPIO_OType = GPIO_OType_PP;
- 3437              		.loc 3 11 0
- 3438 0dba 3B00     		movs	r3, r7
- 3439 0dbc 0022     		movs	r2, #0
- 3440 0dbe 9A71     		strb	r2, [r3, #6]
+ 197              		.loc 2 11 0
+ 198 00ca 3B00     		movs	r3, r7
+ 199 00cc 0022     		movs	r2, #0
+ 200 00ce 9A71     		strb	r2, [r3, #6]
   12:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\init.h **** 	init.GPIO_PuPd = GPIO_PuPd_NOPULL;
- 3441              		.loc 3 12 0
- 3442 0dc0 3B00     		movs	r3, r7
- 3443 0dc2 0022     		movs	r2, #0
- 3444 0dc4 DA71     		strb	r2, [r3, #7]
+ 201              		.loc 2 12 0
+ 202 00d0 3B00     		movs	r3, r7
+ 203 00d2 0022     		movs	r2, #0
+ 204 00d4 DA71     		strb	r2, [r3, #7]
   13:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\init.h **** 	GPIO_Init(GPIOE, &init);
- 3445              		.loc 3 13 0
- 3446 0dc6 3B00     		movs	r3, r7
- 3447 0dc8 5F4A     		ldr	r2, .L249+4
- 3448 0dca 1900     		movs	r1, r3
- 3449 0dcc 1000     		movs	r0, r2
- 3450 0dce FFF7FEFF 		bl	GPIO_Init
+ 205              		.loc 2 13 0
+ 206 00d6 3B00     		movs	r3, r7
+ 207 00d8 5F4A     		ldr	r2, .L13+4
+ 208 00da 1900     		movs	r1, r3
+ 209 00dc 1000     		movs	r0, r2
+ 210 00de FFF7FEFF 		bl	GPIO_Init
   14:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\init.h **** 	
   15:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\init.h **** 	//konfigurerar inport GPIO E
   16:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\init.h **** 	GPIO_StructInit(&init);
- 3451              		.loc 3 16 0
- 3452 0dd2 3B00     		movs	r3, r7
- 3453 0dd4 1800     		movs	r0, r3
- 3454 0dd6 FFF7FEFF 		bl	GPIO_StructInit
+ 211              		.loc 2 16 0
+ 212 00e2 3B00     		movs	r3, r7
+ 213 00e4 1800     		movs	r0, r3
+ 214 00e6 FFF7FEFF 		bl	GPIO_StructInit
   17:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\init.h **** 	init.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_2 | GPIO_Pin_4 | GPIO_Pin_6 | GPIO_Pin_8 | GPIO_Pin_10 | GPI
- 3455              		.loc 3 17 0
- 3456 0dda 3B00     		movs	r3, r7
- 3457 0ddc 5B4A     		ldr	r2, .L249+8
- 3458 0dde 1A60     		str	r2, [r3]
+ 215              		.loc 2 17 0
+ 216 00ea 3B00     		movs	r3, r7
+ 217 00ec 5B4A     		ldr	r2, .L13+8
+ 218 00ee 1A60     		str	r2, [r3]
   18:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\init.h **** 	init.GPIO_Mode = GPIO_Mode_IN;
- 3459              		.loc 3 18 0
- 3460 0de0 3B00     		movs	r3, r7
- 3461 0de2 0022     		movs	r2, #0
- 3462 0de4 1A71     		strb	r2, [r3, #4]
+ 219              		.loc 2 18 0
+ 220 00f0 3B00     		movs	r3, r7
+ 221 00f2 0022     		movs	r2, #0
+ 222 00f4 1A71     		strb	r2, [r3, #4]
   19:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\init.h **** 	init.GPIO_PuPd = GPIO_PuPd_UP;
- 3463              		.loc 3 19 0
- 3464 0de6 3B00     		movs	r3, r7
- 3465 0de8 0122     		movs	r2, #1
- 3466 0dea DA71     		strb	r2, [r3, #7]
+ 223              		.loc 2 19 0
+ 224 00f6 3B00     		movs	r3, r7
+ 225 00f8 0122     		movs	r2, #1
+ 226 00fa DA71     		strb	r2, [r3, #7]
   20:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\init.h **** 	GPIO_Init(GPIOE, &init);
- 3467              		.loc 3 20 0
- 3468 0dec 3B00     		movs	r3, r7
- 3469 0dee 564A     		ldr	r2, .L249+4
- 3470 0df0 1900     		movs	r1, r3
- 3471 0df2 1000     		movs	r0, r2
- 3472 0df4 FFF7FEFF 		bl	GPIO_Init
+ 227              		.loc 2 20 0
+ 228 00fc 3B00     		movs	r3, r7
+ 229 00fe 564A     		ldr	r2, .L13+4
+ 230 0100 1900     		movs	r1, r3
+ 231 0102 1000     		movs	r0, r2
+ 232 0104 FFF7FEFF 		bl	GPIO_Init
   21:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\init.h **** 
   22:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\init.h ****     //GPIOA UTPORTAR
   23:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\init.h ****     RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
- 3473              		.loc 3 23 0
- 3474 0df8 0121     		movs	r1, #1
- 3475 0dfa 0120     		movs	r0, #1
- 3476 0dfc FFF7FEFF 		bl	RCC_AHB1PeriphClockCmd
+ 233              		.loc 2 23 0
+ 234 0108 0121     		movs	r1, #1
+ 235 010a 0120     		movs	r0, #1
+ 236 010c FFF7FEFF 		bl	RCC_AHB1PeriphClockCmd
   24:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\init.h **** 	GPIO_StructInit(&init);
- 3477              		.loc 3 24 0
- 3478 0e00 3B00     		movs	r3, r7
- 3479 0e02 1800     		movs	r0, r3
- 3480 0e04 FFF7FEFF 		bl	GPIO_StructInit
+ 237              		.loc 2 24 0
+ 238 0110 3B00     		movs	r3, r7
+ 239 0112 1800     		movs	r0, r3
+ 240 0114 FFF7FEFF 		bl	GPIO_StructInit
   25:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\init.h **** 	init.GPIO_Pin = GPIO_Pin_1 | GPIO_Pin_3 | GPIO_Pin_5 | GPIO_Pin_7 | GPIO_Pin_9 | GPIO_Pin_11 | GPI
- 3481              		.loc 3 25 0
- 3482 0e08 3B00     		movs	r3, r7
- 3483 0e0a 4E4A     		ldr	r2, .L249
- 3484 0e0c 1A60     		str	r2, [r3]
+ 241              		.loc 2 25 0
+ 242 0118 3B00     		movs	r3, r7
+ 243 011a 4E4A     		ldr	r2, .L13
+ 244 011c 1A60     		str	r2, [r3]
   26:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\init.h **** 	init.GPIO_Mode = GPIO_Mode_OUT;
- 3485              		.loc 3 26 0
- 3486 0e0e 3B00     		movs	r3, r7
- 3487 0e10 0122     		movs	r2, #1
- 3488 0e12 1A71     		strb	r2, [r3, #4]
+ 245              		.loc 2 26 0
+ 246 011e 3B00     		movs	r3, r7
+ 247 0120 0122     		movs	r2, #1
+ 248 0122 1A71     		strb	r2, [r3, #4]
   27:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\init.h **** 	init.GPIO_OType = GPIO_OType_PP;
- 3489              		.loc 3 27 0
- 3490 0e14 3B00     		movs	r3, r7
- 3491 0e16 0022     		movs	r2, #0
- 3492 0e18 9A71     		strb	r2, [r3, #6]
+ 249              		.loc 2 27 0
+ 250 0124 3B00     		movs	r3, r7
+ 251 0126 0022     		movs	r2, #0
+ 252 0128 9A71     		strb	r2, [r3, #6]
   28:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\init.h **** 	init.GPIO_PuPd = GPIO_PuPd_NOPULL;
- 3493              		.loc 3 28 0
- 3494 0e1a 3B00     		movs	r3, r7
- 3495 0e1c 0022     		movs	r2, #0
- 3496 0e1e DA71     		strb	r2, [r3, #7]
+ 253              		.loc 2 28 0
+ 254 012a 3B00     		movs	r3, r7
+ 255 012c 0022     		movs	r2, #0
+ 256 012e DA71     		strb	r2, [r3, #7]
   29:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\init.h **** 	GPIO_Init(GPIOA, &init);
- 3497              		.loc 3 29 0
- 3498 0e20 3B00     		movs	r3, r7
- 3499 0e22 4B4A     		ldr	r2, .L249+12
- 3500 0e24 1900     		movs	r1, r3
- 3501 0e26 1000     		movs	r0, r2
- 3502 0e28 FFF7FEFF 		bl	GPIO_Init
+ 257              		.loc 2 29 0
+ 258 0130 3B00     		movs	r3, r7
+ 259 0132 4B4A     		ldr	r2, .L13+12
+ 260 0134 1900     		movs	r1, r3
+ 261 0136 1000     		movs	r0, r2
+ 262 0138 FFF7FEFF 		bl	GPIO_Init
   30:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\init.h **** 	
   31:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\init.h **** 	//konfigurerar inport GPIO a
   32:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\init.h **** 	GPIO_StructInit(&init);
- 3503              		.loc 3 32 0
- 3504 0e2c 3B00     		movs	r3, r7
- 3505 0e2e 1800     		movs	r0, r3
- 3506 0e30 FFF7FEFF 		bl	GPIO_StructInit
+ 263              		.loc 2 32 0
+ 264 013c 3B00     		movs	r3, r7
+ 265 013e 1800     		movs	r0, r3
+ 266 0140 FFF7FEFF 		bl	GPIO_StructInit
   33:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\init.h **** 	init.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_2 | GPIO_Pin_4 | GPIO_Pin_6 | GPIO_Pin_8 | GPIO_Pin_10 | GPI
- 3507              		.loc 3 33 0
- 3508 0e34 3B00     		movs	r3, r7
- 3509 0e36 454A     		ldr	r2, .L249+8
- 3510 0e38 1A60     		str	r2, [r3]
+ 267              		.loc 2 33 0
+ 268 0144 3B00     		movs	r3, r7
+ 269 0146 454A     		ldr	r2, .L13+8
+ 270 0148 1A60     		str	r2, [r3]
   34:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\init.h **** 	init.GPIO_Mode = GPIO_Mode_IN;
- 3511              		.loc 3 34 0
- 3512 0e3a 3B00     		movs	r3, r7
- 3513 0e3c 0022     		movs	r2, #0
- 3514 0e3e 1A71     		strb	r2, [r3, #4]
+ 271              		.loc 2 34 0
+ 272 014a 3B00     		movs	r3, r7
+ 273 014c 0022     		movs	r2, #0
+ 274 014e 1A71     		strb	r2, [r3, #4]
   35:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\init.h **** 	init.GPIO_PuPd = GPIO_PuPd_UP;
- 3515              		.loc 3 35 0
- 3516 0e40 3B00     		movs	r3, r7
- 3517 0e42 0122     		movs	r2, #1
- 3518 0e44 DA71     		strb	r2, [r3, #7]
+ 275              		.loc 2 35 0
+ 276 0150 3B00     		movs	r3, r7
+ 277 0152 0122     		movs	r2, #1
+ 278 0154 DA71     		strb	r2, [r3, #7]
   36:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\init.h **** 	GPIO_Init(GPIOA, &init);
- 3519              		.loc 3 36 0
- 3520 0e46 3B00     		movs	r3, r7
- 3521 0e48 414A     		ldr	r2, .L249+12
- 3522 0e4a 1900     		movs	r1, r3
- 3523 0e4c 1000     		movs	r0, r2
- 3524 0e4e FFF7FEFF 		bl	GPIO_Init
+ 279              		.loc 2 36 0
+ 280 0156 3B00     		movs	r3, r7
+ 281 0158 414A     		ldr	r2, .L13+12
+ 282 015a 1900     		movs	r1, r3
+ 283 015c 1000     		movs	r0, r2
+ 284 015e FFF7FEFF 		bl	GPIO_Init
   37:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\init.h **** 
   38:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\init.h **** 	//GPIO C UTPORTAR
   39:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\init.h **** 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
- 3525              		.loc 3 39 0
- 3526 0e52 0121     		movs	r1, #1
- 3527 0e54 0420     		movs	r0, #4
- 3528 0e56 FFF7FEFF 		bl	RCC_AHB1PeriphClockCmd
+ 285              		.loc 2 39 0
+ 286 0162 0121     		movs	r1, #1
+ 287 0164 0420     		movs	r0, #4
+ 288 0166 FFF7FEFF 		bl	RCC_AHB1PeriphClockCmd
   40:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\init.h **** 	GPIO_StructInit(&init);
- 3529              		.loc 3 40 0
- 3530 0e5a 3B00     		movs	r3, r7
- 3531 0e5c 1800     		movs	r0, r3
- 3532 0e5e FFF7FEFF 		bl	GPIO_StructInit
+ 289              		.loc 2 40 0
+ 290 016a 3B00     		movs	r3, r7
+ 291 016c 1800     		movs	r0, r3
+ 292 016e FFF7FEFF 		bl	GPIO_StructInit
   41:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\init.h **** 	init.GPIO_Pin = GPIO_Pin_1 | GPIO_Pin_3 | GPIO_Pin_5 | GPIO_Pin_7 | GPIO_Pin_9 | GPIO_Pin_11 | GPI
- 3533              		.loc 3 41 0
- 3534 0e62 3B00     		movs	r3, r7
- 3535 0e64 374A     		ldr	r2, .L249
- 3536 0e66 1A60     		str	r2, [r3]
+ 293              		.loc 2 41 0
+ 294 0172 3B00     		movs	r3, r7
+ 295 0174 374A     		ldr	r2, .L13
+ 296 0176 1A60     		str	r2, [r3]
   42:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\init.h **** 	init.GPIO_Mode = GPIO_Mode_OUT;
- 3537              		.loc 3 42 0
- 3538 0e68 3B00     		movs	r3, r7
- 3539 0e6a 0122     		movs	r2, #1
- 3540 0e6c 1A71     		strb	r2, [r3, #4]
+ 297              		.loc 2 42 0
+ 298 0178 3B00     		movs	r3, r7
+ 299 017a 0122     		movs	r2, #1
+ 300 017c 1A71     		strb	r2, [r3, #4]
   43:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\init.h **** 	init.GPIO_OType = GPIO_OType_PP;
- 3541              		.loc 3 43 0
- 3542 0e6e 3B00     		movs	r3, r7
- 3543 0e70 0022     		movs	r2, #0
- 3544 0e72 9A71     		strb	r2, [r3, #6]
+ 301              		.loc 2 43 0
+ 302 017e 3B00     		movs	r3, r7
+ 303 0180 0022     		movs	r2, #0
+ 304 0182 9A71     		strb	r2, [r3, #6]
   44:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\init.h **** 	init.GPIO_PuPd = GPIO_PuPd_NOPULL;
- 3545              		.loc 3 44 0
- 3546 0e74 3B00     		movs	r3, r7
- 3547 0e76 0022     		movs	r2, #0
- 3548 0e78 DA71     		strb	r2, [r3, #7]
+ 305              		.loc 2 44 0
+ 306 0184 3B00     		movs	r3, r7
+ 307 0186 0022     		movs	r2, #0
+ 308 0188 DA71     		strb	r2, [r3, #7]
   45:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\init.h **** 	GPIO_Init(GPIOC, &init);
- 3549              		.loc 3 45 0
- 3550 0e7a 3B00     		movs	r3, r7
- 3551 0e7c 354A     		ldr	r2, .L249+16
- 3552 0e7e 1900     		movs	r1, r3
- 3553 0e80 1000     		movs	r0, r2
- 3554 0e82 FFF7FEFF 		bl	GPIO_Init
+ 309              		.loc 2 45 0
+ 310 018a 3B00     		movs	r3, r7
+ 311 018c 354A     		ldr	r2, .L13+16
+ 312 018e 1900     		movs	r1, r3
+ 313 0190 1000     		movs	r0, r2
+ 314 0192 FFF7FEFF 		bl	GPIO_Init
   46:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\init.h **** 	
   47:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\init.h **** 	//konfigurerar inport GPIO C
   48:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\init.h **** 	GPIO_StructInit(&init);
- 3555              		.loc 3 48 0
- 3556 0e86 3B00     		movs	r3, r7
- 3557 0e88 1800     		movs	r0, r3
- 3558 0e8a FFF7FEFF 		bl	GPIO_StructInit
+ 315              		.loc 2 48 0
+ 316 0196 3B00     		movs	r3, r7
+ 317 0198 1800     		movs	r0, r3
+ 318 019a FFF7FEFF 		bl	GPIO_StructInit
   49:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\init.h **** 	init.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_2 | GPIO_Pin_4 | GPIO_Pin_6 | GPIO_Pin_8 | GPIO_Pin_10 | GPI
- 3559              		.loc 3 49 0
- 3560 0e8e 3B00     		movs	r3, r7
- 3561 0e90 2E4A     		ldr	r2, .L249+8
- 3562 0e92 1A60     		str	r2, [r3]
+ 319              		.loc 2 49 0
+ 320 019e 3B00     		movs	r3, r7
+ 321 01a0 2E4A     		ldr	r2, .L13+8
+ 322 01a2 1A60     		str	r2, [r3]
   50:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\init.h **** 	init.GPIO_Mode = GPIO_Mode_IN;
- 3563              		.loc 3 50 0
- 3564 0e94 3B00     		movs	r3, r7
- 3565 0e96 0022     		movs	r2, #0
- 3566 0e98 1A71     		strb	r2, [r3, #4]
+ 323              		.loc 2 50 0
+ 324 01a4 3B00     		movs	r3, r7
+ 325 01a6 0022     		movs	r2, #0
+ 326 01a8 1A71     		strb	r2, [r3, #4]
   51:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\init.h **** 	init.GPIO_PuPd = GPIO_PuPd_UP;
- 3567              		.loc 3 51 0
- 3568 0e9a 3B00     		movs	r3, r7
- 3569 0e9c 0122     		movs	r2, #1
- 3570 0e9e DA71     		strb	r2, [r3, #7]
+ 327              		.loc 2 51 0
+ 328 01aa 3B00     		movs	r3, r7
+ 329 01ac 0122     		movs	r2, #1
+ 330 01ae DA71     		strb	r2, [r3, #7]
   52:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\init.h **** 	GPIO_Init(GPIOC, &init);
- 3571              		.loc 3 52 0
- 3572 0ea0 3B00     		movs	r3, r7
- 3573 0ea2 2C4A     		ldr	r2, .L249+16
- 3574 0ea4 1900     		movs	r1, r3
- 3575 0ea6 1000     		movs	r0, r2
- 3576 0ea8 FFF7FEFF 		bl	GPIO_Init
+ 331              		.loc 2 52 0
+ 332 01b0 3B00     		movs	r3, r7
+ 333 01b2 2C4A     		ldr	r2, .L13+16
+ 334 01b4 1900     		movs	r1, r3
+ 335 01b6 1000     		movs	r0, r2
+ 336 01b8 FFF7FEFF 		bl	GPIO_Init
   53:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\init.h **** 
   54:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\init.h **** 	//GPIO D UTPORTAR
   55:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\init.h **** 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOD, ENABLE);
- 3577              		.loc 3 55 0
- 3578 0eac 0121     		movs	r1, #1
- 3579 0eae 0820     		movs	r0, #8
- 3580 0eb0 FFF7FEFF 		bl	RCC_AHB1PeriphClockCmd
+ 337              		.loc 2 55 0
+ 338 01bc 0121     		movs	r1, #1
+ 339 01be 0820     		movs	r0, #8
+ 340 01c0 FFF7FEFF 		bl	RCC_AHB1PeriphClockCmd
   56:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\init.h **** 	GPIO_StructInit(&init);
- 3581              		.loc 3 56 0
- 3582 0eb4 3B00     		movs	r3, r7
- 3583 0eb6 1800     		movs	r0, r3
- 3584 0eb8 FFF7FEFF 		bl	GPIO_StructInit
+ 341              		.loc 2 56 0
+ 342 01c4 3B00     		movs	r3, r7
+ 343 01c6 1800     		movs	r0, r3
+ 344 01c8 FFF7FEFF 		bl	GPIO_StructInit
   57:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\init.h **** 	init.GPIO_Pin = GPIO_Pin_1 | GPIO_Pin_3 | GPIO_Pin_5 | GPIO_Pin_7 | GPIO_Pin_9 | GPIO_Pin_11 | GPI
- 3585              		.loc 3 57 0
- 3586 0ebc 3B00     		movs	r3, r7
- 3587 0ebe 214A     		ldr	r2, .L249
- 3588 0ec0 1A60     		str	r2, [r3]
+ 345              		.loc 2 57 0
+ 346 01cc 3B00     		movs	r3, r7
+ 347 01ce 214A     		ldr	r2, .L13
+ 348 01d0 1A60     		str	r2, [r3]
   58:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\init.h **** 	init.GPIO_Mode = GPIO_Mode_OUT;
- 3589              		.loc 3 58 0
- 3590 0ec2 3B00     		movs	r3, r7
- 3591 0ec4 0122     		movs	r2, #1
- 3592 0ec6 1A71     		strb	r2, [r3, #4]
+ 349              		.loc 2 58 0
+ 350 01d2 3B00     		movs	r3, r7
+ 351 01d4 0122     		movs	r2, #1
+ 352 01d6 1A71     		strb	r2, [r3, #4]
   59:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\init.h **** 	init.GPIO_OType = GPIO_OType_PP;
- 3593              		.loc 3 59 0
- 3594 0ec8 3B00     		movs	r3, r7
- 3595 0eca 0022     		movs	r2, #0
- 3596 0ecc 9A71     		strb	r2, [r3, #6]
+ 353              		.loc 2 59 0
+ 354 01d8 3B00     		movs	r3, r7
+ 355 01da 0022     		movs	r2, #0
+ 356 01dc 9A71     		strb	r2, [r3, #6]
   60:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\init.h **** 	init.GPIO_PuPd = GPIO_PuPd_NOPULL;
- 3597              		.loc 3 60 0
- 3598 0ece 3B00     		movs	r3, r7
- 3599 0ed0 0022     		movs	r2, #0
- 3600 0ed2 DA71     		strb	r2, [r3, #7]
+ 357              		.loc 2 60 0
+ 358 01de 3B00     		movs	r3, r7
+ 359 01e0 0022     		movs	r2, #0
+ 360 01e2 DA71     		strb	r2, [r3, #7]
   61:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\init.h **** 	GPIO_Init(GPIOD, &init);
- 3601              		.loc 3 61 0
- 3602 0ed4 3B00     		movs	r3, r7
- 3603 0ed6 204A     		ldr	r2, .L249+20
- 3604 0ed8 1900     		movs	r1, r3
- 3605 0eda 1000     		movs	r0, r2
- 3606 0edc FFF7FEFF 		bl	GPIO_Init
+ 361              		.loc 2 61 0
+ 362 01e4 3B00     		movs	r3, r7
+ 363 01e6 204A     		ldr	r2, .L13+20
+ 364 01e8 1900     		movs	r1, r3
+ 365 01ea 1000     		movs	r0, r2
+ 366 01ec FFF7FEFF 		bl	GPIO_Init
   62:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\init.h **** 	
   63:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\init.h **** 	//konfigurerar inport GPIO D
   64:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\init.h **** 	GPIO_StructInit(&init);
- 3607              		.loc 3 64 0
- 3608 0ee0 3B00     		movs	r3, r7
- 3609 0ee2 1800     		movs	r0, r3
- 3610 0ee4 FFF7FEFF 		bl	GPIO_StructInit
+ 367              		.loc 2 64 0
+ 368 01f0 3B00     		movs	r3, r7
+ 369 01f2 1800     		movs	r0, r3
+ 370 01f4 FFF7FEFF 		bl	GPIO_StructInit
   65:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\init.h **** 	init.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_2 | GPIO_Pin_4 | GPIO_Pin_6 | GPIO_Pin_8 | GPIO_Pin_10 | GPI
- 3611              		.loc 3 65 0
- 3612 0ee8 3B00     		movs	r3, r7
- 3613 0eea 184A     		ldr	r2, .L249+8
- 3614 0eec 1A60     		str	r2, [r3]
+ 371              		.loc 2 65 0
+ 372 01f8 3B00     		movs	r3, r7
+ 373 01fa 184A     		ldr	r2, .L13+8
+ 374 01fc 1A60     		str	r2, [r3]
   66:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\init.h **** 	init.GPIO_Mode = GPIO_Mode_IN;
- 3615              		.loc 3 66 0
- 3616 0eee 3B00     		movs	r3, r7
- 3617 0ef0 0022     		movs	r2, #0
- 3618 0ef2 1A71     		strb	r2, [r3, #4]
+ 375              		.loc 2 66 0
+ 376 01fe 3B00     		movs	r3, r7
+ 377 0200 0022     		movs	r2, #0
+ 378 0202 1A71     		strb	r2, [r3, #4]
   67:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\init.h **** 	init.GPIO_PuPd = GPIO_PuPd_UP;
- 3619              		.loc 3 67 0
- 3620 0ef4 3B00     		movs	r3, r7
- 3621 0ef6 0122     		movs	r2, #1
- 3622 0ef8 DA71     		strb	r2, [r3, #7]
+ 379              		.loc 2 67 0
+ 380 0204 3B00     		movs	r3, r7
+ 381 0206 0122     		movs	r2, #1
+ 382 0208 DA71     		strb	r2, [r3, #7]
   68:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\init.h **** 	GPIO_Init(GPIOD, &init);
- 3623              		.loc 3 68 0
- 3624 0efa 3B00     		movs	r3, r7
- 3625 0efc 164A     		ldr	r2, .L249+20
- 3626 0efe 1900     		movs	r1, r3
- 3627 0f00 1000     		movs	r0, r2
- 3628 0f02 FFF7FEFF 		bl	GPIO_Init
+ 383              		.loc 2 68 0
+ 384 020a 3B00     		movs	r3, r7
+ 385 020c 164A     		ldr	r2, .L13+20
+ 386 020e 1900     		movs	r1, r3
+ 387 0210 1000     		movs	r0, r2
+ 388 0212 FFF7FEFF 		bl	GPIO_Init
   69:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\init.h **** 
   70:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\init.h **** 	//GPIO B UTPORTAR
   71:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\init.h **** 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
- 3629              		.loc 3 71 0
- 3630 0f06 0121     		movs	r1, #1
- 3631 0f08 0220     		movs	r0, #2
- 3632 0f0a FFF7FEFF 		bl	RCC_AHB1PeriphClockCmd
+ 389              		.loc 2 71 0
+ 390 0216 0121     		movs	r1, #1
+ 391 0218 0220     		movs	r0, #2
+ 392 021a FFF7FEFF 		bl	RCC_AHB1PeriphClockCmd
   72:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\init.h **** 	GPIO_StructInit(&init);
- 3633              		.loc 3 72 0
- 3634 0f0e 3B00     		movs	r3, r7
- 3635 0f10 1800     		movs	r0, r3
- 3636 0f12 FFF7FEFF 		bl	GPIO_StructInit
+ 393              		.loc 2 72 0
+ 394 021e 3B00     		movs	r3, r7
+ 395 0220 1800     		movs	r0, r3
+ 396 0222 FFF7FEFF 		bl	GPIO_StructInit
   73:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\init.h **** 	init.GPIO_Pin = GPIO_Pin_2;
- 3637              		.loc 3 73 0
- 3638 0f16 3B00     		movs	r3, r7
- 3639 0f18 0422     		movs	r2, #4
- 3640 0f1a 1A60     		str	r2, [r3]
+ 397              		.loc 2 73 0
+ 398 0226 3B00     		movs	r3, r7
+ 399 0228 0422     		movs	r2, #4
+ 400 022a 1A60     		str	r2, [r3]
   74:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\init.h **** 	init.GPIO_Mode = GPIO_Mode_OUT;
- 3641              		.loc 3 74 0
- 3642 0f1c 3B00     		movs	r3, r7
- 3643 0f1e 0122     		movs	r2, #1
- 3644 0f20 1A71     		strb	r2, [r3, #4]
+ 401              		.loc 2 74 0
+ 402 022c 3B00     		movs	r3, r7
+ 403 022e 0122     		movs	r2, #1
+ 404 0230 1A71     		strb	r2, [r3, #4]
   75:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\init.h **** 	init.GPIO_OType = GPIO_OType_PP;
- 3645              		.loc 3 75 0
- 3646 0f22 3B00     		movs	r3, r7
- 3647 0f24 0022     		movs	r2, #0
- 3648 0f26 9A71     		strb	r2, [r3, #6]
+ 405              		.loc 2 75 0
+ 406 0232 3B00     		movs	r3, r7
+ 407 0234 0022     		movs	r2, #0
+ 408 0236 9A71     		strb	r2, [r3, #6]
   76:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\init.h **** 	init.GPIO_PuPd = GPIO_PuPd_NOPULL;
- 3649              		.loc 3 76 0
- 3650 0f28 3B00     		movs	r3, r7
- 3651 0f2a 0022     		movs	r2, #0
- 3652 0f2c DA71     		strb	r2, [r3, #7]
+ 409              		.loc 2 76 0
+ 410 0238 3B00     		movs	r3, r7
+ 411 023a 0022     		movs	r2, #0
+ 412 023c DA71     		strb	r2, [r3, #7]
   77:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\init.h **** 	GPIO_Init(GPIOB, &init);
- 3653              		.loc 3 77 0
- 3654 0f2e 3B00     		movs	r3, r7
- 3655 0f30 0A4A     		ldr	r2, .L249+24
- 3656 0f32 1900     		movs	r1, r3
- 3657 0f34 1000     		movs	r0, r2
- 3658 0f36 FFF7FEFF 		bl	GPIO_Init
+ 413              		.loc 2 77 0
+ 414 023e 3B00     		movs	r3, r7
+ 415 0240 0A4A     		ldr	r2, .L13+24
+ 416 0242 1900     		movs	r1, r3
+ 417 0244 1000     		movs	r0, r2
+ 418 0246 FFF7FEFF 		bl	GPIO_Init
   78:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\init.h **** }...
- 3659              		.loc 3 78 0
- 3660 0f3a C046     		nop
- 3661 0f3c BD46     		mov	sp, r7
- 3662 0f3e 02B0     		add	sp, sp, #8
- 3663              		@ sp needed
- 3664 0f40 80BD     		pop	{r7, pc}
- 3665              	.L250:
- 3666 0f42 C046     		.align	2
- 3667              	.L249:
- 3668 0f44 AAAA0000 		.word	43690
- 3669 0f48 00100240 		.word	1073876992
- 3670 0f4c 55550000 		.word	21845
- 3671 0f50 00000240 		.word	1073872896
- 3672 0f54 00080240 		.word	1073874944
- 3673 0f58 000C0240 		.word	1073875968
- 3674 0f5c 00040240 		.word	1073873920
- 3675              		.cfi_endproc
- 3676              	.LFE176:
- 3678              		.section	.start_section,"ax",%progbits
- 3679              		.align	1
- 3680              		.global	startup
- 3681              		.syntax unified
- 3682              		.code	16
- 3683              		.thumb_func
- 3684              		.fpu softvfp
- 3686              	startup:
- 3687              	.LFB177:
- 3688              		.file 4 "C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door/startup.c"
+ 419              		.loc 2 78 0
+ 420 024a C046     		nop
+ 421 024c BD46     		mov	sp, r7
+ 422 024e 02B0     		add	sp, sp, #8
+ 423              		@ sp needed
+ 424 0250 80BD     		pop	{r7, pc}
+ 425              	.L14:
+ 426 0252 C046     		.align	2
+ 427              	.L13:
+ 428 0254 AAAA0000 		.word	43690
+ 429 0258 00100240 		.word	1073876992
+ 430 025c 55550000 		.word	21845
+ 431 0260 00000240 		.word	1073872896
+ 432 0264 00080240 		.word	1073874944
+ 433 0268 000C0240 		.word	1073875968
+ 434 026c 00040240 		.word	1073873920
+ 435              		.cfi_endproc
+ 436              	.LFE123:
+ 438              		.section	.start_section,"ax",%progbits
+ 439              		.align	1
+ 440              		.global	startup
+ 441              		.syntax unified
+ 442              		.code	16
+ 443              		.thumb_func
+ 444              		.fpu softvfp
+ 446              	startup:
+ 447              	.LFB124:
+ 448              		.file 3 "C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door/startup.c"
    1:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** #include "stm32f4xx.h"
    2:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** #include "stm32f4xx_rcc.h"
-   3:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** #include "stm32f4xx_rcc.c"
-   4:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** #include "core_cm4.h"
-   5:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** #include "stm32f4xx_gpio.h"
-   6:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** #include "system_stm32f4xx.h"
-   7:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** #include "startup.h"
-   8:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** #include "delay.h"
-   9:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** #include "init.h"
-  10:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 
-  11:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** void startup(void) __attribute__((naked)) __attribute__((section(".start_section")));
-  12:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 
-  13:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** void startup(void)
-  14:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** {
- 3689              		.loc 4 14 0
- 3690              		.cfi_startproc
- 3691              		@ Naked Function: prologue and epilogue provided by programmer.
- 3692              		@ args = 0, pretend = 0, frame = 0
- 3693              		@ frame_needed = 1, uses_anonymous_args = 0
-  15:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	__asm volatile(
- 3694              		.loc 4 15 0
- 3695              		.syntax divided
- 3696              	@ 15 "C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door/startup.c" 1
- 3697 0000 0248     		 LDR R0,=0x2001C000
- 3698 0002 8546     	 MOV SP,R0
- 3699 0004 FFF7FEFF 	 BL main
- 3700 0008 FEE7     	_exit: B .
- 3701              	
- 3702              	@ 0 "" 2
-  16:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		" LDR R0,=0x2001C000\n" /* set stack */
-  17:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		" MOV SP,R0\n"
-  18:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		" BL main\n"   /* call main */
-  19:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		"_exit: B .\n" /* never return */
-  20:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	);
-  21:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** }
- 3703              		.loc 4 21 0
- 3704              		.thumb
- 3705              		.syntax unified
- 3706 000a C046     		nop
- 3707              		.cfi_endproc
- 3708              	.LFE177:
- 3710              		.global	GPIO_Pins
- 3711              		.data
- 3712              		.align	2
- 3715              	GPIO_Pins:
- 3716 0010 0100     		.short	1
- 3717 0012 0200     		.short	2
- 3718 0014 0400     		.short	4
- 3719 0016 0800     		.short	8
- 3720 0018 1000     		.short	16
- 3721 001a 2000     		.short	32
- 3722 001c 4000     		.short	64
- 3723 001e 8000     		.short	128
- 3724 0020 0001     		.short	256
- 3725 0022 0002     		.short	512
- 3726 0024 0004     		.short	1024
- 3727 0026 0008     		.short	2048
- 3728 0028 0010     		.short	4096
- 3729 002a 0020     		.short	8192
- 3730 002c 0040     		.short	16384
- 3731 002e 0080     		.short	-32768
- 3732              		.global	GPIO_Ports
- 3733              		.align	2
- 3736              	GPIO_Ports:
- 3737 0030 00100240 		.word	1073876992
- 3738 0034 00000240 		.word	1073872896
- 3739 0038 00080240 		.word	1073874944
- 3740 003c 000C0240 		.word	1073875968
- 3741              		.global	msTicks
- 3742              		.bss
- 3743              		.align	2
- 3746              	msTicks:
- 3747 0000 00000000 		.space	4
- 3748              		.text
- 3749              		.align	1
- 3750              		.global	SysTick_Handler
- 3751              		.syntax unified
- 3752              		.code	16
- 3753              		.thumb_func
- 3754              		.fpu softvfp
- 3756              	SysTick_Handler:
- 3757              	.LFB178:
-  22:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** // ========================================= DOOOOOORS INIT =======================================
-  23:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** uint16_t GPIO_Pins[] = {
-  24:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	GPIO_Pin_0, GPIO_Pin_1, GPIO_Pin_2, GPIO_Pin_3, GPIO_Pin_4, GPIO_Pin_5,
-  25:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	GPIO_Pin_6, GPIO_Pin_7, GPIO_Pin_8, GPIO_Pin_9, GPIO_Pin_10, GPIO_Pin_11,
-  26:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	GPIO_Pin_12, GPIO_Pin_13, GPIO_Pin_14, GPIO_Pin_15};
-  27:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 
-  28:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** GPIO_TypeDef* GPIO_Ports[] = {GPIOE, GPIOA, GPIOC, GPIOD};
-  29:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 
-  30:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** // ========================================= SYSTICK ==============================================
-  31:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** volatile uint32_t msTicks = 0; /* Variable to store millisecond ticks */
-  32:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** void SysTick_Handler(void)
-  33:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** { /* SysTick interrupt Handler. */
- 3758              		.loc 4 33 0
- 3759              		.cfi_startproc
- 3760              		@ args = 0, pretend = 0, frame = 0
- 3761              		@ frame_needed = 1, uses_anonymous_args = 0
- 3762 0f60 80B5     		push	{r7, lr}
- 3763              		.cfi_def_cfa_offset 8
- 3764              		.cfi_offset 7, -8
- 3765              		.cfi_offset 14, -4
- 3766 0f62 00AF     		add	r7, sp, #0
- 3767              		.cfi_def_cfa_register 7
-  34:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	msTicks++;
- 3768              		.loc 4 34 0
- 3769 0f64 034B     		ldr	r3, .L253
- 3770 0f66 1B68     		ldr	r3, [r3]
- 3771 0f68 5A1C     		adds	r2, r3, #1
- 3772 0f6a 024B     		ldr	r3, .L253
- 3773 0f6c 1A60     		str	r2, [r3]
-  35:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** }
- 3774              		.loc 4 35 0
- 3775 0f6e C046     		nop
- 3776 0f70 BD46     		mov	sp, r7
- 3777              		@ sp needed
- 3778 0f72 80BD     		pop	{r7, pc}
- 3779              	.L254:
- 3780              		.align	2
- 3781              	.L253:
- 3782 0f74 00000000 		.word	msTicks
- 3783              		.cfi_endproc
- 3784              	.LFE178:
- 3786              		.align	1
- 3787              		.global	systick_Init
- 3788              		.syntax unified
- 3789              		.code	16
- 3790              		.thumb_func
- 3791              		.fpu softvfp
- 3793              	systick_Init:
- 3794              	.LFB179:
-  36:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** void systick_Init(void)
-  37:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** {
- 3795              		.loc 4 37 0
- 3796              		.cfi_startproc
- 3797              		@ args = 0, pretend = 0, frame = 8
- 3798              		@ frame_needed = 1, uses_anonymous_args = 0
- 3799 0f78 80B5     		push	{r7, lr}
- 3800              		.cfi_def_cfa_offset 8
- 3801              		.cfi_offset 7, -8
- 3802              		.cfi_offset 14, -4
- 3803 0f7a 82B0     		sub	sp, sp, #8
- 3804              		.cfi_def_cfa_offset 16
- 3805 0f7c 00AF     		add	r7, sp, #0
- 3806              		.cfi_def_cfa_register 7
-  38:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	// Initiera SysTick.
-  39:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	*((void (**)(void))0x2001C03C) = SysTick_Handler;
- 3807              		.loc 4 39 0
- 3808 0f7e 064B     		ldr	r3, .L256
- 3809 0f80 064A     		ldr	r2, .L256+4
- 3810 0f82 1A60     		str	r2, [r3]
-  40:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	uint32_t returnCode;
-  41:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	returnCode = SysTick_Config(168000000 / 1000); // Genererar ett SysTick-avbrott varje ms.
- 3811              		.loc 4 41 0
- 3812 0f84 064B     		ldr	r3, .L256+8
- 3813 0f86 1800     		movs	r0, r3
- 3814 0f88 FFF76AF8 		bl	SysTick_Config
- 3815 0f8c 0300     		movs	r3, r0
- 3816 0f8e 7B60     		str	r3, [r7, #4]
-  42:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 
-  43:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	if (returnCode != 0)
-  44:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	{   // Om inte SysTick_Config lyckas...
-  45:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		//typ reboot? bootloops är alltid kul
-  46:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	}
-  47:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** }
- 3817              		.loc 4 47 0
- 3818 0f90 C046     		nop
- 3819 0f92 BD46     		mov	sp, r7
- 3820 0f94 02B0     		add	sp, sp, #8
- 3821              		@ sp needed
- 3822 0f96 80BD     		pop	{r7, pc}
- 3823              	.L257:
- 3824              		.align	2
- 3825              	.L256:
- 3826 0f98 3CC00120 		.word	536985660
- 3827 0f9c 00000000 		.word	SysTick_Handler
- 3828 0fa0 40900200 		.word	168000
- 3829              		.cfi_endproc
- 3830              	.LFE179:
- 3832              		.align	1
- 3833              		.global	main
- 3834              		.syntax unified
- 3835              		.code	16
- 3836              		.thumb_func
- 3837              		.fpu softvfp
- 3839              	main:
- 3840              	.LFB180:
-  48:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 
-  49:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** void main(void)
-  50:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** {
- 3841              		.loc 4 50 0
- 3842              		.cfi_startproc
- 3843              		@ args = 0, pretend = 0, frame = 2088
- 3844              		@ frame_needed = 1, uses_anonymous_args = 0
- 3845 0fa4 F0B5     		push	{r4, r5, r6, r7, lr}
- 3846              		.cfi_def_cfa_offset 20
- 3847              		.cfi_offset 4, -20
- 3848              		.cfi_offset 5, -16
- 3849              		.cfi_offset 6, -12
- 3850              		.cfi_offset 7, -8
- 3851              		.cfi_offset 14, -4
- 3852 0fa6 C646     		mov	lr, r8
- 3853 0fa8 00B5     		push	{lr}
- 3854              		.cfi_def_cfa_offset 24
- 3855              		.cfi_offset 8, -24
- 3856 0faa FD4C     		ldr	r4, .L285
- 3857 0fac A544     		add	sp, sp, r4
- 3858              		.cfi_def_cfa_offset 2112
- 3859 0fae 00AF     		add	r7, sp, #0
- 3860              		.cfi_def_cfa_register 7
-  51:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	init_GPIO_Ports();
- 3861              		.loc 4 51 0
- 3862 0fb0 FFF7FEFF 		bl	init_GPIO_Ports
-  52:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	systick_Init();
- 3863              		.loc 4 52 0
- 3864 0fb4 FFF7FEFF 		bl	systick_Init
-  53:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	while(msTicks < 2000);
- 3865              		.loc 4 53 0
- 3866 0fb8 C046     		nop
- 3867              	.L259:
- 3868              		.loc 4 53 0 is_stmt 0 discriminator 1
- 3869 0fba FA4B     		ldr	r3, .L285+4
- 3870 0fbc 1B68     		ldr	r3, [r3]
- 3871 0fbe FA4A     		ldr	r2, .L285+8
- 3872 0fc0 9342     		cmp	r3, r2
- 3873 0fc2 FAD9     		bls	.L259
-  54:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 
-  55:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	door door1, door2, door3, door4, door5, door6, door8, door9 ,door10, door11, door12, door13,door14
-  56:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	door all_doors[32] = {door1, door2, door3, door4, door5, door6, door8, door9 ,door10, door11, door
- 3874              		.loc 4 56 0 is_stmt 1
- 3875 0fc4 F94B     		ldr	r3, .L285+12
- 3876 0fc6 8122     		movs	r2, #129
- 3877 0fc8 1201     		lsls	r2, r2, #4
- 3878 0fca 9446     		mov	ip, r2
- 3879 0fcc 1822     		movs	r2, #24
- 3880 0fce 9046     		mov	r8, r2
- 3881 0fd0 B844     		add	r8, r8, r7
- 3882 0fd2 C444     		add	ip, ip, r8
- 3883 0fd4 6344     		add	r3, r3, ip
- 3884 0fd6 1800     		movs	r0, r3
- 3885 0fd8 8023     		movs	r3, #128
- 3886 0fda DB00     		lsls	r3, r3, #3
- 3887 0fdc 1A00     		movs	r2, r3
- 3888 0fde 0021     		movs	r1, #0
- 3889 0fe0 FFF7FEFF 		bl	memset
- 3890 0fe4 F14B     		ldr	r3, .L285+12
- 3891 0fe6 8126     		movs	r6, #129
- 3892 0fe8 3601     		lsls	r6, r6, #4
- 3893 0fea 1822     		movs	r2, #24
- 3894 0fec B918     		adds	r1, r7, r2
- 3895 0fee 8A19     		adds	r2, r1, r6
- 3896 0ff0 D218     		adds	r2, r2, r3
- 3897 0ff2 F823     		movs	r3, #248
- 3898 0ff4 DB00     		lsls	r3, r3, #3
- 3899 0ff6 1821     		movs	r1, #24
- 3900 0ff8 8C46     		mov	ip, r1
- 3901 0ffa BC44     		add	ip, ip, r7
- 3902 0ffc 6344     		add	r3, r3, ip
- 3903 0ffe 1000     		movs	r0, r2
- 3904 1000 1900     		movs	r1, r3
- 3905 1002 2023     		movs	r3, #32
- 3906 1004 1A00     		movs	r2, r3
- 3907 1006 FFF7FEFF 		bl	memcpy
- 3908 100a E84B     		ldr	r3, .L285+12
- 3909 100c 8122     		movs	r2, #129
- 3910 100e 1201     		lsls	r2, r2, #4
- 3911 1010 9446     		mov	ip, r2
- 3912 1012 1821     		movs	r1, #24
- 3913 1014 8846     		mov	r8, r1
- 3914 1016 B844     		add	r8, r8, r7
- 3915 1018 C444     		add	ip, ip, r8
- 3916 101a 6344     		add	r3, r3, ip
- 3917 101c F422     		movs	r2, #244
- 3918 101e D200     		lsls	r2, r2, #3
- 3919 1020 1821     		movs	r1, #24
- 3920 1022 8C46     		mov	ip, r1
- 3921 1024 BC44     		add	ip, ip, r7
- 3922 1026 6244     		add	r2, r2, ip
- 3923 1028 2033     		adds	r3, r3, #32
- 3924 102a 1100     		movs	r1, r2
- 3925 102c 2022     		movs	r2, #32
- 3926 102e 1800     		movs	r0, r3
- 3927 1030 FFF7FEFF 		bl	memcpy
- 3928 1034 DD4B     		ldr	r3, .L285+12
- 3929 1036 8122     		movs	r2, #129
- 3930 1038 1201     		lsls	r2, r2, #4
- 3931 103a 9446     		mov	ip, r2
- 3932 103c 1821     		movs	r1, #24
- 3933 103e 8846     		mov	r8, r1
- 3934 1040 B844     		add	r8, r8, r7
- 3935 1042 C444     		add	ip, ip, r8
- 3936 1044 6344     		add	r3, r3, ip
- 3937 1046 F022     		movs	r2, #240
- 3938 1048 D200     		lsls	r2, r2, #3
- 3939 104a 1821     		movs	r1, #24
- 3940 104c 8C46     		mov	ip, r1
- 3941 104e BC44     		add	ip, ip, r7
- 3942 1050 6244     		add	r2, r2, ip
- 3943 1052 4033     		adds	r3, r3, #64
- 3944 1054 1100     		movs	r1, r2
- 3945 1056 2022     		movs	r2, #32
- 3946 1058 1800     		movs	r0, r3
- 3947 105a FFF7FEFF 		bl	memcpy
- 3948 105e D34B     		ldr	r3, .L285+12
- 3949 1060 8122     		movs	r2, #129
- 3950 1062 1201     		lsls	r2, r2, #4
- 3951 1064 9446     		mov	ip, r2
- 3952 1066 1821     		movs	r1, #24
- 3953 1068 8846     		mov	r8, r1
- 3954 106a B844     		add	r8, r8, r7
- 3955 106c C444     		add	ip, ip, r8
- 3956 106e 6344     		add	r3, r3, ip
- 3957 1070 EC22     		movs	r2, #236
- 3958 1072 D200     		lsls	r2, r2, #3
- 3959 1074 1821     		movs	r1, #24
- 3960 1076 8C46     		mov	ip, r1
- 3961 1078 BC44     		add	ip, ip, r7
- 3962 107a 6244     		add	r2, r2, ip
- 3963 107c 6033     		adds	r3, r3, #96
- 3964 107e 1100     		movs	r1, r2
- 3965 1080 2022     		movs	r2, #32
- 3966 1082 1800     		movs	r0, r3
- 3967 1084 FFF7FEFF 		bl	memcpy
- 3968 1088 C84B     		ldr	r3, .L285+12
- 3969 108a 8122     		movs	r2, #129
- 3970 108c 1201     		lsls	r2, r2, #4
- 3971 108e 9446     		mov	ip, r2
- 3972 1090 1821     		movs	r1, #24
- 3973 1092 8846     		mov	r8, r1
- 3974 1094 B844     		add	r8, r8, r7
- 3975 1096 C444     		add	ip, ip, r8
- 3976 1098 6344     		add	r3, r3, ip
- 3977 109a E822     		movs	r2, #232
- 3978 109c D200     		lsls	r2, r2, #3
- 3979 109e 1821     		movs	r1, #24
- 3980 10a0 8C46     		mov	ip, r1
- 3981 10a2 BC44     		add	ip, ip, r7
- 3982 10a4 6244     		add	r2, r2, ip
- 3983 10a6 8033     		adds	r3, r3, #128
- 3984 10a8 1100     		movs	r1, r2
- 3985 10aa 2022     		movs	r2, #32
- 3986 10ac 1800     		movs	r0, r3
- 3987 10ae FFF7FEFF 		bl	memcpy
- 3988 10b2 BE4B     		ldr	r3, .L285+12
- 3989 10b4 8122     		movs	r2, #129
- 3990 10b6 1201     		lsls	r2, r2, #4
- 3991 10b8 9446     		mov	ip, r2
- 3992 10ba 1821     		movs	r1, #24
- 3993 10bc 8846     		mov	r8, r1
- 3994 10be B844     		add	r8, r8, r7
- 3995 10c0 C444     		add	ip, ip, r8
- 3996 10c2 6344     		add	r3, r3, ip
- 3997 10c4 A022     		movs	r2, #160
- 3998 10c6 E421     		movs	r1, #228
- 3999 10c8 C900     		lsls	r1, r1, #3
- 4000 10ca 1820     		movs	r0, #24
- 4001 10cc 8446     		mov	ip, r0
- 4002 10ce BC44     		add	ip, ip, r7
- 4003 10d0 6144     		add	r1, r1, ip
- 4004 10d2 9B18     		adds	r3, r3, r2
- 4005 10d4 2022     		movs	r2, #32
- 4006 10d6 1800     		movs	r0, r3
- 4007 10d8 FFF7FEFF 		bl	memcpy
- 4008 10dc B34B     		ldr	r3, .L285+12
- 4009 10de 8122     		movs	r2, #129
- 4010 10e0 1201     		lsls	r2, r2, #4
- 4011 10e2 9446     		mov	ip, r2
- 4012 10e4 1821     		movs	r1, #24
- 4013 10e6 8846     		mov	r8, r1
- 4014 10e8 B844     		add	r8, r8, r7
- 4015 10ea C444     		add	ip, ip, r8
- 4016 10ec 6344     		add	r3, r3, ip
- 4017 10ee C022     		movs	r2, #192
- 4018 10f0 AF49     		ldr	r1, .L285+16
- 4019 10f2 8120     		movs	r0, #129
- 4020 10f4 0001     		lsls	r0, r0, #4
- 4021 10f6 8446     		mov	ip, r0
- 4022 10f8 1820     		movs	r0, #24
- 4023 10fa 8046     		mov	r8, r0
- 4024 10fc B844     		add	r8, r8, r7
- 4025 10fe C444     		add	ip, ip, r8
- 4026 1100 6144     		add	r1, r1, ip
- 4027 1102 9B18     		adds	r3, r3, r2
- 4028 1104 2022     		movs	r2, #32
- 4029 1106 1800     		movs	r0, r3
- 4030 1108 FFF7FEFF 		bl	memcpy
- 4031 110c A74B     		ldr	r3, .L285+12
- 4032 110e 8122     		movs	r2, #129
- 4033 1110 1201     		lsls	r2, r2, #4
- 4034 1112 9446     		mov	ip, r2
- 4035 1114 1821     		movs	r1, #24
- 4036 1116 8846     		mov	r8, r1
- 4037 1118 B844     		add	r8, r8, r7
- 4038 111a C444     		add	ip, ip, r8
- 4039 111c 6344     		add	r3, r3, ip
- 4040 111e E022     		movs	r2, #224
- 4041 1120 A449     		ldr	r1, .L285+20
- 4042 1122 8120     		movs	r0, #129
- 4043 1124 0001     		lsls	r0, r0, #4
- 4044 1126 8446     		mov	ip, r0
- 4045 1128 1820     		movs	r0, #24
- 4046 112a 8046     		mov	r8, r0
- 4047 112c B844     		add	r8, r8, r7
- 4048 112e C444     		add	ip, ip, r8
- 4049 1130 6144     		add	r1, r1, ip
- 4050 1132 9B18     		adds	r3, r3, r2
- 4051 1134 2022     		movs	r2, #32
- 4052 1136 1800     		movs	r0, r3
- 4053 1138 FFF7FEFF 		bl	memcpy
- 4054 113c 9B4B     		ldr	r3, .L285+12
- 4055 113e 1822     		movs	r2, #24
- 4056 1140 B918     		adds	r1, r7, r2
- 4057 1142 8A19     		adds	r2, r1, r6
- 4058 1144 D218     		adds	r2, r2, r3
- 4059 1146 8023     		movs	r3, #128
- 4060 1148 5B00     		lsls	r3, r3, #1
- 4061 114a 9B49     		ldr	r1, .L285+24
- 4062 114c 8120     		movs	r0, #129
- 4063 114e 0001     		lsls	r0, r0, #4
- 4064 1150 8446     		mov	ip, r0
- 4065 1152 1820     		movs	r0, #24
- 4066 1154 8046     		mov	r8, r0
- 4067 1156 B844     		add	r8, r8, r7
- 4068 1158 C444     		add	ip, ip, r8
- 4069 115a 6144     		add	r1, r1, ip
- 4070 115c D318     		adds	r3, r2, r3
- 4071 115e 2022     		movs	r2, #32
- 4072 1160 1800     		movs	r0, r3
- 4073 1162 FFF7FEFF 		bl	memcpy
- 4074 1166 914B     		ldr	r3, .L285+12
- 4075 1168 1822     		movs	r2, #24
- 4076 116a B918     		adds	r1, r7, r2
- 4077 116c 8A19     		adds	r2, r1, r6
- 4078 116e D218     		adds	r2, r2, r3
- 4079 1170 9023     		movs	r3, #144
- 4080 1172 5B00     		lsls	r3, r3, #1
- 4081 1174 9149     		ldr	r1, .L285+28
- 4082 1176 8120     		movs	r0, #129
- 4083 1178 0001     		lsls	r0, r0, #4
- 4084 117a 8446     		mov	ip, r0
- 4085 117c 1820     		movs	r0, #24
- 4086 117e 8046     		mov	r8, r0
- 4087 1180 B844     		add	r8, r8, r7
- 4088 1182 C444     		add	ip, ip, r8
- 4089 1184 6144     		add	r1, r1, ip
- 4090 1186 D318     		adds	r3, r2, r3
- 4091 1188 2022     		movs	r2, #32
- 4092 118a 1800     		movs	r0, r3
- 4093 118c FFF7FEFF 		bl	memcpy
- 4094 1190 864B     		ldr	r3, .L285+12
- 4095 1192 1822     		movs	r2, #24
- 4096 1194 B918     		adds	r1, r7, r2
- 4097 1196 8A19     		adds	r2, r1, r6
- 4098 1198 D218     		adds	r2, r2, r3
- 4099 119a A023     		movs	r3, #160
- 4100 119c 5B00     		lsls	r3, r3, #1
- 4101 119e 8849     		ldr	r1, .L285+32
- 4102 11a0 8120     		movs	r0, #129
- 4103 11a2 0001     		lsls	r0, r0, #4
- 4104 11a4 8446     		mov	ip, r0
- 4105 11a6 1820     		movs	r0, #24
- 4106 11a8 8046     		mov	r8, r0
- 4107 11aa B844     		add	r8, r8, r7
- 4108 11ac C444     		add	ip, ip, r8
- 4109 11ae 6144     		add	r1, r1, ip
- 4110 11b0 D318     		adds	r3, r2, r3
- 4111 11b2 2022     		movs	r2, #32
- 4112 11b4 1800     		movs	r0, r3
- 4113 11b6 FFF7FEFF 		bl	memcpy
- 4114 11ba 7C4B     		ldr	r3, .L285+12
- 4115 11bc 1822     		movs	r2, #24
- 4116 11be B918     		adds	r1, r7, r2
- 4117 11c0 8A19     		adds	r2, r1, r6
- 4118 11c2 D218     		adds	r2, r2, r3
- 4119 11c4 B023     		movs	r3, #176
- 4120 11c6 5B00     		lsls	r3, r3, #1
- 4121 11c8 7E49     		ldr	r1, .L285+36
- 4122 11ca 8120     		movs	r0, #129
- 4123 11cc 0001     		lsls	r0, r0, #4
- 4124 11ce 8446     		mov	ip, r0
- 4125 11d0 1820     		movs	r0, #24
- 4126 11d2 8046     		mov	r8, r0
- 4127 11d4 B844     		add	r8, r8, r7
- 4128 11d6 C444     		add	ip, ip, r8
- 4129 11d8 6144     		add	r1, r1, ip
- 4130 11da D318     		adds	r3, r2, r3
- 4131 11dc 2022     		movs	r2, #32
- 4132 11de 1800     		movs	r0, r3
- 4133 11e0 FFF7FEFF 		bl	memcpy
- 4134 11e4 714B     		ldr	r3, .L285+12
- 4135 11e6 1822     		movs	r2, #24
- 4136 11e8 B918     		adds	r1, r7, r2
- 4137 11ea 8A19     		adds	r2, r1, r6
- 4138 11ec D218     		adds	r2, r2, r3
- 4139 11ee C023     		movs	r3, #192
- 4140 11f0 5B00     		lsls	r3, r3, #1
- 4141 11f2 7549     		ldr	r1, .L285+40
- 4142 11f4 8120     		movs	r0, #129
- 4143 11f6 0001     		lsls	r0, r0, #4
- 4144 11f8 8446     		mov	ip, r0
- 4145 11fa 1820     		movs	r0, #24
- 4146 11fc 8046     		mov	r8, r0
- 4147 11fe B844     		add	r8, r8, r7
- 4148 1200 C444     		add	ip, ip, r8
- 4149 1202 6144     		add	r1, r1, ip
- 4150 1204 D318     		adds	r3, r2, r3
- 4151 1206 2022     		movs	r2, #32
- 4152 1208 1800     		movs	r0, r3
- 4153 120a FFF7FEFF 		bl	memcpy
- 4154 120e 674B     		ldr	r3, .L285+12
- 4155 1210 1822     		movs	r2, #24
- 4156 1212 B918     		adds	r1, r7, r2
- 4157 1214 8A19     		adds	r2, r1, r6
- 4158 1216 D218     		adds	r2, r2, r3
- 4159 1218 D023     		movs	r3, #208
- 4160 121a 5B00     		lsls	r3, r3, #1
- 4161 121c 6B49     		ldr	r1, .L285+44
- 4162 121e 8120     		movs	r0, #129
- 4163 1220 0001     		lsls	r0, r0, #4
- 4164 1222 8446     		mov	ip, r0
- 4165 1224 1820     		movs	r0, #24
- 4166 1226 8046     		mov	r8, r0
- 4167 1228 B844     		add	r8, r8, r7
- 4168 122a C444     		add	ip, ip, r8
- 4169 122c 6144     		add	r1, r1, ip
- 4170 122e D318     		adds	r3, r2, r3
- 4171 1230 2022     		movs	r2, #32
- 4172 1232 1800     		movs	r0, r3
- 4173 1234 FFF7FEFF 		bl	memcpy
- 4174 1238 5C4B     		ldr	r3, .L285+12
- 4175 123a 1822     		movs	r2, #24
- 4176 123c B918     		adds	r1, r7, r2
- 4177 123e 8A19     		adds	r2, r1, r6
- 4178 1240 D218     		adds	r2, r2, r3
- 4179 1242 E023     		movs	r3, #224
- 4180 1244 5B00     		lsls	r3, r3, #1
- 4181 1246 6249     		ldr	r1, .L285+48
- 4182 1248 8120     		movs	r0, #129
- 4183 124a 0001     		lsls	r0, r0, #4
- 4184 124c 8446     		mov	ip, r0
- 4185 124e 1820     		movs	r0, #24
- 4186 1250 8046     		mov	r8, r0
- 4187 1252 B844     		add	r8, r8, r7
- 4188 1254 C444     		add	ip, ip, r8
- 4189 1256 6144     		add	r1, r1, ip
- 4190 1258 D318     		adds	r3, r2, r3
- 4191 125a 2022     		movs	r2, #32
- 4192 125c 1800     		movs	r0, r3
- 4193 125e FFF7FEFF 		bl	memcpy
- 4194 1262 524B     		ldr	r3, .L285+12
- 4195 1264 1822     		movs	r2, #24
- 4196 1266 B918     		adds	r1, r7, r2
- 4197 1268 8A19     		adds	r2, r1, r6
- 4198 126a D218     		adds	r2, r2, r3
- 4199 126c F023     		movs	r3, #240
- 4200 126e 5B00     		lsls	r3, r3, #1
- 4201 1270 5849     		ldr	r1, .L285+52
- 4202 1272 8120     		movs	r0, #129
- 4203 1274 0001     		lsls	r0, r0, #4
- 4204 1276 8446     		mov	ip, r0
- 4205 1278 1820     		movs	r0, #24
- 4206 127a 8046     		mov	r8, r0
- 4207 127c B844     		add	r8, r8, r7
- 4208 127e C444     		add	ip, ip, r8
- 4209 1280 6144     		add	r1, r1, ip
- 4210 1282 D318     		adds	r3, r2, r3
- 4211 1284 2022     		movs	r2, #32
- 4212 1286 1800     		movs	r0, r3
- 4213 1288 FFF7FEFF 		bl	memcpy
- 4214 128c 474B     		ldr	r3, .L285+12
- 4215 128e 1822     		movs	r2, #24
- 4216 1290 B918     		adds	r1, r7, r2
- 4217 1292 8A19     		adds	r2, r1, r6
- 4218 1294 D218     		adds	r2, r2, r3
- 4219 1296 8023     		movs	r3, #128
- 4220 1298 9B00     		lsls	r3, r3, #2
- 4221 129a 4F49     		ldr	r1, .L285+56
- 4222 129c 8120     		movs	r0, #129
- 4223 129e 0001     		lsls	r0, r0, #4
- 4224 12a0 8446     		mov	ip, r0
- 4225 12a2 1820     		movs	r0, #24
- 4226 12a4 8046     		mov	r8, r0
- 4227 12a6 B844     		add	r8, r8, r7
- 4228 12a8 C444     		add	ip, ip, r8
- 4229 12aa 6144     		add	r1, r1, ip
- 4230 12ac D318     		adds	r3, r2, r3
- 4231 12ae 2022     		movs	r2, #32
- 4232 12b0 1800     		movs	r0, r3
- 4233 12b2 FFF7FEFF 		bl	memcpy
- 4234 12b6 3D4B     		ldr	r3, .L285+12
- 4235 12b8 1822     		movs	r2, #24
- 4236 12ba B918     		adds	r1, r7, r2
- 4237 12bc 8A19     		adds	r2, r1, r6
- 4238 12be D218     		adds	r2, r2, r3
- 4239 12c0 8823     		movs	r3, #136
- 4240 12c2 9B00     		lsls	r3, r3, #2
- 4241 12c4 4549     		ldr	r1, .L285+60
- 4242 12c6 8120     		movs	r0, #129
- 4243 12c8 0001     		lsls	r0, r0, #4
- 4244 12ca 8446     		mov	ip, r0
- 4245 12cc 1820     		movs	r0, #24
- 4246 12ce 8046     		mov	r8, r0
- 4247 12d0 B844     		add	r8, r8, r7
- 4248 12d2 C444     		add	ip, ip, r8
- 4249 12d4 6144     		add	r1, r1, ip
- 4250 12d6 D318     		adds	r3, r2, r3
- 4251 12d8 2022     		movs	r2, #32
- 4252 12da 1800     		movs	r0, r3
- 4253 12dc FFF7FEFF 		bl	memcpy
- 4254 12e0 324B     		ldr	r3, .L285+12
- 4255 12e2 1822     		movs	r2, #24
- 4256 12e4 B918     		adds	r1, r7, r2
- 4257 12e6 8A19     		adds	r2, r1, r6
- 4258 12e8 D218     		adds	r2, r2, r3
- 4259 12ea 9023     		movs	r3, #144
- 4260 12ec 9B00     		lsls	r3, r3, #2
- 4261 12ee 3C49     		ldr	r1, .L285+64
- 4262 12f0 8120     		movs	r0, #129
- 4263 12f2 0001     		lsls	r0, r0, #4
- 4264 12f4 8446     		mov	ip, r0
- 4265 12f6 1820     		movs	r0, #24
- 4266 12f8 8046     		mov	r8, r0
- 4267 12fa B844     		add	r8, r8, r7
- 4268 12fc C444     		add	ip, ip, r8
- 4269 12fe 6144     		add	r1, r1, ip
- 4270 1300 D318     		adds	r3, r2, r3
- 4271 1302 2022     		movs	r2, #32
- 4272 1304 1800     		movs	r0, r3
- 4273 1306 FFF7FEFF 		bl	memcpy
- 4274 130a 284B     		ldr	r3, .L285+12
- 4275 130c 1822     		movs	r2, #24
- 4276 130e B918     		adds	r1, r7, r2
- 4277 1310 8A19     		adds	r2, r1, r6
- 4278 1312 D218     		adds	r2, r2, r3
- 4279 1314 9823     		movs	r3, #152
- 4280 1316 9B00     		lsls	r3, r3, #2
- 4281 1318 3249     		ldr	r1, .L285+68
- 4282 131a 8120     		movs	r0, #129
- 4283 131c 0001     		lsls	r0, r0, #4
- 4284 131e 8446     		mov	ip, r0
- 4285 1320 1820     		movs	r0, #24
- 4286 1322 8046     		mov	r8, r0
- 4287 1324 B844     		add	r8, r8, r7
- 4288 1326 C444     		add	ip, ip, r8
- 4289 1328 6144     		add	r1, r1, ip
- 4290 132a D318     		adds	r3, r2, r3
- 4291 132c 2022     		movs	r2, #32
- 4292 132e 1800     		movs	r0, r3
- 4293 1330 FFF7FEFF 		bl	memcpy
- 4294 1334 1D4B     		ldr	r3, .L285+12
- 4295 1336 1822     		movs	r2, #24
- 4296 1338 B918     		adds	r1, r7, r2
- 4297 133a 8A19     		adds	r2, r1, r6
- 4298 133c D218     		adds	r2, r2, r3
- 4299 133e A023     		movs	r3, #160
- 4300 1340 9B00     		lsls	r3, r3, #2
- 4301 1342 2949     		ldr	r1, .L285+72
- 4302 1344 8120     		movs	r0, #129
- 4303 1346 0001     		lsls	r0, r0, #4
- 4304 1348 8446     		mov	ip, r0
- 4305 134a 1820     		movs	r0, #24
- 4306 134c 8046     		mov	r8, r0
- 4307 134e B844     		add	r8, r8, r7
- 4308 1350 C444     		add	ip, ip, r8
- 4309 1352 6144     		add	r1, r1, ip
- 4310 1354 D318     		adds	r3, r2, r3
- 4311 1356 2022     		movs	r2, #32
- 4312 1358 1800     		movs	r0, r3
- 4313 135a FFF7FEFF 		bl	memcpy
- 4314 135e 134B     		ldr	r3, .L285+12
- 4315 1360 1822     		movs	r2, #24
- 4316 1362 B918     		adds	r1, r7, r2
- 4317 1364 8A19     		adds	r2, r1, r6
- 4318 1366 D218     		adds	r2, r2, r3
- 4319 1368 A823     		movs	r3, #168
- 4320 136a 9B00     		lsls	r3, r3, #2
- 4321 136c 1F49     		ldr	r1, .L285+76
- 4322 136e 8120     		movs	r0, #129
- 4323 1370 0001     		lsls	r0, r0, #4
- 4324 1372 8446     		mov	ip, r0
- 4325 1374 1820     		movs	r0, #24
- 4326 1376 8046     		mov	r8, r0
- 4327 1378 B844     		add	r8, r8, r7
- 4328 137a C444     		add	ip, ip, r8
- 4329 137c 6144     		add	r1, r1, ip
- 4330 137e D318     		adds	r3, r2, r3
- 4331 1380 2022     		movs	r2, #32
- 4332 1382 1800     		movs	r0, r3
- 4333 1384 FFF7FEFF 		bl	memcpy
- 4334 1388 084B     		ldr	r3, .L285+12
- 4335 138a 1822     		movs	r2, #24
- 4336 138c B918     		adds	r1, r7, r2
- 4337 138e 8A19     		adds	r2, r1, r6
- 4338 1390 D218     		adds	r2, r2, r3
- 4339 1392 B023     		movs	r3, #176
- 4340 1394 9B00     		lsls	r3, r3, #2
- 4341 1396 1649     		ldr	r1, .L285+80
- 4342 1398 8120     		movs	r0, #129
- 4343 139a 0001     		lsls	r0, r0, #4
- 4344 139c 8446     		mov	ip, r0
- 4345 139e 29E0     		b	.L286
- 4346              	.L287:
- 4347              		.align	2
- 4348              	.L285:
- 4349 13a0 D8F7FFFF 		.word	-2088
- 4350 13a4 00000000 		.word	msTicks
- 4351 13a8 CF070000 		.word	1999
- 4352 13ac F0F7FFFF 		.word	-2064
- 4353 13b0 F0FEFFFF 		.word	-272
- 4354 13b4 D0FEFFFF 		.word	-304
- 4355 13b8 B0FEFFFF 		.word	-336
- 4356 13bc 90FEFFFF 		.word	-368
- 4357 13c0 70FEFFFF 		.word	-400
- 4358 13c4 50FEFFFF 		.word	-432
- 4359 13c8 30FEFFFF 		.word	-464
- 4360 13cc 10FEFFFF 		.word	-496
- 4361 13d0 F0FDFFFF 		.word	-528
- 4362 13d4 D0FDFFFF 		.word	-560
- 4363 13d8 B0FDFFFF 		.word	-592
- 4364 13dc 90FDFFFF 		.word	-624
- 4365 13e0 70FDFFFF 		.word	-656
- 4366 13e4 50FDFFFF 		.word	-688
- 4367 13e8 30FDFFFF 		.word	-720
- 4368 13ec 10FDFFFF 		.word	-752
- 4369 13f0 F0FCFFFF 		.word	-784
- 4370              	.L286:
- 4371 13f4 1820     		movs	r0, #24
- 4372 13f6 8046     		mov	r8, r0
- 4373 13f8 B844     		add	r8, r8, r7
- 4374 13fa C444     		add	ip, ip, r8
- 4375 13fc 6144     		add	r1, r1, ip
- 4376 13fe D318     		adds	r3, r2, r3
- 4377 1400 2022     		movs	r2, #32
- 4378 1402 1800     		movs	r0, r3
- 4379 1404 FFF7FEFF 		bl	memcpy
- 4380 1408 AF4B     		ldr	r3, .L288
- 4381 140a 1822     		movs	r2, #24
- 4382 140c B918     		adds	r1, r7, r2
- 4383 140e 8A19     		adds	r2, r1, r6
- 4384 1410 D218     		adds	r2, r2, r3
- 4385 1412 B823     		movs	r3, #184
- 4386 1414 9B00     		lsls	r3, r3, #2
- 4387 1416 AD49     		ldr	r1, .L288+4
- 4388 1418 8120     		movs	r0, #129
- 4389 141a 0001     		lsls	r0, r0, #4
- 4390 141c 8446     		mov	ip, r0
- 4391 141e 1820     		movs	r0, #24
- 4392 1420 8046     		mov	r8, r0
- 4393 1422 B844     		add	r8, r8, r7
- 4394 1424 C444     		add	ip, ip, r8
- 4395 1426 6144     		add	r1, r1, ip
- 4396 1428 D318     		adds	r3, r2, r3
- 4397 142a 2022     		movs	r2, #32
- 4398 142c 1800     		movs	r0, r3
- 4399 142e FFF7FEFF 		bl	memcpy
- 4400 1432 A54B     		ldr	r3, .L288
- 4401 1434 1822     		movs	r2, #24
- 4402 1436 B918     		adds	r1, r7, r2
- 4403 1438 8A19     		adds	r2, r1, r6
- 4404 143a D218     		adds	r2, r2, r3
- 4405 143c C023     		movs	r3, #192
- 4406 143e 9B00     		lsls	r3, r3, #2
- 4407 1440 A349     		ldr	r1, .L288+8
- 4408 1442 8120     		movs	r0, #129
- 4409 1444 0001     		lsls	r0, r0, #4
- 4410 1446 8446     		mov	ip, r0
- 4411 1448 1820     		movs	r0, #24
- 4412 144a 8046     		mov	r8, r0
- 4413 144c B844     		add	r8, r8, r7
- 4414 144e C444     		add	ip, ip, r8
- 4415 1450 6144     		add	r1, r1, ip
- 4416 1452 D318     		adds	r3, r2, r3
- 4417 1454 2022     		movs	r2, #32
- 4418 1456 1800     		movs	r0, r3
- 4419 1458 FFF7FEFF 		bl	memcpy
- 4420 145c 9A4B     		ldr	r3, .L288
- 4421 145e 1822     		movs	r2, #24
- 4422 1460 B918     		adds	r1, r7, r2
- 4423 1462 8A19     		adds	r2, r1, r6
- 4424 1464 D218     		adds	r2, r2, r3
- 4425 1466 C823     		movs	r3, #200
- 4426 1468 9B00     		lsls	r3, r3, #2
- 4427 146a 9A49     		ldr	r1, .L288+12
- 4428 146c 8120     		movs	r0, #129
- 4429 146e 0001     		lsls	r0, r0, #4
- 4430 1470 8446     		mov	ip, r0
- 4431 1472 1820     		movs	r0, #24
- 4432 1474 8046     		mov	r8, r0
- 4433 1476 B844     		add	r8, r8, r7
- 4434 1478 C444     		add	ip, ip, r8
- 4435 147a 6144     		add	r1, r1, ip
- 4436 147c D318     		adds	r3, r2, r3
- 4437 147e 2022     		movs	r2, #32
- 4438 1480 1800     		movs	r0, r3
- 4439 1482 FFF7FEFF 		bl	memcpy
- 4440 1486 904B     		ldr	r3, .L288
- 4441 1488 1822     		movs	r2, #24
- 4442 148a B918     		adds	r1, r7, r2
- 4443 148c 8A19     		adds	r2, r1, r6
- 4444 148e D218     		adds	r2, r2, r3
- 4445 1490 D023     		movs	r3, #208
- 4446 1492 9B00     		lsls	r3, r3, #2
- 4447 1494 9049     		ldr	r1, .L288+16
- 4448 1496 8120     		movs	r0, #129
- 4449 1498 0001     		lsls	r0, r0, #4
- 4450 149a 8446     		mov	ip, r0
- 4451 149c 1820     		movs	r0, #24
- 4452 149e 8046     		mov	r8, r0
- 4453 14a0 B844     		add	r8, r8, r7
- 4454 14a2 C444     		add	ip, ip, r8
- 4455 14a4 6144     		add	r1, r1, ip
- 4456 14a6 D318     		adds	r3, r2, r3
- 4457 14a8 2022     		movs	r2, #32
- 4458 14aa 1800     		movs	r0, r3
- 4459 14ac FFF7FEFF 		bl	memcpy
- 4460 14b0 854B     		ldr	r3, .L288
- 4461 14b2 1822     		movs	r2, #24
- 4462 14b4 B918     		adds	r1, r7, r2
- 4463 14b6 8A19     		adds	r2, r1, r6
- 4464 14b8 D218     		adds	r2, r2, r3
- 4465 14ba D823     		movs	r3, #216
- 4466 14bc 9B00     		lsls	r3, r3, #2
- 4467 14be 8749     		ldr	r1, .L288+20
- 4468 14c0 8120     		movs	r0, #129
- 4469 14c2 0001     		lsls	r0, r0, #4
- 4470 14c4 8446     		mov	ip, r0
- 4471 14c6 1820     		movs	r0, #24
- 4472 14c8 8046     		mov	r8, r0
- 4473 14ca B844     		add	r8, r8, r7
- 4474 14cc C444     		add	ip, ip, r8
- 4475 14ce 6144     		add	r1, r1, ip
- 4476 14d0 D318     		adds	r3, r2, r3
- 4477 14d2 2022     		movs	r2, #32
- 4478 14d4 1800     		movs	r0, r3
- 4479 14d6 FFF7FEFF 		bl	memcpy
- 4480 14da 7B4B     		ldr	r3, .L288
- 4481 14dc 1822     		movs	r2, #24
- 4482 14de B918     		adds	r1, r7, r2
- 4483 14e0 8A19     		adds	r2, r1, r6
- 4484 14e2 D218     		adds	r2, r2, r3
- 4485 14e4 E023     		movs	r3, #224
- 4486 14e6 9B00     		lsls	r3, r3, #2
- 4487 14e8 7D49     		ldr	r1, .L288+24
- 4488 14ea 8120     		movs	r0, #129
- 4489 14ec 0001     		lsls	r0, r0, #4
- 4490 14ee 8446     		mov	ip, r0
- 4491 14f0 1820     		movs	r0, #24
- 4492 14f2 8046     		mov	r8, r0
- 4493 14f4 B844     		add	r8, r8, r7
- 4494 14f6 C444     		add	ip, ip, r8
- 4495 14f8 6144     		add	r1, r1, ip
- 4496 14fa D318     		adds	r3, r2, r3
- 4497 14fc 2022     		movs	r2, #32
- 4498 14fe 1800     		movs	r0, r3
- 4499 1500 FFF7FEFF 		bl	memcpy
- 4500 1504 704B     		ldr	r3, .L288
- 4501 1506 1822     		movs	r2, #24
- 4502 1508 B918     		adds	r1, r7, r2
- 4503 150a 8A19     		adds	r2, r1, r6
- 4504 150c D218     		adds	r2, r2, r3
- 4505 150e E823     		movs	r3, #232
- 4506 1510 9B00     		lsls	r3, r3, #2
- 4507 1512 7449     		ldr	r1, .L288+28
- 4508 1514 8120     		movs	r0, #129
- 4509 1516 0001     		lsls	r0, r0, #4
- 4510 1518 8446     		mov	ip, r0
- 4511 151a 1820     		movs	r0, #24
- 4512 151c 8046     		mov	r8, r0
- 4513 151e B844     		add	r8, r8, r7
- 4514 1520 C444     		add	ip, ip, r8
- 4515 1522 6144     		add	r1, r1, ip
- 4516 1524 D318     		adds	r3, r2, r3
- 4517 1526 2022     		movs	r2, #32
- 4518 1528 1800     		movs	r0, r3
- 4519 152a FFF7FEFF 		bl	memcpy
- 4520 152e 664B     		ldr	r3, .L288
- 4521 1530 1822     		movs	r2, #24
- 4522 1532 BA18     		adds	r2, r7, r2
- 4523 1534 9219     		adds	r2, r2, r6
- 4524 1536 D218     		adds	r2, r2, r3
- 4525 1538 F023     		movs	r3, #240
- 4526 153a 9B00     		lsls	r3, r3, #2
- 4527 153c 6A49     		ldr	r1, .L288+32
- 4528 153e 8120     		movs	r0, #129
- 4529 1540 0001     		lsls	r0, r0, #4
- 4530 1542 8446     		mov	ip, r0
- 4531 1544 1820     		movs	r0, #24
- 4532 1546 8046     		mov	r8, r0
- 4533 1548 B844     		add	r8, r8, r7
- 4534 154a C444     		add	ip, ip, r8
- 4535 154c 6144     		add	r1, r1, ip
- 4536 154e D318     		adds	r3, r2, r3
- 4537 1550 2022     		movs	r2, #32
- 4538 1552 1800     		movs	r0, r3
- 4539 1554 FFF7FEFF 		bl	memcpy
-  57:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 
-  58:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	int amountOfActiveDoors = 0;
- 4540              		.loc 4 58 0
- 4541 1558 0023     		movs	r3, #0
- 4542 155a 644A     		ldr	r2, .L288+36
- 4543 155c 1821     		movs	r1, #24
- 4544 155e 8C46     		mov	ip, r1
- 4545 1560 BC44     		add	ip, ip, r7
- 4546 1562 6244     		add	r2, r2, ip
- 4547 1564 1360     		str	r3, [r2]
- 4548              	.LBB2:
-  59:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	for (int j = 0; j < (sizeof(GPIO_Ports) /sizeof(GPIO_TypeDef *)); j++)
- 4549              		.loc 4 59 0
- 4550 1566 0023     		movs	r3, #0
- 4551 1568 614A     		ldr	r2, .L288+40
- 4552 156a 1821     		movs	r1, #24
- 4553 156c 8C46     		mov	ip, r1
- 4554 156e BC44     		add	ip, ip, r7
- 4555 1570 6244     		add	r2, r2, ip
- 4556 1572 1360     		str	r3, [r2]
- 4557 1574 47E0     		b	.L260
- 4558              	.L264:
- 4559              	.LBB3:
-  60:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	{
-  61:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		for (int i = 0; i < sizeof(GPIO_Pins) / sizeof(uint16_t); i = i + 2)
- 4560              		.loc 4 61 0
- 4561 1576 0023     		movs	r3, #0
- 4562 1578 5E4A     		ldr	r2, .L288+44
- 4563 157a 1821     		movs	r1, #24
- 4564 157c 8C46     		mov	ip, r1
- 4565 157e BC44     		add	ip, ip, r7
- 4566 1580 6244     		add	r2, r2, ip
- 4567 1582 1360     		str	r3, [r2]
- 4568 1584 2CE0     		b	.L261
- 4569              	.L263:
-  62:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		{
-  63:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 			if(!GPIO_ReadInputDataBit(GPIO_Ports[j], GPIO_Pins[i])){
- 4570              		.loc 4 63 0
- 4571 1586 5C4B     		ldr	r3, .L288+48
- 4572 1588 594A     		ldr	r2, .L288+40
- 4573 158a 1821     		movs	r1, #24
- 4574 158c 8C46     		mov	ip, r1
- 4575 158e BC44     		add	ip, ip, r7
- 4576 1590 6244     		add	r2, r2, ip
- 4577 1592 1268     		ldr	r2, [r2]
- 4578 1594 9200     		lsls	r2, r2, #2
- 4579 1596 D058     		ldr	r0, [r2, r3]
- 4580 1598 584B     		ldr	r3, .L288+52
- 4581 159a 564A     		ldr	r2, .L288+44
- 4582 159c 1821     		movs	r1, #24
- 4583 159e 8C46     		mov	ip, r1
- 4584 15a0 BC44     		add	ip, ip, r7
- 4585 15a2 6244     		add	r2, r2, ip
- 4586 15a4 1268     		ldr	r2, [r2]
- 4587 15a6 5200     		lsls	r2, r2, #1
- 4588 15a8 D35A     		ldrh	r3, [r2, r3]
- 4589 15aa 1900     		movs	r1, r3
- 4590 15ac FFF7FEFF 		bl	GPIO_ReadInputDataBit
- 4591 15b0 031E     		subs	r3, r0, #0
- 4592 15b2 0AD1     		bne	.L262
-  64:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 				amountOfActiveDoors++;
- 4593              		.loc 4 64 0
- 4594 15b4 4D4A     		ldr	r2, .L288+36
- 4595 15b6 1823     		movs	r3, #24
- 4596 15b8 FB18     		adds	r3, r7, r3
- 4597 15ba 9B18     		adds	r3, r3, r2
- 4598 15bc 1B68     		ldr	r3, [r3]
- 4599 15be 0133     		adds	r3, r3, #1
- 4600 15c0 1821     		movs	r1, #24
- 4601 15c2 8C46     		mov	ip, r1
- 4602 15c4 BC44     		add	ip, ip, r7
- 4603 15c6 6244     		add	r2, r2, ip
- 4604 15c8 1360     		str	r3, [r2]
- 4605              	.L262:
-  61:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		{
- 4606              		.loc 4 61 0 discriminator 2
- 4607 15ca 4A4A     		ldr	r2, .L288+44
- 4608 15cc 1823     		movs	r3, #24
- 4609 15ce FB18     		adds	r3, r7, r3
- 4610 15d0 9B18     		adds	r3, r3, r2
- 4611 15d2 1B68     		ldr	r3, [r3]
- 4612 15d4 0233     		adds	r3, r3, #2
- 4613 15d6 1821     		movs	r1, #24
- 4614 15d8 8C46     		mov	ip, r1
- 4615 15da BC44     		add	ip, ip, r7
- 4616 15dc 6244     		add	r2, r2, ip
- 4617 15de 1360     		str	r3, [r2]
- 4618              	.L261:
-  61:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		{
- 4619              		.loc 4 61 0 is_stmt 0 discriminator 1
- 4620 15e0 444B     		ldr	r3, .L288+44
- 4621 15e2 1822     		movs	r2, #24
- 4622 15e4 9446     		mov	ip, r2
- 4623 15e6 BC44     		add	ip, ip, r7
- 4624 15e8 6344     		add	r3, r3, ip
- 4625 15ea 1B68     		ldr	r3, [r3]
- 4626 15ec 0F2B     		cmp	r3, #15
- 4627 15ee CAD9     		bls	.L263
- 4628              	.LBE3:
+   3:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** #include "core_cm4.h"
+   4:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** #include "stm32f4xx_gpio.h"
+   5:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** #include "system_stm32f4xx.h"
+   6:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** #include "startup.h"
+   7:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** #include "delay.h"
+   8:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** #include "init.h"
+   9:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 
+  10:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** void startup(void) __attribute__((naked)) __attribute__((section(".start_section")));
+  11:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 
+  12:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** void startup(void)
+  13:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** {
+ 449              		.loc 3 13 0
+ 450              		.cfi_startproc
+ 451              		@ Naked Function: prologue and epilogue provided by programmer.
+ 452              		@ args = 0, pretend = 0, frame = 0
+ 453              		@ frame_needed = 1, uses_anonymous_args = 0
+  14:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	__asm volatile(
+ 454              		.loc 3 14 0
+ 455              		.syntax divided
+ 456              	@ 14 "C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door/startup.c" 1
+ 457 0000 0248     		 LDR R0,=0x2001C000
+ 458 0002 8546     	 MOV SP,R0
+ 459 0004 FFF7FEFF 	 BL main
+ 460 0008 FEE7     	_exit: B .
+ 461              	
+ 462              	@ 0 "" 2
+  15:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		" LDR R0,=0x2001C000\n" /* set stack */
+  16:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		" MOV SP,R0\n"
+  17:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		" BL main\n"   /* call main */
+  18:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		"_exit: B .\n" /* never return */
+  19:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	);
+  20:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** }
+ 463              		.loc 3 20 0
+ 464              		.thumb
+ 465              		.syntax unified
+ 466 000a C046     		nop
+ 467              		.cfi_endproc
+ 468              	.LFE124:
+ 470              		.global	GPIO_Pins
+ 471              		.data
+ 472              		.align	2
+ 475              	GPIO_Pins:
+ 476 0000 0100     		.short	1
+ 477 0002 0200     		.short	2
+ 478 0004 0400     		.short	4
+ 479 0006 0800     		.short	8
+ 480 0008 1000     		.short	16
+ 481 000a 2000     		.short	32
+ 482 000c 4000     		.short	64
+ 483 000e 8000     		.short	128
+ 484 0010 0001     		.short	256
+ 485 0012 0002     		.short	512
+ 486 0014 0004     		.short	1024
+ 487 0016 0008     		.short	2048
+ 488 0018 0010     		.short	4096
+ 489 001a 0020     		.short	8192
+ 490 001c 0040     		.short	16384
+ 491 001e 0080     		.short	-32768
+ 492              		.global	GPIO_Ports
+ 493              		.align	2
+ 496              	GPIO_Ports:
+ 497 0020 00100240 		.word	1073876992
+ 498 0024 00000240 		.word	1073872896
+ 499 0028 00080240 		.word	1073874944
+ 500 002c 000C0240 		.word	1073875968
+ 501              		.global	msTicks
+ 502              		.bss
+ 503              		.align	2
+ 506              	msTicks:
+ 507 0000 00000000 		.space	4
+ 508              		.text
+ 509              		.align	1
+ 510              		.global	SysTick_Handler
+ 511              		.syntax unified
+ 512              		.code	16
+ 513              		.thumb_func
+ 514              		.fpu softvfp
+ 516              	SysTick_Handler:
+ 517              	.LFB125:
+  21:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** // ========================================= DOOOOOORS INIT =======================================
+  22:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** uint16_t GPIO_Pins[] = {
+  23:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	GPIO_Pin_0, GPIO_Pin_1, GPIO_Pin_2, GPIO_Pin_3, GPIO_Pin_4, GPIO_Pin_5,
+  24:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	GPIO_Pin_6, GPIO_Pin_7, GPIO_Pin_8, GPIO_Pin_9, GPIO_Pin_10, GPIO_Pin_11,
+  25:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	GPIO_Pin_12, GPIO_Pin_13, GPIO_Pin_14, GPIO_Pin_15};
+  26:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 
+  27:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** GPIO_TypeDef* GPIO_Ports[] = {GPIOE, GPIOA, GPIOC, GPIOD};
+  28:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 
+  29:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** // ========================================= SYSTICK ==============================================
+  30:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** volatile uint32_t msTicks = 0; /* Variable to store millisecond ticks */
+  31:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** void SysTick_Handler(void)
+  32:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** { /* SysTick interrupt Handler. */
+ 518              		.loc 3 32 0
+ 519              		.cfi_startproc
+ 520              		@ args = 0, pretend = 0, frame = 0
+ 521              		@ frame_needed = 1, uses_anonymous_args = 0
+ 522 0270 80B5     		push	{r7, lr}
+ 523              		.cfi_def_cfa_offset 8
+ 524              		.cfi_offset 7, -8
+ 525              		.cfi_offset 14, -4
+ 526 0272 00AF     		add	r7, sp, #0
+ 527              		.cfi_def_cfa_register 7
+  33:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	msTicks++;
+ 528              		.loc 3 33 0
+ 529 0274 034B     		ldr	r3, .L17
+ 530 0276 1B68     		ldr	r3, [r3]
+ 531 0278 5A1C     		adds	r2, r3, #1
+ 532 027a 024B     		ldr	r3, .L17
+ 533 027c 1A60     		str	r2, [r3]
+  34:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** }
+ 534              		.loc 3 34 0
+ 535 027e C046     		nop
+ 536 0280 BD46     		mov	sp, r7
+ 537              		@ sp needed
+ 538 0282 80BD     		pop	{r7, pc}
+ 539              	.L18:
+ 540              		.align	2
+ 541              	.L17:
+ 542 0284 00000000 		.word	msTicks
+ 543              		.cfi_endproc
+ 544              	.LFE125:
+ 546              		.align	1
+ 547              		.global	systick_Init
+ 548              		.syntax unified
+ 549              		.code	16
+ 550              		.thumb_func
+ 551              		.fpu softvfp
+ 553              	systick_Init:
+ 554              	.LFB126:
+  35:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** void systick_Init(void)
+  36:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** {
+ 555              		.loc 3 36 0
+ 556              		.cfi_startproc
+ 557              		@ args = 0, pretend = 0, frame = 8
+ 558              		@ frame_needed = 1, uses_anonymous_args = 0
+ 559 0288 80B5     		push	{r7, lr}
+ 560              		.cfi_def_cfa_offset 8
+ 561              		.cfi_offset 7, -8
+ 562              		.cfi_offset 14, -4
+ 563 028a 82B0     		sub	sp, sp, #8
+ 564              		.cfi_def_cfa_offset 16
+ 565 028c 00AF     		add	r7, sp, #0
+ 566              		.cfi_def_cfa_register 7
+  37:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	// Initiera SysTick.
+  38:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	*((void (**)(void))0x2001C03C) = SysTick_Handler;
+ 567              		.loc 3 38 0
+ 568 028e 064B     		ldr	r3, .L20
+ 569 0290 064A     		ldr	r2, .L20+4
+ 570 0292 1A60     		str	r2, [r3]
+  39:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	uint32_t returnCode;
+  40:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	returnCode = SysTick_Config(168000000 / 1000); // Genererar ett SysTick-avbrott varje ms.
+ 571              		.loc 3 40 0
+ 572 0294 064B     		ldr	r3, .L20+8
+ 573 0296 1800     		movs	r0, r3
+ 574 0298 FFF7E2FE 		bl	SysTick_Config
+ 575 029c 0300     		movs	r3, r0
+ 576 029e 7B60     		str	r3, [r7, #4]
+  41:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 
+  42:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	if (returnCode != 0)
+  43:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	{   // Om inte SysTick_Config lyckas...
+  44:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		//typ reboot? bootloops är alltid kul
+  45:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	}
+  46:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** }
+ 577              		.loc 3 46 0
+ 578 02a0 C046     		nop
+ 579 02a2 BD46     		mov	sp, r7
+ 580 02a4 02B0     		add	sp, sp, #8
+ 581              		@ sp needed
+ 582 02a6 80BD     		pop	{r7, pc}
+ 583              	.L21:
+ 584              		.align	2
+ 585              	.L20:
+ 586 02a8 3CC00120 		.word	536985660
+ 587 02ac 00000000 		.word	SysTick_Handler
+ 588 02b0 40900200 		.word	168000
+ 589              		.cfi_endproc
+ 590              	.LFE126:
+ 592              		.align	1
+ 593              		.global	main
+ 594              		.syntax unified
+ 595              		.code	16
+ 596              		.thumb_func
+ 597              		.fpu softvfp
+ 599              	main:
+ 600              	.LFB127:
+  47:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 
+  48:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** void main(void)
+  49:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** {
+ 601              		.loc 3 49 0
+ 602              		.cfi_startproc
+ 603              		@ args = 0, pretend = 0, frame = 2080
+ 604              		@ frame_needed = 1, uses_anonymous_args = 0
+ 605 02b4 F0B5     		push	{r4, r5, r6, r7, lr}
+ 606              		.cfi_def_cfa_offset 20
+ 607              		.cfi_offset 4, -20
+ 608              		.cfi_offset 5, -16
+ 609              		.cfi_offset 6, -12
+ 610              		.cfi_offset 7, -8
+ 611              		.cfi_offset 14, -4
+ 612 02b6 C646     		mov	lr, r8
+ 613 02b8 00B5     		push	{lr}
+ 614              		.cfi_def_cfa_offset 24
+ 615              		.cfi_offset 8, -24
+ 616 02ba FD4C     		ldr	r4, .L46
+ 617 02bc A544     		add	sp, sp, r4
+ 618              		.cfi_def_cfa_offset 2104
+ 619 02be 00AF     		add	r7, sp, #0
+ 620              		.cfi_def_cfa_register 7
+  50:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	init_GPIO_Ports();
+ 621              		.loc 3 50 0
+ 622 02c0 FFF7FEFF 		bl	init_GPIO_Ports
+  51:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	systick_Init();
+ 623              		.loc 3 51 0
+ 624 02c4 FFF7FEFF 		bl	systick_Init
+  52:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	while(msTicks < 2000);
+ 625              		.loc 3 52 0
+ 626 02c8 C046     		nop
+ 627              	.L23:
+ 628              		.loc 3 52 0 is_stmt 0 discriminator 1
+ 629 02ca FA4B     		ldr	r3, .L46+4
+ 630 02cc 1B68     		ldr	r3, [r3]
+ 631 02ce FA4A     		ldr	r2, .L46+8
+ 632 02d0 9342     		cmp	r3, r2
+ 633 02d2 FAD9     		bls	.L23
+  53:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 
+  54:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	door door1, door2, door3, door4, door5, door6, door8, door9 ,door10, door11, door12, door13,door14
+  55:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	door all_doors[32] = {door1, door2, door3, door4, door5, door6, door8, door9 ,door10, door11, door
+ 634              		.loc 3 55 0 is_stmt 1
+ 635 02d4 F94B     		ldr	r3, .L46+12
+ 636 02d6 FA4A     		ldr	r2, .L46+16
+ 637 02d8 9446     		mov	ip, r2
+ 638 02da 1822     		movs	r2, #24
+ 639 02dc 9046     		mov	r8, r2
+ 640 02de B844     		add	r8, r8, r7
+ 641 02e0 C444     		add	ip, ip, r8
+ 642 02e2 6344     		add	r3, r3, ip
+ 643 02e4 1800     		movs	r0, r3
+ 644 02e6 8023     		movs	r3, #128
+ 645 02e8 DB00     		lsls	r3, r3, #3
+ 646 02ea 1A00     		movs	r2, r3
+ 647 02ec 0021     		movs	r1, #0
+ 648 02ee FFF7FEFF 		bl	memset
+ 649 02f2 F24B     		ldr	r3, .L46+12
+ 650 02f4 F24E     		ldr	r6, .L46+16
+ 651 02f6 1822     		movs	r2, #24
+ 652 02f8 B918     		adds	r1, r7, r2
+ 653 02fa 8A19     		adds	r2, r1, r6
+ 654 02fc D218     		adds	r2, r2, r3
+ 655 02fe F823     		movs	r3, #248
+ 656 0300 DB00     		lsls	r3, r3, #3
+ 657 0302 1821     		movs	r1, #24
+ 658 0304 8C46     		mov	ip, r1
+ 659 0306 BC44     		add	ip, ip, r7
+ 660 0308 6344     		add	r3, r3, ip
+ 661 030a 1000     		movs	r0, r2
+ 662 030c 1900     		movs	r1, r3
+ 663 030e 2023     		movs	r3, #32
+ 664 0310 1A00     		movs	r2, r3
+ 665 0312 FFF7FEFF 		bl	memcpy
+ 666 0316 E94B     		ldr	r3, .L46+12
+ 667 0318 E94A     		ldr	r2, .L46+16
+ 668 031a 9446     		mov	ip, r2
+ 669 031c 1821     		movs	r1, #24
+ 670 031e 8846     		mov	r8, r1
+ 671 0320 B844     		add	r8, r8, r7
+ 672 0322 C444     		add	ip, ip, r8
+ 673 0324 6344     		add	r3, r3, ip
+ 674 0326 F422     		movs	r2, #244
+ 675 0328 D200     		lsls	r2, r2, #3
+ 676 032a 1821     		movs	r1, #24
+ 677 032c 8C46     		mov	ip, r1
+ 678 032e BC44     		add	ip, ip, r7
+ 679 0330 6244     		add	r2, r2, ip
+ 680 0332 2033     		adds	r3, r3, #32
+ 681 0334 1100     		movs	r1, r2
+ 682 0336 2022     		movs	r2, #32
+ 683 0338 1800     		movs	r0, r3
+ 684 033a FFF7FEFF 		bl	memcpy
+ 685 033e DF4B     		ldr	r3, .L46+12
+ 686 0340 DF4A     		ldr	r2, .L46+16
+ 687 0342 9446     		mov	ip, r2
+ 688 0344 1821     		movs	r1, #24
+ 689 0346 8846     		mov	r8, r1
+ 690 0348 B844     		add	r8, r8, r7
+ 691 034a C444     		add	ip, ip, r8
+ 692 034c 6344     		add	r3, r3, ip
+ 693 034e F022     		movs	r2, #240
+ 694 0350 D200     		lsls	r2, r2, #3
+ 695 0352 1821     		movs	r1, #24
+ 696 0354 8C46     		mov	ip, r1
+ 697 0356 BC44     		add	ip, ip, r7
+ 698 0358 6244     		add	r2, r2, ip
+ 699 035a 4033     		adds	r3, r3, #64
+ 700 035c 1100     		movs	r1, r2
+ 701 035e 2022     		movs	r2, #32
+ 702 0360 1800     		movs	r0, r3
+ 703 0362 FFF7FEFF 		bl	memcpy
+ 704 0366 D54B     		ldr	r3, .L46+12
+ 705 0368 D54A     		ldr	r2, .L46+16
+ 706 036a 9446     		mov	ip, r2
+ 707 036c 1821     		movs	r1, #24
+ 708 036e 8846     		mov	r8, r1
+ 709 0370 B844     		add	r8, r8, r7
+ 710 0372 C444     		add	ip, ip, r8
+ 711 0374 6344     		add	r3, r3, ip
+ 712 0376 EC22     		movs	r2, #236
+ 713 0378 D200     		lsls	r2, r2, #3
+ 714 037a 1821     		movs	r1, #24
+ 715 037c 8C46     		mov	ip, r1
+ 716 037e BC44     		add	ip, ip, r7
+ 717 0380 6244     		add	r2, r2, ip
+ 718 0382 6033     		adds	r3, r3, #96
+ 719 0384 1100     		movs	r1, r2
+ 720 0386 2022     		movs	r2, #32
+ 721 0388 1800     		movs	r0, r3
+ 722 038a FFF7FEFF 		bl	memcpy
+ 723 038e CB4B     		ldr	r3, .L46+12
+ 724 0390 CB4A     		ldr	r2, .L46+16
+ 725 0392 9446     		mov	ip, r2
+ 726 0394 1821     		movs	r1, #24
+ 727 0396 8846     		mov	r8, r1
+ 728 0398 B844     		add	r8, r8, r7
+ 729 039a C444     		add	ip, ip, r8
+ 730 039c 6344     		add	r3, r3, ip
+ 731 039e E822     		movs	r2, #232
+ 732 03a0 D200     		lsls	r2, r2, #3
+ 733 03a2 1821     		movs	r1, #24
+ 734 03a4 8C46     		mov	ip, r1
+ 735 03a6 BC44     		add	ip, ip, r7
+ 736 03a8 6244     		add	r2, r2, ip
+ 737 03aa 8033     		adds	r3, r3, #128
+ 738 03ac 1100     		movs	r1, r2
+ 739 03ae 2022     		movs	r2, #32
+ 740 03b0 1800     		movs	r0, r3
+ 741 03b2 FFF7FEFF 		bl	memcpy
+ 742 03b6 C14B     		ldr	r3, .L46+12
+ 743 03b8 C14A     		ldr	r2, .L46+16
+ 744 03ba 9446     		mov	ip, r2
+ 745 03bc 1821     		movs	r1, #24
+ 746 03be 8846     		mov	r8, r1
+ 747 03c0 B844     		add	r8, r8, r7
+ 748 03c2 C444     		add	ip, ip, r8
+ 749 03c4 6344     		add	r3, r3, ip
+ 750 03c6 A022     		movs	r2, #160
+ 751 03c8 E421     		movs	r1, #228
+ 752 03ca C900     		lsls	r1, r1, #3
+ 753 03cc 1820     		movs	r0, #24
+ 754 03ce 8446     		mov	ip, r0
+ 755 03d0 BC44     		add	ip, ip, r7
+ 756 03d2 6144     		add	r1, r1, ip
+ 757 03d4 9B18     		adds	r3, r3, r2
+ 758 03d6 2022     		movs	r2, #32
+ 759 03d8 1800     		movs	r0, r3
+ 760 03da FFF7FEFF 		bl	memcpy
+ 761 03de B74B     		ldr	r3, .L46+12
+ 762 03e0 B74A     		ldr	r2, .L46+16
+ 763 03e2 9446     		mov	ip, r2
+ 764 03e4 1821     		movs	r1, #24
+ 765 03e6 8846     		mov	r8, r1
+ 766 03e8 B844     		add	r8, r8, r7
+ 767 03ea C444     		add	ip, ip, r8
+ 768 03ec 6344     		add	r3, r3, ip
+ 769 03ee C022     		movs	r2, #192
+ 770 03f0 B449     		ldr	r1, .L46+20
+ 771 03f2 B348     		ldr	r0, .L46+16
+ 772 03f4 8446     		mov	ip, r0
+ 773 03f6 1820     		movs	r0, #24
+ 774 03f8 8046     		mov	r8, r0
+ 775 03fa B844     		add	r8, r8, r7
+ 776 03fc C444     		add	ip, ip, r8
+ 777 03fe 6144     		add	r1, r1, ip
+ 778 0400 9B18     		adds	r3, r3, r2
+ 779 0402 2022     		movs	r2, #32
+ 780 0404 1800     		movs	r0, r3
+ 781 0406 FFF7FEFF 		bl	memcpy
+ 782 040a AC4B     		ldr	r3, .L46+12
+ 783 040c AC4A     		ldr	r2, .L46+16
+ 784 040e 9446     		mov	ip, r2
+ 785 0410 1821     		movs	r1, #24
+ 786 0412 8846     		mov	r8, r1
+ 787 0414 B844     		add	r8, r8, r7
+ 788 0416 C444     		add	ip, ip, r8
+ 789 0418 6344     		add	r3, r3, ip
+ 790 041a E022     		movs	r2, #224
+ 791 041c AA49     		ldr	r1, .L46+24
+ 792 041e A848     		ldr	r0, .L46+16
+ 793 0420 8446     		mov	ip, r0
+ 794 0422 1820     		movs	r0, #24
+ 795 0424 8046     		mov	r8, r0
+ 796 0426 B844     		add	r8, r8, r7
+ 797 0428 C444     		add	ip, ip, r8
+ 798 042a 6144     		add	r1, r1, ip
+ 799 042c 9B18     		adds	r3, r3, r2
+ 800 042e 2022     		movs	r2, #32
+ 801 0430 1800     		movs	r0, r3
+ 802 0432 FFF7FEFF 		bl	memcpy
+ 803 0436 A14B     		ldr	r3, .L46+12
+ 804 0438 1822     		movs	r2, #24
+ 805 043a B918     		adds	r1, r7, r2
+ 806 043c 8A19     		adds	r2, r1, r6
+ 807 043e D218     		adds	r2, r2, r3
+ 808 0440 8023     		movs	r3, #128
+ 809 0442 5B00     		lsls	r3, r3, #1
+ 810 0444 A149     		ldr	r1, .L46+28
+ 811 0446 9E48     		ldr	r0, .L46+16
+ 812 0448 8446     		mov	ip, r0
+ 813 044a 1820     		movs	r0, #24
+ 814 044c 8046     		mov	r8, r0
+ 815 044e B844     		add	r8, r8, r7
+ 816 0450 C444     		add	ip, ip, r8
+ 817 0452 6144     		add	r1, r1, ip
+ 818 0454 D318     		adds	r3, r2, r3
+ 819 0456 2022     		movs	r2, #32
+ 820 0458 1800     		movs	r0, r3
+ 821 045a FFF7FEFF 		bl	memcpy
+ 822 045e 974B     		ldr	r3, .L46+12
+ 823 0460 1822     		movs	r2, #24
+ 824 0462 B918     		adds	r1, r7, r2
+ 825 0464 8A19     		adds	r2, r1, r6
+ 826 0466 D218     		adds	r2, r2, r3
+ 827 0468 9023     		movs	r3, #144
+ 828 046a 5B00     		lsls	r3, r3, #1
+ 829 046c 9849     		ldr	r1, .L46+32
+ 830 046e 9448     		ldr	r0, .L46+16
+ 831 0470 8446     		mov	ip, r0
+ 832 0472 1820     		movs	r0, #24
+ 833 0474 8046     		mov	r8, r0
+ 834 0476 B844     		add	r8, r8, r7
+ 835 0478 C444     		add	ip, ip, r8
+ 836 047a 6144     		add	r1, r1, ip
+ 837 047c D318     		adds	r3, r2, r3
+ 838 047e 2022     		movs	r2, #32
+ 839 0480 1800     		movs	r0, r3
+ 840 0482 FFF7FEFF 		bl	memcpy
+ 841 0486 8D4B     		ldr	r3, .L46+12
+ 842 0488 1822     		movs	r2, #24
+ 843 048a B918     		adds	r1, r7, r2
+ 844 048c 8A19     		adds	r2, r1, r6
+ 845 048e D218     		adds	r2, r2, r3
+ 846 0490 A023     		movs	r3, #160
+ 847 0492 5B00     		lsls	r3, r3, #1
+ 848 0494 8F49     		ldr	r1, .L46+36
+ 849 0496 8A48     		ldr	r0, .L46+16
+ 850 0498 8446     		mov	ip, r0
+ 851 049a 1820     		movs	r0, #24
+ 852 049c 8046     		mov	r8, r0
+ 853 049e B844     		add	r8, r8, r7
+ 854 04a0 C444     		add	ip, ip, r8
+ 855 04a2 6144     		add	r1, r1, ip
+ 856 04a4 D318     		adds	r3, r2, r3
+ 857 04a6 2022     		movs	r2, #32
+ 858 04a8 1800     		movs	r0, r3
+ 859 04aa FFF7FEFF 		bl	memcpy
+ 860 04ae 834B     		ldr	r3, .L46+12
+ 861 04b0 1822     		movs	r2, #24
+ 862 04b2 B918     		adds	r1, r7, r2
+ 863 04b4 8A19     		adds	r2, r1, r6
+ 864 04b6 D218     		adds	r2, r2, r3
+ 865 04b8 B023     		movs	r3, #176
+ 866 04ba 5B00     		lsls	r3, r3, #1
+ 867 04bc 8649     		ldr	r1, .L46+40
+ 868 04be 8048     		ldr	r0, .L46+16
+ 869 04c0 8446     		mov	ip, r0
+ 870 04c2 1820     		movs	r0, #24
+ 871 04c4 8046     		mov	r8, r0
+ 872 04c6 B844     		add	r8, r8, r7
+ 873 04c8 C444     		add	ip, ip, r8
+ 874 04ca 6144     		add	r1, r1, ip
+ 875 04cc D318     		adds	r3, r2, r3
+ 876 04ce 2022     		movs	r2, #32
+ 877 04d0 1800     		movs	r0, r3
+ 878 04d2 FFF7FEFF 		bl	memcpy
+ 879 04d6 794B     		ldr	r3, .L46+12
+ 880 04d8 1822     		movs	r2, #24
+ 881 04da B918     		adds	r1, r7, r2
+ 882 04dc 8A19     		adds	r2, r1, r6
+ 883 04de D218     		adds	r2, r2, r3
+ 884 04e0 C023     		movs	r3, #192
+ 885 04e2 5B00     		lsls	r3, r3, #1
+ 886 04e4 7D49     		ldr	r1, .L46+44
+ 887 04e6 7648     		ldr	r0, .L46+16
+ 888 04e8 8446     		mov	ip, r0
+ 889 04ea 1820     		movs	r0, #24
+ 890 04ec 8046     		mov	r8, r0
+ 891 04ee B844     		add	r8, r8, r7
+ 892 04f0 C444     		add	ip, ip, r8
+ 893 04f2 6144     		add	r1, r1, ip
+ 894 04f4 D318     		adds	r3, r2, r3
+ 895 04f6 2022     		movs	r2, #32
+ 896 04f8 1800     		movs	r0, r3
+ 897 04fa FFF7FEFF 		bl	memcpy
+ 898 04fe 6F4B     		ldr	r3, .L46+12
+ 899 0500 1822     		movs	r2, #24
+ 900 0502 B918     		adds	r1, r7, r2
+ 901 0504 8A19     		adds	r2, r1, r6
+ 902 0506 D218     		adds	r2, r2, r3
+ 903 0508 D023     		movs	r3, #208
+ 904 050a 5B00     		lsls	r3, r3, #1
+ 905 050c 7449     		ldr	r1, .L46+48
+ 906 050e 6C48     		ldr	r0, .L46+16
+ 907 0510 8446     		mov	ip, r0
+ 908 0512 1820     		movs	r0, #24
+ 909 0514 8046     		mov	r8, r0
+ 910 0516 B844     		add	r8, r8, r7
+ 911 0518 C444     		add	ip, ip, r8
+ 912 051a 6144     		add	r1, r1, ip
+ 913 051c D318     		adds	r3, r2, r3
+ 914 051e 2022     		movs	r2, #32
+ 915 0520 1800     		movs	r0, r3
+ 916 0522 FFF7FEFF 		bl	memcpy
+ 917 0526 654B     		ldr	r3, .L46+12
+ 918 0528 1822     		movs	r2, #24
+ 919 052a B918     		adds	r1, r7, r2
+ 920 052c 8A19     		adds	r2, r1, r6
+ 921 052e D218     		adds	r2, r2, r3
+ 922 0530 E023     		movs	r3, #224
+ 923 0532 5B00     		lsls	r3, r3, #1
+ 924 0534 6B49     		ldr	r1, .L46+52
+ 925 0536 6248     		ldr	r0, .L46+16
+ 926 0538 8446     		mov	ip, r0
+ 927 053a 1820     		movs	r0, #24
+ 928 053c 8046     		mov	r8, r0
+ 929 053e B844     		add	r8, r8, r7
+ 930 0540 C444     		add	ip, ip, r8
+ 931 0542 6144     		add	r1, r1, ip
+ 932 0544 D318     		adds	r3, r2, r3
+ 933 0546 2022     		movs	r2, #32
+ 934 0548 1800     		movs	r0, r3
+ 935 054a FFF7FEFF 		bl	memcpy
+ 936 054e 5B4B     		ldr	r3, .L46+12
+ 937 0550 1822     		movs	r2, #24
+ 938 0552 B918     		adds	r1, r7, r2
+ 939 0554 8A19     		adds	r2, r1, r6
+ 940 0556 D218     		adds	r2, r2, r3
+ 941 0558 F023     		movs	r3, #240
+ 942 055a 5B00     		lsls	r3, r3, #1
+ 943 055c 6249     		ldr	r1, .L46+56
+ 944 055e 5848     		ldr	r0, .L46+16
+ 945 0560 8446     		mov	ip, r0
+ 946 0562 1820     		movs	r0, #24
+ 947 0564 8046     		mov	r8, r0
+ 948 0566 B844     		add	r8, r8, r7
+ 949 0568 C444     		add	ip, ip, r8
+ 950 056a 6144     		add	r1, r1, ip
+ 951 056c D318     		adds	r3, r2, r3
+ 952 056e 2022     		movs	r2, #32
+ 953 0570 1800     		movs	r0, r3
+ 954 0572 FFF7FEFF 		bl	memcpy
+ 955 0576 514B     		ldr	r3, .L46+12
+ 956 0578 1822     		movs	r2, #24
+ 957 057a B918     		adds	r1, r7, r2
+ 958 057c 8A19     		adds	r2, r1, r6
+ 959 057e D218     		adds	r2, r2, r3
+ 960 0580 8023     		movs	r3, #128
+ 961 0582 9B00     		lsls	r3, r3, #2
+ 962 0584 5949     		ldr	r1, .L46+60
+ 963 0586 4E48     		ldr	r0, .L46+16
+ 964 0588 8446     		mov	ip, r0
+ 965 058a 1820     		movs	r0, #24
+ 966 058c 8046     		mov	r8, r0
+ 967 058e B844     		add	r8, r8, r7
+ 968 0590 C444     		add	ip, ip, r8
+ 969 0592 6144     		add	r1, r1, ip
+ 970 0594 D318     		adds	r3, r2, r3
+ 971 0596 2022     		movs	r2, #32
+ 972 0598 1800     		movs	r0, r3
+ 973 059a FFF7FEFF 		bl	memcpy
+ 974 059e 474B     		ldr	r3, .L46+12
+ 975 05a0 1822     		movs	r2, #24
+ 976 05a2 B918     		adds	r1, r7, r2
+ 977 05a4 8A19     		adds	r2, r1, r6
+ 978 05a6 D218     		adds	r2, r2, r3
+ 979 05a8 8823     		movs	r3, #136
+ 980 05aa 9B00     		lsls	r3, r3, #2
+ 981 05ac 5049     		ldr	r1, .L46+64
+ 982 05ae 4448     		ldr	r0, .L46+16
+ 983 05b0 8446     		mov	ip, r0
+ 984 05b2 1820     		movs	r0, #24
+ 985 05b4 8046     		mov	r8, r0
+ 986 05b6 B844     		add	r8, r8, r7
+ 987 05b8 C444     		add	ip, ip, r8
+ 988 05ba 6144     		add	r1, r1, ip
+ 989 05bc D318     		adds	r3, r2, r3
+ 990 05be 2022     		movs	r2, #32
+ 991 05c0 1800     		movs	r0, r3
+ 992 05c2 FFF7FEFF 		bl	memcpy
+ 993 05c6 3D4B     		ldr	r3, .L46+12
+ 994 05c8 1822     		movs	r2, #24
+ 995 05ca B918     		adds	r1, r7, r2
+ 996 05cc 8A19     		adds	r2, r1, r6
+ 997 05ce D218     		adds	r2, r2, r3
+ 998 05d0 9023     		movs	r3, #144
+ 999 05d2 9B00     		lsls	r3, r3, #2
+ 1000 05d4 4749     		ldr	r1, .L46+68
+ 1001 05d6 3A48     		ldr	r0, .L46+16
+ 1002 05d8 8446     		mov	ip, r0
+ 1003 05da 1820     		movs	r0, #24
+ 1004 05dc 8046     		mov	r8, r0
+ 1005 05de B844     		add	r8, r8, r7
+ 1006 05e0 C444     		add	ip, ip, r8
+ 1007 05e2 6144     		add	r1, r1, ip
+ 1008 05e4 D318     		adds	r3, r2, r3
+ 1009 05e6 2022     		movs	r2, #32
+ 1010 05e8 1800     		movs	r0, r3
+ 1011 05ea FFF7FEFF 		bl	memcpy
+ 1012 05ee 334B     		ldr	r3, .L46+12
+ 1013 05f0 1822     		movs	r2, #24
+ 1014 05f2 B918     		adds	r1, r7, r2
+ 1015 05f4 8A19     		adds	r2, r1, r6
+ 1016 05f6 D218     		adds	r2, r2, r3
+ 1017 05f8 9823     		movs	r3, #152
+ 1018 05fa 9B00     		lsls	r3, r3, #2
+ 1019 05fc 3E49     		ldr	r1, .L46+72
+ 1020 05fe 3048     		ldr	r0, .L46+16
+ 1021 0600 8446     		mov	ip, r0
+ 1022 0602 1820     		movs	r0, #24
+ 1023 0604 8046     		mov	r8, r0
+ 1024 0606 B844     		add	r8, r8, r7
+ 1025 0608 C444     		add	ip, ip, r8
+ 1026 060a 6144     		add	r1, r1, ip
+ 1027 060c D318     		adds	r3, r2, r3
+ 1028 060e 2022     		movs	r2, #32
+ 1029 0610 1800     		movs	r0, r3
+ 1030 0612 FFF7FEFF 		bl	memcpy
+ 1031 0616 294B     		ldr	r3, .L46+12
+ 1032 0618 1822     		movs	r2, #24
+ 1033 061a B918     		adds	r1, r7, r2
+ 1034 061c 8A19     		adds	r2, r1, r6
+ 1035 061e D218     		adds	r2, r2, r3
+ 1036 0620 A023     		movs	r3, #160
+ 1037 0622 9B00     		lsls	r3, r3, #2
+ 1038 0624 3549     		ldr	r1, .L46+76
+ 1039 0626 2648     		ldr	r0, .L46+16
+ 1040 0628 8446     		mov	ip, r0
+ 1041 062a 1820     		movs	r0, #24
+ 1042 062c 8046     		mov	r8, r0
+ 1043 062e B844     		add	r8, r8, r7
+ 1044 0630 C444     		add	ip, ip, r8
+ 1045 0632 6144     		add	r1, r1, ip
+ 1046 0634 D318     		adds	r3, r2, r3
+ 1047 0636 2022     		movs	r2, #32
+ 1048 0638 1800     		movs	r0, r3
+ 1049 063a FFF7FEFF 		bl	memcpy
+ 1050 063e 1F4B     		ldr	r3, .L46+12
+ 1051 0640 1822     		movs	r2, #24
+ 1052 0642 B918     		adds	r1, r7, r2
+ 1053 0644 8A19     		adds	r2, r1, r6
+ 1054 0646 D218     		adds	r2, r2, r3
+ 1055 0648 A823     		movs	r3, #168
+ 1056 064a 9B00     		lsls	r3, r3, #2
+ 1057 064c 2C49     		ldr	r1, .L46+80
+ 1058 064e 1C48     		ldr	r0, .L46+16
+ 1059 0650 8446     		mov	ip, r0
+ 1060 0652 1820     		movs	r0, #24
+ 1061 0654 8046     		mov	r8, r0
+ 1062 0656 B844     		add	r8, r8, r7
+ 1063 0658 C444     		add	ip, ip, r8
+ 1064 065a 6144     		add	r1, r1, ip
+ 1065 065c D318     		adds	r3, r2, r3
+ 1066 065e 2022     		movs	r2, #32
+ 1067 0660 1800     		movs	r0, r3
+ 1068 0662 FFF7FEFF 		bl	memcpy
+ 1069 0666 154B     		ldr	r3, .L46+12
+ 1070 0668 1822     		movs	r2, #24
+ 1071 066a B918     		adds	r1, r7, r2
+ 1072 066c 8A19     		adds	r2, r1, r6
+ 1073 066e D218     		adds	r2, r2, r3
+ 1074 0670 B023     		movs	r3, #176
+ 1075 0672 9B00     		lsls	r3, r3, #2
+ 1076 0674 2349     		ldr	r1, .L46+84
+ 1077 0676 1248     		ldr	r0, .L46+16
+ 1078 0678 8446     		mov	ip, r0
+ 1079 067a 1820     		movs	r0, #24
+ 1080 067c 8046     		mov	r8, r0
+ 1081 067e B844     		add	r8, r8, r7
+ 1082 0680 C444     		add	ip, ip, r8
+ 1083 0682 6144     		add	r1, r1, ip
+ 1084 0684 D318     		adds	r3, r2, r3
+ 1085 0686 2022     		movs	r2, #32
+ 1086 0688 1800     		movs	r0, r3
+ 1087 068a FFF7FEFF 		bl	memcpy
+ 1088 068e 0B4B     		ldr	r3, .L46+12
+ 1089 0690 1822     		movs	r2, #24
+ 1090 0692 B918     		adds	r1, r7, r2
+ 1091 0694 8A19     		adds	r2, r1, r6
+ 1092 0696 D218     		adds	r2, r2, r3
+ 1093 0698 B823     		movs	r3, #184
+ 1094 069a 9B00     		lsls	r3, r3, #2
+ 1095 069c 1A49     		ldr	r1, .L46+88
+ 1096 069e 0848     		ldr	r0, .L46+16
+ 1097 06a0 8446     		mov	ip, r0
+ 1098 06a2 1820     		movs	r0, #24
+ 1099 06a4 8046     		mov	r8, r0
+ 1100 06a6 B844     		add	r8, r8, r7
+ 1101 06a8 C444     		add	ip, ip, r8
+ 1102 06aa 6144     		add	r1, r1, ip
+ 1103 06ac D318     		adds	r3, r2, r3
+ 1104 06ae 2DE0     		b	.L47
+ 1105              	.L48:
+ 1106              		.align	2
+ 1107              	.L46:
+ 1108 06b0 E0F7FFFF 		.word	-2080
+ 1109 06b4 00000000 		.word	msTicks
+ 1110 06b8 CF070000 		.word	1999
+ 1111 06bc F8F7FFFF 		.word	-2056
+ 1112 06c0 08080000 		.word	2056
+ 1113 06c4 F8FEFFFF 		.word	-264
+ 1114 06c8 D8FEFFFF 		.word	-296
+ 1115 06cc B8FEFFFF 		.word	-328
+ 1116 06d0 98FEFFFF 		.word	-360
+ 1117 06d4 78FEFFFF 		.word	-392
+ 1118 06d8 58FEFFFF 		.word	-424
+ 1119 06dc 38FEFFFF 		.word	-456
+ 1120 06e0 18FEFFFF 		.word	-488
+ 1121 06e4 F8FDFFFF 		.word	-520
+ 1122 06e8 D8FDFFFF 		.word	-552
+ 1123 06ec B8FDFFFF 		.word	-584
+ 1124 06f0 98FDFFFF 		.word	-616
+ 1125 06f4 78FDFFFF 		.word	-648
+ 1126 06f8 58FDFFFF 		.word	-680
+ 1127 06fc 38FDFFFF 		.word	-712
+ 1128 0700 18FDFFFF 		.word	-744
+ 1129 0704 F8FCFFFF 		.word	-776
+ 1130 0708 D8FCFFFF 		.word	-808
+ 1131              	.L47:
+ 1132 070c 2022     		movs	r2, #32
+ 1133 070e 1800     		movs	r0, r3
+ 1134 0710 FFF7FEFF 		bl	memcpy
+ 1135 0714 A34B     		ldr	r3, .L49
+ 1136 0716 1822     		movs	r2, #24
+ 1137 0718 B918     		adds	r1, r7, r2
+ 1138 071a 8A19     		adds	r2, r1, r6
+ 1139 071c D218     		adds	r2, r2, r3
+ 1140 071e C023     		movs	r3, #192
+ 1141 0720 9B00     		lsls	r3, r3, #2
+ 1142 0722 A149     		ldr	r1, .L49+4
+ 1143 0724 A148     		ldr	r0, .L49+8
+ 1144 0726 8446     		mov	ip, r0
+ 1145 0728 1820     		movs	r0, #24
+ 1146 072a 8046     		mov	r8, r0
+ 1147 072c B844     		add	r8, r8, r7
+ 1148 072e C444     		add	ip, ip, r8
+ 1149 0730 6144     		add	r1, r1, ip
+ 1150 0732 D318     		adds	r3, r2, r3
+ 1151 0734 2022     		movs	r2, #32
+ 1152 0736 1800     		movs	r0, r3
+ 1153 0738 FFF7FEFF 		bl	memcpy
+ 1154 073c 994B     		ldr	r3, .L49
+ 1155 073e 1822     		movs	r2, #24
+ 1156 0740 B918     		adds	r1, r7, r2
+ 1157 0742 8A19     		adds	r2, r1, r6
+ 1158 0744 D218     		adds	r2, r2, r3
+ 1159 0746 C823     		movs	r3, #200
+ 1160 0748 9B00     		lsls	r3, r3, #2
+ 1161 074a 9949     		ldr	r1, .L49+12
+ 1162 074c 9748     		ldr	r0, .L49+8
+ 1163 074e 8446     		mov	ip, r0
+ 1164 0750 1820     		movs	r0, #24
+ 1165 0752 8046     		mov	r8, r0
+ 1166 0754 B844     		add	r8, r8, r7
+ 1167 0756 C444     		add	ip, ip, r8
+ 1168 0758 6144     		add	r1, r1, ip
+ 1169 075a D318     		adds	r3, r2, r3
+ 1170 075c 2022     		movs	r2, #32
+ 1171 075e 1800     		movs	r0, r3
+ 1172 0760 FFF7FEFF 		bl	memcpy
+ 1173 0764 8F4B     		ldr	r3, .L49
+ 1174 0766 1822     		movs	r2, #24
+ 1175 0768 B918     		adds	r1, r7, r2
+ 1176 076a 8A19     		adds	r2, r1, r6
+ 1177 076c D218     		adds	r2, r2, r3
+ 1178 076e D023     		movs	r3, #208
+ 1179 0770 9B00     		lsls	r3, r3, #2
+ 1180 0772 9049     		ldr	r1, .L49+16
+ 1181 0774 8D48     		ldr	r0, .L49+8
+ 1182 0776 8446     		mov	ip, r0
+ 1183 0778 1820     		movs	r0, #24
+ 1184 077a 8046     		mov	r8, r0
+ 1185 077c B844     		add	r8, r8, r7
+ 1186 077e C444     		add	ip, ip, r8
+ 1187 0780 6144     		add	r1, r1, ip
+ 1188 0782 D318     		adds	r3, r2, r3
+ 1189 0784 2022     		movs	r2, #32
+ 1190 0786 1800     		movs	r0, r3
+ 1191 0788 FFF7FEFF 		bl	memcpy
+ 1192 078c 854B     		ldr	r3, .L49
+ 1193 078e 1822     		movs	r2, #24
+ 1194 0790 B918     		adds	r1, r7, r2
+ 1195 0792 8A19     		adds	r2, r1, r6
+ 1196 0794 D218     		adds	r2, r2, r3
+ 1197 0796 D823     		movs	r3, #216
+ 1198 0798 9B00     		lsls	r3, r3, #2
+ 1199 079a 8749     		ldr	r1, .L49+20
+ 1200 079c 8348     		ldr	r0, .L49+8
+ 1201 079e 8446     		mov	ip, r0
+ 1202 07a0 1820     		movs	r0, #24
+ 1203 07a2 8046     		mov	r8, r0
+ 1204 07a4 B844     		add	r8, r8, r7
+ 1205 07a6 C444     		add	ip, ip, r8
+ 1206 07a8 6144     		add	r1, r1, ip
+ 1207 07aa D318     		adds	r3, r2, r3
+ 1208 07ac 2022     		movs	r2, #32
+ 1209 07ae 1800     		movs	r0, r3
+ 1210 07b0 FFF7FEFF 		bl	memcpy
+ 1211 07b4 7B4B     		ldr	r3, .L49
+ 1212 07b6 1822     		movs	r2, #24
+ 1213 07b8 B918     		adds	r1, r7, r2
+ 1214 07ba 8A19     		adds	r2, r1, r6
+ 1215 07bc D218     		adds	r2, r2, r3
+ 1216 07be E023     		movs	r3, #224
+ 1217 07c0 9B00     		lsls	r3, r3, #2
+ 1218 07c2 7E49     		ldr	r1, .L49+24
+ 1219 07c4 7948     		ldr	r0, .L49+8
+ 1220 07c6 8446     		mov	ip, r0
+ 1221 07c8 1820     		movs	r0, #24
+ 1222 07ca 8046     		mov	r8, r0
+ 1223 07cc B844     		add	r8, r8, r7
+ 1224 07ce C444     		add	ip, ip, r8
+ 1225 07d0 6144     		add	r1, r1, ip
+ 1226 07d2 D318     		adds	r3, r2, r3
+ 1227 07d4 2022     		movs	r2, #32
+ 1228 07d6 1800     		movs	r0, r3
+ 1229 07d8 FFF7FEFF 		bl	memcpy
+ 1230 07dc 714B     		ldr	r3, .L49
+ 1231 07de 1822     		movs	r2, #24
+ 1232 07e0 B918     		adds	r1, r7, r2
+ 1233 07e2 8A19     		adds	r2, r1, r6
+ 1234 07e4 D218     		adds	r2, r2, r3
+ 1235 07e6 E823     		movs	r3, #232
+ 1236 07e8 9B00     		lsls	r3, r3, #2
+ 1237 07ea 7549     		ldr	r1, .L49+28
+ 1238 07ec 6F48     		ldr	r0, .L49+8
+ 1239 07ee 8446     		mov	ip, r0
+ 1240 07f0 1820     		movs	r0, #24
+ 1241 07f2 8046     		mov	r8, r0
+ 1242 07f4 B844     		add	r8, r8, r7
+ 1243 07f6 C444     		add	ip, ip, r8
+ 1244 07f8 6144     		add	r1, r1, ip
+ 1245 07fa D318     		adds	r3, r2, r3
+ 1246 07fc 2022     		movs	r2, #32
+ 1247 07fe 1800     		movs	r0, r3
+ 1248 0800 FFF7FEFF 		bl	memcpy
+ 1249 0804 674B     		ldr	r3, .L49
+ 1250 0806 1822     		movs	r2, #24
+ 1251 0808 BA18     		adds	r2, r7, r2
+ 1252 080a 9219     		adds	r2, r2, r6
+ 1253 080c D218     		adds	r2, r2, r3
+ 1254 080e F023     		movs	r3, #240
+ 1255 0810 9B00     		lsls	r3, r3, #2
+ 1256 0812 6C49     		ldr	r1, .L49+32
+ 1257 0814 6548     		ldr	r0, .L49+8
+ 1258 0816 8446     		mov	ip, r0
+ 1259 0818 1820     		movs	r0, #24
+ 1260 081a 8046     		mov	r8, r0
+ 1261 081c B844     		add	r8, r8, r7
+ 1262 081e C444     		add	ip, ip, r8
+ 1263 0820 6144     		add	r1, r1, ip
+ 1264 0822 D318     		adds	r3, r2, r3
+ 1265 0824 2022     		movs	r2, #32
+ 1266 0826 1800     		movs	r0, r3
+ 1267 0828 FFF7FEFF 		bl	memcpy
+  56:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 
+  57:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	int amountOfActiveDoors = 0;
+ 1268              		.loc 3 57 0
+ 1269 082c 0023     		movs	r3, #0
+ 1270 082e 664A     		ldr	r2, .L49+36
+ 1271 0830 1821     		movs	r1, #24
+ 1272 0832 8C46     		mov	ip, r1
+ 1273 0834 BC44     		add	ip, ip, r7
+ 1274 0836 6244     		add	r2, r2, ip
+ 1275 0838 1360     		str	r3, [r2]
+ 1276              	.LBB2:
+  58:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	for (int j = 0; j < (sizeof(GPIO_Ports) /sizeof(GPIO_TypeDef *)); j++)
+ 1277              		.loc 3 58 0
+ 1278 083a 0023     		movs	r3, #0
+ 1279 083c 8022     		movs	r2, #128
+ 1280 083e 1201     		lsls	r2, r2, #4
+ 1281 0840 1821     		movs	r1, #24
+ 1282 0842 8C46     		mov	ip, r1
+ 1283 0844 BC44     		add	ip, ip, r7
+ 1284 0846 6244     		add	r2, r2, ip
+ 1285 0848 1360     		str	r3, [r2]
+ 1286 084a 49E0     		b	.L24
+ 1287              	.L28:
+ 1288              	.LBB3:
   59:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	{
- 4629              		.loc 4 59 0 is_stmt 1 discriminator 2
- 4630 15f0 3F4A     		ldr	r2, .L288+40
- 4631 15f2 1823     		movs	r3, #24
- 4632 15f4 FB18     		adds	r3, r7, r3
- 4633 15f6 9B18     		adds	r3, r3, r2
- 4634 15f8 1B68     		ldr	r3, [r3]
- 4635 15fa 0133     		adds	r3, r3, #1
- 4636 15fc 1821     		movs	r1, #24
- 4637 15fe 8C46     		mov	ip, r1
- 4638 1600 BC44     		add	ip, ip, r7
- 4639 1602 6244     		add	r2, r2, ip
- 4640 1604 1360     		str	r3, [r2]
- 4641              	.L260:
-  59:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	{
- 4642              		.loc 4 59 0 is_stmt 0 discriminator 1
- 4643 1606 3A4B     		ldr	r3, .L288+40
- 4644 1608 1822     		movs	r2, #24
- 4645 160a 9446     		mov	ip, r2
- 4646 160c BC44     		add	ip, ip, r7
- 4647 160e 6344     		add	r3, r3, ip
- 4648 1610 1B68     		ldr	r3, [r3]
- 4649 1612 032B     		cmp	r3, #3
- 4650 1614 AFD9     		bls	.L264
- 4651              	.LBE2:
-  65:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 			}
-  66:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		}
-  67:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	}
-  68:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	door active_doors[amountOfActiveDoors];
- 4652              		.loc 4 68 0 is_stmt 1
- 4653 1616 354B     		ldr	r3, .L288+36
- 4654 1618 1822     		movs	r2, #24
- 4655 161a 9446     		mov	ip, r2
- 4656 161c BC44     		add	ip, ip, r7
- 4657 161e 6344     		add	r3, r3, ip
- 4658 1620 1E68     		ldr	r6, [r3]
- 4659 1622 731E     		subs	r3, r6, #1
- 4660 1624 FD22     		movs	r2, #253
- 4661 1626 D200     		lsls	r2, r2, #3
- 4662 1628 1821     		movs	r1, #24
- 4663 162a 8C46     		mov	ip, r1
- 4664 162c BC44     		add	ip, ip, r7
- 4665 162e 6244     		add	r2, r2, ip
- 4666 1630 1360     		str	r3, [r2]
- 4667 1632 3300     		movs	r3, r6
- 4668 1634 BB60     		str	r3, [r7, #8]
- 4669 1636 0023     		movs	r3, #0
- 4670 1638 FB60     		str	r3, [r7, #12]
- 4671 163a B968     		ldr	r1, [r7, #8]
- 4672 163c FA68     		ldr	r2, [r7, #12]
- 4673 163e 0B00     		movs	r3, r1
- 4674 1640 1B0E     		lsrs	r3, r3, #24
- 4675 1642 1000     		movs	r0, r2
- 4676 1644 0002     		lsls	r0, r0, #8
- 4677 1646 7861     		str	r0, [r7, #20]
- 4678 1648 7869     		ldr	r0, [r7, #20]
- 4679 164a 1843     		orrs	r0, r3
- 4680 164c 7861     		str	r0, [r7, #20]
- 4681 164e 0B00     		movs	r3, r1
- 4682 1650 1B02     		lsls	r3, r3, #8
- 4683 1652 3B61     		str	r3, [r7, #16]
- 4684 1654 3300     		movs	r3, r6
- 4685 1656 3B60     		str	r3, [r7]
- 4686 1658 0023     		movs	r3, #0
- 4687 165a 7B60     		str	r3, [r7, #4]
- 4688 165c 3968     		ldr	r1, [r7]
- 4689 165e 7A68     		ldr	r2, [r7, #4]
- 4690 1660 0B00     		movs	r3, r1
- 4691 1662 1B0E     		lsrs	r3, r3, #24
- 4692 1664 1000     		movs	r0, r2
- 4693 1666 0502     		lsls	r5, r0, #8
- 4694 1668 1D43     		orrs	r5, r3
- 4695 166a 0B00     		movs	r3, r1
- 4696 166c 1C02     		lsls	r4, r3, #8
- 4697 166e 3300     		movs	r3, r6
- 4698 1670 5B01     		lsls	r3, r3, #5
- 4699 1672 0333     		adds	r3, r3, #3
- 4700 1674 0733     		adds	r3, r3, #7
- 4701 1676 DB08     		lsrs	r3, r3, #3
- 4702 1678 DB00     		lsls	r3, r3, #3
- 4703 167a 6A46     		mov	r2, sp
- 4704 167c D31A     		subs	r3, r2, r3
- 4705 167e 9D46     		mov	sp, r3
- 4706 1680 6B46     		mov	r3, sp
- 4707 1682 0333     		adds	r3, r3, #3
- 4708 1684 9B08     		lsrs	r3, r3, #2
- 4709 1686 9B00     		lsls	r3, r3, #2
- 4710 1688 1D4A     		ldr	r2, .L288+56
- 4711 168a 1821     		movs	r1, #24
- 4712 168c 8C46     		mov	ip, r1
- 4713 168e BC44     		add	ip, ip, r7
- 4714 1690 6244     		add	r2, r2, ip
- 4715 1692 1360     		str	r3, [r2]
-  69:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	int counter = 0;
- 4716              		.loc 4 69 0
- 4717 1694 0023     		movs	r3, #0
- 4718 1696 8022     		movs	r2, #128
- 4719 1698 1201     		lsls	r2, r2, #4
- 4720 169a 1821     		movs	r1, #24
- 4721 169c 8C46     		mov	ip, r1
- 4722 169e BC44     		add	ip, ip, r7
- 4723 16a0 6244     		add	r2, r2, ip
- 4724 16a2 1360     		str	r3, [r2]
- 4725              	.LBB4:
-  70:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	for (int j = 0; j < (sizeof(GPIO_Ports) /sizeof(GPIO_TypeDef *)); j++)
- 4726              		.loc 4 70 0
- 4727 16a4 0023     		movs	r3, #0
- 4728 16a6 174A     		ldr	r2, .L288+60
- 4729 16a8 1821     		movs	r1, #24
- 4730 16aa 8C46     		mov	ip, r1
- 4731 16ac BC44     		add	ip, ip, r7
- 4732 16ae 6244     		add	r2, r2, ip
- 4733 16b0 1360     		str	r3, [r2]
- 4734 16b2 F2E0     		b	.L265
- 4735              	.L269:
- 4736              	.LBB5:
-  71:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	{
-  72:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		for (int i = 0; i < sizeof(GPIO_Pins) / sizeof(uint16_t); i = i + 2)
- 4737              		.loc 4 72 0
- 4738 16b4 0023     		movs	r3, #0
- 4739 16b6 FF22     		movs	r2, #255
- 4740 16b8 D200     		lsls	r2, r2, #3
- 4741 16ba 1821     		movs	r1, #24
- 4742 16bc 8C46     		mov	ip, r1
- 4743 16be BC44     		add	ip, ip, r7
- 4744 16c0 6244     		add	r2, r2, ip
- 4745 16c2 1360     		str	r3, [r2]
- 4746 16c4 D4E0     		b	.L266
- 4747              	.L289:
- 4748 16c6 C046     		.align	2
- 4749              	.L288:
- 4750 16c8 F0F7FFFF 		.word	-2064
- 4751 16cc D0FCFFFF 		.word	-816
- 4752 16d0 B0FCFFFF 		.word	-848
- 4753 16d4 90FCFFFF 		.word	-880
- 4754 16d8 70FCFFFF 		.word	-912
- 4755 16dc 50FCFFFF 		.word	-944
- 4756 16e0 30FCFFFF 		.word	-976
- 4757 16e4 10FCFFFF 		.word	-1008
- 4758 16e8 F0FBFFFF 		.word	-1040
- 4759 16ec 04080000 		.word	2052
- 4760 16f0 08080000 		.word	2056
- 4761 16f4 0C080000 		.word	2060
- 4762 16f8 00000000 		.word	GPIO_Ports
- 4763 16fc 00000000 		.word	GPIO_Pins
- 4764 1700 E4070000 		.word	2020
- 4765 1704 FC070000 		.word	2044
- 4766              	.L268:
-  73:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		{
-  74:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 			if(!GPIO_ReadInputDataBit(GPIO_Ports[j], GPIO_Pins[i])){
- 4767              		.loc 4 74 0
- 4768 1708 EF4B     		ldr	r3, .L290
- 4769 170a F04A     		ldr	r2, .L290+4
- 4770 170c 1821     		movs	r1, #24
- 4771 170e 8C46     		mov	ip, r1
- 4772 1710 BC44     		add	ip, ip, r7
- 4773 1712 6244     		add	r2, r2, ip
- 4774 1714 1268     		ldr	r2, [r2]
- 4775 1716 9200     		lsls	r2, r2, #2
- 4776 1718 D058     		ldr	r0, [r2, r3]
- 4777 171a ED4B     		ldr	r3, .L290+8
- 4778 171c FF22     		movs	r2, #255
- 4779 171e D200     		lsls	r2, r2, #3
- 4780 1720 1821     		movs	r1, #24
- 4781 1722 8C46     		mov	ip, r1
- 4782 1724 BC44     		add	ip, ip, r7
- 4783 1726 6244     		add	r2, r2, ip
- 4784 1728 1268     		ldr	r2, [r2]
- 4785 172a 5200     		lsls	r2, r2, #1
- 4786 172c D35A     		ldrh	r3, [r2, r3]
- 4787 172e 1900     		movs	r1, r3
- 4788 1730 FFF7FEFF 		bl	GPIO_ReadInputDataBit
- 4789 1734 031E     		subs	r3, r0, #0
- 4790 1736 00D0     		beq	.LCB4267
- 4791 1738 8EE0     		b	.L267	@long jump
- 4792              	.LCB4267:
-  75:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 				all_doors[counter].GPIO_read = GPIO_Pins[i];
- 4793              		.loc 4 75 0
- 4794 173a E54B     		ldr	r3, .L290+8
- 4795 173c FF25     		movs	r5, #255
- 4796 173e ED00     		lsls	r5, r5, #3
- 4797 1740 1820     		movs	r0, #24
- 4798 1742 3A18     		adds	r2, r7, r0
- 4799 1744 5219     		adds	r2, r2, r5
- 4800 1746 1268     		ldr	r2, [r2]
- 4801 1748 5200     		lsls	r2, r2, #1
- 4802 174a D35A     		ldrh	r3, [r2, r3]
- 4803 174c 1900     		movs	r1, r3
- 4804 174e E14B     		ldr	r3, .L290+12
- 4805 1750 8124     		movs	r4, #129
- 4806 1752 2401     		lsls	r4, r4, #4
- 4807 1754 3A18     		adds	r2, r7, r0
- 4808 1756 1219     		adds	r2, r2, r4
- 4809 1758 D218     		adds	r2, r2, r3
- 4810 175a 8020     		movs	r0, #128
- 4811 175c 0001     		lsls	r0, r0, #4
- 4812 175e 1823     		movs	r3, #24
- 4813 1760 FB18     		adds	r3, r7, r3
- 4814 1762 1B18     		adds	r3, r3, r0
- 4815 1764 1B68     		ldr	r3, [r3]
- 4816 1766 5B01     		lsls	r3, r3, #5
- 4817 1768 D318     		adds	r3, r2, r3
- 4818 176a 1433     		adds	r3, r3, #20
- 4819 176c 1960     		str	r1, [r3]
-  76:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 				all_doors[counter].GPIO_lamp = GPIO_Pins[i+1];
- 4820              		.loc 4 76 0
- 4821 176e 1823     		movs	r3, #24
- 4822 1770 FB18     		adds	r3, r7, r3
- 4823 1772 5B19     		adds	r3, r3, r5
- 4824 1774 1B68     		ldr	r3, [r3]
- 4825 1776 5A1C     		adds	r2, r3, #1
- 4826 1778 D54B     		ldr	r3, .L290+8
- 4827 177a 5200     		lsls	r2, r2, #1
- 4828 177c D35A     		ldrh	r3, [r2, r3]
- 4829 177e 1900     		movs	r1, r3
- 4830 1780 D44B     		ldr	r3, .L290+12
- 4831 1782 2500     		movs	r5, r4
- 4832 1784 1824     		movs	r4, #24
- 4833 1786 3A19     		adds	r2, r7, r4
- 4834 1788 5219     		adds	r2, r2, r5
- 4835 178a D218     		adds	r2, r2, r3
- 4836 178c 3B19     		adds	r3, r7, r4
- 4837 178e 1B18     		adds	r3, r3, r0
- 4838 1790 1B68     		ldr	r3, [r3]
- 4839 1792 5B01     		lsls	r3, r3, #5
- 4840 1794 D318     		adds	r3, r2, r3
- 4841 1796 1033     		adds	r3, r3, #16
- 4842 1798 1960     		str	r1, [r3]
-  77:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 				all_doors[counter].controlbits = 0;
- 4843              		.loc 4 77 0
- 4844 179a CE4B     		ldr	r3, .L290+12
- 4845 179c 2100     		movs	r1, r4
- 4846 179e 7A18     		adds	r2, r7, r1
- 4847 17a0 5219     		adds	r2, r2, r5
- 4848 17a2 D218     		adds	r2, r2, r3
- 4849 17a4 7B18     		adds	r3, r7, r1
- 4850 17a6 1B18     		adds	r3, r3, r0
- 4851 17a8 1B68     		ldr	r3, [r3]
- 4852 17aa 5B01     		lsls	r3, r3, #5
- 4853 17ac D318     		adds	r3, r2, r3
- 4854 17ae 0433     		adds	r3, r3, #4
- 4855 17b0 0022     		movs	r2, #0
- 4856 17b2 1A60     		str	r2, [r3]
-  78:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 				all_doors[counter].time_larm = 0;
- 4857              		.loc 4 78 0
- 4858 17b4 C74B     		ldr	r3, .L290+12
- 4859 17b6 7A18     		adds	r2, r7, r1
- 4860 17b8 5219     		adds	r2, r2, r5
- 4861 17ba D218     		adds	r2, r2, r3
- 4862 17bc 7B18     		adds	r3, r7, r1
- 4863 17be 1B18     		adds	r3, r3, r0
- 4864 17c0 1B68     		ldr	r3, [r3]
- 4865 17c2 5B01     		lsls	r3, r3, #5
- 4866 17c4 D318     		adds	r3, r2, r3
- 4867 17c6 0833     		adds	r3, r3, #8
- 4868 17c8 0022     		movs	r2, #0
- 4869 17ca 1A70     		strb	r2, [r3]
-  79:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 				all_doors[counter].time_central_larm = 2;
- 4870              		.loc 4 79 0
- 4871 17cc C14B     		ldr	r3, .L290+12
- 4872 17ce 7A18     		adds	r2, r7, r1
- 4873 17d0 5219     		adds	r2, r2, r5
- 4874 17d2 D218     		adds	r2, r2, r3
- 4875 17d4 7B18     		adds	r3, r7, r1
- 4876 17d6 1B18     		adds	r3, r3, r0
- 4877 17d8 1B68     		ldr	r3, [r3]
- 4878 17da 5B01     		lsls	r3, r3, #5
- 4879 17dc D318     		adds	r3, r2, r3
- 4880 17de 0933     		adds	r3, r3, #9
- 4881 17e0 0222     		movs	r2, #2
- 4882 17e2 1A70     		strb	r2, [r3]
-  80:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 				all_doors[counter].GPIO_type = GPIO_Ports[j];
- 4883              		.loc 4 80 0
- 4884 17e4 B84B     		ldr	r3, .L290
- 4885 17e6 B94A     		ldr	r2, .L290+4
- 4886 17e8 1824     		movs	r4, #24
- 4887 17ea A446     		mov	ip, r4
- 4888 17ec BC44     		add	ip, ip, r7
- 4889 17ee 6244     		add	r2, r2, ip
- 4890 17f0 1268     		ldr	r2, [r2]
- 4891 17f2 9200     		lsls	r2, r2, #2
- 4892 17f4 D258     		ldr	r2, [r2, r3]
- 4893 17f6 B74B     		ldr	r3, .L290+12
- 4894 17f8 7C18     		adds	r4, r7, r1
- 4895 17fa 6119     		adds	r1, r4, r5
- 4896 17fc C918     		adds	r1, r1, r3
- 4897 17fe 0400     		movs	r4, r0
- 4898 1800 1823     		movs	r3, #24
- 4899 1802 FB18     		adds	r3, r7, r3
- 4900 1804 1B18     		adds	r3, r3, r0
- 4901 1806 1B68     		ldr	r3, [r3]
- 4902 1808 5B01     		lsls	r3, r3, #5
- 4903 180a CB18     		adds	r3, r1, r3
- 4904 180c 1C33     		adds	r3, r3, #28
- 4905 180e 1A60     		str	r2, [r3]
+  60:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		for (int i = 0; i < sizeof(GPIO_Pins) / sizeof(uint16_t); i = i + 2)
+ 1289              		.loc 3 60 0
+ 1290 084c 0023     		movs	r3, #0
+ 1291 084e 5F4A     		ldr	r2, .L49+40
+ 1292 0850 1821     		movs	r1, #24
+ 1293 0852 8C46     		mov	ip, r1
+ 1294 0854 BC44     		add	ip, ip, r7
+ 1295 0856 6244     		add	r2, r2, ip
+ 1296 0858 1360     		str	r3, [r2]
+ 1297 085a 2DE0     		b	.L25
+ 1298              	.L27:
+  61:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		{
+  62:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 			if(!GPIO_ReadInputDataBit(GPIO_Ports[j], GPIO_Pins[i])){
+ 1299              		.loc 3 62 0
+ 1300 085c 5C4B     		ldr	r3, .L49+44
+ 1301 085e 8022     		movs	r2, #128
+ 1302 0860 1201     		lsls	r2, r2, #4
+ 1303 0862 1821     		movs	r1, #24
+ 1304 0864 8C46     		mov	ip, r1
+ 1305 0866 BC44     		add	ip, ip, r7
+ 1306 0868 6244     		add	r2, r2, ip
+ 1307 086a 1268     		ldr	r2, [r2]
+ 1308 086c 9200     		lsls	r2, r2, #2
+ 1309 086e D058     		ldr	r0, [r2, r3]
+ 1310 0870 584B     		ldr	r3, .L49+48
+ 1311 0872 564A     		ldr	r2, .L49+40
+ 1312 0874 1821     		movs	r1, #24
+ 1313 0876 8C46     		mov	ip, r1
+ 1314 0878 BC44     		add	ip, ip, r7
+ 1315 087a 6244     		add	r2, r2, ip
+ 1316 087c 1268     		ldr	r2, [r2]
+ 1317 087e 5200     		lsls	r2, r2, #1
+ 1318 0880 D35A     		ldrh	r3, [r2, r3]
+ 1319 0882 1900     		movs	r1, r3
+ 1320 0884 FFF7FEFF 		bl	GPIO_ReadInputDataBit
+ 1321 0888 031E     		subs	r3, r0, #0
+ 1322 088a 0AD1     		bne	.L26
+  63:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 				amountOfActiveDoors++;
+ 1323              		.loc 3 63 0
+ 1324 088c 4E4A     		ldr	r2, .L49+36
+ 1325 088e 1823     		movs	r3, #24
+ 1326 0890 FB18     		adds	r3, r7, r3
+ 1327 0892 9B18     		adds	r3, r3, r2
+ 1328 0894 1B68     		ldr	r3, [r3]
+ 1329 0896 0133     		adds	r3, r3, #1
+ 1330 0898 1821     		movs	r1, #24
+ 1331 089a 8C46     		mov	ip, r1
+ 1332 089c BC44     		add	ip, ip, r7
+ 1333 089e 6244     		add	r2, r2, ip
+ 1334 08a0 1360     		str	r3, [r2]
+ 1335              	.L26:
+  60:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		{
+ 1336              		.loc 3 60 0 discriminator 2
+ 1337 08a2 4A4A     		ldr	r2, .L49+40
+ 1338 08a4 1823     		movs	r3, #24
+ 1339 08a6 FB18     		adds	r3, r7, r3
+ 1340 08a8 9B18     		adds	r3, r3, r2
+ 1341 08aa 1B68     		ldr	r3, [r3]
+ 1342 08ac 0233     		adds	r3, r3, #2
+ 1343 08ae 1821     		movs	r1, #24
+ 1344 08b0 8C46     		mov	ip, r1
+ 1345 08b2 BC44     		add	ip, ip, r7
+ 1346 08b4 6244     		add	r2, r2, ip
+ 1347 08b6 1360     		str	r3, [r2]
+ 1348              	.L25:
+  60:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		{
+ 1349              		.loc 3 60 0 is_stmt 0 discriminator 1
+ 1350 08b8 444B     		ldr	r3, .L49+40
+ 1351 08ba 1822     		movs	r2, #24
+ 1352 08bc 9446     		mov	ip, r2
+ 1353 08be BC44     		add	ip, ip, r7
+ 1354 08c0 6344     		add	r3, r3, ip
+ 1355 08c2 1B68     		ldr	r3, [r3]
+ 1356 08c4 0F2B     		cmp	r3, #15
+ 1357 08c6 C9D9     		bls	.L27
+ 1358              	.LBE3:
+  58:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	{
+ 1359              		.loc 3 58 0 is_stmt 1 discriminator 2
+ 1360 08c8 8022     		movs	r2, #128
+ 1361 08ca 1201     		lsls	r2, r2, #4
+ 1362 08cc 1823     		movs	r3, #24
+ 1363 08ce FB18     		adds	r3, r7, r3
+ 1364 08d0 9B18     		adds	r3, r3, r2
+ 1365 08d2 1B68     		ldr	r3, [r3]
+ 1366 08d4 0133     		adds	r3, r3, #1
+ 1367 08d6 1821     		movs	r1, #24
+ 1368 08d8 8C46     		mov	ip, r1
+ 1369 08da BC44     		add	ip, ip, r7
+ 1370 08dc 6244     		add	r2, r2, ip
+ 1371 08de 1360     		str	r3, [r2]
+ 1372              	.L24:
+  58:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	{
+ 1373              		.loc 3 58 0 is_stmt 0 discriminator 1
+ 1374 08e0 8023     		movs	r3, #128
+ 1375 08e2 1B01     		lsls	r3, r3, #4
+ 1376 08e4 1822     		movs	r2, #24
+ 1377 08e6 9446     		mov	ip, r2
+ 1378 08e8 BC44     		add	ip, ip, r7
+ 1379 08ea 6344     		add	r3, r3, ip
+ 1380 08ec 1B68     		ldr	r3, [r3]
+ 1381 08ee 032B     		cmp	r3, #3
+ 1382 08f0 ACD9     		bls	.L28
+ 1383              	.LBE2:
+  64:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 			}
+  65:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		}
+  66:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	}
+  67:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	door active_doors[amountOfActiveDoors];
+ 1384              		.loc 3 67 0 is_stmt 1
+ 1385 08f2 354B     		ldr	r3, .L49+36
+ 1386 08f4 1822     		movs	r2, #24
+ 1387 08f6 9446     		mov	ip, r2
+ 1388 08f8 BC44     		add	ip, ip, r7
+ 1389 08fa 6344     		add	r3, r3, ip
+ 1390 08fc 1E68     		ldr	r6, [r3]
+ 1391 08fe 731E     		subs	r3, r6, #1
+ 1392 0900 354A     		ldr	r2, .L49+52
+ 1393 0902 1821     		movs	r1, #24
+ 1394 0904 8C46     		mov	ip, r1
+ 1395 0906 BC44     		add	ip, ip, r7
+ 1396 0908 6244     		add	r2, r2, ip
+ 1397 090a 1360     		str	r3, [r2]
+ 1398 090c 3300     		movs	r3, r6
+ 1399 090e BB60     		str	r3, [r7, #8]
+ 1400 0910 0023     		movs	r3, #0
+ 1401 0912 FB60     		str	r3, [r7, #12]
+ 1402 0914 B968     		ldr	r1, [r7, #8]
+ 1403 0916 FA68     		ldr	r2, [r7, #12]
+ 1404 0918 0B00     		movs	r3, r1
+ 1405 091a 1B0E     		lsrs	r3, r3, #24
+ 1406 091c 1000     		movs	r0, r2
+ 1407 091e 0002     		lsls	r0, r0, #8
+ 1408 0920 7861     		str	r0, [r7, #20]
+ 1409 0922 7869     		ldr	r0, [r7, #20]
+ 1410 0924 1843     		orrs	r0, r3
+ 1411 0926 7861     		str	r0, [r7, #20]
+ 1412 0928 0B00     		movs	r3, r1
+ 1413 092a 1B02     		lsls	r3, r3, #8
+ 1414 092c 3B61     		str	r3, [r7, #16]
+ 1415 092e 3300     		movs	r3, r6
+ 1416 0930 3B60     		str	r3, [r7]
+ 1417 0932 0023     		movs	r3, #0
+ 1418 0934 7B60     		str	r3, [r7, #4]
+ 1419 0936 3968     		ldr	r1, [r7]
+ 1420 0938 7A68     		ldr	r2, [r7, #4]
+ 1421 093a 0B00     		movs	r3, r1
+ 1422 093c 1B0E     		lsrs	r3, r3, #24
+ 1423 093e 1000     		movs	r0, r2
+ 1424 0940 0502     		lsls	r5, r0, #8
+ 1425 0942 1D43     		orrs	r5, r3
+ 1426 0944 0B00     		movs	r3, r1
+ 1427 0946 1C02     		lsls	r4, r3, #8
+ 1428 0948 3300     		movs	r3, r6
+ 1429 094a 5B01     		lsls	r3, r3, #5
+ 1430 094c 0333     		adds	r3, r3, #3
+ 1431 094e 0733     		adds	r3, r3, #7
+ 1432 0950 DB08     		lsrs	r3, r3, #3
+ 1433 0952 DB00     		lsls	r3, r3, #3
+ 1434 0954 6A46     		mov	r2, sp
+ 1435 0956 D31A     		subs	r3, r2, r3
+ 1436 0958 9D46     		mov	sp, r3
+ 1437 095a 6B46     		mov	r3, sp
+ 1438 095c 0333     		adds	r3, r3, #3
+ 1439 095e 9B08     		lsrs	r3, r3, #2
+ 1440 0960 9B00     		lsls	r3, r3, #2
+ 1441 0962 FC22     		movs	r2, #252
+ 1442 0964 D200     		lsls	r2, r2, #3
+ 1443 0966 1821     		movs	r1, #24
+ 1444 0968 8C46     		mov	ip, r1
+ 1445 096a BC44     		add	ip, ip, r7
+ 1446 096c 6244     		add	r2, r2, ip
+ 1447 096e 1360     		str	r3, [r2]
+  68:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	int counter = 0;
+ 1448              		.loc 3 68 0
+ 1449 0970 0023     		movs	r3, #0
+ 1450 0972 FF22     		movs	r2, #255
+ 1451 0974 D200     		lsls	r2, r2, #3
+ 1452 0976 1821     		movs	r1, #24
+ 1453 0978 8C46     		mov	ip, r1
+ 1454 097a BC44     		add	ip, ip, r7
+ 1455 097c 6244     		add	r2, r2, ip
+ 1456 097e 1360     		str	r3, [r2]
+ 1457              	.LBB4:
+  69:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	for (int j = 0; j < (sizeof(GPIO_Ports) /sizeof(GPIO_TypeDef *)); j++)
+ 1458              		.loc 3 69 0
+ 1459 0980 0023     		movs	r3, #0
+ 1460 0982 164A     		ldr	r2, .L49+56
+ 1461 0984 1821     		movs	r1, #24
+ 1462 0986 8C46     		mov	ip, r1
+ 1463 0988 BC44     		add	ip, ip, r7
+ 1464 098a 6244     		add	r2, r2, ip
+ 1465 098c 1360     		str	r3, [r2]
+ 1466 098e 01E1     		b	.L29
+ 1467              	.L33:
+ 1468              	.LBB5:
+  70:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	{
+  71:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		for (int i = 0; i < sizeof(GPIO_Pins) / sizeof(uint16_t); i = i + 2)
+ 1469              		.loc 3 71 0
+ 1470 0990 0023     		movs	r3, #0
+ 1471 0992 FE22     		movs	r2, #254
+ 1472 0994 D200     		lsls	r2, r2, #3
+ 1473 0996 1821     		movs	r1, #24
+ 1474 0998 8C46     		mov	ip, r1
+ 1475 099a BC44     		add	ip, ip, r7
+ 1476 099c 6244     		add	r2, r2, ip
+ 1477 099e 1360     		str	r3, [r2]
+ 1478 09a0 E3E0     		b	.L30
+ 1479              	.L50:
+ 1480 09a2 C046     		.align	2
+ 1481              	.L49:
+ 1482 09a4 F8F7FFFF 		.word	-2056
+ 1483 09a8 B8FCFFFF 		.word	-840
+ 1484 09ac 08080000 		.word	2056
+ 1485 09b0 98FCFFFF 		.word	-872
+ 1486 09b4 78FCFFFF 		.word	-904
+ 1487 09b8 58FCFFFF 		.word	-936
+ 1488 09bc 38FCFFFF 		.word	-968
+ 1489 09c0 18FCFFFF 		.word	-1000
+ 1490 09c4 F8FBFFFF 		.word	-1032
+ 1491 09c8 FC070000 		.word	2044
+ 1492 09cc 04080000 		.word	2052
+ 1493 09d0 00000000 		.word	GPIO_Ports
+ 1494 09d4 00000000 		.word	GPIO_Pins
+ 1495 09d8 E4070000 		.word	2020
+ 1496 09dc F4070000 		.word	2036
+ 1497              	.L32:
+  72:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		{
+  73:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 			if(!GPIO_ReadInputDataBit(GPIO_Ports[j], GPIO_Pins[i])){
+ 1498              		.loc 3 73 0
+ 1499 09e0 EE4B     		ldr	r3, .L51
+ 1500 09e2 EF4A     		ldr	r2, .L51+4
+ 1501 09e4 1821     		movs	r1, #24
+ 1502 09e6 8C46     		mov	ip, r1
+ 1503 09e8 BC44     		add	ip, ip, r7
+ 1504 09ea 6244     		add	r2, r2, ip
+ 1505 09ec 1268     		ldr	r2, [r2]
+ 1506 09ee 9200     		lsls	r2, r2, #2
+ 1507 09f0 D058     		ldr	r0, [r2, r3]
+ 1508 09f2 EC4B     		ldr	r3, .L51+8
+ 1509 09f4 FE22     		movs	r2, #254
+ 1510 09f6 D200     		lsls	r2, r2, #3
+ 1511 09f8 1821     		movs	r1, #24
+ 1512 09fa 8C46     		mov	ip, r1
+ 1513 09fc BC44     		add	ip, ip, r7
+ 1514 09fe 6244     		add	r2, r2, ip
+ 1515 0a00 1268     		ldr	r2, [r2]
+ 1516 0a02 5200     		lsls	r2, r2, #1
+ 1517 0a04 D35A     		ldrh	r3, [r2, r3]
+ 1518 0a06 1900     		movs	r1, r3
+ 1519 0a08 FFF7FEFF 		bl	GPIO_ReadInputDataBit
+ 1520 0a0c 031E     		subs	r3, r0, #0
+ 1521 0a0e 00D0     		beq	.LCB1438
+ 1522 0a10 9FE0     		b	.L31	@long jump
+ 1523              	.LCB1438:
+  74:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 				all_doors[counter].GPIO_read = GPIO_Pins[i];
+ 1524              		.loc 3 74 0
+ 1525 0a12 E44B     		ldr	r3, .L51+8
+ 1526 0a14 FE25     		movs	r5, #254
+ 1527 0a16 ED00     		lsls	r5, r5, #3
+ 1528 0a18 1820     		movs	r0, #24
+ 1529 0a1a 3A18     		adds	r2, r7, r0
+ 1530 0a1c 5219     		adds	r2, r2, r5
+ 1531 0a1e 1268     		ldr	r2, [r2]
+ 1532 0a20 5200     		lsls	r2, r2, #1
+ 1533 0a22 D35A     		ldrh	r3, [r2, r3]
+ 1534 0a24 1900     		movs	r1, r3
+ 1535 0a26 E04B     		ldr	r3, .L51+12
+ 1536 0a28 E04C     		ldr	r4, .L51+16
+ 1537 0a2a 3A18     		adds	r2, r7, r0
+ 1538 0a2c 1219     		adds	r2, r2, r4
+ 1539 0a2e D218     		adds	r2, r2, r3
+ 1540 0a30 FF20     		movs	r0, #255
+ 1541 0a32 C000     		lsls	r0, r0, #3
+ 1542 0a34 1823     		movs	r3, #24
+ 1543 0a36 FB18     		adds	r3, r7, r3
+ 1544 0a38 1B18     		adds	r3, r3, r0
+ 1545 0a3a 1B68     		ldr	r3, [r3]
+ 1546 0a3c 5B01     		lsls	r3, r3, #5
+ 1547 0a3e D318     		adds	r3, r2, r3
+ 1548 0a40 1433     		adds	r3, r3, #20
+ 1549 0a42 1960     		str	r1, [r3]
+  75:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 				all_doors[counter].GPIO_lamp = GPIO_Pins[i+1];
+ 1550              		.loc 3 75 0
+ 1551 0a44 1823     		movs	r3, #24
+ 1552 0a46 FB18     		adds	r3, r7, r3
+ 1553 0a48 5B19     		adds	r3, r3, r5
+ 1554 0a4a 1B68     		ldr	r3, [r3]
+ 1555 0a4c 5A1C     		adds	r2, r3, #1
+ 1556 0a4e D54B     		ldr	r3, .L51+8
+ 1557 0a50 5200     		lsls	r2, r2, #1
+ 1558 0a52 D35A     		ldrh	r3, [r2, r3]
+ 1559 0a54 1900     		movs	r1, r3
+ 1560 0a56 D44B     		ldr	r3, .L51+12
+ 1561 0a58 2500     		movs	r5, r4
+ 1562 0a5a 1824     		movs	r4, #24
+ 1563 0a5c 3A19     		adds	r2, r7, r4
+ 1564 0a5e 5219     		adds	r2, r2, r5
+ 1565 0a60 D218     		adds	r2, r2, r3
+ 1566 0a62 3B19     		adds	r3, r7, r4
+ 1567 0a64 1B18     		adds	r3, r3, r0
+ 1568 0a66 1B68     		ldr	r3, [r3]
+ 1569 0a68 5B01     		lsls	r3, r3, #5
+ 1570 0a6a D318     		adds	r3, r2, r3
+ 1571 0a6c 1033     		adds	r3, r3, #16
+ 1572 0a6e 1960     		str	r1, [r3]
+  76:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 				all_doors[counter].controlbits = 0;
+ 1573              		.loc 3 76 0
+ 1574 0a70 CD4B     		ldr	r3, .L51+12
+ 1575 0a72 2100     		movs	r1, r4
+ 1576 0a74 7A18     		adds	r2, r7, r1
+ 1577 0a76 5219     		adds	r2, r2, r5
+ 1578 0a78 D218     		adds	r2, r2, r3
+ 1579 0a7a 7B18     		adds	r3, r7, r1
+ 1580 0a7c 1B18     		adds	r3, r3, r0
+ 1581 0a7e 1B68     		ldr	r3, [r3]
+ 1582 0a80 5B01     		lsls	r3, r3, #5
+ 1583 0a82 D318     		adds	r3, r2, r3
+ 1584 0a84 0433     		adds	r3, r3, #4
+ 1585 0a86 0022     		movs	r2, #0
+ 1586 0a88 1A60     		str	r2, [r3]
+  77:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 				all_doors[counter].time_larm = 0;
+ 1587              		.loc 3 77 0
+ 1588 0a8a C74B     		ldr	r3, .L51+12
+ 1589 0a8c 7A18     		adds	r2, r7, r1
+ 1590 0a8e 5219     		adds	r2, r2, r5
+ 1591 0a90 D218     		adds	r2, r2, r3
+ 1592 0a92 7B18     		adds	r3, r7, r1
+ 1593 0a94 1B18     		adds	r3, r3, r0
+ 1594 0a96 1B68     		ldr	r3, [r3]
+ 1595 0a98 5B01     		lsls	r3, r3, #5
+ 1596 0a9a D318     		adds	r3, r2, r3
+ 1597 0a9c 0833     		adds	r3, r3, #8
+ 1598 0a9e 0022     		movs	r2, #0
+ 1599 0aa0 1A70     		strb	r2, [r3]
+  78:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 				all_doors[counter].time_central_larm = 2;
+ 1600              		.loc 3 78 0
+ 1601 0aa2 C14B     		ldr	r3, .L51+12
+ 1602 0aa4 7A18     		adds	r2, r7, r1
+ 1603 0aa6 5219     		adds	r2, r2, r5
+ 1604 0aa8 D218     		adds	r2, r2, r3
+ 1605 0aaa 7B18     		adds	r3, r7, r1
+ 1606 0aac 1B18     		adds	r3, r3, r0
+ 1607 0aae 1B68     		ldr	r3, [r3]
+ 1608 0ab0 5B01     		lsls	r3, r3, #5
+ 1609 0ab2 D318     		adds	r3, r2, r3
+ 1610 0ab4 0933     		adds	r3, r3, #9
+ 1611 0ab6 0222     		movs	r2, #2
+ 1612 0ab8 1A70     		strb	r2, [r3]
+  79:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 				all_doors[counter].GPIO_type = GPIO_Ports[j];
+ 1613              		.loc 3 79 0
+ 1614 0aba B84B     		ldr	r3, .L51
+ 1615 0abc B84A     		ldr	r2, .L51+4
+ 1616 0abe 1824     		movs	r4, #24
+ 1617 0ac0 A446     		mov	ip, r4
+ 1618 0ac2 BC44     		add	ip, ip, r7
+ 1619 0ac4 6244     		add	r2, r2, ip
+ 1620 0ac6 1268     		ldr	r2, [r2]
+ 1621 0ac8 9200     		lsls	r2, r2, #2
+ 1622 0aca D258     		ldr	r2, [r2, r3]
+ 1623 0acc B64B     		ldr	r3, .L51+12
+ 1624 0ace 7C18     		adds	r4, r7, r1
+ 1625 0ad0 6119     		adds	r1, r4, r5
+ 1626 0ad2 C918     		adds	r1, r1, r3
+ 1627 0ad4 0400     		movs	r4, r0
+ 1628 0ad6 1820     		movs	r0, #24
+ 1629 0ad8 3B18     		adds	r3, r7, r0
+ 1630 0ada 1B19     		adds	r3, r3, r4
+ 1631 0adc 1B68     		ldr	r3, [r3]
+ 1632 0ade 5B01     		lsls	r3, r3, #5
+ 1633 0ae0 CB18     		adds	r3, r1, r3
+ 1634 0ae2 1C33     		adds	r3, r3, #28
+ 1635 0ae4 1A60     		str	r2, [r3]
+  80:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 				all_doors[counter].id = counter;
+ 1636              		.loc 3 80 0
+ 1637 0ae6 3B18     		adds	r3, r7, r0
+ 1638 0ae8 1B19     		adds	r3, r3, r4
+ 1639 0aea 1B68     		ldr	r3, [r3]
+ 1640 0aec D9B2     		uxtb	r1, r3
+ 1641 0aee AE4B     		ldr	r3, .L51+12
+ 1642 0af0 AE4A     		ldr	r2, .L51+16
+ 1643 0af2 9446     		mov	ip, r2
+ 1644 0af4 1822     		movs	r2, #24
+ 1645 0af6 9046     		mov	r8, r2
+ 1646 0af8 B844     		add	r8, r8, r7
+ 1647 0afa C444     		add	ip, ip, r8
+ 1648 0afc 6344     		add	r3, r3, ip
+ 1649 0afe 3A18     		adds	r2, r7, r0
+ 1650 0b00 1219     		adds	r2, r2, r4
+ 1651 0b02 1268     		ldr	r2, [r2]
+ 1652 0b04 5201     		lsls	r2, r2, #5
+ 1653 0b06 D154     		strb	r1, [r2, r3]
   81:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 				active_doors[counter] = all_doors[counter];
- 4906              		.loc 4 81 0
- 4907 1810 B14B     		ldr	r3, .L290+16
- 4908 1812 1822     		movs	r2, #24
- 4909 1814 9446     		mov	ip, r2
- 4910 1816 BC44     		add	ip, ip, r7
- 4911 1818 6344     		add	r3, r3, ip
- 4912 181a 1868     		ldr	r0, [r3]
- 4913 181c 1821     		movs	r1, #24
- 4914 181e 7B18     		adds	r3, r7, r1
- 4915 1820 1B19     		adds	r3, r3, r4
- 4916 1822 1B68     		ldr	r3, [r3]
- 4917 1824 5B01     		lsls	r3, r3, #5
- 4918 1826 AB4A     		ldr	r2, .L290+12
- 4919 1828 7918     		adds	r1, r7, r1
- 4920 182a 4919     		adds	r1, r1, r5
- 4921 182c 8918     		adds	r1, r1, r2
- 4922 182e 1822     		movs	r2, #24
- 4923 1830 BD18     		adds	r5, r7, r2
- 4924 1832 2A19     		adds	r2, r5, r4
- 4925 1834 1268     		ldr	r2, [r2]
- 4926 1836 5201     		lsls	r2, r2, #5
- 4927 1838 C318     		adds	r3, r0, r3
- 4928 183a 8A18     		adds	r2, r1, r2
- 4929 183c 23CA     		ldmia	r2!, {r0, r1, r5}
- 4930 183e 23C3     		stmia	r3!, {r0, r1, r5}
- 4931 1840 23CA     		ldmia	r2!, {r0, r1, r5}
- 4932 1842 23C3     		stmia	r3!, {r0, r1, r5}
- 4933 1844 03CA     		ldmia	r2!, {r0, r1}
- 4934 1846 03C3     		stmia	r3!, {r0, r1}
+ 1654              		.loc 3 81 0
+ 1655 0b08 FC23     		movs	r3, #252
+ 1656 0b0a DB00     		lsls	r3, r3, #3
+ 1657 0b0c 1822     		movs	r2, #24
+ 1658 0b0e 9446     		mov	ip, r2
+ 1659 0b10 BC44     		add	ip, ip, r7
+ 1660 0b12 6344     		add	r3, r3, ip
+ 1661 0b14 1868     		ldr	r0, [r3]
+ 1662 0b16 1821     		movs	r1, #24
+ 1663 0b18 7B18     		adds	r3, r7, r1
+ 1664 0b1a 1B19     		adds	r3, r3, r4
+ 1665 0b1c 1B68     		ldr	r3, [r3]
+ 1666 0b1e 5B01     		lsls	r3, r3, #5
+ 1667 0b20 A14A     		ldr	r2, .L51+12
+ 1668 0b22 7918     		adds	r1, r7, r1
+ 1669 0b24 4919     		adds	r1, r1, r5
+ 1670 0b26 8918     		adds	r1, r1, r2
+ 1671 0b28 1822     		movs	r2, #24
+ 1672 0b2a BD18     		adds	r5, r7, r2
+ 1673 0b2c 2A19     		adds	r2, r5, r4
+ 1674 0b2e 1268     		ldr	r2, [r2]
+ 1675 0b30 5201     		lsls	r2, r2, #5
+ 1676 0b32 C318     		adds	r3, r0, r3
+ 1677 0b34 8A18     		adds	r2, r1, r2
+ 1678 0b36 23CA     		ldmia	r2!, {r0, r1, r5}
+ 1679 0b38 23C3     		stmia	r3!, {r0, r1, r5}
+ 1680 0b3a 23CA     		ldmia	r2!, {r0, r1, r5}
+ 1681 0b3c 23C3     		stmia	r3!, {r0, r1, r5}
+ 1682 0b3e 03CA     		ldmia	r2!, {r0, r1}
+ 1683 0b40 03C3     		stmia	r3!, {r0, r1}
   82:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 				counter++;
- 4935              		.loc 4 82 0
- 4936 1848 1822     		movs	r2, #24
- 4937 184a BB18     		adds	r3, r7, r2
- 4938 184c 1B19     		adds	r3, r3, r4
- 4939 184e 1B68     		ldr	r3, [r3]
- 4940 1850 0133     		adds	r3, r3, #1
- 4941 1852 BA18     		adds	r2, r7, r2
- 4942 1854 1219     		adds	r2, r2, r4
- 4943 1856 1360     		str	r3, [r2]
- 4944              	.L267:
-  72:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		{
- 4945              		.loc 4 72 0 discriminator 2
- 4946 1858 FF22     		movs	r2, #255
- 4947 185a D200     		lsls	r2, r2, #3
- 4948 185c 1823     		movs	r3, #24
- 4949 185e FB18     		adds	r3, r7, r3
- 4950 1860 9B18     		adds	r3, r3, r2
- 4951 1862 1B68     		ldr	r3, [r3]
- 4952 1864 0233     		adds	r3, r3, #2
- 4953 1866 1821     		movs	r1, #24
- 4954 1868 8C46     		mov	ip, r1
- 4955 186a BC44     		add	ip, ip, r7
- 4956 186c 6244     		add	r2, r2, ip
- 4957 186e 1360     		str	r3, [r2]
- 4958              	.L266:
-  72:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		{
- 4959              		.loc 4 72 0 is_stmt 0 discriminator 1
- 4960 1870 FF23     		movs	r3, #255
- 4961 1872 DB00     		lsls	r3, r3, #3
- 4962 1874 1822     		movs	r2, #24
- 4963 1876 9446     		mov	ip, r2
- 4964 1878 BC44     		add	ip, ip, r7
- 4965 187a 6344     		add	r3, r3, ip
- 4966 187c 1B68     		ldr	r3, [r3]
- 4967 187e 0F2B     		cmp	r3, #15
- 4968 1880 00D8     		bhi	.LCB4481
- 4969 1882 41E7     		b	.L268	@long jump
- 4970              	.LCB4481:
- 4971              	.LBE5:
-  70:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	{
- 4972              		.loc 4 70 0 is_stmt 1 discriminator 2
- 4973 1884 914A     		ldr	r2, .L290+4
- 4974 1886 1823     		movs	r3, #24
- 4975 1888 FB18     		adds	r3, r7, r3
- 4976 188a 9B18     		adds	r3, r3, r2
- 4977 188c 1B68     		ldr	r3, [r3]
- 4978 188e 0133     		adds	r3, r3, #1
- 4979 1890 1821     		movs	r1, #24
- 4980 1892 8C46     		mov	ip, r1
- 4981 1894 BC44     		add	ip, ip, r7
- 4982 1896 6244     		add	r2, r2, ip
- 4983 1898 1360     		str	r3, [r2]
- 4984              	.L265:
-  70:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	{
- 4985              		.loc 4 70 0 is_stmt 0 discriminator 1
- 4986 189a 8C4B     		ldr	r3, .L290+4
- 4987 189c 1822     		movs	r2, #24
- 4988 189e 9446     		mov	ip, r2
- 4989 18a0 BC44     		add	ip, ip, r7
- 4990 18a2 6344     		add	r3, r3, ip
- 4991 18a4 1B68     		ldr	r3, [r3]
- 4992 18a6 032B     		cmp	r3, #3
- 4993 18a8 00D8     		bhi	.LCB4504
- 4994 18aa 03E7     		b	.L269	@long jump
- 4995              	.LCB4504:
- 4996              	.LBE4:
- 4997              	.LBB6:
+ 1684              		.loc 3 82 0
+ 1685 0b42 1822     		movs	r2, #24
+ 1686 0b44 BB18     		adds	r3, r7, r2
+ 1687 0b46 1B19     		adds	r3, r3, r4
+ 1688 0b48 1B68     		ldr	r3, [r3]
+ 1689 0b4a 0133     		adds	r3, r3, #1
+ 1690 0b4c BA18     		adds	r2, r7, r2
+ 1691 0b4e 1219     		adds	r2, r2, r4
+ 1692 0b50 1360     		str	r3, [r2]
+ 1693              	.L31:
+  71:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		{
+ 1694              		.loc 3 71 0 discriminator 2
+ 1695 0b52 FE22     		movs	r2, #254
+ 1696 0b54 D200     		lsls	r2, r2, #3
+ 1697 0b56 1823     		movs	r3, #24
+ 1698 0b58 FB18     		adds	r3, r7, r3
+ 1699 0b5a 9B18     		adds	r3, r3, r2
+ 1700 0b5c 1B68     		ldr	r3, [r3]
+ 1701 0b5e 0233     		adds	r3, r3, #2
+ 1702 0b60 1821     		movs	r1, #24
+ 1703 0b62 8C46     		mov	ip, r1
+ 1704 0b64 BC44     		add	ip, ip, r7
+ 1705 0b66 6244     		add	r2, r2, ip
+ 1706 0b68 1360     		str	r3, [r2]
+ 1707              	.L30:
+  71:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		{
+ 1708              		.loc 3 71 0 is_stmt 0 discriminator 1
+ 1709 0b6a FE23     		movs	r3, #254
+ 1710 0b6c DB00     		lsls	r3, r3, #3
+ 1711 0b6e 1822     		movs	r2, #24
+ 1712 0b70 9446     		mov	ip, r2
+ 1713 0b72 BC44     		add	ip, ip, r7
+ 1714 0b74 6344     		add	r3, r3, ip
+ 1715 0b76 1B68     		ldr	r3, [r3]
+ 1716 0b78 0F2B     		cmp	r3, #15
+ 1717 0b7a 00D8     		bhi	.LCB1673
+ 1718 0b7c 30E7     		b	.L32	@long jump
+ 1719              	.LCB1673:
+ 1720              	.LBE5:
+  69:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	{
+ 1721              		.loc 3 69 0 is_stmt 1 discriminator 2
+ 1722 0b7e 884A     		ldr	r2, .L51+4
+ 1723 0b80 1823     		movs	r3, #24
+ 1724 0b82 FB18     		adds	r3, r7, r3
+ 1725 0b84 9B18     		adds	r3, r3, r2
+ 1726 0b86 1B68     		ldr	r3, [r3]
+ 1727 0b88 0133     		adds	r3, r3, #1
+ 1728 0b8a 1821     		movs	r1, #24
+ 1729 0b8c 8C46     		mov	ip, r1
+ 1730 0b8e BC44     		add	ip, ip, r7
+ 1731 0b90 6244     		add	r2, r2, ip
+ 1732 0b92 1360     		str	r3, [r2]
+ 1733              	.L29:
+  69:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	{
+ 1734              		.loc 3 69 0 is_stmt 0 discriminator 1
+ 1735 0b94 824B     		ldr	r3, .L51+4
+ 1736 0b96 1822     		movs	r2, #24
+ 1737 0b98 9446     		mov	ip, r2
+ 1738 0b9a BC44     		add	ip, ip, r7
+ 1739 0b9c 6344     		add	r3, r3, ip
+ 1740 0b9e 1B68     		ldr	r3, [r3]
+ 1741 0ba0 032B     		cmp	r3, #3
+ 1742 0ba2 00D8     		bhi	.LCB1696
+ 1743 0ba4 F4E6     		b	.L33	@long jump
+ 1744              	.LCB1696:
+ 1745              	.LBE4:
   83:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 			}
   84:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		}
   85:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	}
-  86:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	for (int i = 0; i < sizeof(active_doors)/sizeof(active_doors[0]); i++) //CHRISTMAST LIGHTS FTW
- 4998              		.loc 4 86 0 is_stmt 1
- 4999 18ac 0023     		movs	r3, #0
- 5000 18ae 8B4A     		ldr	r2, .L290+20
- 5001 18b0 1821     		movs	r1, #24
- 5002 18b2 8C46     		mov	ip, r1
- 5003 18b4 BC44     		add	ip, ip, r7
- 5004 18b6 6244     		add	r2, r2, ip
- 5005 18b8 1360     		str	r3, [r2]
- 5006 18ba 54E0     		b	.L270
- 5007              	.L272:
- 5008              	.LBB7:
-  87:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	{
-  88:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		GPIO_SetBits(active_doors[i].GPIO_type, active_doors[i].GPIO_lamp);
- 5009              		.loc 4 88 0
- 5010 18bc 8649     		ldr	r1, .L290+16
- 5011 18be 1825     		movs	r5, #24
- 5012 18c0 7B19     		adds	r3, r7, r5
- 5013 18c2 5B18     		adds	r3, r3, r1
- 5014 18c4 1A68     		ldr	r2, [r3]
- 5015 18c6 854C     		ldr	r4, .L290+20
- 5016 18c8 7B19     		adds	r3, r7, r5
- 5017 18ca 1B19     		adds	r3, r3, r4
- 5018 18cc 1B68     		ldr	r3, [r3]
- 5019 18ce 5B01     		lsls	r3, r3, #5
- 5020 18d0 D318     		adds	r3, r2, r3
- 5021 18d2 1C33     		adds	r3, r3, #28
- 5022 18d4 1868     		ldr	r0, [r3]
- 5023 18d6 7B19     		adds	r3, r7, r5
- 5024 18d8 5B18     		adds	r3, r3, r1
- 5025 18da 1A68     		ldr	r2, [r3]
- 5026 18dc 7B19     		adds	r3, r7, r5
- 5027 18de 1B19     		adds	r3, r3, r4
- 5028 18e0 1B68     		ldr	r3, [r3]
- 5029 18e2 5B01     		lsls	r3, r3, #5
- 5030 18e4 D318     		adds	r3, r2, r3
- 5031 18e6 1033     		adds	r3, r3, #16
- 5032 18e8 1B68     		ldr	r3, [r3]
- 5033 18ea 9BB2     		uxth	r3, r3
- 5034 18ec 1900     		movs	r1, r3
- 5035 18ee FFF7FEFF 		bl	GPIO_SetBits
-  89:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		int waitde = msTicks + 100;
- 5036              		.loc 4 89 0
- 5037 18f2 7B4B     		ldr	r3, .L290+24
- 5038 18f4 1B68     		ldr	r3, [r3]
- 5039 18f6 6433     		adds	r3, r3, #100
- 5040 18f8 FC22     		movs	r2, #252
- 5041 18fa D200     		lsls	r2, r2, #3
- 5042 18fc 1821     		movs	r1, #24
- 5043 18fe 8C46     		mov	ip, r1
- 5044 1900 BC44     		add	ip, ip, r7
- 5045 1902 6244     		add	r2, r2, ip
- 5046 1904 1360     		str	r3, [r2]
-  90:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		while (msTicks < waitde);
- 5047              		.loc 4 90 0
- 5048 1906 C046     		nop
- 5049              	.L271:
- 5050              		.loc 4 90 0 is_stmt 0 discriminator 1
- 5051 1908 754B     		ldr	r3, .L290+24
- 5052 190a 1A68     		ldr	r2, [r3]
- 5053 190c FC23     		movs	r3, #252
- 5054 190e DB00     		lsls	r3, r3, #3
- 5055 1910 1821     		movs	r1, #24
- 5056 1912 8C46     		mov	ip, r1
- 5057 1914 BC44     		add	ip, ip, r7
- 5058 1916 6344     		add	r3, r3, ip
- 5059 1918 1B68     		ldr	r3, [r3]
- 5060 191a 9A42     		cmp	r2, r3
- 5061 191c F4D3     		bcc	.L271
-  91:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		GPIO_ResetBits(active_doors[i].GPIO_type, active_doors[i].GPIO_lamp);
- 5062              		.loc 4 91 0 is_stmt 1 discriminator 2
- 5063 191e 6E4C     		ldr	r4, .L290+16
- 5064 1920 1825     		movs	r5, #24
- 5065 1922 7B19     		adds	r3, r7, r5
- 5066 1924 1B19     		adds	r3, r3, r4
- 5067 1926 1A68     		ldr	r2, [r3]
- 5068 1928 6C49     		ldr	r1, .L290+20
- 5069 192a 7B19     		adds	r3, r7, r5
- 5070 192c 5B18     		adds	r3, r3, r1
- 5071 192e 1B68     		ldr	r3, [r3]
- 5072 1930 5B01     		lsls	r3, r3, #5
- 5073 1932 D318     		adds	r3, r2, r3
- 5074 1934 1C33     		adds	r3, r3, #28
- 5075 1936 1868     		ldr	r0, [r3]
- 5076 1938 7B19     		adds	r3, r7, r5
- 5077 193a 1B19     		adds	r3, r3, r4
- 5078 193c 1A68     		ldr	r2, [r3]
- 5079 193e 0C00     		movs	r4, r1
- 5080 1940 7B19     		adds	r3, r7, r5
- 5081 1942 5B18     		adds	r3, r3, r1
- 5082 1944 1B68     		ldr	r3, [r3]
- 5083 1946 5B01     		lsls	r3, r3, #5
- 5084 1948 D318     		adds	r3, r2, r3
- 5085 194a 1033     		adds	r3, r3, #16
- 5086 194c 1B68     		ldr	r3, [r3]
- 5087 194e 9BB2     		uxth	r3, r3
- 5088 1950 1900     		movs	r1, r3
- 5089 1952 FFF7FEFF 		bl	GPIO_ResetBits
- 5090              	.LBE7:
-  86:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	{
- 5091              		.loc 4 86 0 discriminator 2
- 5092 1956 2100     		movs	r1, r4
- 5093 1958 7B19     		adds	r3, r7, r5
- 5094 195a 5B18     		adds	r3, r3, r1
- 5095 195c 1B68     		ldr	r3, [r3]
- 5096 195e 0133     		adds	r3, r3, #1
- 5097 1960 7A19     		adds	r2, r7, r5
- 5098 1962 5218     		adds	r2, r2, r1
- 5099 1964 1360     		str	r3, [r2]
- 5100              	.L270:
-  86:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	{
- 5101              		.loc 4 86 0 is_stmt 0 discriminator 1
- 5102 1966 3300     		movs	r3, r6
- 5103 1968 5B01     		lsls	r3, r3, #5
- 5104 196a 5A09     		lsrs	r2, r3, #5
- 5105 196c 5B4B     		ldr	r3, .L290+20
- 5106 196e 1821     		movs	r1, #24
- 5107 1970 8C46     		mov	ip, r1
- 5108 1972 BC44     		add	ip, ip, r7
- 5109 1974 6344     		add	r3, r3, ip
- 5110 1976 1B68     		ldr	r3, [r3]
- 5111 1978 9A42     		cmp	r2, r3
- 5112 197a 9FD8     		bhi	.L272
- 5113              	.LBE6:
-  92:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		
-  93:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	}
-  94:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	GPIO_SetBits(GPIOB, GPIO_Pin_2);
- 5114              		.loc 4 94 0 is_stmt 1
- 5115 197c 594B     		ldr	r3, .L290+28
- 5116 197e 0421     		movs	r1, #4
- 5117 1980 1800     		movs	r0, r3
- 5118 1982 FFF7FEFF 		bl	GPIO_SetBits
- 5119              	.L284:
- 5120              	.LBB8:
-  95:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	//active_doors[2].controlbits |= 4;
-  96:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	while (1)
-  97:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	{
-  98:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		for (int i = 0; i < sizeof(active_doors)/sizeof(active_doors[0]); i++)
- 5121              		.loc 4 98 0
- 5122 1986 0023     		movs	r3, #0
- 5123 1988 FE22     		movs	r2, #254
- 5124 198a D200     		lsls	r2, r2, #3
- 5125 198c 1821     		movs	r1, #24
- 5126 198e 8C46     		mov	ip, r1
- 5127 1990 BC44     		add	ip, ip, r7
- 5128 1992 6244     		add	r2, r2, ip
- 5129 1994 1360     		str	r3, [r2]
- 5130 1996 97E1     		b	.L273
- 5131              	.L283:
-  99:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		{
- 100:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 			if (!(active_doors[i].controlbits & 4))
- 5132              		.loc 4 100 0
- 5133 1998 4F4B     		ldr	r3, .L290+16
- 5134 199a 1822     		movs	r2, #24
- 5135 199c 9446     		mov	ip, r2
- 5136 199e BC44     		add	ip, ip, r7
- 5137 19a0 6344     		add	r3, r3, ip
- 5138 19a2 1A68     		ldr	r2, [r3]
- 5139 19a4 FE23     		movs	r3, #254
- 5140 19a6 DB00     		lsls	r3, r3, #3
- 5141 19a8 1821     		movs	r1, #24
- 5142 19aa 8C46     		mov	ip, r1
- 5143 19ac BC44     		add	ip, ip, r7
- 5144 19ae 6344     		add	r3, r3, ip
- 5145 19b0 1B68     		ldr	r3, [r3]
- 5146 19b2 5B01     		lsls	r3, r3, #5
- 5147 19b4 D318     		adds	r3, r2, r3
- 5148 19b6 0433     		adds	r3, r3, #4
- 5149 19b8 1B68     		ldr	r3, [r3]
- 5150 19ba 0422     		movs	r2, #4
- 5151 19bc 1340     		ands	r3, r2
- 5152 19be 00D0     		beq	.LCB4672
- 5153 19c0 76E1     		b	.L274	@long jump
- 5154              	.LCB4672:
- 101:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 				{
- 102:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 				if (!GPIO_ReadInputDataBit(active_doors[i].GPIO_type, active_doors[i].GPIO_read)){ //GPIO pinne
- 5155              		.loc 4 102 0
- 5156 19c2 4549     		ldr	r1, .L290+16
- 5157 19c4 1825     		movs	r5, #24
- 5158 19c6 7B19     		adds	r3, r7, r5
- 5159 19c8 5B18     		adds	r3, r3, r1
- 5160 19ca 1A68     		ldr	r2, [r3]
- 5161 19cc FE24     		movs	r4, #254
- 5162 19ce E400     		lsls	r4, r4, #3
- 5163 19d0 7B19     		adds	r3, r7, r5
- 5164 19d2 1B19     		adds	r3, r3, r4
- 5165 19d4 1B68     		ldr	r3, [r3]
- 5166 19d6 5B01     		lsls	r3, r3, #5
- 5167 19d8 D318     		adds	r3, r2, r3
- 5168 19da 1C33     		adds	r3, r3, #28
- 5169 19dc 1868     		ldr	r0, [r3]
- 5170 19de 7B19     		adds	r3, r7, r5
- 5171 19e0 5B18     		adds	r3, r3, r1
- 5172 19e2 1A68     		ldr	r2, [r3]
- 5173 19e4 7B19     		adds	r3, r7, r5
- 5174 19e6 1B19     		adds	r3, r3, r4
- 5175 19e8 1B68     		ldr	r3, [r3]
- 5176 19ea 5B01     		lsls	r3, r3, #5
- 5177 19ec D318     		adds	r3, r2, r3
- 5178 19ee 1433     		adds	r3, r3, #20
- 5179 19f0 1B68     		ldr	r3, [r3]
- 5180 19f2 9BB2     		uxth	r3, r3
- 5181 19f4 1900     		movs	r1, r3
- 5182 19f6 FFF7FEFF 		bl	GPIO_ReadInputDataBit
- 5183 19fa 031E     		subs	r3, r0, #0
- 5184 19fc 1AD1     		bne	.L275
- 103:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 					active_doors[i].controlbits &= 0xFFFC; //Nollställer kontrollbiten för ifall en dörr är ö
- 5185              		.loc 4 103 0
- 5186 19fe 3649     		ldr	r1, .L290+16
- 5187 1a00 1824     		movs	r4, #24
- 5188 1a02 3B19     		adds	r3, r7, r4
- 5189 1a04 5B18     		adds	r3, r3, r1
- 5190 1a06 1A68     		ldr	r2, [r3]
- 5191 1a08 FE20     		movs	r0, #254
- 5192 1a0a C000     		lsls	r0, r0, #3
- 5193 1a0c 3B19     		adds	r3, r7, r4
- 5194 1a0e 1B18     		adds	r3, r3, r0
- 5195 1a10 1B68     		ldr	r3, [r3]
- 5196 1a12 5B01     		lsls	r3, r3, #5
- 5197 1a14 D318     		adds	r3, r2, r3
- 5198 1a16 0433     		adds	r3, r3, #4
- 5199 1a18 1B68     		ldr	r3, [r3]
- 5200 1a1a 334A     		ldr	r2, .L290+32
- 5201 1a1c 1A40     		ands	r2, r3
- 5202 1a1e 3B19     		adds	r3, r7, r4
- 5203 1a20 5B18     		adds	r3, r3, r1
- 5204 1a22 1968     		ldr	r1, [r3]
- 5205 1a24 3B19     		adds	r3, r7, r4
- 5206 1a26 1B18     		adds	r3, r3, r0
- 5207 1a28 1B68     		ldr	r3, [r3]
- 5208 1a2a 5B01     		lsls	r3, r3, #5
- 5209 1a2c CB18     		adds	r3, r1, r3
- 5210 1a2e 0433     		adds	r3, r3, #4
- 5211 1a30 1A60     		str	r2, [r3]
- 5212 1a32 40E0     		b	.L276
- 5213              	.L275:
- 104:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 					//att skicka medelande till centralenheten, när den detekteras som stängd
- 105:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 					
- 106:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 				}
- 107:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 				else{
- 108:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 					if (!active_doors[i].controlbits & 1) // Kollar så att dörren inte larmar sen innan så larm
- 5214              		.loc 4 108 0
- 5215 1a34 284B     		ldr	r3, .L290+16
- 5216 1a36 1822     		movs	r2, #24
- 5217 1a38 9446     		mov	ip, r2
- 5218 1a3a BC44     		add	ip, ip, r7
- 5219 1a3c 6344     		add	r3, r3, ip
- 5220 1a3e 1A68     		ldr	r2, [r3]
- 5221 1a40 FE23     		movs	r3, #254
- 5222 1a42 DB00     		lsls	r3, r3, #3
- 5223 1a44 1821     		movs	r1, #24
- 5224 1a46 8C46     		mov	ip, r1
- 5225 1a48 BC44     		add	ip, ip, r7
- 5226 1a4a 6344     		add	r3, r3, ip
- 5227 1a4c 1B68     		ldr	r3, [r3]
- 5228 1a4e 5B01     		lsls	r3, r3, #5
- 5229 1a50 D318     		adds	r3, r2, r3
- 5230 1a52 0433     		adds	r3, r3, #4
- 5231 1a54 1B68     		ldr	r3, [r3]
- 5232 1a56 002B     		cmp	r3, #0
- 5233 1a58 13D1     		bne	.L277
+  86:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	GPIO_SetBits(GPIOB, GPIO_Pin_2);
+ 1746              		.loc 3 86 0 is_stmt 1
+ 1747 0ba6 824B     		ldr	r3, .L51+20
+ 1748 0ba8 0421     		movs	r1, #4
+ 1749 0baa 1800     		movs	r0, r3
+ 1750 0bac FFF7FEFF 		bl	GPIO_SetBits
+ 1751              	.L45:
+ 1752              	.LBB6:
+  87:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	//active_doors[2].controlbits |= 4;
+  88:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	while (1)
+  89:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	{
+  90:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		for (int i = 0; i < sizeof(active_doors)/sizeof(active_doors[0]); i++)
+ 1753              		.loc 3 90 0
+ 1754 0bb0 0023     		movs	r3, #0
+ 1755 0bb2 804A     		ldr	r2, .L51+24
+ 1756 0bb4 1821     		movs	r1, #24
+ 1757 0bb6 8C46     		mov	ip, r1
+ 1758 0bb8 BC44     		add	ip, ip, r7
+ 1759 0bba 6244     		add	r2, r2, ip
+ 1760 0bbc 1360     		str	r3, [r2]
+ 1761 0bbe A9E1     		b	.L34
+ 1762              	.L44:
+  91:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		{
+  92:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 			if (!(active_doors[i].controlbits & 4))
+ 1763              		.loc 3 92 0
+ 1764 0bc0 FC23     		movs	r3, #252
+ 1765 0bc2 DB00     		lsls	r3, r3, #3
+ 1766 0bc4 1822     		movs	r2, #24
+ 1767 0bc6 9446     		mov	ip, r2
+ 1768 0bc8 BC44     		add	ip, ip, r7
+ 1769 0bca 6344     		add	r3, r3, ip
+ 1770 0bcc 1A68     		ldr	r2, [r3]
+ 1771 0bce 794B     		ldr	r3, .L51+24
+ 1772 0bd0 1821     		movs	r1, #24
+ 1773 0bd2 8C46     		mov	ip, r1
+ 1774 0bd4 BC44     		add	ip, ip, r7
+ 1775 0bd6 6344     		add	r3, r3, ip
+ 1776 0bd8 1B68     		ldr	r3, [r3]
+ 1777 0bda 5B01     		lsls	r3, r3, #5
+ 1778 0bdc D318     		adds	r3, r2, r3
+ 1779 0bde 0433     		adds	r3, r3, #4
+ 1780 0be0 1B68     		ldr	r3, [r3]
+ 1781 0be2 0422     		movs	r2, #4
+ 1782 0be4 1340     		ands	r3, r2
+ 1783 0be6 00D0     		beq	.LCB1736
+ 1784 0be8 89E1     		b	.L35	@long jump
+ 1785              	.LCB1736:
+  93:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 				{
+  94:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 				if (!GPIO_ReadInputDataBit(active_doors[i].GPIO_type, active_doors[i].GPIO_read)){ //GPIO pinne
+ 1786              		.loc 3 94 0
+ 1787 0bea FC21     		movs	r1, #252
+ 1788 0bec C900     		lsls	r1, r1, #3
+ 1789 0bee 1825     		movs	r5, #24
+ 1790 0bf0 7B19     		adds	r3, r7, r5
+ 1791 0bf2 5B18     		adds	r3, r3, r1
+ 1792 0bf4 1A68     		ldr	r2, [r3]
+ 1793 0bf6 6F4C     		ldr	r4, .L51+24
+ 1794 0bf8 7B19     		adds	r3, r7, r5
+ 1795 0bfa 1B19     		adds	r3, r3, r4
+ 1796 0bfc 1B68     		ldr	r3, [r3]
+ 1797 0bfe 5B01     		lsls	r3, r3, #5
+ 1798 0c00 D318     		adds	r3, r2, r3
+ 1799 0c02 1C33     		adds	r3, r3, #28
+ 1800 0c04 1868     		ldr	r0, [r3]
+ 1801 0c06 7B19     		adds	r3, r7, r5
+ 1802 0c08 5B18     		adds	r3, r3, r1
+ 1803 0c0a 1A68     		ldr	r2, [r3]
+ 1804 0c0c 7B19     		adds	r3, r7, r5
+ 1805 0c0e 1B19     		adds	r3, r3, r4
+ 1806 0c10 1B68     		ldr	r3, [r3]
+ 1807 0c12 5B01     		lsls	r3, r3, #5
+ 1808 0c14 D318     		adds	r3, r2, r3
+ 1809 0c16 1433     		adds	r3, r3, #20
+ 1810 0c18 1B68     		ldr	r3, [r3]
+ 1811 0c1a 9BB2     		uxth	r3, r3
+ 1812 0c1c 1900     		movs	r1, r3
+ 1813 0c1e FFF7FEFF 		bl	GPIO_ReadInputDataBit
+ 1814 0c22 031E     		subs	r3, r0, #0
+ 1815 0c24 1AD1     		bne	.L36
+  95:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 					active_doors[i].controlbits &= 0xFFFC; //Nollställer kontrollbiten för ifall en dörr är ö
+ 1816              		.loc 3 95 0
+ 1817 0c26 FC21     		movs	r1, #252
+ 1818 0c28 C900     		lsls	r1, r1, #3
+ 1819 0c2a 1824     		movs	r4, #24
+ 1820 0c2c 3B19     		adds	r3, r7, r4
+ 1821 0c2e 5B18     		adds	r3, r3, r1
+ 1822 0c30 1A68     		ldr	r2, [r3]
+ 1823 0c32 6048     		ldr	r0, .L51+24
+ 1824 0c34 3B19     		adds	r3, r7, r4
+ 1825 0c36 1B18     		adds	r3, r3, r0
+ 1826 0c38 1B68     		ldr	r3, [r3]
+ 1827 0c3a 5B01     		lsls	r3, r3, #5
+ 1828 0c3c D318     		adds	r3, r2, r3
+ 1829 0c3e 0433     		adds	r3, r3, #4
+ 1830 0c40 1B68     		ldr	r3, [r3]
+ 1831 0c42 5D4A     		ldr	r2, .L51+28
+ 1832 0c44 1A40     		ands	r2, r3
+ 1833 0c46 3B19     		adds	r3, r7, r4
+ 1834 0c48 5B18     		adds	r3, r3, r1
+ 1835 0c4a 1968     		ldr	r1, [r3]
+ 1836 0c4c 3B19     		adds	r3, r7, r4
+ 1837 0c4e 1B18     		adds	r3, r3, r0
+ 1838 0c50 1B68     		ldr	r3, [r3]
+ 1839 0c52 5B01     		lsls	r3, r3, #5
+ 1840 0c54 CB18     		adds	r3, r1, r3
+ 1841 0c56 0433     		adds	r3, r3, #4
+ 1842 0c58 1A60     		str	r2, [r3]
+ 1843 0c5a 40E0     		b	.L37
+ 1844              	.L36:
+  96:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 					//att skicka medelande till centralenheten, när den detekteras som stängd
+  97:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 					
+  98:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 				}
+  99:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 				else{
+ 100:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 					if (!active_doors[i].controlbits & 1) // Kollar så att dörren inte larmar sen innan så larm
+ 1845              		.loc 3 100 0
+ 1846 0c5c FC23     		movs	r3, #252
+ 1847 0c5e DB00     		lsls	r3, r3, #3
+ 1848 0c60 1822     		movs	r2, #24
+ 1849 0c62 9446     		mov	ip, r2
+ 1850 0c64 BC44     		add	ip, ip, r7
+ 1851 0c66 6344     		add	r3, r3, ip
+ 1852 0c68 1A68     		ldr	r2, [r3]
+ 1853 0c6a 524B     		ldr	r3, .L51+24
+ 1854 0c6c 1821     		movs	r1, #24
+ 1855 0c6e 8C46     		mov	ip, r1
+ 1856 0c70 BC44     		add	ip, ip, r7
+ 1857 0c72 6344     		add	r3, r3, ip
+ 1858 0c74 1B68     		ldr	r3, [r3]
+ 1859 0c76 5B01     		lsls	r3, r3, #5
+ 1860 0c78 D318     		adds	r3, r2, r3
+ 1861 0c7a 0433     		adds	r3, r3, #4
+ 1862 0c7c 1B68     		ldr	r3, [r3]
+ 1863 0c7e 002B     		cmp	r3, #0
+ 1864 0c80 13D1     		bne	.L38
+ 101:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 					{
+ 102:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 						active_doors[i].larmTick = msTicks;
+ 1865              		.loc 3 102 0
+ 1866 0c82 4E4B     		ldr	r3, .L51+32
+ 1867 0c84 1B68     		ldr	r3, [r3]
+ 1868 0c86 1900     		movs	r1, r3
+ 1869 0c88 FC23     		movs	r3, #252
+ 1870 0c8a DB00     		lsls	r3, r3, #3
+ 1871 0c8c 1822     		movs	r2, #24
+ 1872 0c8e 9446     		mov	ip, r2
+ 1873 0c90 BC44     		add	ip, ip, r7
+ 1874 0c92 6344     		add	r3, r3, ip
+ 1875 0c94 1A68     		ldr	r2, [r3]
+ 1876 0c96 474B     		ldr	r3, .L51+24
+ 1877 0c98 1820     		movs	r0, #24
+ 1878 0c9a 8446     		mov	ip, r0
+ 1879 0c9c BC44     		add	ip, ip, r7
+ 1880 0c9e 6344     		add	r3, r3, ip
+ 1881 0ca0 1B68     		ldr	r3, [r3]
+ 1882 0ca2 5B01     		lsls	r3, r3, #5
+ 1883 0ca4 D318     		adds	r3, r2, r3
+ 1884 0ca6 1833     		adds	r3, r3, #24
+ 1885 0ca8 1960     		str	r1, [r3]
+ 1886              	.L38:
+ 103:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 					}
+ 104:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 					active_doors[i].controlbits |= 1; // sätter dörrens larm kontrollbit till 1.
+ 1887              		.loc 3 104 0
+ 1888 0caa FC21     		movs	r1, #252
+ 1889 0cac C900     		lsls	r1, r1, #3
+ 1890 0cae 1824     		movs	r4, #24
+ 1891 0cb0 3B19     		adds	r3, r7, r4
+ 1892 0cb2 5B18     		adds	r3, r3, r1
+ 1893 0cb4 1A68     		ldr	r2, [r3]
+ 1894 0cb6 3F48     		ldr	r0, .L51+24
+ 1895 0cb8 3B19     		adds	r3, r7, r4
+ 1896 0cba 1B18     		adds	r3, r3, r0
+ 1897 0cbc 1B68     		ldr	r3, [r3]
+ 1898 0cbe 5B01     		lsls	r3, r3, #5
+ 1899 0cc0 D318     		adds	r3, r2, r3
+ 1900 0cc2 0433     		adds	r3, r3, #4
+ 1901 0cc4 1B68     		ldr	r3, [r3]
+ 1902 0cc6 0122     		movs	r2, #1
+ 1903 0cc8 1A43     		orrs	r2, r3
+ 1904 0cca 3B19     		adds	r3, r7, r4
+ 1905 0ccc 5B18     		adds	r3, r3, r1
+ 1906 0cce 1968     		ldr	r1, [r3]
+ 1907 0cd0 3B19     		adds	r3, r7, r4
+ 1908 0cd2 1B18     		adds	r3, r3, r0
+ 1909 0cd4 1B68     		ldr	r3, [r3]
+ 1910 0cd6 5B01     		lsls	r3, r3, #5
+ 1911 0cd8 CB18     		adds	r3, r1, r3
+ 1912 0cda 0433     		adds	r3, r3, #4
+ 1913 0cdc 1A60     		str	r2, [r3]
+ 1914              	.L37:
+ 1915              	.LBB7:
+ 105:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 				}
+ 106:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 				for (int i = 0; i < sizeof(active_doors)/sizeof(active_doors[0]); i++)
+ 1916              		.loc 3 106 0
+ 1917 0cde 0023     		movs	r3, #0
+ 1918 0ce0 FD22     		movs	r2, #253
+ 1919 0ce2 D200     		lsls	r2, r2, #3
+ 1920 0ce4 1821     		movs	r1, #24
+ 1921 0ce6 8C46     		mov	ip, r1
+ 1922 0ce8 BC44     		add	ip, ip, r7
+ 1923 0cea 6244     		add	r2, r2, ip
+ 1924 0cec 1360     		str	r3, [r2]
+ 1925 0cee F9E0     		b	.L39
+ 1926              	.L43:
+ 107:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 				{
+ 108:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 					if (active_doors[i].controlbits & 1 && msTicks > (active_doors[i].larmTick + 1000 * 10 * activ
+ 1927              		.loc 3 108 0
+ 1928 0cf0 FC23     		movs	r3, #252
+ 1929 0cf2 DB00     		lsls	r3, r3, #3
+ 1930 0cf4 1822     		movs	r2, #24
+ 1931 0cf6 9446     		mov	ip, r2
+ 1932 0cf8 BC44     		add	ip, ip, r7
+ 1933 0cfa 6344     		add	r3, r3, ip
+ 1934 0cfc 1A68     		ldr	r2, [r3]
+ 1935 0cfe FD23     		movs	r3, #253
+ 1936 0d00 DB00     		lsls	r3, r3, #3
+ 1937 0d02 1821     		movs	r1, #24
+ 1938 0d04 8C46     		mov	ip, r1
+ 1939 0d06 BC44     		add	ip, ip, r7
+ 1940 0d08 6344     		add	r3, r3, ip
+ 1941 0d0a 1B68     		ldr	r3, [r3]
+ 1942 0d0c 5B01     		lsls	r3, r3, #5
+ 1943 0d0e D318     		adds	r3, r2, r3
+ 1944 0d10 0433     		adds	r3, r3, #4
+ 1945 0d12 1B68     		ldr	r3, [r3]
+ 1946 0d14 0122     		movs	r2, #1
+ 1947 0d16 1340     		ands	r3, r2
+ 1948 0d18 54D0     		beq	.L40
+ 1949              		.loc 3 108 0 is_stmt 0 discriminator 1
+ 1950 0d1a FC21     		movs	r1, #252
+ 1951 0d1c C900     		lsls	r1, r1, #3
+ 1952 0d1e 1824     		movs	r4, #24
+ 1953 0d20 3B19     		adds	r3, r7, r4
+ 1954 0d22 5B18     		adds	r3, r3, r1
+ 1955 0d24 1A68     		ldr	r2, [r3]
+ 1956 0d26 FD20     		movs	r0, #253
+ 1957 0d28 C000     		lsls	r0, r0, #3
+ 1958 0d2a 3B19     		adds	r3, r7, r4
+ 1959 0d2c 1B18     		adds	r3, r3, r0
+ 1960 0d2e 1B68     		ldr	r3, [r3]
+ 1961 0d30 5B01     		lsls	r3, r3, #5
+ 1962 0d32 D318     		adds	r3, r2, r3
+ 1963 0d34 1833     		adds	r3, r3, #24
+ 1964 0d36 1A68     		ldr	r2, [r3]
+ 1965 0d38 3B19     		adds	r3, r7, r4
+ 1966 0d3a 5B18     		adds	r3, r3, r1
+ 1967 0d3c 1968     		ldr	r1, [r3]
+ 1968 0d3e 3B19     		adds	r3, r7, r4
+ 1969 0d40 1B18     		adds	r3, r3, r0
+ 1970 0d42 1B68     		ldr	r3, [r3]
+ 1971 0d44 5B01     		lsls	r3, r3, #5
+ 1972 0d46 CB18     		adds	r3, r1, r3
+ 1973 0d48 0833     		adds	r3, r3, #8
+ 1974 0d4a 1B78     		ldrb	r3, [r3]
+ 1975 0d4c 1900     		movs	r1, r3
+ 1976 0d4e 1C4B     		ldr	r3, .L51+36
+ 1977 0d50 4B43     		muls	r3, r1
+ 1978 0d52 D318     		adds	r3, r2, r3
+ 1979 0d54 1A00     		movs	r2, r3
+ 1980 0d56 194B     		ldr	r3, .L51+32
+ 1981 0d58 1B68     		ldr	r3, [r3]
+ 1982 0d5a 9A42     		cmp	r2, r3
+ 1983 0d5c 32D2     		bcs	.L40
  109:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 					{
- 110:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 						active_doors[i].larmTick = msTicks;
- 5234              		.loc 4 110 0
- 5235 1a5a 214B     		ldr	r3, .L290+24
- 5236 1a5c 1B68     		ldr	r3, [r3]
- 5237 1a5e 1900     		movs	r1, r3
- 5238 1a60 1D4B     		ldr	r3, .L290+16
- 5239 1a62 1822     		movs	r2, #24
- 5240 1a64 9446     		mov	ip, r2
- 5241 1a66 BC44     		add	ip, ip, r7
- 5242 1a68 6344     		add	r3, r3, ip
- 5243 1a6a 1A68     		ldr	r2, [r3]
- 5244 1a6c FE23     		movs	r3, #254
- 5245 1a6e DB00     		lsls	r3, r3, #3
- 5246 1a70 1820     		movs	r0, #24
- 5247 1a72 8446     		mov	ip, r0
- 5248 1a74 BC44     		add	ip, ip, r7
- 5249 1a76 6344     		add	r3, r3, ip
- 5250 1a78 1B68     		ldr	r3, [r3]
- 5251 1a7a 5B01     		lsls	r3, r3, #5
- 5252 1a7c D318     		adds	r3, r2, r3
- 5253 1a7e 1833     		adds	r3, r3, #24
- 5254 1a80 1960     		str	r1, [r3]
- 5255              	.L277:
+ 110:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 						GPIO_SetBits(active_doors[i].GPIO_type, active_doors[i].GPIO_lamp); // tänder lampan ifall t
+ 1984              		.loc 3 110 0 is_stmt 1
+ 1985 0d5e FC21     		movs	r1, #252
+ 1986 0d60 C900     		lsls	r1, r1, #3
+ 1987 0d62 1825     		movs	r5, #24
+ 1988 0d64 7B19     		adds	r3, r7, r5
+ 1989 0d66 5B18     		adds	r3, r3, r1
+ 1990 0d68 1A68     		ldr	r2, [r3]
+ 1991 0d6a FD24     		movs	r4, #253
+ 1992 0d6c E400     		lsls	r4, r4, #3
+ 1993 0d6e 7B19     		adds	r3, r7, r5
+ 1994 0d70 1B19     		adds	r3, r3, r4
+ 1995 0d72 1B68     		ldr	r3, [r3]
+ 1996 0d74 5B01     		lsls	r3, r3, #5
+ 1997 0d76 D318     		adds	r3, r2, r3
+ 1998 0d78 1C33     		adds	r3, r3, #28
+ 1999 0d7a 1868     		ldr	r0, [r3]
+ 2000 0d7c 7B19     		adds	r3, r7, r5
+ 2001 0d7e 5B18     		adds	r3, r3, r1
+ 2002 0d80 1A68     		ldr	r2, [r3]
+ 2003 0d82 7B19     		adds	r3, r7, r5
+ 2004 0d84 1B19     		adds	r3, r3, r4
+ 2005 0d86 1B68     		ldr	r3, [r3]
+ 2006 0d88 5B01     		lsls	r3, r3, #5
+ 2007 0d8a D318     		adds	r3, r2, r3
+ 2008 0d8c 1033     		adds	r3, r3, #16
+ 2009 0d8e 1B68     		ldr	r3, [r3]
+ 2010 0d90 9BB2     		uxth	r3, r3
+ 2011 0d92 1900     		movs	r1, r3
+ 2012 0d94 FFF7FEFF 		bl	GPIO_SetBits
+ 2013 0d98 31E0     		b	.L41
+ 2014              	.L52:
+ 2015 0d9a C046     		.align	2
+ 2016              	.L51:
+ 2017 0d9c 00000000 		.word	GPIO_Ports
+ 2018 0da0 F4070000 		.word	2036
+ 2019 0da4 00000000 		.word	GPIO_Pins
+ 2020 0da8 F8F7FFFF 		.word	-2056
+ 2021 0dac 08080000 		.word	2056
+ 2022 0db0 00040240 		.word	1073873920
+ 2023 0db4 EC070000 		.word	2028
+ 2024 0db8 FCFF0000 		.word	65532
+ 2025 0dbc 00000000 		.word	msTicks
+ 2026 0dc0 10270000 		.word	10000
+ 2027              	.L40:
  111:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 					}
- 112:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 					active_doors[i].controlbits |= 1; // sätter dörrens larm kontrollbit till 1.
- 5256              		.loc 4 112 0
- 5257 1a82 1549     		ldr	r1, .L290+16
- 5258 1a84 1824     		movs	r4, #24
- 5259 1a86 3B19     		adds	r3, r7, r4
- 5260 1a88 5B18     		adds	r3, r3, r1
- 5261 1a8a 1A68     		ldr	r2, [r3]
- 5262 1a8c FE20     		movs	r0, #254
- 5263 1a8e C000     		lsls	r0, r0, #3
- 5264 1a90 3B19     		adds	r3, r7, r4
- 5265 1a92 1B18     		adds	r3, r3, r0
- 5266 1a94 1B68     		ldr	r3, [r3]
- 5267 1a96 5B01     		lsls	r3, r3, #5
- 5268 1a98 D318     		adds	r3, r2, r3
- 5269 1a9a 0433     		adds	r3, r3, #4
- 5270 1a9c 1B68     		ldr	r3, [r3]
- 5271 1a9e 0122     		movs	r2, #1
- 5272 1aa0 1A43     		orrs	r2, r3
- 5273 1aa2 3B19     		adds	r3, r7, r4
- 5274 1aa4 5B18     		adds	r3, r3, r1
- 5275 1aa6 1968     		ldr	r1, [r3]
- 5276 1aa8 3B19     		adds	r3, r7, r4
- 5277 1aaa 1B18     		adds	r3, r3, r0
- 5278 1aac 1B68     		ldr	r3, [r3]
- 5279 1aae 5B01     		lsls	r3, r3, #5
- 5280 1ab0 CB18     		adds	r3, r1, r3
- 5281 1ab2 0433     		adds	r3, r3, #4
- 5282 1ab4 1A60     		str	r2, [r3]
- 5283              	.L276:
- 5284              	.LBB9:
- 113:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 				}
- 114:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 				for (int i = 0; i < sizeof(active_doors)/sizeof(active_doors[0]); i++)
- 5285              		.loc 4 114 0
- 5286 1ab6 0023     		movs	r3, #0
- 5287 1ab8 0C4A     		ldr	r2, .L290+36
- 5288 1aba 1821     		movs	r1, #24
- 5289 1abc 8C46     		mov	ip, r1
- 5290 1abe BC44     		add	ip, ip, r7
- 5291 1ac0 6244     		add	r2, r2, ip
- 5292 1ac2 1360     		str	r3, [r2]
- 5293 1ac4 E8E0     		b	.L278
- 5294              	.L291:
- 5295 1ac6 C046     		.align	2
- 5296              	.L290:
- 5297 1ac8 00000000 		.word	GPIO_Ports
- 5298 1acc FC070000 		.word	2044
- 5299 1ad0 00000000 		.word	GPIO_Pins
- 5300 1ad4 F0F7FFFF 		.word	-2064
- 5301 1ad8 E4070000 		.word	2020
- 5302 1adc F4070000 		.word	2036
- 5303 1ae0 00000000 		.word	msTicks
- 5304 1ae4 00040240 		.word	1073873920
- 5305 1ae8 FCFF0000 		.word	65532
- 5306 1aec EC070000 		.word	2028
- 5307              	.L282:
- 115:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 				{
+ 112:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 					else
+ 113:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 					{
+ 114:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 						GPIO_ResetBits(active_doors[i].GPIO_type, active_doors[i].GPIO_lamp);	// släcker lampan anna
+ 2028              		.loc 3 114 0
+ 2029 0dc4 FC21     		movs	r1, #252
+ 2030 0dc6 C900     		lsls	r1, r1, #3
+ 2031 0dc8 1825     		movs	r5, #24
+ 2032 0dca 7B19     		adds	r3, r7, r5
+ 2033 0dcc 5B18     		adds	r3, r3, r1
+ 2034 0dce 1A68     		ldr	r2, [r3]
+ 2035 0dd0 FD24     		movs	r4, #253
+ 2036 0dd2 E400     		lsls	r4, r4, #3
+ 2037 0dd4 7B19     		adds	r3, r7, r5
+ 2038 0dd6 1B19     		adds	r3, r3, r4
+ 2039 0dd8 1B68     		ldr	r3, [r3]
+ 2040 0dda 5B01     		lsls	r3, r3, #5
+ 2041 0ddc D318     		adds	r3, r2, r3
+ 2042 0dde 1C33     		adds	r3, r3, #28
+ 2043 0de0 1868     		ldr	r0, [r3]
+ 2044 0de2 7B19     		adds	r3, r7, r5
+ 2045 0de4 5B18     		adds	r3, r3, r1
+ 2046 0de6 1A68     		ldr	r2, [r3]
+ 2047 0de8 7B19     		adds	r3, r7, r5
+ 2048 0dea 1B19     		adds	r3, r3, r4
+ 2049 0dec 1B68     		ldr	r3, [r3]
+ 2050 0dee 5B01     		lsls	r3, r3, #5
+ 2051 0df0 D318     		adds	r3, r2, r3
+ 2052 0df2 1033     		adds	r3, r3, #16
+ 2053 0df4 1B68     		ldr	r3, [r3]
+ 2054 0df6 9BB2     		uxth	r3, r3
+ 2055 0df8 1900     		movs	r1, r3
+ 2056 0dfa FFF7FEFF 		bl	GPIO_ResetBits
+ 2057              	.L41:
+ 115:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 					}
  116:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 					if (active_doors[i].controlbits & 1 && msTicks > (active_doors[i].larmTick + 1000 * 10 * activ
- 5308              		.loc 4 116 0
- 5309 1af0 7C4B     		ldr	r3, .L292
- 5310 1af2 1822     		movs	r2, #24
- 5311 1af4 9446     		mov	ip, r2
- 5312 1af6 BC44     		add	ip, ip, r7
- 5313 1af8 6344     		add	r3, r3, ip
- 5314 1afa 1A68     		ldr	r2, [r3]
- 5315 1afc 7A4B     		ldr	r3, .L292+4
- 5316 1afe 1821     		movs	r1, #24
- 5317 1b00 8C46     		mov	ip, r1
- 5318 1b02 BC44     		add	ip, ip, r7
- 5319 1b04 6344     		add	r3, r3, ip
- 5320 1b06 1B68     		ldr	r3, [r3]
- 5321 1b08 5B01     		lsls	r3, r3, #5
- 5322 1b0a D318     		adds	r3, r2, r3
- 5323 1b0c 0433     		adds	r3, r3, #4
- 5324 1b0e 1B68     		ldr	r3, [r3]
- 5325 1b10 0122     		movs	r2, #1
- 5326 1b12 1340     		ands	r3, r2
- 5327 1b14 3BD0     		beq	.L279
- 5328              		.loc 4 116 0 is_stmt 0 discriminator 1
- 5329 1b16 7349     		ldr	r1, .L292
- 5330 1b18 1824     		movs	r4, #24
- 5331 1b1a 3B19     		adds	r3, r7, r4
- 5332 1b1c 5B18     		adds	r3, r3, r1
- 5333 1b1e 1A68     		ldr	r2, [r3]
- 5334 1b20 7148     		ldr	r0, .L292+4
- 5335 1b22 3B19     		adds	r3, r7, r4
- 5336 1b24 1B18     		adds	r3, r3, r0
- 5337 1b26 1B68     		ldr	r3, [r3]
- 5338 1b28 5B01     		lsls	r3, r3, #5
- 5339 1b2a D318     		adds	r3, r2, r3
- 5340 1b2c 1833     		adds	r3, r3, #24
- 5341 1b2e 1A68     		ldr	r2, [r3]
- 5342 1b30 3B19     		adds	r3, r7, r4
- 5343 1b32 5B18     		adds	r3, r3, r1
- 5344 1b34 1968     		ldr	r1, [r3]
- 5345 1b36 3B19     		adds	r3, r7, r4
- 5346 1b38 1B18     		adds	r3, r3, r0
- 5347 1b3a 1B68     		ldr	r3, [r3]
- 5348 1b3c 5B01     		lsls	r3, r3, #5
- 5349 1b3e CB18     		adds	r3, r1, r3
- 5350 1b40 0833     		adds	r3, r3, #8
- 5351 1b42 1B78     		ldrb	r3, [r3]
- 5352 1b44 1900     		movs	r1, r3
- 5353 1b46 694B     		ldr	r3, .L292+8
- 5354 1b48 4B43     		muls	r3, r1
- 5355 1b4a D318     		adds	r3, r2, r3
- 5356 1b4c 1A00     		movs	r2, r3
- 5357 1b4e 684B     		ldr	r3, .L292+12
- 5358 1b50 1B68     		ldr	r3, [r3]
- 5359 1b52 9A42     		cmp	r2, r3
- 5360 1b54 1BD2     		bcs	.L279
+ 2058              		.loc 3 116 0
+ 2059 0dfe FC23     		movs	r3, #252
+ 2060 0e00 DB00     		lsls	r3, r3, #3
+ 2061 0e02 1822     		movs	r2, #24
+ 2062 0e04 9446     		mov	ip, r2
+ 2063 0e06 BC44     		add	ip, ip, r7
+ 2064 0e08 6344     		add	r3, r3, ip
+ 2065 0e0a 1A68     		ldr	r2, [r3]
+ 2066 0e0c FD23     		movs	r3, #253
+ 2067 0e0e DB00     		lsls	r3, r3, #3
+ 2068 0e10 1821     		movs	r1, #24
+ 2069 0e12 8C46     		mov	ip, r1
+ 2070 0e14 BC44     		add	ip, ip, r7
+ 2071 0e16 6344     		add	r3, r3, ip
+ 2072 0e18 1B68     		ldr	r3, [r3]
+ 2073 0e1a 5B01     		lsls	r3, r3, #5
+ 2074 0e1c D318     		adds	r3, r2, r3
+ 2075 0e1e 0433     		adds	r3, r3, #4
+ 2076 0e20 1B68     		ldr	r3, [r3]
+ 2077 0e22 0122     		movs	r2, #1
+ 2078 0e24 1340     		ands	r3, r2
+ 2079 0e26 51D0     		beq	.L42
+ 2080              		.loc 3 116 0 is_stmt 0 discriminator 1
+ 2081 0e28 FC21     		movs	r1, #252
+ 2082 0e2a C900     		lsls	r1, r1, #3
+ 2083 0e2c 1824     		movs	r4, #24
+ 2084 0e2e 3B19     		adds	r3, r7, r4
+ 2085 0e30 5B18     		adds	r3, r3, r1
+ 2086 0e32 1A68     		ldr	r2, [r3]
+ 2087 0e34 FD20     		movs	r0, #253
+ 2088 0e36 C000     		lsls	r0, r0, #3
+ 2089 0e38 3B19     		adds	r3, r7, r4
+ 2090 0e3a 1B18     		adds	r3, r3, r0
+ 2091 0e3c 1B68     		ldr	r3, [r3]
+ 2092 0e3e 5B01     		lsls	r3, r3, #5
+ 2093 0e40 D318     		adds	r3, r2, r3
+ 2094 0e42 1833     		adds	r3, r3, #24
+ 2095 0e44 1A68     		ldr	r2, [r3]
+ 2096 0e46 3B19     		adds	r3, r7, r4
+ 2097 0e48 5B18     		adds	r3, r3, r1
+ 2098 0e4a 1968     		ldr	r1, [r3]
+ 2099 0e4c 3B19     		adds	r3, r7, r4
+ 2100 0e4e 1B18     		adds	r3, r3, r0
+ 2101 0e50 1B68     		ldr	r3, [r3]
+ 2102 0e52 5B01     		lsls	r3, r3, #5
+ 2103 0e54 CB18     		adds	r3, r1, r3
+ 2104 0e56 0933     		adds	r3, r3, #9
+ 2105 0e58 1B78     		ldrb	r3, [r3]
+ 2106 0e5a 1900     		movs	r1, r3
+ 2107 0e5c 344B     		ldr	r3, .L53
+ 2108 0e5e 4B43     		muls	r3, r1
+ 2109 0e60 D318     		adds	r3, r2, r3
+ 2110 0e62 1A00     		movs	r2, r3
+ 2111 0e64 334B     		ldr	r3, .L53+4
+ 2112 0e66 1B68     		ldr	r3, [r3]
+ 2113 0e68 9A42     		cmp	r2, r3
+ 2114 0e6a 2FD2     		bcs	.L42
+ 2115              		.loc 3 116 0 discriminator 2
+ 2116 0e6c FC23     		movs	r3, #252
+ 2117 0e6e DB00     		lsls	r3, r3, #3
+ 2118 0e70 1822     		movs	r2, #24
+ 2119 0e72 9446     		mov	ip, r2
+ 2120 0e74 BC44     		add	ip, ip, r7
+ 2121 0e76 6344     		add	r3, r3, ip
+ 2122 0e78 1A68     		ldr	r2, [r3]
+ 2123 0e7a FD23     		movs	r3, #253
+ 2124 0e7c DB00     		lsls	r3, r3, #3
+ 2125 0e7e 1821     		movs	r1, #24
+ 2126 0e80 8C46     		mov	ip, r1
+ 2127 0e82 BC44     		add	ip, ip, r7
+ 2128 0e84 6344     		add	r3, r3, ip
+ 2129 0e86 1B68     		ldr	r3, [r3]
+ 2130 0e88 5B01     		lsls	r3, r3, #5
+ 2131 0e8a D318     		adds	r3, r2, r3
+ 2132 0e8c 0433     		adds	r3, r3, #4
+ 2133 0e8e 1B68     		ldr	r3, [r3]
+ 2134 0e90 0222     		movs	r2, #2
+ 2135 0e92 1340     		ands	r3, r2
+ 2136 0e94 1AD0     		beq	.L42
  117:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 					{
- 118:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 						GPIO_SetBits(active_doors[i].GPIO_type, active_doors[i].GPIO_lamp); // tänder lampan ifall t
- 5361              		.loc 4 118 0 is_stmt 1
- 5362 1b56 6349     		ldr	r1, .L292
- 5363 1b58 1825     		movs	r5, #24
- 5364 1b5a 7B19     		adds	r3, r7, r5
- 5365 1b5c 5B18     		adds	r3, r3, r1
- 5366 1b5e 1A68     		ldr	r2, [r3]
- 5367 1b60 614C     		ldr	r4, .L292+4
- 5368 1b62 7B19     		adds	r3, r7, r5
- 5369 1b64 1B19     		adds	r3, r3, r4
- 5370 1b66 1B68     		ldr	r3, [r3]
- 5371 1b68 5B01     		lsls	r3, r3, #5
- 5372 1b6a D318     		adds	r3, r2, r3
- 5373 1b6c 1C33     		adds	r3, r3, #28
- 5374 1b6e 1868     		ldr	r0, [r3]
- 5375 1b70 7B19     		adds	r3, r7, r5
- 5376 1b72 5B18     		adds	r3, r3, r1
- 5377 1b74 1A68     		ldr	r2, [r3]
- 5378 1b76 7B19     		adds	r3, r7, r5
- 5379 1b78 1B19     		adds	r3, r3, r4
- 5380 1b7a 1B68     		ldr	r3, [r3]
- 5381 1b7c 5B01     		lsls	r3, r3, #5
- 5382 1b7e D318     		adds	r3, r2, r3
- 5383 1b80 1033     		adds	r3, r3, #16
- 5384 1b82 1B68     		ldr	r3, [r3]
- 5385 1b84 9BB2     		uxth	r3, r3
- 5386 1b86 1900     		movs	r1, r3
- 5387 1b88 FFF7FEFF 		bl	GPIO_SetBits
- 5388 1b8c 1AE0     		b	.L280
- 5389              	.L279:
- 119:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 					}
- 120:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 					else
- 121:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 					{
- 122:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 						GPIO_ResetBits(active_doors[i].GPIO_type, active_doors[i].GPIO_lamp);	// släcker lampan anna
- 5390              		.loc 4 122 0
- 5391 1b8e 5549     		ldr	r1, .L292
- 5392 1b90 1825     		movs	r5, #24
- 5393 1b92 7B19     		adds	r3, r7, r5
- 5394 1b94 5B18     		adds	r3, r3, r1
- 5395 1b96 1A68     		ldr	r2, [r3]
- 5396 1b98 534C     		ldr	r4, .L292+4
- 5397 1b9a 7B19     		adds	r3, r7, r5
- 5398 1b9c 1B19     		adds	r3, r3, r4
- 5399 1b9e 1B68     		ldr	r3, [r3]
- 5400 1ba0 5B01     		lsls	r3, r3, #5
- 5401 1ba2 D318     		adds	r3, r2, r3
- 5402 1ba4 1C33     		adds	r3, r3, #28
- 5403 1ba6 1868     		ldr	r0, [r3]
- 5404 1ba8 7B19     		adds	r3, r7, r5
- 5405 1baa 5B18     		adds	r3, r3, r1
- 5406 1bac 1A68     		ldr	r2, [r3]
- 5407 1bae 7B19     		adds	r3, r7, r5
- 5408 1bb0 1B19     		adds	r3, r3, r4
- 5409 1bb2 1B68     		ldr	r3, [r3]
- 5410 1bb4 5B01     		lsls	r3, r3, #5
- 5411 1bb6 D318     		adds	r3, r2, r3
- 5412 1bb8 1033     		adds	r3, r3, #16
- 5413 1bba 1B68     		ldr	r3, [r3]
- 5414 1bbc 9BB2     		uxth	r3, r3
- 5415 1bbe 1900     		movs	r1, r3
- 5416 1bc0 FFF7FEFF 		bl	GPIO_ResetBits
- 5417              	.L280:
- 123:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 					}
- 124:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 					if (active_doors[i].controlbits & 1 && msTicks > (active_doors[i].larmTick + 1000 * 10 * activ
- 5418              		.loc 4 124 0
- 5419 1bc4 474B     		ldr	r3, .L292
- 5420 1bc6 1822     		movs	r2, #24
- 5421 1bc8 9446     		mov	ip, r2
- 5422 1bca BC44     		add	ip, ip, r7
- 5423 1bcc 6344     		add	r3, r3, ip
- 5424 1bce 1A68     		ldr	r2, [r3]
- 5425 1bd0 454B     		ldr	r3, .L292+4
- 5426 1bd2 1821     		movs	r1, #24
- 5427 1bd4 8C46     		mov	ip, r1
- 5428 1bd6 BC44     		add	ip, ip, r7
- 5429 1bd8 6344     		add	r3, r3, ip
- 5430 1bda 1B68     		ldr	r3, [r3]
- 5431 1bdc 5B01     		lsls	r3, r3, #5
- 5432 1bde D318     		adds	r3, r2, r3
- 5433 1be0 0433     		adds	r3, r3, #4
- 5434 1be2 1B68     		ldr	r3, [r3]
- 5435 1be4 0122     		movs	r2, #1
- 5436 1be6 1340     		ands	r3, r2
- 5437 1be8 4BD0     		beq	.L281
- 5438              		.loc 4 124 0 is_stmt 0 discriminator 1
- 5439 1bea 3E49     		ldr	r1, .L292
- 5440 1bec 1824     		movs	r4, #24
- 5441 1bee 3B19     		adds	r3, r7, r4
- 5442 1bf0 5B18     		adds	r3, r3, r1
- 5443 1bf2 1A68     		ldr	r2, [r3]
- 5444 1bf4 3C48     		ldr	r0, .L292+4
- 5445 1bf6 3B19     		adds	r3, r7, r4
- 5446 1bf8 1B18     		adds	r3, r3, r0
- 5447 1bfa 1B68     		ldr	r3, [r3]
- 5448 1bfc 5B01     		lsls	r3, r3, #5
- 5449 1bfe D318     		adds	r3, r2, r3
- 5450 1c00 1833     		adds	r3, r3, #24
- 5451 1c02 1A68     		ldr	r2, [r3]
- 5452 1c04 3B19     		adds	r3, r7, r4
- 5453 1c06 5B18     		adds	r3, r3, r1
- 5454 1c08 1968     		ldr	r1, [r3]
- 5455 1c0a 3B19     		adds	r3, r7, r4
- 5456 1c0c 1B18     		adds	r3, r3, r0
- 5457 1c0e 1B68     		ldr	r3, [r3]
- 5458 1c10 5B01     		lsls	r3, r3, #5
- 5459 1c12 CB18     		adds	r3, r1, r3
- 5460 1c14 0933     		adds	r3, r3, #9
- 5461 1c16 1B78     		ldrb	r3, [r3]
- 5462 1c18 1900     		movs	r1, r3
- 5463 1c1a 344B     		ldr	r3, .L292+8
- 5464 1c1c 4B43     		muls	r3, r1
- 5465 1c1e D318     		adds	r3, r2, r3
- 5466 1c20 1A00     		movs	r2, r3
- 5467 1c22 334B     		ldr	r3, .L292+12
- 5468 1c24 1B68     		ldr	r3, [r3]
- 5469 1c26 9A42     		cmp	r2, r3
- 5470 1c28 2BD2     		bcs	.L281
- 5471              		.loc 4 124 0 discriminator 2
- 5472 1c2a 2E4B     		ldr	r3, .L292
- 5473 1c2c 1822     		movs	r2, #24
- 5474 1c2e 9446     		mov	ip, r2
- 5475 1c30 BC44     		add	ip, ip, r7
- 5476 1c32 6344     		add	r3, r3, ip
- 5477 1c34 1A68     		ldr	r2, [r3]
- 5478 1c36 2C4B     		ldr	r3, .L292+4
- 5479 1c38 1821     		movs	r1, #24
- 5480 1c3a 8C46     		mov	ip, r1
- 5481 1c3c BC44     		add	ip, ip, r7
- 5482 1c3e 6344     		add	r3, r3, ip
- 5483 1c40 1B68     		ldr	r3, [r3]
- 5484 1c42 5B01     		lsls	r3, r3, #5
- 5485 1c44 D318     		adds	r3, r2, r3
- 5486 1c46 0433     		adds	r3, r3, #4
- 5487 1c48 1B68     		ldr	r3, [r3]
- 5488 1c4a 0222     		movs	r2, #2
- 5489 1c4c 1340     		ands	r3, r2
- 5490 1c4e 18D0     		beq	.L281
- 125:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 					{
- 126:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 						active_doors[i].controlbits |= 2;
- 5491              		.loc 4 126 0 is_stmt 1
- 5492 1c50 2449     		ldr	r1, .L292
- 5493 1c52 1824     		movs	r4, #24
- 5494 1c54 3B19     		adds	r3, r7, r4
- 5495 1c56 5B18     		adds	r3, r3, r1
- 5496 1c58 1A68     		ldr	r2, [r3]
- 5497 1c5a 2348     		ldr	r0, .L292+4
- 5498 1c5c 3B19     		adds	r3, r7, r4
- 5499 1c5e 1B18     		adds	r3, r3, r0
- 5500 1c60 1B68     		ldr	r3, [r3]
- 5501 1c62 5B01     		lsls	r3, r3, #5
- 5502 1c64 D318     		adds	r3, r2, r3
- 5503 1c66 0433     		adds	r3, r3, #4
- 5504 1c68 1B68     		ldr	r3, [r3]
- 5505 1c6a 0222     		movs	r2, #2
- 5506 1c6c 1A43     		orrs	r2, r3
- 5507 1c6e 3B19     		adds	r3, r7, r4
- 5508 1c70 5B18     		adds	r3, r3, r1
- 5509 1c72 1968     		ldr	r1, [r3]
- 5510 1c74 3B19     		adds	r3, r7, r4
- 5511 1c76 1B18     		adds	r3, r3, r0
- 5512 1c78 1B68     		ldr	r3, [r3]
- 5513 1c7a 5B01     		lsls	r3, r3, #5
- 5514 1c7c CB18     		adds	r3, r1, r3
- 5515 1c7e 0433     		adds	r3, r3, #4
- 5516 1c80 1A60     		str	r2, [r3]
- 5517              	.L281:
- 114:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 				{
- 5518              		.loc 4 114 0 discriminator 2
- 5519 1c82 194A     		ldr	r2, .L292+4
- 5520 1c84 1823     		movs	r3, #24
- 5521 1c86 FB18     		adds	r3, r7, r3
- 5522 1c88 9B18     		adds	r3, r3, r2
- 5523 1c8a 1B68     		ldr	r3, [r3]
- 5524 1c8c 0133     		adds	r3, r3, #1
- 5525 1c8e 1821     		movs	r1, #24
- 5526 1c90 8C46     		mov	ip, r1
- 5527 1c92 BC44     		add	ip, ip, r7
- 5528 1c94 6244     		add	r2, r2, ip
- 5529 1c96 1360     		str	r3, [r2]
- 5530              	.L278:
- 114:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 				{
- 5531              		.loc 4 114 0 is_stmt 0 discriminator 1
- 5532 1c98 3300     		movs	r3, r6
- 5533 1c9a 5B01     		lsls	r3, r3, #5
- 5534 1c9c 5A09     		lsrs	r2, r3, #5
- 5535 1c9e 124B     		ldr	r3, .L292+4
- 5536 1ca0 1821     		movs	r1, #24
- 5537 1ca2 8C46     		mov	ip, r1
- 5538 1ca4 BC44     		add	ip, ip, r7
- 5539 1ca6 6344     		add	r3, r3, ip
- 5540 1ca8 1B68     		ldr	r3, [r3]
- 5541 1caa 9A42     		cmp	r2, r3
- 5542 1cac 00D9     		bls	.LCB5102
- 5543 1cae 1FE7     		b	.L282	@long jump
- 5544              	.LCB5102:
- 5545              	.L274:
- 5546              	.LBE9:
-  98:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		{
- 5547              		.loc 4 98 0 is_stmt 1 discriminator 2
- 5548 1cb0 FE22     		movs	r2, #254
- 5549 1cb2 D200     		lsls	r2, r2, #3
- 5550 1cb4 1823     		movs	r3, #24
- 5551 1cb6 FB18     		adds	r3, r7, r3
- 5552 1cb8 9B18     		adds	r3, r3, r2
- 5553 1cba 1B68     		ldr	r3, [r3]
- 5554 1cbc 0133     		adds	r3, r3, #1
- 5555 1cbe 1821     		movs	r1, #24
- 5556 1cc0 8C46     		mov	ip, r1
- 5557 1cc2 BC44     		add	ip, ip, r7
- 5558 1cc4 6244     		add	r2, r2, ip
- 5559 1cc6 1360     		str	r3, [r2]
- 5560              	.L273:
-  98:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		{
- 5561              		.loc 4 98 0 is_stmt 0 discriminator 1
- 5562 1cc8 3300     		movs	r3, r6
- 5563 1cca 5B01     		lsls	r3, r3, #5
- 5564 1ccc 5A09     		lsrs	r2, r3, #5
- 5565 1cce FE23     		movs	r3, #254
- 5566 1cd0 DB00     		lsls	r3, r3, #3
- 5567 1cd2 1821     		movs	r1, #24
- 5568 1cd4 8C46     		mov	ip, r1
- 5569 1cd6 BC44     		add	ip, ip, r7
- 5570 1cd8 6344     		add	r3, r3, ip
- 5571 1cda 1B68     		ldr	r3, [r3]
- 5572 1cdc 9A42     		cmp	r2, r3
- 5573 1cde 00D9     		bls	.LCB5131
- 5574 1ce0 5AE6     		b	.L283	@long jump
- 5575              	.LCB5131:
- 5576              	.LBE8:
-  98:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		{
- 5577              		.loc 4 98 0
- 5578 1ce2 50E6     		b	.L284
- 5579              	.L293:
- 5580              		.align	2
- 5581              	.L292:
- 5582 1ce4 E4070000 		.word	2020
- 5583 1ce8 EC070000 		.word	2028
- 5584 1cec 10270000 		.word	10000
- 5585 1cf0 00000000 		.word	msTicks
- 5586              		.cfi_endproc
- 5587              	.LFE180:
- 5589              	.Letext0:
- 5590              		.file 5 "../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx.h"
- 5591              		.file 6 "c:\\cseapp\\codelite\\tools\\gcc-arm\\arm-none-eabi\\include\\machine\\_default_types.h"
- 5592              		.file 7 "c:\\cseapp\\codelite\\tools\\gcc-arm\\arm-none-eabi\\include\\sys\\_stdint.h"
- 5593              		.file 8 "../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/inc/system_stm32f4xx.h"
- 5594              		.file 9 "../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_rcc.h"
- 5595              		.file 10 "../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_gpio.h"
- 5596              		.file 11 "C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door/startup.h"
+ 118:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 						active_doors[i].controlbits |= 2;
+ 2137              		.loc 3 118 0 is_stmt 1
+ 2138 0e96 FC21     		movs	r1, #252
+ 2139 0e98 C900     		lsls	r1, r1, #3
+ 2140 0e9a 1824     		movs	r4, #24
+ 2141 0e9c 3B19     		adds	r3, r7, r4
+ 2142 0e9e 5B18     		adds	r3, r3, r1
+ 2143 0ea0 1A68     		ldr	r2, [r3]
+ 2144 0ea2 FD20     		movs	r0, #253
+ 2145 0ea4 C000     		lsls	r0, r0, #3
+ 2146 0ea6 3B19     		adds	r3, r7, r4
+ 2147 0ea8 1B18     		adds	r3, r3, r0
+ 2148 0eaa 1B68     		ldr	r3, [r3]
+ 2149 0eac 5B01     		lsls	r3, r3, #5
+ 2150 0eae D318     		adds	r3, r2, r3
+ 2151 0eb0 0433     		adds	r3, r3, #4
+ 2152 0eb2 1B68     		ldr	r3, [r3]
+ 2153 0eb4 0222     		movs	r2, #2
+ 2154 0eb6 1A43     		orrs	r2, r3
+ 2155 0eb8 3B19     		adds	r3, r7, r4
+ 2156 0eba 5B18     		adds	r3, r3, r1
+ 2157 0ebc 1968     		ldr	r1, [r3]
+ 2158 0ebe 3B19     		adds	r3, r7, r4
+ 2159 0ec0 1B18     		adds	r3, r3, r0
+ 2160 0ec2 1B68     		ldr	r3, [r3]
+ 2161 0ec4 5B01     		lsls	r3, r3, #5
+ 2162 0ec6 CB18     		adds	r3, r1, r3
+ 2163 0ec8 0433     		adds	r3, r3, #4
+ 2164 0eca 1A60     		str	r2, [r3]
+ 2165              	.L42:
+ 106:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 				{
+ 2166              		.loc 3 106 0 discriminator 2
+ 2167 0ecc FD22     		movs	r2, #253
+ 2168 0ece D200     		lsls	r2, r2, #3
+ 2169 0ed0 1823     		movs	r3, #24
+ 2170 0ed2 FB18     		adds	r3, r7, r3
+ 2171 0ed4 9B18     		adds	r3, r3, r2
+ 2172 0ed6 1B68     		ldr	r3, [r3]
+ 2173 0ed8 0133     		adds	r3, r3, #1
+ 2174 0eda 1821     		movs	r1, #24
+ 2175 0edc 8C46     		mov	ip, r1
+ 2176 0ede BC44     		add	ip, ip, r7
+ 2177 0ee0 6244     		add	r2, r2, ip
+ 2178 0ee2 1360     		str	r3, [r2]
+ 2179              	.L39:
+ 106:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 				{
+ 2180              		.loc 3 106 0 is_stmt 0 discriminator 1
+ 2181 0ee4 3300     		movs	r3, r6
+ 2182 0ee6 5B01     		lsls	r3, r3, #5
+ 2183 0ee8 5A09     		lsrs	r2, r3, #5
+ 2184 0eea FD23     		movs	r3, #253
+ 2185 0eec DB00     		lsls	r3, r3, #3
+ 2186 0eee 1821     		movs	r1, #24
+ 2187 0ef0 8C46     		mov	ip, r1
+ 2188 0ef2 BC44     		add	ip, ip, r7
+ 2189 0ef4 6344     		add	r3, r3, ip
+ 2190 0ef6 1B68     		ldr	r3, [r3]
+ 2191 0ef8 9A42     		cmp	r2, r3
+ 2192 0efa 00D9     		bls	.LCB2185
+ 2193 0efc F8E6     		b	.L43	@long jump
+ 2194              	.LCB2185:
+ 2195              	.L35:
+ 2196              	.LBE7:
+  90:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		{
+ 2197              		.loc 3 90 0 is_stmt 1 discriminator 2
+ 2198 0efe 0E4A     		ldr	r2, .L53+8
+ 2199 0f00 1823     		movs	r3, #24
+ 2200 0f02 FB18     		adds	r3, r7, r3
+ 2201 0f04 9B18     		adds	r3, r3, r2
+ 2202 0f06 1B68     		ldr	r3, [r3]
+ 2203 0f08 0133     		adds	r3, r3, #1
+ 2204 0f0a 1821     		movs	r1, #24
+ 2205 0f0c 8C46     		mov	ip, r1
+ 2206 0f0e BC44     		add	ip, ip, r7
+ 2207 0f10 6244     		add	r2, r2, ip
+ 2208 0f12 1360     		str	r3, [r2]
+ 2209              	.L34:
+  90:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		{
+ 2210              		.loc 3 90 0 is_stmt 0 discriminator 1
+ 2211 0f14 3300     		movs	r3, r6
+ 2212 0f16 5B01     		lsls	r3, r3, #5
+ 2213 0f18 5A09     		lsrs	r2, r3, #5
+ 2214 0f1a 074B     		ldr	r3, .L53+8
+ 2215 0f1c 1821     		movs	r1, #24
+ 2216 0f1e 8C46     		mov	ip, r1
+ 2217 0f20 BC44     		add	ip, ip, r7
+ 2218 0f22 6344     		add	r3, r3, ip
+ 2219 0f24 1B68     		ldr	r3, [r3]
+ 2220 0f26 9A42     		cmp	r2, r3
+ 2221 0f28 00D9     		bls	.LCB2212
+ 2222 0f2a 49E6     		b	.L44	@long jump
+ 2223              	.LCB2212:
+ 2224              	.LBE6:
+  90:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		{
+ 2225              		.loc 3 90 0
+ 2226 0f2c 40E6     		b	.L45
+ 2227              	.L54:
+ 2228 0f2e C046     		.align	2
+ 2229              	.L53:
+ 2230 0f30 10270000 		.word	10000
+ 2231 0f34 00000000 		.word	msTicks
+ 2232 0f38 EC070000 		.word	2028
+ 2233              		.cfi_endproc
+ 2234              	.LFE127:
+ 2236              	.Letext0:
+ 2237              		.file 4 "../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx.h"
+ 2238              		.file 5 "c:\\cseapp\\codelite\\tools\\gcc-arm\\arm-none-eabi\\include\\machine\\_default_types.h"
+ 2239              		.file 6 "c:\\cseapp\\codelite\\tools\\gcc-arm\\arm-none-eabi\\include\\sys\\_stdint.h"
+ 2240              		.file 7 "../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/inc/system_stm32f4xx.h"
+ 2241              		.file 8 "../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_gpio.h"
+ 2242              		.file 9 "C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door/startup.h"
