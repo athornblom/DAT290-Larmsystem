@@ -1,3 +1,5 @@
+//Periferi
+
 #include "CAN.h"
 #include "USART.h"
 #include "misc.h"
@@ -60,22 +62,38 @@ void main(void) {
     blockingDelayMs(400);
     
     
-    CANFilter filter;
-    filter.STDID = 0b10000000000;
-    filter.EXDID = 0;
-    filter.IDE = 0;
-    filter.RTR = 0;
-    uint8_t index;
     
+    CANFilter filter;
     CANFilter mask;
-    mask.STDID = 0b11111111111;
-    mask.EXDID = 0;
-    mask.IDE = 0;
-    mask.RTR = 0;
+
+    //Används för omvandling
+    Header header;
+
+    //Skriver mask
+    mask.IDE = 1;
+    mask.RTR = 1;
+    header.msgType = ~0;
+    header.toCentral = ~0;
+    header.ID = 0;
+    //ingorera msgNum
+    header.msgNum = 0;
+    HEADERtoUINT32(header, mask.ID);
+
+    //Avaktiverar alla filter
+    CANdisableAllFilterHandlers();
+
+    //Filter för ID-tilldelning
+    filter.IDE = 1;
+    filter.RTR = 0;
+    header.msgType = 3;
+    header.toCentral = 0;
+    header.ID = 0;
+    HEADERtoUINT32(header, filter.ID);
+    
     
     if (CANhandlerListNotFull()){
         USARTPrint("handler list not full\n");
-        index = CANaddFilterHandler(can_handler, &filter, &mask);
+        uint32_t index = CANaddFilterHandler(can_handler, &filter, &mask);
         USARTPrintNum(index);
     }
     
@@ -88,7 +106,7 @@ void main(void) {
     
     while (requesting_id) {
         
-        if (send_can_message(&canMsg) == CAN_TxStatus_NoMailBox){
+        if (CANsendMessage(&canMsg) == CAN_TxStatus_NoMailBox){
             USARTPrint("no mailbox empty\n");
         }
         else{

@@ -11,6 +11,8 @@
 #define HEADERtoUINT32(header, filterID) (filterID) = (*(uint32_t *)& (header));
 #define UINT32toHEADER(filterID, header) *((uint32_t *)&(header)) = (uint32_t)(filterID);
 
+#define empty_header {0, 0, 0, 0, 0, 0};
+
 //Struktur som beskriver våran ID-uppdelning
 typedef struct  {
     //8 bitar för meddelandenummer. Används för att tala om vilket meddelande man bekräftar med ack.

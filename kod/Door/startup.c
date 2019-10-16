@@ -41,8 +41,8 @@ void systick_Init(void)
 	returnCode = SysTick_Config(168000000 / 1000); // Genererar ett SysTick-avbrott varje ms.
 
 	if (returnCode != 0)
-	{   // Om inte SysTick_Config lyckas...
-		//typ reboot? bootloops är alltid kul
+	{   
+		systick_Init();
 	}
 }
 void delay (int mili){
@@ -56,10 +56,10 @@ void main(void)
 	systick_Init();
 	while(msTicks < 2000);
 
-	door door1, door2, door3, door4, door5, door6, door8, door9 ,door10, door11, door12, door13,door14,door15,door16, door17, door18, door19, door20, door21, door22, door23, door24 ,door25, door26, door27, door28,door29,door30,door31,door32;
-	door all_doors[32] = {door1, door2, door3, door4, door5, door6, door8, door9 ,door10, door11, door12, door13,door14,door15,door16, door17, door18, door19, door20, door21, door22, door23, door24 ,door25, door26, door27, door28,door29,door30,door31,door32};
+	//door door1, door2, door3, door4, door5, door6, door8, door9 ,door10, door11, door12, door13,door14,door15,door16, door17, door18, door19, door20, door21, door22, door23, door24 ,door25, door26, door27, door28,door29,door30,door31,door32;
+	//door all_doors[32] = {door1, door2, door3, door4, door5, door6, door8, door9 ,door10, door11, door12, door13,door14,door15,door16, door17, door18, door19, door20, door21, door22, door23, door24 ,door25, door26, door27, door28,door29,door30,door31,door32};
 
-	int amountOfActiveDoors = 0;
+	volatile int amountOfActiveDoors = 0;
 	for (int j = 0; j < (sizeof(GPIO_Ports) /sizeof(GPIO_TypeDef *)); j++)
 	{
 		for (int i = 0; i < sizeof(GPIO_Pins) / sizeof(uint16_t); i = i + 2)
@@ -69,20 +69,20 @@ void main(void)
 			}
 		}
 	}
-	door active_doors[amountOfActiveDoors];
+	volatile door active_doors[amountOfActiveDoors];
 	int counter = 0;
 	for (int j = 0; j < (sizeof(GPIO_Ports) /sizeof(GPIO_TypeDef *)); j++)
 	{
 		for (int i = 0; i < sizeof(GPIO_Pins) / sizeof(uint16_t); i = i + 2)
 		{
 			if(!GPIO_ReadInputDataBit(GPIO_Ports[j], GPIO_Pins[i])){
-				all_doors[counter].GPIO_read = GPIO_Pins[i];
-				all_doors[counter].GPIO_lamp = GPIO_Pins[i+1];
-				all_doors[counter].controlbits = 0;
-				all_doors[counter].time_larm = 0;
-				all_doors[counter].time_central_larm = 2;
-				all_doors[counter].GPIO_type = GPIO_Ports[j];
-				active_doors[counter] = all_doors[counter];
+				active_doors[counter].GPIO_read = GPIO_Pins[i];
+				active_doors[counter].GPIO_lamp = GPIO_Pins[i+1];
+				active_doors[counter].controlbits = 0;
+				active_doors[counter].time_larm = 1;
+				active_doors[counter].time_central_larm = 2;
+				active_doors[counter].GPIO_type = GPIO_Ports[j];
+				//active_doors[counter] = all_doors[counter];
 				counter++;
 			}
 		}
@@ -91,18 +91,15 @@ void main(void)
 	for (int i = 0; i < sizeof(active_doors)/sizeof(active_doors[0]); i++) //CHRISTMAST LIGHTS FTW
 	{
 		GPIO_SetBits(active_doors[i].GPIO_type, active_doors[i].GPIO_lamp);
-		delay(100);
-		GPIO_ResetBits(active_doors[i].GPIO_type, active_doors[i].GPIO_lamp);
+		delay(100);	
 		
 	}
-	for (int i = sizeof(active_doors)/sizeof(active_doors[0]); i > 0 ; i--) //CHRISTMAST LIGHTS FTW
+	for (int i = sizeof(active_doors)/sizeof(active_doors[0]); i >= 0 ; i--) //CHRISTMAST LIGHTS FTW
 	{
-		GPIO_SetBits(active_doors[i].GPIO_type, active_doors[i].GPIO_lamp);
-		delay(100);
 		GPIO_ResetBits(active_doors[i].GPIO_type, active_doors[i].GPIO_lamp);
-		
+		delay(100);
 	}
-	delay(100);
+	delay(200);
 	for (int i = 0; i < sizeof(active_doors)/sizeof(active_doors[0]); i++) //CHRISTMAST LIGHTS FTW
 	{
 		GPIO_SetBits(active_doors[i].GPIO_type, active_doors[i].GPIO_lamp);
