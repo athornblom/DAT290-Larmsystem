@@ -14,21 +14,40 @@
 CanRxMsg RxMessage;
 CanTxMsg TxMessage;
 
-
 typedef struct{
     uint8_t id;
+    uint8_t time_0;
+    uint8_t time_1;
+} Door;
+
+typedef struct{
+    uint8_t type;
+    uint8_t id;
     uint8_t num_of_doors;
+    Door doors[32];
 } Door_device;
 
 typedef struct{
     uint8_t id;
-    uint32_t dist_threshold;
+    uint8_t dist;
+} Dist_sensor;
+
+typedef struct{
+    uint8_t id;
+} Vib_sensor;
+
+typedef struct{
+    uint8_t type;
+    uint8_t id;
+    Dist_sensor dist_sensors[32];
+    Vib_sensor vib_sensors[32];
 } Motion_device;
 
-uint8_t next_id = 50;
+uint8_t next_id = 0;
 
 void *devices[128];
 Door_device door_devs[128];
+Motion_device motion_devs[128];
 uint32_t messages_to_send;
 uint8_t light;
 uint32_t counter;
@@ -63,14 +82,17 @@ Door_device *add_door_device(uint8_t id){
     return &door_devs[id];
 }
 
-//Använder MAC-adress för att tilldela en enhet ett id
-void assign_id(unsigned int mac, unsigned char id){
-    
+Motion_device *get_motion_device(uint8_t id){
+    return (Motion_device*) (devices[id]);
 }
 
-//Ställer in de två tiderna för en dörr
-void config_door(unsigned char id_device, unsigned char id_door, unsigned int time0, unsigned int time1) {
-    
+//Denna funktion ska alltid användas för att lägga till en ny rörelseenhet
+Motion_device *add_motion_device(uint8_t id){
+    Motion_device dev;
+    dev.id = id;
+    motion_devs[id] = dev; //Lägger dev i array av faktiska strukturinstanser för att undvika att den skrivs över
+    devices[id] = (void*)(&motion_devs[id]);
+    return &motion_devs[id];
 }
 
 /*void setup_doors(){
@@ -94,8 +116,6 @@ void id_request_handler(CanRxMsg *rxMsgP){
     
     CanRxMsg rxMsg = *rxMsgP;
     
-    
-    
         
     CanTxMsg txMsg;
     encode_assign_id(&txMsg, next_id);
@@ -109,8 +129,13 @@ void id_request_handler(CanRxMsg *rxMsgP){
         
         uint8_t id = get_door_device(next_id)->id;
         USARTPrintNum((uint32_t)id);
-        USARTPrint("\n");
         next_id++;
+        
+        dev->num_of_doors = rxMsg.Data[5];
+        USARTPrint("\n och ");
+        USARTPrintNum((uint32_t)rxMsg.Data[5]);
+        USARTPrint(" dorrar.\n");
+        
         
     }
     
