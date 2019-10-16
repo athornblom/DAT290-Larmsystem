@@ -93,8 +93,6 @@ void id_request_handler(CanRxMsg *rxMsgP){
     USARTPrint("In irq handler\n");
     
     CanRxMsg rxMsg = *rxMsgP;
-    CAN_Receive(CAN1, CAN_FIFO0, &rxMsg);
-    //TODO hantera meddelandet
     
     
     

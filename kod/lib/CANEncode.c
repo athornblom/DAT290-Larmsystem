@@ -1,7 +1,6 @@
 #include "CANEncode.h"
 #include "misc.h"
 #include "stm32f4xx.h"
-#include "stm32f4xx_can.h"
 #include "stm32f4xx_rcc.h"
 #include "stm32f4xx_gpio.h"
 
@@ -58,8 +57,6 @@ uint8_t encode_assign_id(CanTxMsg *msg, uint8_t id){
     header.toCentral = 0;
     HEADERtoUINT32(header, msg->ExtId);
     
-    
-    msg->StdId = 0b10000000000;
     msg->DLC = 2;
     
     msg->IDE = CAN_Id_Extended; //Alternativen är CAN_Id_Standard eller FCAN_Id_Extended

@@ -39,10 +39,9 @@ void toggle_light() {
 
 
 
-can_handler(void){
+void id_assign_handler(CanRxMsg *rxMsgP){
     
-    CanRxMsg rxMsg;
-    CAN_Receive(CAN1, CAN_FIFO0, &rxMsg);
+    CanRxMsg rxMsg = *rxMsgP;
     
     
     
@@ -63,20 +62,20 @@ void main(void) {
     
     
     CANFilter filter;
-    CANFilter mask;
+    CANFilter mask = empty_mask;
 
     //Används för omvandling
     Header header;
 
     //Skriver mask
-    mask.IDE = 1;
-    mask.RTR = 1;
+    mask.IDE = 0;
+    mask.RTR = 0;
     header.msgType = ~0;
     header.toCentral = ~0;
     header.ID = 0;
-    //ingorera msgNum
+    //ignorera msgNum
     header.msgNum = 0;
-    HEADERtoUINT32(header, mask.ID);
+    //HEADERtoUINT32(header, mask.ID);
 
     //Avaktiverar alla filter
     CANdisableAllFilterHandlers();
@@ -92,7 +91,7 @@ void main(void) {
     
     if (CANhandlerListNotFull()){
         USARTPrint("handler list not full\n");
-        uint32_t index = CANaddFilterHandler(can_handler, &filter, &mask);
+        uint32_t index = CANaddFilterHandler(id_assign_handler, &mask, &mask);
         USARTPrintNum(index);
     }
     
