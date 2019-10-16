@@ -33,7 +33,7 @@ typedef struct MotionSensors {
 
 //	Struct för vibrationssensor
 typedef struct VibrationSensors{
-	uint16_t pinD0;	// Pin för vibrationssensorns 'digital output'.
+	uint16_t pinD0;								// Pin för vibrationssensorns 'digital output'.
 } VibrationSensor;
 
 /**
@@ -153,21 +153,20 @@ void init_GPIO_Ports(){
 }
 	
 void init_MotionSensors(){
-	// Itirera genom portarna
+	// Iterera genom portarna
 	for (int i=0; sizeof(motionPorts[0])*sizeof(motionPorts); i++) {
-		// Itirera genom pinnarna
+		// Iterera genom pinnarna
 		for (int j=0; sizeof(pins[0])*sizeof(pins);i+=3) {
 			//todo
 		}
 	}
-	
 }
 
 void init_VibrationSensor(){
 	uint8_t sensorCounter = 0;
-	// Itirera genom portarna
+	// Iterera genom portarna
 	for (int i=0; i*sizeof(vibrationPorts[0]) < sizeof(vibrationPorts); i++) {
-		// Itirera genom pinnarna
+		// Iterera genom pinnarna
 		for (int j=0; j*sizeof(pins[0]) < sizeof(pins); j += 2) {
 			// Är sensorn aktiv?
 			if (GPIO_ReadInputDataBit(vibrationPorts[i], pins[j])) {
