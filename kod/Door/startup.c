@@ -79,7 +79,7 @@ void main(void)
 				active_doors[counter].GPIO_read = GPIO_Pins[i];
 				active_doors[counter].GPIO_lamp = GPIO_Pins[i+1];
 				active_doors[counter].controlbits = 0;
-				active_doors[counter].time_larm = 0;
+				active_doors[counter].time_larm = 1;
 				active_doors[counter].time_central_larm = 2;
 				active_doors[counter].GPIO_type = GPIO_Ports[j];
 				//active_doors[counter] = all_doors[counter];
