@@ -91,16 +91,13 @@ void main(void)
 	for (int i = 0; i < sizeof(active_doors)/sizeof(active_doors[0]); i++) //CHRISTMAST LIGHTS FTW
 	{
 		GPIO_SetBits(active_doors[i].GPIO_type, active_doors[i].GPIO_lamp);
-		delay(100);
-		GPIO_ResetBits(active_doors[i].GPIO_type, active_doors[i].GPIO_lamp);
+		delay(100);	
 		
 	}
 	for (int i = sizeof(active_doors)/sizeof(active_doors[0]); i > 0 ; i--) //CHRISTMAST LIGHTS FTW
 	{
-		GPIO_SetBits(active_doors[i].GPIO_type, active_doors[i].GPIO_lamp);
-		delay(100);
 		GPIO_ResetBits(active_doors[i].GPIO_type, active_doors[i].GPIO_lamp);
-		
+		delay(100);
 	}
 	delay(100);
 	for (int i = 0; i < sizeof(active_doors)/sizeof(active_doors[0]); i++) //CHRISTMAST LIGHTS FTW

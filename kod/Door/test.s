@@ -9785,8 +9785,8 @@
   77:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		{
   78:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 			if(!GPIO_ReadInputDataBit(GPIO_Ports[j], GPIO_Pins[i])){
  4788              		.loc 4 78 0
- 4789 16fc E04B     		ldr	r3, .L299
- 4790 16fe E14A     		ldr	r2, .L299+4
+ 4789 16fc E74B     		ldr	r3, .L299
+ 4790 16fe E84A     		ldr	r2, .L299+4
  4791 1700 1821     		movs	r1, #24
  4792 1702 8C46     		mov	ip, r1
  4793 1704 BC44     		add	ip, ip, r7
@@ -9794,7 +9794,7 @@
  4795 1708 1268     		ldr	r2, [r2]
  4796 170a 9200     		lsls	r2, r2, #2
  4797 170c D058     		ldr	r0, [r2, r3]
- 4798 170e DE4B     		ldr	r3, .L299+8
+ 4798 170e E54B     		ldr	r3, .L299+8
  4799 1710 8022     		movs	r2, #128
  4800 1712 1201     		lsls	r2, r2, #4
  4801 1714 1821     		movs	r1, #24
@@ -9812,7 +9812,7 @@
  4813              	.LCB4281:
   79:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 				all_doors[counter].GPIO_read = GPIO_Pins[i];
  4814              		.loc 4 79 0
- 4815 172e D64B     		ldr	r3, .L299+8
+ 4815 172e DD4B     		ldr	r3, .L299+8
  4816 1730 8025     		movs	r5, #128
  4817 1732 2D01     		lsls	r5, r5, #4
  4818 1734 1820     		movs	r0, #24
@@ -9822,12 +9822,12 @@
  4822 173c 5200     		lsls	r2, r2, #1
  4823 173e D35A     		ldrh	r3, [r2, r3]
  4824 1740 1900     		movs	r1, r3
- 4825 1742 D24B     		ldr	r3, .L299+12
- 4826 1744 D24C     		ldr	r4, .L299+16
+ 4825 1742 D94B     		ldr	r3, .L299+12
+ 4826 1744 D94C     		ldr	r4, .L299+16
  4827 1746 3A18     		adds	r2, r7, r0
  4828 1748 1219     		adds	r2, r2, r4
  4829 174a D218     		adds	r2, r2, r3
- 4830 174c D148     		ldr	r0, .L299+20
+ 4830 174c D848     		ldr	r0, .L299+20
  4831 174e 1823     		movs	r3, #24
  4832 1750 FB18     		adds	r3, r7, r3
  4833 1752 1B18     		adds	r3, r3, r0
@@ -9843,11 +9843,11 @@
  4842 1762 5B19     		adds	r3, r3, r5
  4843 1764 1B68     		ldr	r3, [r3]
  4844 1766 5A1C     		adds	r2, r3, #1
- 4845 1768 C74B     		ldr	r3, .L299+8
+ 4845 1768 CE4B     		ldr	r3, .L299+8
  4846 176a 5200     		lsls	r2, r2, #1
  4847 176c D35A     		ldrh	r3, [r2, r3]
  4848 176e 1900     		movs	r1, r3
- 4849 1770 C64B     		ldr	r3, .L299+12
+ 4849 1770 CD4B     		ldr	r3, .L299+12
  4850 1772 2500     		movs	r5, r4
  4851 1774 1824     		movs	r4, #24
  4852 1776 3A19     		adds	r2, r7, r4
@@ -9862,7 +9862,7 @@
  4861 1788 1960     		str	r1, [r3]
   81:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 				all_doors[counter].controlbits = 0;
  4862              		.loc 4 81 0
- 4863 178a C04B     		ldr	r3, .L299+12
+ 4863 178a C74B     		ldr	r3, .L299+12
  4864 178c 2100     		movs	r1, r4
  4865 178e 7A18     		adds	r2, r7, r1
  4866 1790 5219     		adds	r2, r2, r5
@@ -9877,7 +9877,7 @@
  4875 17a2 1A60     		str	r2, [r3]
   82:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 				all_doors[counter].time_larm = 0;
  4876              		.loc 4 82 0
- 4877 17a4 B94B     		ldr	r3, .L299+12
+ 4877 17a4 C04B     		ldr	r3, .L299+12
  4878 17a6 7A18     		adds	r2, r7, r1
  4879 17a8 5219     		adds	r2, r2, r5
  4880 17aa D218     		adds	r2, r2, r3
@@ -9891,7 +9891,7 @@
  4888 17ba 1A70     		strb	r2, [r3]
   83:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 				all_doors[counter].time_central_larm = 2;
  4889              		.loc 4 83 0
- 4890 17bc B34B     		ldr	r3, .L299+12
+ 4890 17bc BA4B     		ldr	r3, .L299+12
  4891 17be 7A18     		adds	r2, r7, r1
  4892 17c0 5219     		adds	r2, r2, r5
  4893 17c2 D218     		adds	r2, r2, r3
@@ -9905,8 +9905,8 @@
  4901 17d2 1A70     		strb	r2, [r3]
   84:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 				all_doors[counter].GPIO_type = GPIO_Ports[j];
  4902              		.loc 4 84 0
- 4903 17d4 AA4B     		ldr	r3, .L299
- 4904 17d6 AB4A     		ldr	r2, .L299+4
+ 4903 17d4 B14B     		ldr	r3, .L299
+ 4904 17d6 B24A     		ldr	r2, .L299+4
  4905 17d8 1824     		movs	r4, #24
  4906 17da A446     		mov	ip, r4
  4907 17dc BC44     		add	ip, ip, r7
@@ -9914,7 +9914,7 @@
  4909 17e0 1268     		ldr	r2, [r2]
  4910 17e2 9200     		lsls	r2, r2, #2
  4911 17e4 D258     		ldr	r2, [r2, r3]
- 4912 17e6 A94B     		ldr	r3, .L299+12
+ 4912 17e6 B04B     		ldr	r3, .L299+12
  4913 17e8 7C18     		adds	r4, r7, r1
  4914 17ea 6119     		adds	r1, r4, r5
  4915 17ec C918     		adds	r1, r1, r3
@@ -9941,7 +9941,7 @@
  4935 1812 1B19     		adds	r3, r3, r4
  4936 1814 1B68     		ldr	r3, [r3]
  4937 1816 5B01     		lsls	r3, r3, #5
- 4938 1818 9C4A     		ldr	r2, .L299+12
+ 4938 1818 A34A     		ldr	r2, .L299+12
  4939 181a 7918     		adds	r1, r7, r1
  4940 181c 4919     		adds	r1, r1, r5
  4941 181e 8918     		adds	r1, r1, r2
@@ -10000,7 +10000,7 @@
  4991              	.LBE5:
   74:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	{
  4992              		.loc 4 74 0 is_stmt 1 discriminator 2
- 4993 1876 834A     		ldr	r2, .L299+4
+ 4993 1876 8A4A     		ldr	r2, .L299+4
  4994 1878 1823     		movs	r3, #24
  4995 187a FB18     		adds	r3, r7, r3
  4996 187c 9B18     		adds	r3, r3, r2
@@ -10014,7 +10014,7 @@
  5004              	.L269:
   74:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	{
  5005              		.loc 4 74 0 is_stmt 0 discriminator 1
- 5006 188c 7D4B     		ldr	r3, .L299+4
+ 5006 188c 844B     		ldr	r3, .L299+4
  5007 188e 1822     		movs	r2, #24
  5008 1890 9446     		mov	ip, r2
  5009 1892 BC44     		add	ip, ip, r7
@@ -10033,887 +10033,837 @@
   91:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	for (int i = 0; i < sizeof(active_doors)/sizeof(active_doors[0]); i++) //CHRISTMAST LIGHTS FTW
  5018              		.loc 4 91 0 is_stmt 1
  5019 189e 0023     		movs	r3, #0
- 5020 18a0 7D4A     		ldr	r2, .L299+24
+ 5020 18a0 844A     		ldr	r2, .L299+24
  5021 18a2 1821     		movs	r1, #24
  5022 18a4 8C46     		mov	ip, r1
  5023 18a6 BC44     		add	ip, ip, r7
  5024 18a8 6244     		add	r2, r2, ip
  5025 18aa 1360     		str	r3, [r2]
- 5026 18ac 3FE0     		b	.L274
+ 5026 18ac 27E0     		b	.L274
  5027              	.L275:
   92:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	{
   93:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		GPIO_SetBits(active_doors[i].GPIO_type, active_doors[i].GPIO_lamp);
  5028              		.loc 4 93 0 discriminator 3
- 5029 18ae FC25     		movs	r5, #252
- 5030 18b0 ED00     		lsls	r5, r5, #3
- 5031 18b2 1821     		movs	r1, #24
- 5032 18b4 7B18     		adds	r3, r7, r1
- 5033 18b6 5B19     		adds	r3, r3, r5
+ 5029 18ae FC24     		movs	r4, #252
+ 5030 18b0 E400     		lsls	r4, r4, #3
+ 5031 18b2 1825     		movs	r5, #24
+ 5032 18b4 7B19     		adds	r3, r7, r5
+ 5033 18b6 1B19     		adds	r3, r3, r4
  5034 18b8 1A68     		ldr	r2, [r3]
- 5035 18ba 774C     		ldr	r4, .L299+24
- 5036 18bc 7B18     		adds	r3, r7, r1
- 5037 18be 1B19     		adds	r3, r3, r4
+ 5035 18ba 7E49     		ldr	r1, .L299+24
+ 5036 18bc 7B19     		adds	r3, r7, r5
+ 5037 18be 5B18     		adds	r3, r3, r1
  5038 18c0 1B68     		ldr	r3, [r3]
  5039 18c2 5B01     		lsls	r3, r3, #5
  5040 18c4 D318     		adds	r3, r2, r3
  5041 18c6 1C33     		adds	r3, r3, #28
  5042 18c8 1868     		ldr	r0, [r3]
- 5043 18ca 7B18     		adds	r3, r7, r1
- 5044 18cc 5B19     		adds	r3, r3, r5
+ 5043 18ca 7B19     		adds	r3, r7, r5
+ 5044 18cc 1B19     		adds	r3, r3, r4
  5045 18ce 1A68     		ldr	r2, [r3]
- 5046 18d0 7B18     		adds	r3, r7, r1
- 5047 18d2 1B19     		adds	r3, r3, r4
- 5048 18d4 1B68     		ldr	r3, [r3]
- 5049 18d6 5B01     		lsls	r3, r3, #5
- 5050 18d8 D318     		adds	r3, r2, r3
- 5051 18da 1033     		adds	r3, r3, #16
- 5052 18dc 1B68     		ldr	r3, [r3]
- 5053 18de 9BB2     		uxth	r3, r3
- 5054 18e0 1900     		movs	r1, r3
- 5055 18e2 FFF7FEFF 		bl	GPIO_SetBits
-  94:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		delay(100);
- 5056              		.loc 4 94 0 discriminator 3
- 5057 18e6 6420     		movs	r0, #100
- 5058 18e8 FFF7FEFF 		bl	delay
-  95:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		GPIO_ResetBits(active_doors[i].GPIO_type, active_doors[i].GPIO_lamp);
- 5059              		.loc 4 95 0 discriminator 3
- 5060 18ec 1821     		movs	r1, #24
- 5061 18ee 7B18     		adds	r3, r7, r1
- 5062 18f0 5B19     		adds	r3, r3, r5
- 5063 18f2 1A68     		ldr	r2, [r3]
- 5064 18f4 7B18     		adds	r3, r7, r1
- 5065 18f6 1B19     		adds	r3, r3, r4
- 5066 18f8 1B68     		ldr	r3, [r3]
- 5067 18fa 5B01     		lsls	r3, r3, #5
- 5068 18fc D318     		adds	r3, r2, r3
- 5069 18fe 1C33     		adds	r3, r3, #28
- 5070 1900 1868     		ldr	r0, [r3]
- 5071 1902 7B18     		adds	r3, r7, r1
- 5072 1904 5B19     		adds	r3, r3, r5
- 5073 1906 1A68     		ldr	r2, [r3]
- 5074 1908 0D00     		movs	r5, r1
- 5075 190a 7B18     		adds	r3, r7, r1
- 5076 190c 1B19     		adds	r3, r3, r4
- 5077 190e 1B68     		ldr	r3, [r3]
- 5078 1910 5B01     		lsls	r3, r3, #5
- 5079 1912 D318     		adds	r3, r2, r3
- 5080 1914 1033     		adds	r3, r3, #16
- 5081 1916 1B68     		ldr	r3, [r3]
- 5082 1918 9BB2     		uxth	r3, r3
- 5083 191a 1900     		movs	r1, r3
- 5084 191c FFF7FEFF 		bl	GPIO_ResetBits
+ 5046 18d0 0C00     		movs	r4, r1
+ 5047 18d2 7B19     		adds	r3, r7, r5
+ 5048 18d4 5B18     		adds	r3, r3, r1
+ 5049 18d6 1B68     		ldr	r3, [r3]
+ 5050 18d8 5B01     		lsls	r3, r3, #5
+ 5051 18da D318     		adds	r3, r2, r3
+ 5052 18dc 1033     		adds	r3, r3, #16
+ 5053 18de 1B68     		ldr	r3, [r3]
+ 5054 18e0 9BB2     		uxth	r3, r3
+ 5055 18e2 1900     		movs	r1, r3
+ 5056 18e4 FFF7FEFF 		bl	GPIO_SetBits
+  94:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		delay(100);	
+ 5057              		.loc 4 94 0 discriminator 3
+ 5058 18e8 6420     		movs	r0, #100
+ 5059 18ea FFF7FEFF 		bl	delay
   91:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	{
- 5085              		.loc 4 91 0 discriminator 3
- 5086 1920 7B19     		adds	r3, r7, r5
- 5087 1922 1B19     		adds	r3, r3, r4
- 5088 1924 1B68     		ldr	r3, [r3]
- 5089 1926 0133     		adds	r3, r3, #1
- 5090 1928 7A19     		adds	r2, r7, r5
- 5091 192a 1219     		adds	r2, r2, r4
- 5092 192c 1360     		str	r3, [r2]
- 5093              	.L274:
+ 5060              		.loc 4 91 0 discriminator 3
+ 5061 18ee 2100     		movs	r1, r4
+ 5062 18f0 7B19     		adds	r3, r7, r5
+ 5063 18f2 5B18     		adds	r3, r3, r1
+ 5064 18f4 1B68     		ldr	r3, [r3]
+ 5065 18f6 0133     		adds	r3, r3, #1
+ 5066 18f8 7A19     		adds	r2, r7, r5
+ 5067 18fa 5218     		adds	r2, r2, r1
+ 5068 18fc 1360     		str	r3, [r2]
+ 5069              	.L274:
   91:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	{
- 5094              		.loc 4 91 0 is_stmt 0 discriminator 1
- 5095 192e 3300     		movs	r3, r6
- 5096 1930 5B01     		lsls	r3, r3, #5
- 5097 1932 5A09     		lsrs	r2, r3, #5
- 5098 1934 584B     		ldr	r3, .L299+24
- 5099 1936 1821     		movs	r1, #24
- 5100 1938 8C46     		mov	ip, r1
- 5101 193a BC44     		add	ip, ip, r7
- 5102 193c 6344     		add	r3, r3, ip
- 5103 193e 1B68     		ldr	r3, [r3]
- 5104 1940 9A42     		cmp	r2, r3
- 5105 1942 B4D8     		bhi	.L275
- 5106              	.LBE6:
- 5107              	.LBB7:
-  96:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		
-  97:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	}
-  98:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	for (int i = sizeof(active_doors)/sizeof(active_doors[0]); i > 0 ; i--) //CHRISTMAST LIGHTS FTW
- 5108              		.loc 4 98 0 is_stmt 1
- 5109 1944 3300     		movs	r3, r6
- 5110 1946 5B01     		lsls	r3, r3, #5
- 5111 1948 5B09     		lsrs	r3, r3, #5
- 5112 194a FF22     		movs	r2, #255
- 5113 194c D200     		lsls	r2, r2, #3
- 5114 194e 1821     		movs	r1, #24
- 5115 1950 8C46     		mov	ip, r1
- 5116 1952 BC44     		add	ip, ip, r7
- 5117 1954 6244     		add	r2, r2, ip
- 5118 1956 1360     		str	r3, [r2]
- 5119 1958 40E0     		b	.L276
- 5120              	.L277:
-  99:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	{
- 100:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		GPIO_SetBits(active_doors[i].GPIO_type, active_doors[i].GPIO_lamp);
- 5121              		.loc 4 100 0 discriminator 3
- 5122 195a FC25     		movs	r5, #252
- 5123 195c ED00     		lsls	r5, r5, #3
- 5124 195e 1821     		movs	r1, #24
- 5125 1960 7B18     		adds	r3, r7, r1
- 5126 1962 5B19     		adds	r3, r3, r5
- 5127 1964 1A68     		ldr	r2, [r3]
- 5128 1966 FF24     		movs	r4, #255
- 5129 1968 E400     		lsls	r4, r4, #3
- 5130 196a 7B18     		adds	r3, r7, r1
- 5131 196c 1B19     		adds	r3, r3, r4
- 5132 196e 1B68     		ldr	r3, [r3]
- 5133 1970 5B01     		lsls	r3, r3, #5
- 5134 1972 D318     		adds	r3, r2, r3
- 5135 1974 1C33     		adds	r3, r3, #28
- 5136 1976 1868     		ldr	r0, [r3]
- 5137 1978 7B18     		adds	r3, r7, r1
- 5138 197a 5B19     		adds	r3, r3, r5
- 5139 197c 1A68     		ldr	r2, [r3]
- 5140 197e 7B18     		adds	r3, r7, r1
- 5141 1980 1B19     		adds	r3, r3, r4
- 5142 1982 1B68     		ldr	r3, [r3]
- 5143 1984 5B01     		lsls	r3, r3, #5
- 5144 1986 D318     		adds	r3, r2, r3
- 5145 1988 1033     		adds	r3, r3, #16
- 5146 198a 1B68     		ldr	r3, [r3]
- 5147 198c 9BB2     		uxth	r3, r3
- 5148 198e 1900     		movs	r1, r3
- 5149 1990 FFF7FEFF 		bl	GPIO_SetBits
- 101:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		delay(100);
- 5150              		.loc 4 101 0 discriminator 3
- 5151 1994 6420     		movs	r0, #100
- 5152 1996 FFF7FEFF 		bl	delay
- 102:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		GPIO_ResetBits(active_doors[i].GPIO_type, active_doors[i].GPIO_lamp);
- 5153              		.loc 4 102 0 discriminator 3
- 5154 199a 1821     		movs	r1, #24
- 5155 199c 7B18     		adds	r3, r7, r1
- 5156 199e 5B19     		adds	r3, r3, r5
- 5157 19a0 1A68     		ldr	r2, [r3]
- 5158 19a2 7B18     		adds	r3, r7, r1
- 5159 19a4 1B19     		adds	r3, r3, r4
- 5160 19a6 1B68     		ldr	r3, [r3]
- 5161 19a8 5B01     		lsls	r3, r3, #5
- 5162 19aa D318     		adds	r3, r2, r3
- 5163 19ac 1C33     		adds	r3, r3, #28
- 5164 19ae 1868     		ldr	r0, [r3]
- 5165 19b0 7B18     		adds	r3, r7, r1
- 5166 19b2 5B19     		adds	r3, r3, r5
- 5167 19b4 1A68     		ldr	r2, [r3]
- 5168 19b6 0D00     		movs	r5, r1
- 5169 19b8 7B18     		adds	r3, r7, r1
- 5170 19ba 1B19     		adds	r3, r3, r4
- 5171 19bc 1B68     		ldr	r3, [r3]
- 5172 19be 5B01     		lsls	r3, r3, #5
- 5173 19c0 D318     		adds	r3, r2, r3
- 5174 19c2 1033     		adds	r3, r3, #16
- 5175 19c4 1B68     		ldr	r3, [r3]
- 5176 19c6 9BB2     		uxth	r3, r3
- 5177 19c8 1900     		movs	r1, r3
- 5178 19ca FFF7FEFF 		bl	GPIO_ResetBits
+ 5070              		.loc 4 91 0 is_stmt 0 discriminator 1
+ 5071 18fe 3300     		movs	r3, r6
+ 5072 1900 5B01     		lsls	r3, r3, #5
+ 5073 1902 5A09     		lsrs	r2, r3, #5
+ 5074 1904 6B4B     		ldr	r3, .L299+24
+ 5075 1906 1821     		movs	r1, #24
+ 5076 1908 8C46     		mov	ip, r1
+ 5077 190a BC44     		add	ip, ip, r7
+ 5078 190c 6344     		add	r3, r3, ip
+ 5079 190e 1B68     		ldr	r3, [r3]
+ 5080 1910 9A42     		cmp	r2, r3
+ 5081 1912 CCD8     		bhi	.L275
+ 5082              	.LBE6:
+ 5083              	.LBB7:
+  95:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		
+  96:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	}
+  97:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	for (int i = sizeof(active_doors)/sizeof(active_doors[0]); i > 0 ; i--) //CHRISTMAST LIGHTS FTW
+ 5084              		.loc 4 97 0 is_stmt 1
+ 5085 1914 3300     		movs	r3, r6
+ 5086 1916 5B01     		lsls	r3, r3, #5
+ 5087 1918 5B09     		lsrs	r3, r3, #5
+ 5088 191a FF22     		movs	r2, #255
+ 5089 191c D200     		lsls	r2, r2, #3
+ 5090 191e 1821     		movs	r1, #24
+ 5091 1920 8C46     		mov	ip, r1
+ 5092 1922 BC44     		add	ip, ip, r7
+ 5093 1924 6244     		add	r2, r2, ip
+ 5094 1926 1360     		str	r3, [r2]
+ 5095 1928 28E0     		b	.L276
+ 5096              	.L277:
   98:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	{
- 5179              		.loc 4 98 0 discriminator 3
- 5180 19ce 7B19     		adds	r3, r7, r5
- 5181 19d0 1B19     		adds	r3, r3, r4
- 5182 19d2 1B68     		ldr	r3, [r3]
- 5183 19d4 013B     		subs	r3, r3, #1
- 5184 19d6 7A19     		adds	r2, r7, r5
- 5185 19d8 1219     		adds	r2, r2, r4
- 5186 19da 1360     		str	r3, [r2]
- 5187              	.L276:
-  98:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	{
- 5188              		.loc 4 98 0 is_stmt 0 discriminator 1
- 5189 19dc FF23     		movs	r3, #255
- 5190 19de DB00     		lsls	r3, r3, #3
- 5191 19e0 1822     		movs	r2, #24
- 5192 19e2 9446     		mov	ip, r2
- 5193 19e4 BC44     		add	ip, ip, r7
- 5194 19e6 6344     		add	r3, r3, ip
- 5195 19e8 1B68     		ldr	r3, [r3]
- 5196 19ea 002B     		cmp	r3, #0
- 5197 19ec B5DC     		bgt	.L277
- 5198              	.LBE7:
- 103:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		
- 104:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	}
- 105:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	delay(100);
- 5199              		.loc 4 105 0 is_stmt 1
- 5200 19ee 6420     		movs	r0, #100
- 5201 19f0 FFF7FEFF 		bl	delay
- 5202              	.LBB8:
- 106:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	for (int i = 0; i < sizeof(active_doors)/sizeof(active_doors[0]); i++) //CHRISTMAST LIGHTS FTW
- 5203              		.loc 4 106 0
- 5204 19f4 0023     		movs	r3, #0
- 5205 19f6 294A     		ldr	r2, .L299+28
- 5206 19f8 1821     		movs	r1, #24
- 5207 19fa 8C46     		mov	ip, r1
- 5208 19fc BC44     		add	ip, ip, r7
- 5209 19fe 6244     		add	r2, r2, ip
- 5210 1a00 1360     		str	r3, [r2]
- 5211 1a02 24E0     		b	.L278
- 5212              	.L279:
- 107:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	{
- 108:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		GPIO_SetBits(active_doors[i].GPIO_type, active_doors[i].GPIO_lamp);
- 5213              		.loc 4 108 0 discriminator 3
- 5214 1a04 FC24     		movs	r4, #252
- 5215 1a06 E400     		lsls	r4, r4, #3
- 5216 1a08 1825     		movs	r5, #24
- 5217 1a0a 7B19     		adds	r3, r7, r5
- 5218 1a0c 1B19     		adds	r3, r3, r4
- 5219 1a0e 1A68     		ldr	r2, [r3]
- 5220 1a10 2249     		ldr	r1, .L299+28
- 5221 1a12 7B19     		adds	r3, r7, r5
- 5222 1a14 5B18     		adds	r3, r3, r1
- 5223 1a16 1B68     		ldr	r3, [r3]
- 5224 1a18 5B01     		lsls	r3, r3, #5
- 5225 1a1a D318     		adds	r3, r2, r3
- 5226 1a1c 1C33     		adds	r3, r3, #28
- 5227 1a1e 1868     		ldr	r0, [r3]
- 5228 1a20 7B19     		adds	r3, r7, r5
- 5229 1a22 1B19     		adds	r3, r3, r4
- 5230 1a24 1A68     		ldr	r2, [r3]
- 5231 1a26 0C00     		movs	r4, r1
- 5232 1a28 7B19     		adds	r3, r7, r5
- 5233 1a2a 5B18     		adds	r3, r3, r1
- 5234 1a2c 1B68     		ldr	r3, [r3]
- 5235 1a2e 5B01     		lsls	r3, r3, #5
- 5236 1a30 D318     		adds	r3, r2, r3
- 5237 1a32 1033     		adds	r3, r3, #16
- 5238 1a34 1B68     		ldr	r3, [r3]
- 5239 1a36 9BB2     		uxth	r3, r3
- 5240 1a38 1900     		movs	r1, r3
- 5241 1a3a FFF7FEFF 		bl	GPIO_SetBits
- 106:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	for (int i = 0; i < sizeof(active_doors)/sizeof(active_doors[0]); i++) //CHRISTMAST LIGHTS FTW
- 5242              		.loc 4 106 0 discriminator 3
- 5243 1a3e 2100     		movs	r1, r4
- 5244 1a40 7B19     		adds	r3, r7, r5
- 5245 1a42 5B18     		adds	r3, r3, r1
- 5246 1a44 1B68     		ldr	r3, [r3]
- 5247 1a46 0133     		adds	r3, r3, #1
- 5248 1a48 7A19     		adds	r2, r7, r5
- 5249 1a4a 5218     		adds	r2, r2, r1
- 5250 1a4c 1360     		str	r3, [r2]
- 5251              	.L278:
- 106:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	for (int i = 0; i < sizeof(active_doors)/sizeof(active_doors[0]); i++) //CHRISTMAST LIGHTS FTW
- 5252              		.loc 4 106 0 is_stmt 0 discriminator 1
- 5253 1a4e 3300     		movs	r3, r6
- 5254 1a50 5B01     		lsls	r3, r3, #5
- 5255 1a52 5A09     		lsrs	r2, r3, #5
- 5256 1a54 114B     		ldr	r3, .L299+28
- 5257 1a56 1821     		movs	r1, #24
- 5258 1a58 8C46     		mov	ip, r1
- 5259 1a5a BC44     		add	ip, ip, r7
- 5260 1a5c 6344     		add	r3, r3, ip
- 5261 1a5e 1B68     		ldr	r3, [r3]
- 5262 1a60 9A42     		cmp	r2, r3
- 5263 1a62 CFD8     		bhi	.L279
- 5264              	.LBE8:
- 109:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	}
- 110:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	delay(3000);
- 5265              		.loc 4 110 0 is_stmt 1
- 5266 1a64 0E4B     		ldr	r3, .L299+32
- 5267 1a66 1800     		movs	r0, r3
- 5268 1a68 FFF7FEFF 		bl	delay
- 5269              	.LBB9:
- 111:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	for (int i = 0; i < sizeof(active_doors)/sizeof(active_doors[0]); i++) //CHRISTMAST LIGHTS FTW
- 5270              		.loc 4 111 0
- 5271 1a6c 0023     		movs	r3, #0
- 5272 1a6e FE22     		movs	r2, #254
- 5273 1a70 D200     		lsls	r2, r2, #3
- 5274 1a72 1821     		movs	r1, #24
- 5275 1a74 8C46     		mov	ip, r1
- 5276 1a76 BC44     		add	ip, ip, r7
- 5277 1a78 6244     		add	r2, r2, ip
- 5278 1a7a 1360     		str	r3, [r2]
- 5279 1a7c 38E0     		b	.L280
- 5280              	.L300:
- 5281 1a7e C046     		.align	2
- 5282              	.L299:
- 5283 1a80 00000000 		.word	GPIO_Ports
- 5284 1a84 04080000 		.word	2052
- 5285 1a88 00000000 		.word	GPIO_Pins
- 5286 1a8c E8F7FFFF 		.word	-2072
- 5287 1a90 18080000 		.word	2072
- 5288 1a94 08080000 		.word	2056
- 5289 1a98 FC070000 		.word	2044
- 5290 1a9c F4070000 		.word	2036
- 5291 1aa0 B80B0000 		.word	3000
- 5292              	.L281:
- 112:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	{
- 113:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		GPIO_ResetBits(active_doors[i].GPIO_type, active_doors[i].GPIO_lamp);
- 5293              		.loc 4 113 0 discriminator 3
- 5294 1aa4 FC24     		movs	r4, #252
- 5295 1aa6 E400     		lsls	r4, r4, #3
- 5296 1aa8 1825     		movs	r5, #24
- 5297 1aaa 7B19     		adds	r3, r7, r5
- 5298 1aac 1B19     		adds	r3, r3, r4
- 5299 1aae 1A68     		ldr	r2, [r3]
- 5300 1ab0 FE21     		movs	r1, #254
- 5301 1ab2 C900     		lsls	r1, r1, #3
- 5302 1ab4 7B19     		adds	r3, r7, r5
- 5303 1ab6 5B18     		adds	r3, r3, r1
- 5304 1ab8 1B68     		ldr	r3, [r3]
- 5305 1aba 5B01     		lsls	r3, r3, #5
- 5306 1abc D318     		adds	r3, r2, r3
- 5307 1abe 1C33     		adds	r3, r3, #28
- 5308 1ac0 1868     		ldr	r0, [r3]
- 5309 1ac2 7B19     		adds	r3, r7, r5
- 5310 1ac4 1B19     		adds	r3, r3, r4
- 5311 1ac6 1A68     		ldr	r2, [r3]
- 5312 1ac8 0C00     		movs	r4, r1
- 5313 1aca 7B19     		adds	r3, r7, r5
- 5314 1acc 5B18     		adds	r3, r3, r1
- 5315 1ace 1B68     		ldr	r3, [r3]
- 5316 1ad0 5B01     		lsls	r3, r3, #5
- 5317 1ad2 D318     		adds	r3, r2, r3
- 5318 1ad4 1033     		adds	r3, r3, #16
- 5319 1ad6 1B68     		ldr	r3, [r3]
- 5320 1ad8 9BB2     		uxth	r3, r3
- 5321 1ada 1900     		movs	r1, r3
- 5322 1adc FFF7FEFF 		bl	GPIO_ResetBits
- 111:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	for (int i = 0; i < sizeof(active_doors)/sizeof(active_doors[0]); i++) //CHRISTMAST LIGHTS FTW
- 5323              		.loc 4 111 0 discriminator 3
- 5324 1ae0 2100     		movs	r1, r4
- 5325 1ae2 7B19     		adds	r3, r7, r5
- 5326 1ae4 5B18     		adds	r3, r3, r1
- 5327 1ae6 1B68     		ldr	r3, [r3]
- 5328 1ae8 0133     		adds	r3, r3, #1
- 5329 1aea 7A19     		adds	r2, r7, r5
- 5330 1aec 5218     		adds	r2, r2, r1
- 5331 1aee 1360     		str	r3, [r2]
- 5332              	.L280:
- 111:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	for (int i = 0; i < sizeof(active_doors)/sizeof(active_doors[0]); i++) //CHRISTMAST LIGHTS FTW
- 5333              		.loc 4 111 0 is_stmt 0 discriminator 1
- 5334 1af0 3300     		movs	r3, r6
- 5335 1af2 5B01     		lsls	r3, r3, #5
- 5336 1af4 5A09     		lsrs	r2, r3, #5
- 5337 1af6 FE23     		movs	r3, #254
- 5338 1af8 DB00     		lsls	r3, r3, #3
- 5339 1afa 1821     		movs	r1, #24
- 5340 1afc 8C46     		mov	ip, r1
- 5341 1afe BC44     		add	ip, ip, r7
- 5342 1b00 6344     		add	r3, r3, ip
- 5343 1b02 1B68     		ldr	r3, [r3]
- 5344 1b04 9A42     		cmp	r2, r3
- 5345 1b06 CDD8     		bhi	.L281
- 5346              	.LBE9:
- 114:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	}
- 115:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	
- 116:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 
- 117:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	GPIO_SetBits(GPIOB, GPIO_Pin_2);
- 5347              		.loc 4 117 0 is_stmt 1
- 5348 1b08 D74B     		ldr	r3, .L301
- 5349 1b0a 0421     		movs	r1, #4
- 5350 1b0c 1800     		movs	r0, r3
- 5351 1b0e FFF7FEFF 		bl	GPIO_SetBits
- 5352              	.L293:
- 5353              	.LBB10:
- 118:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	//active_doors[2].controlbits |= 4;
- 119:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	while (1)
- 120:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	{
- 121:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		for (int i = 0; i < sizeof(active_doors)/sizeof(active_doors[0]); i++)
- 5354              		.loc 4 121 0
- 5355 1b12 0023     		movs	r3, #0
- 5356 1b14 D54A     		ldr	r2, .L301+4
- 5357 1b16 1821     		movs	r1, #24
- 5358 1b18 8C46     		mov	ip, r1
- 5359 1b1a BC44     		add	ip, ip, r7
- 5360 1b1c 6244     		add	r2, r2, ip
- 5361 1b1e 1360     		str	r3, [r2]
- 5362 1b20 94E1     		b	.L282
- 5363              	.L292:
- 122:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		{
- 123:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 			if (!(active_doors[i].controlbits & 4))
- 5364              		.loc 4 123 0
- 5365 1b22 FC23     		movs	r3, #252
- 5366 1b24 DB00     		lsls	r3, r3, #3
- 5367 1b26 1822     		movs	r2, #24
- 5368 1b28 9446     		mov	ip, r2
- 5369 1b2a BC44     		add	ip, ip, r7
- 5370 1b2c 6344     		add	r3, r3, ip
- 5371 1b2e 1A68     		ldr	r2, [r3]
- 5372 1b30 CE4B     		ldr	r3, .L301+4
- 5373 1b32 1821     		movs	r1, #24
- 5374 1b34 8C46     		mov	ip, r1
- 5375 1b36 BC44     		add	ip, ip, r7
- 5376 1b38 6344     		add	r3, r3, ip
- 5377 1b3a 1B68     		ldr	r3, [r3]
- 5378 1b3c 5B01     		lsls	r3, r3, #5
- 5379 1b3e D318     		adds	r3, r2, r3
- 5380 1b40 0433     		adds	r3, r3, #4
- 5381 1b42 1B68     		ldr	r3, [r3]
- 5382 1b44 0422     		movs	r2, #4
- 5383 1b46 1340     		ands	r3, r2
- 5384 1b48 00D0     		beq	.LCB4935
- 5385 1b4a 74E1     		b	.L283	@long jump
- 5386              	.LCB4935:
- 124:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 				{
- 125:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 				if (!GPIO_ReadInputDataBit(active_doors[i].GPIO_type, active_doors[i].GPIO_read)){ //GPIO pinne
- 5387              		.loc 4 125 0
- 5388 1b4c FC21     		movs	r1, #252
- 5389 1b4e C900     		lsls	r1, r1, #3
- 5390 1b50 1825     		movs	r5, #24
- 5391 1b52 7B19     		adds	r3, r7, r5
- 5392 1b54 5B18     		adds	r3, r3, r1
- 5393 1b56 1A68     		ldr	r2, [r3]
- 5394 1b58 C44C     		ldr	r4, .L301+4
- 5395 1b5a 7B19     		adds	r3, r7, r5
- 5396 1b5c 1B19     		adds	r3, r3, r4
- 5397 1b5e 1B68     		ldr	r3, [r3]
- 5398 1b60 5B01     		lsls	r3, r3, #5
- 5399 1b62 D318     		adds	r3, r2, r3
- 5400 1b64 1C33     		adds	r3, r3, #28
- 5401 1b66 1868     		ldr	r0, [r3]
- 5402 1b68 7B19     		adds	r3, r7, r5
- 5403 1b6a 5B18     		adds	r3, r3, r1
- 5404 1b6c 1A68     		ldr	r2, [r3]
- 5405 1b6e 7B19     		adds	r3, r7, r5
- 5406 1b70 1B19     		adds	r3, r3, r4
- 5407 1b72 1B68     		ldr	r3, [r3]
- 5408 1b74 5B01     		lsls	r3, r3, #5
- 5409 1b76 D318     		adds	r3, r2, r3
- 5410 1b78 1433     		adds	r3, r3, #20
- 5411 1b7a 1B68     		ldr	r3, [r3]
- 5412 1b7c 9BB2     		uxth	r3, r3
- 5413 1b7e 1900     		movs	r1, r3
- 5414 1b80 FFF7FEFF 		bl	GPIO_ReadInputDataBit
- 5415 1b84 031E     		subs	r3, r0, #0
- 5416 1b86 1AD1     		bne	.L284
- 126:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 					active_doors[i].controlbits &= 0xFFFC; //Nollställer kontrollbiten för ifall en dörr är ö
- 5417              		.loc 4 126 0
- 5418 1b88 FC21     		movs	r1, #252
- 5419 1b8a C900     		lsls	r1, r1, #3
- 5420 1b8c 1824     		movs	r4, #24
- 5421 1b8e 3B19     		adds	r3, r7, r4
- 5422 1b90 5B18     		adds	r3, r3, r1
- 5423 1b92 1A68     		ldr	r2, [r3]
- 5424 1b94 B548     		ldr	r0, .L301+4
- 5425 1b96 3B19     		adds	r3, r7, r4
- 5426 1b98 1B18     		adds	r3, r3, r0
- 5427 1b9a 1B68     		ldr	r3, [r3]
- 5428 1b9c 5B01     		lsls	r3, r3, #5
- 5429 1b9e D318     		adds	r3, r2, r3
- 5430 1ba0 0433     		adds	r3, r3, #4
- 5431 1ba2 1B68     		ldr	r3, [r3]
- 5432 1ba4 B24A     		ldr	r2, .L301+8
- 5433 1ba6 1A40     		ands	r2, r3
- 5434 1ba8 3B19     		adds	r3, r7, r4
- 5435 1baa 5B18     		adds	r3, r3, r1
- 5436 1bac 1968     		ldr	r1, [r3]
- 5437 1bae 3B19     		adds	r3, r7, r4
- 5438 1bb0 1B18     		adds	r3, r3, r0
- 5439 1bb2 1B68     		ldr	r3, [r3]
- 5440 1bb4 5B01     		lsls	r3, r3, #5
- 5441 1bb6 CB18     		adds	r3, r1, r3
- 5442 1bb8 0433     		adds	r3, r3, #4
- 5443 1bba 1A60     		str	r2, [r3]
- 5444 1bbc 40E0     		b	.L285
- 5445              	.L284:
- 127:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 					//att skicka medelande till centralenheten, när den detekteras som stängd
- 128:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 					
- 129:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 				}
- 130:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 				else{
- 131:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 					if (!active_doors[i].controlbits & 1) // Kollar så att dörren inte larmar sen innan så larm
- 5446              		.loc 4 131 0
- 5447 1bbe FC23     		movs	r3, #252
- 5448 1bc0 DB00     		lsls	r3, r3, #3
- 5449 1bc2 1822     		movs	r2, #24
- 5450 1bc4 9446     		mov	ip, r2
- 5451 1bc6 BC44     		add	ip, ip, r7
- 5452 1bc8 6344     		add	r3, r3, ip
- 5453 1bca 1A68     		ldr	r2, [r3]
- 5454 1bcc A74B     		ldr	r3, .L301+4
- 5455 1bce 1821     		movs	r1, #24
- 5456 1bd0 8C46     		mov	ip, r1
- 5457 1bd2 BC44     		add	ip, ip, r7
- 5458 1bd4 6344     		add	r3, r3, ip
- 5459 1bd6 1B68     		ldr	r3, [r3]
- 5460 1bd8 5B01     		lsls	r3, r3, #5
- 5461 1bda D318     		adds	r3, r2, r3
- 5462 1bdc 0433     		adds	r3, r3, #4
- 5463 1bde 1B68     		ldr	r3, [r3]
- 5464 1be0 002B     		cmp	r3, #0
- 5465 1be2 13D1     		bne	.L286
- 132:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 					{
- 133:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 						active_doors[i].larmTick = msTicks;
- 5466              		.loc 4 133 0
- 5467 1be4 A34B     		ldr	r3, .L301+12
- 5468 1be6 1B68     		ldr	r3, [r3]
- 5469 1be8 1900     		movs	r1, r3
- 5470 1bea FC23     		movs	r3, #252
- 5471 1bec DB00     		lsls	r3, r3, #3
- 5472 1bee 1822     		movs	r2, #24
- 5473 1bf0 9446     		mov	ip, r2
- 5474 1bf2 BC44     		add	ip, ip, r7
- 5475 1bf4 6344     		add	r3, r3, ip
- 5476 1bf6 1A68     		ldr	r2, [r3]
- 5477 1bf8 9C4B     		ldr	r3, .L301+4
- 5478 1bfa 1820     		movs	r0, #24
- 5479 1bfc 8446     		mov	ip, r0
- 5480 1bfe BC44     		add	ip, ip, r7
- 5481 1c00 6344     		add	r3, r3, ip
- 5482 1c02 1B68     		ldr	r3, [r3]
- 5483 1c04 5B01     		lsls	r3, r3, #5
- 5484 1c06 D318     		adds	r3, r2, r3
- 5485 1c08 1833     		adds	r3, r3, #24
- 5486 1c0a 1960     		str	r1, [r3]
- 5487              	.L286:
- 134:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 					}
- 135:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 					active_doors[i].controlbits |= 1; // sätter dörrens larm kontrollbit till 1.
- 5488              		.loc 4 135 0
- 5489 1c0c FC21     		movs	r1, #252
- 5490 1c0e C900     		lsls	r1, r1, #3
- 5491 1c10 1824     		movs	r4, #24
- 5492 1c12 3B19     		adds	r3, r7, r4
- 5493 1c14 5B18     		adds	r3, r3, r1
- 5494 1c16 1A68     		ldr	r2, [r3]
- 5495 1c18 9448     		ldr	r0, .L301+4
- 5496 1c1a 3B19     		adds	r3, r7, r4
- 5497 1c1c 1B18     		adds	r3, r3, r0
- 5498 1c1e 1B68     		ldr	r3, [r3]
- 5499 1c20 5B01     		lsls	r3, r3, #5
- 5500 1c22 D318     		adds	r3, r2, r3
- 5501 1c24 0433     		adds	r3, r3, #4
- 5502 1c26 1B68     		ldr	r3, [r3]
- 5503 1c28 0122     		movs	r2, #1
- 5504 1c2a 1A43     		orrs	r2, r3
- 5505 1c2c 3B19     		adds	r3, r7, r4
- 5506 1c2e 5B18     		adds	r3, r3, r1
- 5507 1c30 1968     		ldr	r1, [r3]
- 5508 1c32 3B19     		adds	r3, r7, r4
- 5509 1c34 1B18     		adds	r3, r3, r0
- 5510 1c36 1B68     		ldr	r3, [r3]
- 5511 1c38 5B01     		lsls	r3, r3, #5
- 5512 1c3a CB18     		adds	r3, r1, r3
- 5513 1c3c 0433     		adds	r3, r3, #4
- 5514 1c3e 1A60     		str	r2, [r3]
- 5515              	.L285:
- 5516              	.LBB11:
- 136:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 				}
- 137:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 				for (int i = 0; i < sizeof(active_doors)/sizeof(active_doors[0]); i++)
- 5517              		.loc 4 137 0
- 5518 1c40 0023     		movs	r3, #0
- 5519 1c42 FD22     		movs	r2, #253
- 5520 1c44 D200     		lsls	r2, r2, #3
- 5521 1c46 1821     		movs	r1, #24
- 5522 1c48 8C46     		mov	ip, r1
- 5523 1c4a BC44     		add	ip, ip, r7
- 5524 1c4c 6244     		add	r2, r2, ip
- 5525 1c4e 1360     		str	r3, [r2]
- 5526 1c50 E4E0     		b	.L287
- 5527              	.L291:
- 138:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 				{
- 139:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 					if (active_doors[i].controlbits & 1 && msTicks > (active_doors[i].larmTick + 1000 * 10 * activ
- 5528              		.loc 4 139 0
- 5529 1c52 FC23     		movs	r3, #252
- 5530 1c54 DB00     		lsls	r3, r3, #3
- 5531 1c56 1822     		movs	r2, #24
- 5532 1c58 9446     		mov	ip, r2
- 5533 1c5a BC44     		add	ip, ip, r7
- 5534 1c5c 6344     		add	r3, r3, ip
- 5535 1c5e 1A68     		ldr	r2, [r3]
- 5536 1c60 FD23     		movs	r3, #253
- 5537 1c62 DB00     		lsls	r3, r3, #3
- 5538 1c64 1821     		movs	r1, #24
- 5539 1c66 8C46     		mov	ip, r1
- 5540 1c68 BC44     		add	ip, ip, r7
- 5541 1c6a 6344     		add	r3, r3, ip
- 5542 1c6c 1B68     		ldr	r3, [r3]
- 5543 1c6e 5B01     		lsls	r3, r3, #5
- 5544 1c70 D318     		adds	r3, r2, r3
- 5545 1c72 0433     		adds	r3, r3, #4
- 5546 1c74 1B68     		ldr	r3, [r3]
- 5547 1c76 0122     		movs	r2, #1
- 5548 1c78 1340     		ands	r3, r2
- 5549 1c7a 3FD0     		beq	.L288
- 5550              		.loc 4 139 0 is_stmt 0 discriminator 1
- 5551 1c7c FC21     		movs	r1, #252
- 5552 1c7e C900     		lsls	r1, r1, #3
- 5553 1c80 1824     		movs	r4, #24
- 5554 1c82 3B19     		adds	r3, r7, r4
- 5555 1c84 5B18     		adds	r3, r3, r1
- 5556 1c86 1A68     		ldr	r2, [r3]
- 5557 1c88 FD20     		movs	r0, #253
- 5558 1c8a C000     		lsls	r0, r0, #3
- 5559 1c8c 3B19     		adds	r3, r7, r4
- 5560 1c8e 1B18     		adds	r3, r3, r0
- 5561 1c90 1B68     		ldr	r3, [r3]
- 5562 1c92 5B01     		lsls	r3, r3, #5
- 5563 1c94 D318     		adds	r3, r2, r3
- 5564 1c96 1833     		adds	r3, r3, #24
- 5565 1c98 1A68     		ldr	r2, [r3]
- 5566 1c9a 3B19     		adds	r3, r7, r4
- 5567 1c9c 5B18     		adds	r3, r3, r1
- 5568 1c9e 1968     		ldr	r1, [r3]
- 5569 1ca0 3B19     		adds	r3, r7, r4
- 5570 1ca2 1B18     		adds	r3, r3, r0
- 5571 1ca4 1B68     		ldr	r3, [r3]
- 5572 1ca6 5B01     		lsls	r3, r3, #5
- 5573 1ca8 CB18     		adds	r3, r1, r3
- 5574 1caa 0833     		adds	r3, r3, #8
- 5575 1cac 1B78     		ldrb	r3, [r3]
- 5576 1cae 1900     		movs	r1, r3
- 5577 1cb0 714B     		ldr	r3, .L301+16
- 5578 1cb2 4B43     		muls	r3, r1
- 5579 1cb4 D318     		adds	r3, r2, r3
- 5580 1cb6 1A00     		movs	r2, r3
- 5581 1cb8 6E4B     		ldr	r3, .L301+12
- 5582 1cba 1B68     		ldr	r3, [r3]
- 5583 1cbc 9A42     		cmp	r2, r3
- 5584 1cbe 1DD2     		bcs	.L288
- 140:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 					{
- 141:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 						GPIO_SetBits(active_doors[i].GPIO_type, active_doors[i].GPIO_lamp); // tänder lampan ifall t
- 5585              		.loc 4 141 0 is_stmt 1
- 5586 1cc0 FC21     		movs	r1, #252
- 5587 1cc2 C900     		lsls	r1, r1, #3
- 5588 1cc4 1825     		movs	r5, #24
+  99:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		GPIO_ResetBits(active_doors[i].GPIO_type, active_doors[i].GPIO_lamp);
+ 5097              		.loc 4 99 0 discriminator 3
+ 5098 192a FC24     		movs	r4, #252
+ 5099 192c E400     		lsls	r4, r4, #3
+ 5100 192e 1825     		movs	r5, #24
+ 5101 1930 7B19     		adds	r3, r7, r5
+ 5102 1932 1B19     		adds	r3, r3, r4
+ 5103 1934 1A68     		ldr	r2, [r3]
+ 5104 1936 FF21     		movs	r1, #255
+ 5105 1938 C900     		lsls	r1, r1, #3
+ 5106 193a 7B19     		adds	r3, r7, r5
+ 5107 193c 5B18     		adds	r3, r3, r1
+ 5108 193e 1B68     		ldr	r3, [r3]
+ 5109 1940 5B01     		lsls	r3, r3, #5
+ 5110 1942 D318     		adds	r3, r2, r3
+ 5111 1944 1C33     		adds	r3, r3, #28
+ 5112 1946 1868     		ldr	r0, [r3]
+ 5113 1948 7B19     		adds	r3, r7, r5
+ 5114 194a 1B19     		adds	r3, r3, r4
+ 5115 194c 1A68     		ldr	r2, [r3]
+ 5116 194e 0C00     		movs	r4, r1
+ 5117 1950 7B19     		adds	r3, r7, r5
+ 5118 1952 5B18     		adds	r3, r3, r1
+ 5119 1954 1B68     		ldr	r3, [r3]
+ 5120 1956 5B01     		lsls	r3, r3, #5
+ 5121 1958 D318     		adds	r3, r2, r3
+ 5122 195a 1033     		adds	r3, r3, #16
+ 5123 195c 1B68     		ldr	r3, [r3]
+ 5124 195e 9BB2     		uxth	r3, r3
+ 5125 1960 1900     		movs	r1, r3
+ 5126 1962 FFF7FEFF 		bl	GPIO_ResetBits
+ 100:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		delay(100);
+ 5127              		.loc 4 100 0 discriminator 3
+ 5128 1966 6420     		movs	r0, #100
+ 5129 1968 FFF7FEFF 		bl	delay
+  97:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	{
+ 5130              		.loc 4 97 0 discriminator 3
+ 5131 196c 2100     		movs	r1, r4
+ 5132 196e 7B19     		adds	r3, r7, r5
+ 5133 1970 5B18     		adds	r3, r3, r1
+ 5134 1972 1B68     		ldr	r3, [r3]
+ 5135 1974 013B     		subs	r3, r3, #1
+ 5136 1976 7A19     		adds	r2, r7, r5
+ 5137 1978 5218     		adds	r2, r2, r1
+ 5138 197a 1360     		str	r3, [r2]
+ 5139              	.L276:
+  97:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	{
+ 5140              		.loc 4 97 0 is_stmt 0 discriminator 1
+ 5141 197c FF23     		movs	r3, #255
+ 5142 197e DB00     		lsls	r3, r3, #3
+ 5143 1980 1822     		movs	r2, #24
+ 5144 1982 9446     		mov	ip, r2
+ 5145 1984 BC44     		add	ip, ip, r7
+ 5146 1986 6344     		add	r3, r3, ip
+ 5147 1988 1B68     		ldr	r3, [r3]
+ 5148 198a 002B     		cmp	r3, #0
+ 5149 198c CDDC     		bgt	.L277
+ 5150              	.LBE7:
+ 101:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	}
+ 102:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	delay(100);
+ 5151              		.loc 4 102 0 is_stmt 1
+ 5152 198e 6420     		movs	r0, #100
+ 5153 1990 FFF7FEFF 		bl	delay
+ 5154              	.LBB8:
+ 103:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	for (int i = 0; i < sizeof(active_doors)/sizeof(active_doors[0]); i++) //CHRISTMAST LIGHTS FTW
+ 5155              		.loc 4 103 0
+ 5156 1994 0023     		movs	r3, #0
+ 5157 1996 484A     		ldr	r2, .L299+28
+ 5158 1998 1821     		movs	r1, #24
+ 5159 199a 8C46     		mov	ip, r1
+ 5160 199c BC44     		add	ip, ip, r7
+ 5161 199e 6244     		add	r2, r2, ip
+ 5162 19a0 1360     		str	r3, [r2]
+ 5163 19a2 24E0     		b	.L278
+ 5164              	.L279:
+ 104:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	{
+ 105:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		GPIO_SetBits(active_doors[i].GPIO_type, active_doors[i].GPIO_lamp);
+ 5165              		.loc 4 105 0 discriminator 3
+ 5166 19a4 FC24     		movs	r4, #252
+ 5167 19a6 E400     		lsls	r4, r4, #3
+ 5168 19a8 1825     		movs	r5, #24
+ 5169 19aa 7B19     		adds	r3, r7, r5
+ 5170 19ac 1B19     		adds	r3, r3, r4
+ 5171 19ae 1A68     		ldr	r2, [r3]
+ 5172 19b0 4149     		ldr	r1, .L299+28
+ 5173 19b2 7B19     		adds	r3, r7, r5
+ 5174 19b4 5B18     		adds	r3, r3, r1
+ 5175 19b6 1B68     		ldr	r3, [r3]
+ 5176 19b8 5B01     		lsls	r3, r3, #5
+ 5177 19ba D318     		adds	r3, r2, r3
+ 5178 19bc 1C33     		adds	r3, r3, #28
+ 5179 19be 1868     		ldr	r0, [r3]
+ 5180 19c0 7B19     		adds	r3, r7, r5
+ 5181 19c2 1B19     		adds	r3, r3, r4
+ 5182 19c4 1A68     		ldr	r2, [r3]
+ 5183 19c6 0C00     		movs	r4, r1
+ 5184 19c8 7B19     		adds	r3, r7, r5
+ 5185 19ca 5B18     		adds	r3, r3, r1
+ 5186 19cc 1B68     		ldr	r3, [r3]
+ 5187 19ce 5B01     		lsls	r3, r3, #5
+ 5188 19d0 D318     		adds	r3, r2, r3
+ 5189 19d2 1033     		adds	r3, r3, #16
+ 5190 19d4 1B68     		ldr	r3, [r3]
+ 5191 19d6 9BB2     		uxth	r3, r3
+ 5192 19d8 1900     		movs	r1, r3
+ 5193 19da FFF7FEFF 		bl	GPIO_SetBits
+ 103:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	for (int i = 0; i < sizeof(active_doors)/sizeof(active_doors[0]); i++) //CHRISTMAST LIGHTS FTW
+ 5194              		.loc 4 103 0 discriminator 3
+ 5195 19de 2100     		movs	r1, r4
+ 5196 19e0 7B19     		adds	r3, r7, r5
+ 5197 19e2 5B18     		adds	r3, r3, r1
+ 5198 19e4 1B68     		ldr	r3, [r3]
+ 5199 19e6 0133     		adds	r3, r3, #1
+ 5200 19e8 7A19     		adds	r2, r7, r5
+ 5201 19ea 5218     		adds	r2, r2, r1
+ 5202 19ec 1360     		str	r3, [r2]
+ 5203              	.L278:
+ 103:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	for (int i = 0; i < sizeof(active_doors)/sizeof(active_doors[0]); i++) //CHRISTMAST LIGHTS FTW
+ 5204              		.loc 4 103 0 is_stmt 0 discriminator 1
+ 5205 19ee 3300     		movs	r3, r6
+ 5206 19f0 5B01     		lsls	r3, r3, #5
+ 5207 19f2 5A09     		lsrs	r2, r3, #5
+ 5208 19f4 304B     		ldr	r3, .L299+28
+ 5209 19f6 1821     		movs	r1, #24
+ 5210 19f8 8C46     		mov	ip, r1
+ 5211 19fa BC44     		add	ip, ip, r7
+ 5212 19fc 6344     		add	r3, r3, ip
+ 5213 19fe 1B68     		ldr	r3, [r3]
+ 5214 1a00 9A42     		cmp	r2, r3
+ 5215 1a02 CFD8     		bhi	.L279
+ 5216              	.LBE8:
+ 106:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	}
+ 107:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	delay(3000);
+ 5217              		.loc 4 107 0 is_stmt 1
+ 5218 1a04 2D4B     		ldr	r3, .L299+32
+ 5219 1a06 1800     		movs	r0, r3
+ 5220 1a08 FFF7FEFF 		bl	delay
+ 5221              	.LBB9:
+ 108:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	for (int i = 0; i < sizeof(active_doors)/sizeof(active_doors[0]); i++) //CHRISTMAST LIGHTS FTW
+ 5222              		.loc 4 108 0
+ 5223 1a0c 0023     		movs	r3, #0
+ 5224 1a0e FE22     		movs	r2, #254
+ 5225 1a10 D200     		lsls	r2, r2, #3
+ 5226 1a12 1821     		movs	r1, #24
+ 5227 1a14 8C46     		mov	ip, r1
+ 5228 1a16 BC44     		add	ip, ip, r7
+ 5229 1a18 6244     		add	r2, r2, ip
+ 5230 1a1a 1360     		str	r3, [r2]
+ 5231 1a1c 25E0     		b	.L280
+ 5232              	.L281:
+ 109:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	{
+ 110:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		GPIO_ResetBits(active_doors[i].GPIO_type, active_doors[i].GPIO_lamp);
+ 5233              		.loc 4 110 0 discriminator 3
+ 5234 1a1e FC24     		movs	r4, #252
+ 5235 1a20 E400     		lsls	r4, r4, #3
+ 5236 1a22 1825     		movs	r5, #24
+ 5237 1a24 7B19     		adds	r3, r7, r5
+ 5238 1a26 1B19     		adds	r3, r3, r4
+ 5239 1a28 1A68     		ldr	r2, [r3]
+ 5240 1a2a FE21     		movs	r1, #254
+ 5241 1a2c C900     		lsls	r1, r1, #3
+ 5242 1a2e 7B19     		adds	r3, r7, r5
+ 5243 1a30 5B18     		adds	r3, r3, r1
+ 5244 1a32 1B68     		ldr	r3, [r3]
+ 5245 1a34 5B01     		lsls	r3, r3, #5
+ 5246 1a36 D318     		adds	r3, r2, r3
+ 5247 1a38 1C33     		adds	r3, r3, #28
+ 5248 1a3a 1868     		ldr	r0, [r3]
+ 5249 1a3c 7B19     		adds	r3, r7, r5
+ 5250 1a3e 1B19     		adds	r3, r3, r4
+ 5251 1a40 1A68     		ldr	r2, [r3]
+ 5252 1a42 0C00     		movs	r4, r1
+ 5253 1a44 7B19     		adds	r3, r7, r5
+ 5254 1a46 5B18     		adds	r3, r3, r1
+ 5255 1a48 1B68     		ldr	r3, [r3]
+ 5256 1a4a 5B01     		lsls	r3, r3, #5
+ 5257 1a4c D318     		adds	r3, r2, r3
+ 5258 1a4e 1033     		adds	r3, r3, #16
+ 5259 1a50 1B68     		ldr	r3, [r3]
+ 5260 1a52 9BB2     		uxth	r3, r3
+ 5261 1a54 1900     		movs	r1, r3
+ 5262 1a56 FFF7FEFF 		bl	GPIO_ResetBits
+ 108:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	for (int i = 0; i < sizeof(active_doors)/sizeof(active_doors[0]); i++) //CHRISTMAST LIGHTS FTW
+ 5263              		.loc 4 108 0 discriminator 3
+ 5264 1a5a 2100     		movs	r1, r4
+ 5265 1a5c 7B19     		adds	r3, r7, r5
+ 5266 1a5e 5B18     		adds	r3, r3, r1
+ 5267 1a60 1B68     		ldr	r3, [r3]
+ 5268 1a62 0133     		adds	r3, r3, #1
+ 5269 1a64 7A19     		adds	r2, r7, r5
+ 5270 1a66 5218     		adds	r2, r2, r1
+ 5271 1a68 1360     		str	r3, [r2]
+ 5272              	.L280:
+ 108:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	for (int i = 0; i < sizeof(active_doors)/sizeof(active_doors[0]); i++) //CHRISTMAST LIGHTS FTW
+ 5273              		.loc 4 108 0 is_stmt 0 discriminator 1
+ 5274 1a6a 3300     		movs	r3, r6
+ 5275 1a6c 5B01     		lsls	r3, r3, #5
+ 5276 1a6e 5A09     		lsrs	r2, r3, #5
+ 5277 1a70 FE23     		movs	r3, #254
+ 5278 1a72 DB00     		lsls	r3, r3, #3
+ 5279 1a74 1821     		movs	r1, #24
+ 5280 1a76 8C46     		mov	ip, r1
+ 5281 1a78 BC44     		add	ip, ip, r7
+ 5282 1a7a 6344     		add	r3, r3, ip
+ 5283 1a7c 1B68     		ldr	r3, [r3]
+ 5284 1a7e 9A42     		cmp	r2, r3
+ 5285 1a80 CDD8     		bhi	.L281
+ 5286              	.LBE9:
+ 111:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	}
+ 112:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	
+ 113:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 
+ 114:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	GPIO_SetBits(GPIOB, GPIO_Pin_2);
+ 5287              		.loc 4 114 0 is_stmt 1
+ 5288 1a82 0F4B     		ldr	r3, .L299+36
+ 5289 1a84 0421     		movs	r1, #4
+ 5290 1a86 1800     		movs	r0, r3
+ 5291 1a88 FFF7FEFF 		bl	GPIO_SetBits
+ 5292              	.L293:
+ 5293              	.LBB10:
+ 115:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	//active_doors[2].controlbits |= 4;
+ 116:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	while (1)
+ 117:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 	{
+ 118:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		for (int i = 0; i < sizeof(active_doors)/sizeof(active_doors[0]); i++)
+ 5294              		.loc 4 118 0
+ 5295 1a8c 0023     		movs	r3, #0
+ 5296 1a8e 0D4A     		ldr	r2, .L299+40
+ 5297 1a90 1821     		movs	r1, #24
+ 5298 1a92 8C46     		mov	ip, r1
+ 5299 1a94 BC44     		add	ip, ip, r7
+ 5300 1a96 6244     		add	r2, r2, ip
+ 5301 1a98 1360     		str	r3, [r2]
+ 5302 1a9a AAE1     		b	.L282
+ 5303              	.L300:
+ 5304              		.align	2
+ 5305              	.L299:
+ 5306 1a9c 00000000 		.word	GPIO_Ports
+ 5307 1aa0 04080000 		.word	2052
+ 5308 1aa4 00000000 		.word	GPIO_Pins
+ 5309 1aa8 E8F7FFFF 		.word	-2072
+ 5310 1aac 18080000 		.word	2072
+ 5311 1ab0 08080000 		.word	2056
+ 5312 1ab4 FC070000 		.word	2044
+ 5313 1ab8 F4070000 		.word	2036
+ 5314 1abc B80B0000 		.word	3000
+ 5315 1ac0 00040240 		.word	1073873920
+ 5316 1ac4 EC070000 		.word	2028
+ 5317              	.L292:
+ 119:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		{
+ 120:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 			if (!(active_doors[i].controlbits & 4))
+ 5318              		.loc 4 120 0
+ 5319 1ac8 FC23     		movs	r3, #252
+ 5320 1aca DB00     		lsls	r3, r3, #3
+ 5321 1acc 1822     		movs	r2, #24
+ 5322 1ace 9446     		mov	ip, r2
+ 5323 1ad0 BC44     		add	ip, ip, r7
+ 5324 1ad2 6344     		add	r3, r3, ip
+ 5325 1ad4 1A68     		ldr	r2, [r3]
+ 5326 1ad6 CD4B     		ldr	r3, .L301
+ 5327 1ad8 1821     		movs	r1, #24
+ 5328 1ada 8C46     		mov	ip, r1
+ 5329 1adc BC44     		add	ip, ip, r7
+ 5330 1ade 6344     		add	r3, r3, ip
+ 5331 1ae0 1B68     		ldr	r3, [r3]
+ 5332 1ae2 5B01     		lsls	r3, r3, #5
+ 5333 1ae4 D318     		adds	r3, r2, r3
+ 5334 1ae6 0433     		adds	r3, r3, #4
+ 5335 1ae8 1B68     		ldr	r3, [r3]
+ 5336 1aea 0422     		movs	r2, #4
+ 5337 1aec 1340     		ands	r3, r2
+ 5338 1aee 00D0     		beq	.LCB4871
+ 5339 1af0 74E1     		b	.L283	@long jump
+ 5340              	.LCB4871:
+ 121:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 				{
+ 122:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 				if (!GPIO_ReadInputDataBit(active_doors[i].GPIO_type, active_doors[i].GPIO_read)){ //GPIO pinne
+ 5341              		.loc 4 122 0
+ 5342 1af2 FC21     		movs	r1, #252
+ 5343 1af4 C900     		lsls	r1, r1, #3
+ 5344 1af6 1825     		movs	r5, #24
+ 5345 1af8 7B19     		adds	r3, r7, r5
+ 5346 1afa 5B18     		adds	r3, r3, r1
+ 5347 1afc 1A68     		ldr	r2, [r3]
+ 5348 1afe C34C     		ldr	r4, .L301
+ 5349 1b00 7B19     		adds	r3, r7, r5
+ 5350 1b02 1B19     		adds	r3, r3, r4
+ 5351 1b04 1B68     		ldr	r3, [r3]
+ 5352 1b06 5B01     		lsls	r3, r3, #5
+ 5353 1b08 D318     		adds	r3, r2, r3
+ 5354 1b0a 1C33     		adds	r3, r3, #28
+ 5355 1b0c 1868     		ldr	r0, [r3]
+ 5356 1b0e 7B19     		adds	r3, r7, r5
+ 5357 1b10 5B18     		adds	r3, r3, r1
+ 5358 1b12 1A68     		ldr	r2, [r3]
+ 5359 1b14 7B19     		adds	r3, r7, r5
+ 5360 1b16 1B19     		adds	r3, r3, r4
+ 5361 1b18 1B68     		ldr	r3, [r3]
+ 5362 1b1a 5B01     		lsls	r3, r3, #5
+ 5363 1b1c D318     		adds	r3, r2, r3
+ 5364 1b1e 1433     		adds	r3, r3, #20
+ 5365 1b20 1B68     		ldr	r3, [r3]
+ 5366 1b22 9BB2     		uxth	r3, r3
+ 5367 1b24 1900     		movs	r1, r3
+ 5368 1b26 FFF7FEFF 		bl	GPIO_ReadInputDataBit
+ 5369 1b2a 031E     		subs	r3, r0, #0
+ 5370 1b2c 1AD1     		bne	.L284
+ 123:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 					active_doors[i].controlbits &= 0xFFFC; //Nollställer kontrollbiten för ifall en dörr är ö
+ 5371              		.loc 4 123 0
+ 5372 1b2e FC21     		movs	r1, #252
+ 5373 1b30 C900     		lsls	r1, r1, #3
+ 5374 1b32 1824     		movs	r4, #24
+ 5375 1b34 3B19     		adds	r3, r7, r4
+ 5376 1b36 5B18     		adds	r3, r3, r1
+ 5377 1b38 1A68     		ldr	r2, [r3]
+ 5378 1b3a B448     		ldr	r0, .L301
+ 5379 1b3c 3B19     		adds	r3, r7, r4
+ 5380 1b3e 1B18     		adds	r3, r3, r0
+ 5381 1b40 1B68     		ldr	r3, [r3]
+ 5382 1b42 5B01     		lsls	r3, r3, #5
+ 5383 1b44 D318     		adds	r3, r2, r3
+ 5384 1b46 0433     		adds	r3, r3, #4
+ 5385 1b48 1B68     		ldr	r3, [r3]
+ 5386 1b4a B14A     		ldr	r2, .L301+4
+ 5387 1b4c 1A40     		ands	r2, r3
+ 5388 1b4e 3B19     		adds	r3, r7, r4
+ 5389 1b50 5B18     		adds	r3, r3, r1
+ 5390 1b52 1968     		ldr	r1, [r3]
+ 5391 1b54 3B19     		adds	r3, r7, r4
+ 5392 1b56 1B18     		adds	r3, r3, r0
+ 5393 1b58 1B68     		ldr	r3, [r3]
+ 5394 1b5a 5B01     		lsls	r3, r3, #5
+ 5395 1b5c CB18     		adds	r3, r1, r3
+ 5396 1b5e 0433     		adds	r3, r3, #4
+ 5397 1b60 1A60     		str	r2, [r3]
+ 5398 1b62 40E0     		b	.L285
+ 5399              	.L284:
+ 124:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 					//att skicka medelande till centralenheten, när den detekteras som stängd
+ 125:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 					
+ 126:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 				}
+ 127:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 				else{
+ 128:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 					if (!active_doors[i].controlbits & 1) // Kollar så att dörren inte larmar sen innan så larm
+ 5400              		.loc 4 128 0
+ 5401 1b64 FC23     		movs	r3, #252
+ 5402 1b66 DB00     		lsls	r3, r3, #3
+ 5403 1b68 1822     		movs	r2, #24
+ 5404 1b6a 9446     		mov	ip, r2
+ 5405 1b6c BC44     		add	ip, ip, r7
+ 5406 1b6e 6344     		add	r3, r3, ip
+ 5407 1b70 1A68     		ldr	r2, [r3]
+ 5408 1b72 A64B     		ldr	r3, .L301
+ 5409 1b74 1821     		movs	r1, #24
+ 5410 1b76 8C46     		mov	ip, r1
+ 5411 1b78 BC44     		add	ip, ip, r7
+ 5412 1b7a 6344     		add	r3, r3, ip
+ 5413 1b7c 1B68     		ldr	r3, [r3]
+ 5414 1b7e 5B01     		lsls	r3, r3, #5
+ 5415 1b80 D318     		adds	r3, r2, r3
+ 5416 1b82 0433     		adds	r3, r3, #4
+ 5417 1b84 1B68     		ldr	r3, [r3]
+ 5418 1b86 002B     		cmp	r3, #0
+ 5419 1b88 13D1     		bne	.L286
+ 129:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 					{
+ 130:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 						active_doors[i].larmTick = msTicks;
+ 5420              		.loc 4 130 0
+ 5421 1b8a A24B     		ldr	r3, .L301+8
+ 5422 1b8c 1B68     		ldr	r3, [r3]
+ 5423 1b8e 1900     		movs	r1, r3
+ 5424 1b90 FC23     		movs	r3, #252
+ 5425 1b92 DB00     		lsls	r3, r3, #3
+ 5426 1b94 1822     		movs	r2, #24
+ 5427 1b96 9446     		mov	ip, r2
+ 5428 1b98 BC44     		add	ip, ip, r7
+ 5429 1b9a 6344     		add	r3, r3, ip
+ 5430 1b9c 1A68     		ldr	r2, [r3]
+ 5431 1b9e 9B4B     		ldr	r3, .L301
+ 5432 1ba0 1820     		movs	r0, #24
+ 5433 1ba2 8446     		mov	ip, r0
+ 5434 1ba4 BC44     		add	ip, ip, r7
+ 5435 1ba6 6344     		add	r3, r3, ip
+ 5436 1ba8 1B68     		ldr	r3, [r3]
+ 5437 1baa 5B01     		lsls	r3, r3, #5
+ 5438 1bac D318     		adds	r3, r2, r3
+ 5439 1bae 1833     		adds	r3, r3, #24
+ 5440 1bb0 1960     		str	r1, [r3]
+ 5441              	.L286:
+ 131:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 					}
+ 132:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 					active_doors[i].controlbits |= 1; // sätter dörrens larm kontrollbit till 1.
+ 5442              		.loc 4 132 0
+ 5443 1bb2 FC21     		movs	r1, #252
+ 5444 1bb4 C900     		lsls	r1, r1, #3
+ 5445 1bb6 1824     		movs	r4, #24
+ 5446 1bb8 3B19     		adds	r3, r7, r4
+ 5447 1bba 5B18     		adds	r3, r3, r1
+ 5448 1bbc 1A68     		ldr	r2, [r3]
+ 5449 1bbe 9348     		ldr	r0, .L301
+ 5450 1bc0 3B19     		adds	r3, r7, r4
+ 5451 1bc2 1B18     		adds	r3, r3, r0
+ 5452 1bc4 1B68     		ldr	r3, [r3]
+ 5453 1bc6 5B01     		lsls	r3, r3, #5
+ 5454 1bc8 D318     		adds	r3, r2, r3
+ 5455 1bca 0433     		adds	r3, r3, #4
+ 5456 1bcc 1B68     		ldr	r3, [r3]
+ 5457 1bce 0122     		movs	r2, #1
+ 5458 1bd0 1A43     		orrs	r2, r3
+ 5459 1bd2 3B19     		adds	r3, r7, r4
+ 5460 1bd4 5B18     		adds	r3, r3, r1
+ 5461 1bd6 1968     		ldr	r1, [r3]
+ 5462 1bd8 3B19     		adds	r3, r7, r4
+ 5463 1bda 1B18     		adds	r3, r3, r0
+ 5464 1bdc 1B68     		ldr	r3, [r3]
+ 5465 1bde 5B01     		lsls	r3, r3, #5
+ 5466 1be0 CB18     		adds	r3, r1, r3
+ 5467 1be2 0433     		adds	r3, r3, #4
+ 5468 1be4 1A60     		str	r2, [r3]
+ 5469              	.L285:
+ 5470              	.LBB11:
+ 133:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 				}
+ 134:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 				for (int i = 0; i < sizeof(active_doors)/sizeof(active_doors[0]); i++)
+ 5471              		.loc 4 134 0
+ 5472 1be6 0023     		movs	r3, #0
+ 5473 1be8 FD22     		movs	r2, #253
+ 5474 1bea D200     		lsls	r2, r2, #3
+ 5475 1bec 1821     		movs	r1, #24
+ 5476 1bee 8C46     		mov	ip, r1
+ 5477 1bf0 BC44     		add	ip, ip, r7
+ 5478 1bf2 6244     		add	r2, r2, ip
+ 5479 1bf4 1360     		str	r3, [r2]
+ 5480 1bf6 E4E0     		b	.L287
+ 5481              	.L291:
+ 135:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 				{
+ 136:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 					if (active_doors[i].controlbits & 1 && msTicks > (active_doors[i].larmTick + 1000 * 10 * activ
+ 5482              		.loc 4 136 0
+ 5483 1bf8 FC23     		movs	r3, #252
+ 5484 1bfa DB00     		lsls	r3, r3, #3
+ 5485 1bfc 1822     		movs	r2, #24
+ 5486 1bfe 9446     		mov	ip, r2
+ 5487 1c00 BC44     		add	ip, ip, r7
+ 5488 1c02 6344     		add	r3, r3, ip
+ 5489 1c04 1A68     		ldr	r2, [r3]
+ 5490 1c06 FD23     		movs	r3, #253
+ 5491 1c08 DB00     		lsls	r3, r3, #3
+ 5492 1c0a 1821     		movs	r1, #24
+ 5493 1c0c 8C46     		mov	ip, r1
+ 5494 1c0e BC44     		add	ip, ip, r7
+ 5495 1c10 6344     		add	r3, r3, ip
+ 5496 1c12 1B68     		ldr	r3, [r3]
+ 5497 1c14 5B01     		lsls	r3, r3, #5
+ 5498 1c16 D318     		adds	r3, r2, r3
+ 5499 1c18 0433     		adds	r3, r3, #4
+ 5500 1c1a 1B68     		ldr	r3, [r3]
+ 5501 1c1c 0122     		movs	r2, #1
+ 5502 1c1e 1340     		ands	r3, r2
+ 5503 1c20 3FD0     		beq	.L288
+ 5504              		.loc 4 136 0 is_stmt 0 discriminator 1
+ 5505 1c22 FC21     		movs	r1, #252
+ 5506 1c24 C900     		lsls	r1, r1, #3
+ 5507 1c26 1824     		movs	r4, #24
+ 5508 1c28 3B19     		adds	r3, r7, r4
+ 5509 1c2a 5B18     		adds	r3, r3, r1
+ 5510 1c2c 1A68     		ldr	r2, [r3]
+ 5511 1c2e FD20     		movs	r0, #253
+ 5512 1c30 C000     		lsls	r0, r0, #3
+ 5513 1c32 3B19     		adds	r3, r7, r4
+ 5514 1c34 1B18     		adds	r3, r3, r0
+ 5515 1c36 1B68     		ldr	r3, [r3]
+ 5516 1c38 5B01     		lsls	r3, r3, #5
+ 5517 1c3a D318     		adds	r3, r2, r3
+ 5518 1c3c 1833     		adds	r3, r3, #24
+ 5519 1c3e 1A68     		ldr	r2, [r3]
+ 5520 1c40 3B19     		adds	r3, r7, r4
+ 5521 1c42 5B18     		adds	r3, r3, r1
+ 5522 1c44 1968     		ldr	r1, [r3]
+ 5523 1c46 3B19     		adds	r3, r7, r4
+ 5524 1c48 1B18     		adds	r3, r3, r0
+ 5525 1c4a 1B68     		ldr	r3, [r3]
+ 5526 1c4c 5B01     		lsls	r3, r3, #5
+ 5527 1c4e CB18     		adds	r3, r1, r3
+ 5528 1c50 0833     		adds	r3, r3, #8
+ 5529 1c52 1B78     		ldrb	r3, [r3]
+ 5530 1c54 1900     		movs	r1, r3
+ 5531 1c56 704B     		ldr	r3, .L301+12
+ 5532 1c58 4B43     		muls	r3, r1
+ 5533 1c5a D318     		adds	r3, r2, r3
+ 5534 1c5c 1A00     		movs	r2, r3
+ 5535 1c5e 6D4B     		ldr	r3, .L301+8
+ 5536 1c60 1B68     		ldr	r3, [r3]
+ 5537 1c62 9A42     		cmp	r2, r3
+ 5538 1c64 1DD2     		bcs	.L288
+ 137:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 					{
+ 138:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 						GPIO_SetBits(active_doors[i].GPIO_type, active_doors[i].GPIO_lamp); // tänder lampan ifall t
+ 5539              		.loc 4 138 0 is_stmt 1
+ 5540 1c66 FC21     		movs	r1, #252
+ 5541 1c68 C900     		lsls	r1, r1, #3
+ 5542 1c6a 1825     		movs	r5, #24
+ 5543 1c6c 7B19     		adds	r3, r7, r5
+ 5544 1c6e 5B18     		adds	r3, r3, r1
+ 5545 1c70 1A68     		ldr	r2, [r3]
+ 5546 1c72 FD24     		movs	r4, #253
+ 5547 1c74 E400     		lsls	r4, r4, #3
+ 5548 1c76 7B19     		adds	r3, r7, r5
+ 5549 1c78 1B19     		adds	r3, r3, r4
+ 5550 1c7a 1B68     		ldr	r3, [r3]
+ 5551 1c7c 5B01     		lsls	r3, r3, #5
+ 5552 1c7e D318     		adds	r3, r2, r3
+ 5553 1c80 1C33     		adds	r3, r3, #28
+ 5554 1c82 1868     		ldr	r0, [r3]
+ 5555 1c84 7B19     		adds	r3, r7, r5
+ 5556 1c86 5B18     		adds	r3, r3, r1
+ 5557 1c88 1A68     		ldr	r2, [r3]
+ 5558 1c8a 7B19     		adds	r3, r7, r5
+ 5559 1c8c 1B19     		adds	r3, r3, r4
+ 5560 1c8e 1B68     		ldr	r3, [r3]
+ 5561 1c90 5B01     		lsls	r3, r3, #5
+ 5562 1c92 D318     		adds	r3, r2, r3
+ 5563 1c94 1033     		adds	r3, r3, #16
+ 5564 1c96 1B68     		ldr	r3, [r3]
+ 5565 1c98 9BB2     		uxth	r3, r3
+ 5566 1c9a 1900     		movs	r1, r3
+ 5567 1c9c FFF7FEFF 		bl	GPIO_SetBits
+ 5568 1ca0 1CE0     		b	.L289
+ 5569              	.L288:
+ 139:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 					}
+ 140:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 					else
+ 141:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 					{
+ 142:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 						GPIO_ResetBits(active_doors[i].GPIO_type, active_doors[i].GPIO_lamp);	// släcker lampan anna
+ 5570              		.loc 4 142 0
+ 5571 1ca2 FC21     		movs	r1, #252
+ 5572 1ca4 C900     		lsls	r1, r1, #3
+ 5573 1ca6 1825     		movs	r5, #24
+ 5574 1ca8 7B19     		adds	r3, r7, r5
+ 5575 1caa 5B18     		adds	r3, r3, r1
+ 5576 1cac 1A68     		ldr	r2, [r3]
+ 5577 1cae FD24     		movs	r4, #253
+ 5578 1cb0 E400     		lsls	r4, r4, #3
+ 5579 1cb2 7B19     		adds	r3, r7, r5
+ 5580 1cb4 1B19     		adds	r3, r3, r4
+ 5581 1cb6 1B68     		ldr	r3, [r3]
+ 5582 1cb8 5B01     		lsls	r3, r3, #5
+ 5583 1cba D318     		adds	r3, r2, r3
+ 5584 1cbc 1C33     		adds	r3, r3, #28
+ 5585 1cbe 1868     		ldr	r0, [r3]
+ 5586 1cc0 7B19     		adds	r3, r7, r5
+ 5587 1cc2 5B18     		adds	r3, r3, r1
+ 5588 1cc4 1A68     		ldr	r2, [r3]
  5589 1cc6 7B19     		adds	r3, r7, r5
- 5590 1cc8 5B18     		adds	r3, r3, r1
- 5591 1cca 1A68     		ldr	r2, [r3]
- 5592 1ccc FD24     		movs	r4, #253
- 5593 1cce E400     		lsls	r4, r4, #3
- 5594 1cd0 7B19     		adds	r3, r7, r5
- 5595 1cd2 1B19     		adds	r3, r3, r4
- 5596 1cd4 1B68     		ldr	r3, [r3]
- 5597 1cd6 5B01     		lsls	r3, r3, #5
- 5598 1cd8 D318     		adds	r3, r2, r3
- 5599 1cda 1C33     		adds	r3, r3, #28
- 5600 1cdc 1868     		ldr	r0, [r3]
- 5601 1cde 7B19     		adds	r3, r7, r5
- 5602 1ce0 5B18     		adds	r3, r3, r1
- 5603 1ce2 1A68     		ldr	r2, [r3]
- 5604 1ce4 7B19     		adds	r3, r7, r5
- 5605 1ce6 1B19     		adds	r3, r3, r4
- 5606 1ce8 1B68     		ldr	r3, [r3]
- 5607 1cea 5B01     		lsls	r3, r3, #5
- 5608 1cec D318     		adds	r3, r2, r3
- 5609 1cee 1033     		adds	r3, r3, #16
- 5610 1cf0 1B68     		ldr	r3, [r3]
- 5611 1cf2 9BB2     		uxth	r3, r3
- 5612 1cf4 1900     		movs	r1, r3
- 5613 1cf6 FFF7FEFF 		bl	GPIO_SetBits
- 5614 1cfa 1CE0     		b	.L289
- 5615              	.L288:
- 142:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 					}
- 143:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 					else
- 144:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 					{
- 145:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 						GPIO_ResetBits(active_doors[i].GPIO_type, active_doors[i].GPIO_lamp);	// släcker lampan anna
- 5616              		.loc 4 145 0
- 5617 1cfc FC21     		movs	r1, #252
- 5618 1cfe C900     		lsls	r1, r1, #3
- 5619 1d00 1825     		movs	r5, #24
- 5620 1d02 7B19     		adds	r3, r7, r5
- 5621 1d04 5B18     		adds	r3, r3, r1
- 5622 1d06 1A68     		ldr	r2, [r3]
- 5623 1d08 FD24     		movs	r4, #253
- 5624 1d0a E400     		lsls	r4, r4, #3
- 5625 1d0c 7B19     		adds	r3, r7, r5
- 5626 1d0e 1B19     		adds	r3, r3, r4
- 5627 1d10 1B68     		ldr	r3, [r3]
- 5628 1d12 5B01     		lsls	r3, r3, #5
- 5629 1d14 D318     		adds	r3, r2, r3
- 5630 1d16 1C33     		adds	r3, r3, #28
- 5631 1d18 1868     		ldr	r0, [r3]
- 5632 1d1a 7B19     		adds	r3, r7, r5
- 5633 1d1c 5B18     		adds	r3, r3, r1
- 5634 1d1e 1A68     		ldr	r2, [r3]
- 5635 1d20 7B19     		adds	r3, r7, r5
- 5636 1d22 1B19     		adds	r3, r3, r4
- 5637 1d24 1B68     		ldr	r3, [r3]
- 5638 1d26 5B01     		lsls	r3, r3, #5
- 5639 1d28 D318     		adds	r3, r2, r3
- 5640 1d2a 1033     		adds	r3, r3, #16
- 5641 1d2c 1B68     		ldr	r3, [r3]
- 5642 1d2e 9BB2     		uxth	r3, r3
- 5643 1d30 1900     		movs	r1, r3
- 5644 1d32 FFF7FEFF 		bl	GPIO_ResetBits
- 5645              	.L289:
- 146:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 					}
- 147:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 					if (active_doors[i].controlbits & 1 && msTicks > (active_doors[i].larmTick + 1000 * 10 * activ
- 5646              		.loc 4 147 0
- 5647 1d36 FC23     		movs	r3, #252
- 5648 1d38 DB00     		lsls	r3, r3, #3
- 5649 1d3a 1822     		movs	r2, #24
- 5650 1d3c 9446     		mov	ip, r2
- 5651 1d3e BC44     		add	ip, ip, r7
- 5652 1d40 6344     		add	r3, r3, ip
- 5653 1d42 1A68     		ldr	r2, [r3]
- 5654 1d44 FD23     		movs	r3, #253
- 5655 1d46 DB00     		lsls	r3, r3, #3
- 5656 1d48 1821     		movs	r1, #24
- 5657 1d4a 8C46     		mov	ip, r1
- 5658 1d4c BC44     		add	ip, ip, r7
- 5659 1d4e 6344     		add	r3, r3, ip
- 5660 1d50 1B68     		ldr	r3, [r3]
- 5661 1d52 5B01     		lsls	r3, r3, #5
- 5662 1d54 D318     		adds	r3, r2, r3
- 5663 1d56 0433     		adds	r3, r3, #4
- 5664 1d58 1B68     		ldr	r3, [r3]
- 5665 1d5a 0122     		movs	r2, #1
- 5666 1d5c 1340     		ands	r3, r2
- 5667 1d5e 51D0     		beq	.L290
- 5668              		.loc 4 147 0 is_stmt 0 discriminator 1
- 5669 1d60 FC21     		movs	r1, #252
- 5670 1d62 C900     		lsls	r1, r1, #3
- 5671 1d64 1824     		movs	r4, #24
- 5672 1d66 3B19     		adds	r3, r7, r4
- 5673 1d68 5B18     		adds	r3, r3, r1
- 5674 1d6a 1A68     		ldr	r2, [r3]
- 5675 1d6c FD20     		movs	r0, #253
- 5676 1d6e C000     		lsls	r0, r0, #3
- 5677 1d70 3B19     		adds	r3, r7, r4
- 5678 1d72 1B18     		adds	r3, r3, r0
- 5679 1d74 1B68     		ldr	r3, [r3]
- 5680 1d76 5B01     		lsls	r3, r3, #5
- 5681 1d78 D318     		adds	r3, r2, r3
- 5682 1d7a 1833     		adds	r3, r3, #24
- 5683 1d7c 1A68     		ldr	r2, [r3]
- 5684 1d7e 3B19     		adds	r3, r7, r4
- 5685 1d80 5B18     		adds	r3, r3, r1
- 5686 1d82 1968     		ldr	r1, [r3]
- 5687 1d84 3B19     		adds	r3, r7, r4
- 5688 1d86 1B18     		adds	r3, r3, r0
- 5689 1d88 1B68     		ldr	r3, [r3]
- 5690 1d8a 5B01     		lsls	r3, r3, #5
- 5691 1d8c CB18     		adds	r3, r1, r3
- 5692 1d8e 0933     		adds	r3, r3, #9
- 5693 1d90 1B78     		ldrb	r3, [r3]
- 5694 1d92 1900     		movs	r1, r3
- 5695 1d94 384B     		ldr	r3, .L301+16
- 5696 1d96 4B43     		muls	r3, r1
- 5697 1d98 D318     		adds	r3, r2, r3
- 5698 1d9a 1A00     		movs	r2, r3
- 5699 1d9c 354B     		ldr	r3, .L301+12
- 5700 1d9e 1B68     		ldr	r3, [r3]
- 5701 1da0 9A42     		cmp	r2, r3
- 5702 1da2 2FD2     		bcs	.L290
- 5703              		.loc 4 147 0 discriminator 2
- 5704 1da4 FC23     		movs	r3, #252
- 5705 1da6 DB00     		lsls	r3, r3, #3
- 5706 1da8 1822     		movs	r2, #24
- 5707 1daa 9446     		mov	ip, r2
- 5708 1dac BC44     		add	ip, ip, r7
- 5709 1dae 6344     		add	r3, r3, ip
- 5710 1db0 1A68     		ldr	r2, [r3]
- 5711 1db2 FD23     		movs	r3, #253
- 5712 1db4 DB00     		lsls	r3, r3, #3
- 5713 1db6 1821     		movs	r1, #24
- 5714 1db8 8C46     		mov	ip, r1
- 5715 1dba BC44     		add	ip, ip, r7
- 5716 1dbc 6344     		add	r3, r3, ip
- 5717 1dbe 1B68     		ldr	r3, [r3]
- 5718 1dc0 5B01     		lsls	r3, r3, #5
- 5719 1dc2 D318     		adds	r3, r2, r3
- 5720 1dc4 0433     		adds	r3, r3, #4
- 5721 1dc6 1B68     		ldr	r3, [r3]
- 5722 1dc8 0222     		movs	r2, #2
- 5723 1dca 1340     		ands	r3, r2
- 5724 1dcc 1AD0     		beq	.L290
- 148:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 					{
- 149:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 						active_doors[i].controlbits |= 2;
- 5725              		.loc 4 149 0 is_stmt 1
- 5726 1dce FC21     		movs	r1, #252
- 5727 1dd0 C900     		lsls	r1, r1, #3
- 5728 1dd2 1824     		movs	r4, #24
- 5729 1dd4 3B19     		adds	r3, r7, r4
- 5730 1dd6 5B18     		adds	r3, r3, r1
- 5731 1dd8 1A68     		ldr	r2, [r3]
- 5732 1dda FD20     		movs	r0, #253
- 5733 1ddc C000     		lsls	r0, r0, #3
- 5734 1dde 3B19     		adds	r3, r7, r4
- 5735 1de0 1B18     		adds	r3, r3, r0
- 5736 1de2 1B68     		ldr	r3, [r3]
- 5737 1de4 5B01     		lsls	r3, r3, #5
- 5738 1de6 D318     		adds	r3, r2, r3
- 5739 1de8 0433     		adds	r3, r3, #4
- 5740 1dea 1B68     		ldr	r3, [r3]
- 5741 1dec 0222     		movs	r2, #2
- 5742 1dee 1A43     		orrs	r2, r3
- 5743 1df0 3B19     		adds	r3, r7, r4
- 5744 1df2 5B18     		adds	r3, r3, r1
- 5745 1df4 1968     		ldr	r1, [r3]
- 5746 1df6 3B19     		adds	r3, r7, r4
- 5747 1df8 1B18     		adds	r3, r3, r0
- 5748 1dfa 1B68     		ldr	r3, [r3]
- 5749 1dfc 5B01     		lsls	r3, r3, #5
- 5750 1dfe CB18     		adds	r3, r1, r3
- 5751 1e00 0433     		adds	r3, r3, #4
- 5752 1e02 1A60     		str	r2, [r3]
- 5753              	.L290:
- 137:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 				{
- 5754              		.loc 4 137 0 discriminator 2
- 5755 1e04 FD22     		movs	r2, #253
- 5756 1e06 D200     		lsls	r2, r2, #3
- 5757 1e08 1823     		movs	r3, #24
- 5758 1e0a FB18     		adds	r3, r7, r3
- 5759 1e0c 9B18     		adds	r3, r3, r2
- 5760 1e0e 1B68     		ldr	r3, [r3]
- 5761 1e10 0133     		adds	r3, r3, #1
- 5762 1e12 1821     		movs	r1, #24
- 5763 1e14 8C46     		mov	ip, r1
- 5764 1e16 BC44     		add	ip, ip, r7
- 5765 1e18 6244     		add	r2, r2, ip
- 5766 1e1a 1360     		str	r3, [r2]
- 5767              	.L287:
- 137:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 				{
- 5768              		.loc 4 137 0 is_stmt 0 discriminator 1
- 5769 1e1c 3300     		movs	r3, r6
- 5770 1e1e 5B01     		lsls	r3, r3, #5
- 5771 1e20 5A09     		lsrs	r2, r3, #5
- 5772 1e22 FD23     		movs	r3, #253
- 5773 1e24 DB00     		lsls	r3, r3, #3
- 5774 1e26 1821     		movs	r1, #24
- 5775 1e28 8C46     		mov	ip, r1
- 5776 1e2a BC44     		add	ip, ip, r7
- 5777 1e2c 6344     		add	r3, r3, ip
- 5778 1e2e 1B68     		ldr	r3, [r3]
- 5779 1e30 9A42     		cmp	r2, r3
- 5780 1e32 00D9     		bls	.LCB5369
- 5781 1e34 0DE7     		b	.L291	@long jump
- 5782              	.LCB5369:
- 5783              	.L283:
- 5784              	.LBE11:
- 121:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		{
- 5785              		.loc 4 121 0 is_stmt 1 discriminator 2
- 5786 1e36 0D4A     		ldr	r2, .L301+4
- 5787 1e38 1823     		movs	r3, #24
- 5788 1e3a FB18     		adds	r3, r7, r3
- 5789 1e3c 9B18     		adds	r3, r3, r2
- 5790 1e3e 1B68     		ldr	r3, [r3]
- 5791 1e40 0133     		adds	r3, r3, #1
- 5792 1e42 1821     		movs	r1, #24
- 5793 1e44 8C46     		mov	ip, r1
- 5794 1e46 BC44     		add	ip, ip, r7
- 5795 1e48 6244     		add	r2, r2, ip
- 5796 1e4a 1360     		str	r3, [r2]
- 5797              	.L282:
- 121:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		{
- 5798              		.loc 4 121 0 is_stmt 0 discriminator 1
- 5799 1e4c 3300     		movs	r3, r6
- 5800 1e4e 5B01     		lsls	r3, r3, #5
- 5801 1e50 5A09     		lsrs	r2, r3, #5
- 5802 1e52 064B     		ldr	r3, .L301+4
- 5803 1e54 1821     		movs	r1, #24
- 5804 1e56 8C46     		mov	ip, r1
- 5805 1e58 BC44     		add	ip, ip, r7
- 5806 1e5a 6344     		add	r3, r3, ip
- 5807 1e5c 1B68     		ldr	r3, [r3]
- 5808 1e5e 9A42     		cmp	r2, r3
- 5809 1e60 00D9     		bls	.LCB5396
- 5810 1e62 5EE6     		b	.L292	@long jump
- 5811              	.LCB5396:
- 5812              	.LBE10:
- 121:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		{
- 5813              		.loc 4 121 0
- 5814 1e64 55E6     		b	.L293
- 5815              	.L302:
- 5816 1e66 C046     		.align	2
- 5817              	.L301:
- 5818 1e68 00040240 		.word	1073873920
- 5819 1e6c EC070000 		.word	2028
- 5820 1e70 FCFF0000 		.word	65532
- 5821 1e74 00000000 		.word	msTicks
- 5822 1e78 10270000 		.word	10000
- 5823              		.cfi_endproc
- 5824              	.LFE181:
- 5826              	.Letext0:
- 5827              		.file 5 "../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx.h"
- 5828              		.file 6 "c:\\cseapp\\codelite\\tools\\gcc-arm\\arm-none-eabi\\include\\machine\\_default_types.h"
- 5829              		.file 7 "c:\\cseapp\\codelite\\tools\\gcc-arm\\arm-none-eabi\\include\\sys\\_stdint.h"
- 5830              		.file 8 "../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/inc/system_stm32f4xx.h"
- 5831              		.file 9 "../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_rcc.h"
- 5832              		.file 10 "../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_gpio.h"
- 5833              		.file 11 "C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door/startup.h"
+ 5590 1cc8 1B19     		adds	r3, r3, r4
+ 5591 1cca 1B68     		ldr	r3, [r3]
+ 5592 1ccc 5B01     		lsls	r3, r3, #5
+ 5593 1cce D318     		adds	r3, r2, r3
+ 5594 1cd0 1033     		adds	r3, r3, #16
+ 5595 1cd2 1B68     		ldr	r3, [r3]
+ 5596 1cd4 9BB2     		uxth	r3, r3
+ 5597 1cd6 1900     		movs	r1, r3
+ 5598 1cd8 FFF7FEFF 		bl	GPIO_ResetBits
+ 5599              	.L289:
+ 143:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 					}
+ 144:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 					if (active_doors[i].controlbits & 1 && msTicks > (active_doors[i].larmTick + 1000 * 10 * activ
+ 5600              		.loc 4 144 0
+ 5601 1cdc FC23     		movs	r3, #252
+ 5602 1cde DB00     		lsls	r3, r3, #3
+ 5603 1ce0 1822     		movs	r2, #24
+ 5604 1ce2 9446     		mov	ip, r2
+ 5605 1ce4 BC44     		add	ip, ip, r7
+ 5606 1ce6 6344     		add	r3, r3, ip
+ 5607 1ce8 1A68     		ldr	r2, [r3]
+ 5608 1cea FD23     		movs	r3, #253
+ 5609 1cec DB00     		lsls	r3, r3, #3
+ 5610 1cee 1821     		movs	r1, #24
+ 5611 1cf0 8C46     		mov	ip, r1
+ 5612 1cf2 BC44     		add	ip, ip, r7
+ 5613 1cf4 6344     		add	r3, r3, ip
+ 5614 1cf6 1B68     		ldr	r3, [r3]
+ 5615 1cf8 5B01     		lsls	r3, r3, #5
+ 5616 1cfa D318     		adds	r3, r2, r3
+ 5617 1cfc 0433     		adds	r3, r3, #4
+ 5618 1cfe 1B68     		ldr	r3, [r3]
+ 5619 1d00 0122     		movs	r2, #1
+ 5620 1d02 1340     		ands	r3, r2
+ 5621 1d04 51D0     		beq	.L290
+ 5622              		.loc 4 144 0 is_stmt 0 discriminator 1
+ 5623 1d06 FC21     		movs	r1, #252
+ 5624 1d08 C900     		lsls	r1, r1, #3
+ 5625 1d0a 1824     		movs	r4, #24
+ 5626 1d0c 3B19     		adds	r3, r7, r4
+ 5627 1d0e 5B18     		adds	r3, r3, r1
+ 5628 1d10 1A68     		ldr	r2, [r3]
+ 5629 1d12 FD20     		movs	r0, #253
+ 5630 1d14 C000     		lsls	r0, r0, #3
+ 5631 1d16 3B19     		adds	r3, r7, r4
+ 5632 1d18 1B18     		adds	r3, r3, r0
+ 5633 1d1a 1B68     		ldr	r3, [r3]
+ 5634 1d1c 5B01     		lsls	r3, r3, #5
+ 5635 1d1e D318     		adds	r3, r2, r3
+ 5636 1d20 1833     		adds	r3, r3, #24
+ 5637 1d22 1A68     		ldr	r2, [r3]
+ 5638 1d24 3B19     		adds	r3, r7, r4
+ 5639 1d26 5B18     		adds	r3, r3, r1
+ 5640 1d28 1968     		ldr	r1, [r3]
+ 5641 1d2a 3B19     		adds	r3, r7, r4
+ 5642 1d2c 1B18     		adds	r3, r3, r0
+ 5643 1d2e 1B68     		ldr	r3, [r3]
+ 5644 1d30 5B01     		lsls	r3, r3, #5
+ 5645 1d32 CB18     		adds	r3, r1, r3
+ 5646 1d34 0933     		adds	r3, r3, #9
+ 5647 1d36 1B78     		ldrb	r3, [r3]
+ 5648 1d38 1900     		movs	r1, r3
+ 5649 1d3a 374B     		ldr	r3, .L301+12
+ 5650 1d3c 4B43     		muls	r3, r1
+ 5651 1d3e D318     		adds	r3, r2, r3
+ 5652 1d40 1A00     		movs	r2, r3
+ 5653 1d42 344B     		ldr	r3, .L301+8
+ 5654 1d44 1B68     		ldr	r3, [r3]
+ 5655 1d46 9A42     		cmp	r2, r3
+ 5656 1d48 2FD2     		bcs	.L290
+ 5657              		.loc 4 144 0 discriminator 2
+ 5658 1d4a FC23     		movs	r3, #252
+ 5659 1d4c DB00     		lsls	r3, r3, #3
+ 5660 1d4e 1822     		movs	r2, #24
+ 5661 1d50 9446     		mov	ip, r2
+ 5662 1d52 BC44     		add	ip, ip, r7
+ 5663 1d54 6344     		add	r3, r3, ip
+ 5664 1d56 1A68     		ldr	r2, [r3]
+ 5665 1d58 FD23     		movs	r3, #253
+ 5666 1d5a DB00     		lsls	r3, r3, #3
+ 5667 1d5c 1821     		movs	r1, #24
+ 5668 1d5e 8C46     		mov	ip, r1
+ 5669 1d60 BC44     		add	ip, ip, r7
+ 5670 1d62 6344     		add	r3, r3, ip
+ 5671 1d64 1B68     		ldr	r3, [r3]
+ 5672 1d66 5B01     		lsls	r3, r3, #5
+ 5673 1d68 D318     		adds	r3, r2, r3
+ 5674 1d6a 0433     		adds	r3, r3, #4
+ 5675 1d6c 1B68     		ldr	r3, [r3]
+ 5676 1d6e 0222     		movs	r2, #2
+ 5677 1d70 1340     		ands	r3, r2
+ 5678 1d72 1AD0     		beq	.L290
+ 145:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 					{
+ 146:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 						active_doors[i].controlbits |= 2;
+ 5679              		.loc 4 146 0 is_stmt 1
+ 5680 1d74 FC21     		movs	r1, #252
+ 5681 1d76 C900     		lsls	r1, r1, #3
+ 5682 1d78 1824     		movs	r4, #24
+ 5683 1d7a 3B19     		adds	r3, r7, r4
+ 5684 1d7c 5B18     		adds	r3, r3, r1
+ 5685 1d7e 1A68     		ldr	r2, [r3]
+ 5686 1d80 FD20     		movs	r0, #253
+ 5687 1d82 C000     		lsls	r0, r0, #3
+ 5688 1d84 3B19     		adds	r3, r7, r4
+ 5689 1d86 1B18     		adds	r3, r3, r0
+ 5690 1d88 1B68     		ldr	r3, [r3]
+ 5691 1d8a 5B01     		lsls	r3, r3, #5
+ 5692 1d8c D318     		adds	r3, r2, r3
+ 5693 1d8e 0433     		adds	r3, r3, #4
+ 5694 1d90 1B68     		ldr	r3, [r3]
+ 5695 1d92 0222     		movs	r2, #2
+ 5696 1d94 1A43     		orrs	r2, r3
+ 5697 1d96 3B19     		adds	r3, r7, r4
+ 5698 1d98 5B18     		adds	r3, r3, r1
+ 5699 1d9a 1968     		ldr	r1, [r3]
+ 5700 1d9c 3B19     		adds	r3, r7, r4
+ 5701 1d9e 1B18     		adds	r3, r3, r0
+ 5702 1da0 1B68     		ldr	r3, [r3]
+ 5703 1da2 5B01     		lsls	r3, r3, #5
+ 5704 1da4 CB18     		adds	r3, r1, r3
+ 5705 1da6 0433     		adds	r3, r3, #4
+ 5706 1da8 1A60     		str	r2, [r3]
+ 5707              	.L290:
+ 134:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 				{
+ 5708              		.loc 4 134 0 discriminator 2
+ 5709 1daa FD22     		movs	r2, #253
+ 5710 1dac D200     		lsls	r2, r2, #3
+ 5711 1dae 1823     		movs	r3, #24
+ 5712 1db0 FB18     		adds	r3, r7, r3
+ 5713 1db2 9B18     		adds	r3, r3, r2
+ 5714 1db4 1B68     		ldr	r3, [r3]
+ 5715 1db6 0133     		adds	r3, r3, #1
+ 5716 1db8 1821     		movs	r1, #24
+ 5717 1dba 8C46     		mov	ip, r1
+ 5718 1dbc BC44     		add	ip, ip, r7
+ 5719 1dbe 6244     		add	r2, r2, ip
+ 5720 1dc0 1360     		str	r3, [r2]
+ 5721              	.L287:
+ 134:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 				{
+ 5722              		.loc 4 134 0 is_stmt 0 discriminator 1
+ 5723 1dc2 3300     		movs	r3, r6
+ 5724 1dc4 5B01     		lsls	r3, r3, #5
+ 5725 1dc6 5A09     		lsrs	r2, r3, #5
+ 5726 1dc8 FD23     		movs	r3, #253
+ 5727 1dca DB00     		lsls	r3, r3, #3
+ 5728 1dcc 1821     		movs	r1, #24
+ 5729 1dce 8C46     		mov	ip, r1
+ 5730 1dd0 BC44     		add	ip, ip, r7
+ 5731 1dd2 6344     		add	r3, r3, ip
+ 5732 1dd4 1B68     		ldr	r3, [r3]
+ 5733 1dd6 9A42     		cmp	r2, r3
+ 5734 1dd8 00D9     		bls	.LCB5305
+ 5735 1dda 0DE7     		b	.L291	@long jump
+ 5736              	.LCB5305:
+ 5737              	.L283:
+ 5738              	.LBE11:
+ 118:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		{
+ 5739              		.loc 4 118 0 is_stmt 1 discriminator 2
+ 5740 1ddc 0B4A     		ldr	r2, .L301
+ 5741 1dde 1823     		movs	r3, #24
+ 5742 1de0 FB18     		adds	r3, r7, r3
+ 5743 1de2 9B18     		adds	r3, r3, r2
+ 5744 1de4 1B68     		ldr	r3, [r3]
+ 5745 1de6 0133     		adds	r3, r3, #1
+ 5746 1de8 1821     		movs	r1, #24
+ 5747 1dea 8C46     		mov	ip, r1
+ 5748 1dec BC44     		add	ip, ip, r7
+ 5749 1dee 6244     		add	r2, r2, ip
+ 5750 1df0 1360     		str	r3, [r2]
+ 5751              	.L282:
+ 118:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		{
+ 5752              		.loc 4 118 0 is_stmt 0 discriminator 1
+ 5753 1df2 3300     		movs	r3, r6
+ 5754 1df4 5B01     		lsls	r3, r3, #5
+ 5755 1df6 5A09     		lsrs	r2, r3, #5
+ 5756 1df8 044B     		ldr	r3, .L301
+ 5757 1dfa 1821     		movs	r1, #24
+ 5758 1dfc 8C46     		mov	ip, r1
+ 5759 1dfe BC44     		add	ip, ip, r7
+ 5760 1e00 6344     		add	r3, r3, ip
+ 5761 1e02 1B68     		ldr	r3, [r3]
+ 5762 1e04 9A42     		cmp	r2, r3
+ 5763 1e06 00D9     		bls	.LCB5332
+ 5764 1e08 5EE6     		b	.L292	@long jump
+ 5765              	.LCB5332:
+ 5766              	.LBE10:
+ 118:C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door\startup.c **** 		{
+ 5767              		.loc 4 118 0
+ 5768 1e0a 3FE6     		b	.L293
+ 5769              	.L302:
+ 5770              		.align	2
+ 5771              	.L301:
+ 5772 1e0c EC070000 		.word	2028
+ 5773 1e10 FCFF0000 		.word	65532
+ 5774 1e14 00000000 		.word	msTicks
+ 5775 1e18 10270000 		.word	10000
+ 5776              		.cfi_endproc
+ 5777              	.LFE181:
+ 5779              	.Letext0:
+ 5780              		.file 5 "../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx.h"
+ 5781              		.file 6 "c:\\cseapp\\codelite\\tools\\gcc-arm\\arm-none-eabi\\include\\machine\\_default_types.h"
+ 5782              		.file 7 "c:\\cseapp\\codelite\\tools\\gcc-arm\\arm-none-eabi\\include\\sys\\_stdint.h"
+ 5783              		.file 8 "../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/inc/system_stm32f4xx.h"
+ 5784              		.file 9 "../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_rcc.h"
+ 5785              		.file 10 "../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_gpio.h"
+ 5786              		.file 11 "C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door/startup.h"
