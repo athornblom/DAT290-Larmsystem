@@ -173,7 +173,7 @@ void init_GPIO_Ports(){
 void init_MotionSensors(){
 
 	// Iterera genom portarna
-	/*for (int i=0; i*sizeof(motionPorts[0]) < sizeof(motionPorts); i++) {
+	for (int i=0; i*sizeof(motionPorts[0]) < sizeof(motionPorts); i++) {
 		// Iterera genom pinnarna
 		for (int j=0; j*sizeof(GPIO_Pins[0]) < sizeof(GPIO_Pins);j+=3) {
 			if(!((i*5+j/3) == 15)){
@@ -193,47 +193,13 @@ void init_MotionSensors(){
 					.pinLamp = GPIO_Pins[j+2], 
 					.motion = m};
 			
-			sensors[0] = s;
-			DebugPrint("\n");
-			DebugPrintNum(i*5+j/3);
+			sensors[i*5+j/3] = s;
+			
 			}
 			
 			
 		}
-	}*/
-
-	MotionSensor p =  {
-					.pinTrig = GPIO_Pins[6],
-					.pinEcho = GPIO_Pins[7],
-					.pulseTrig = 0,
-					.pulseEcho = 0,
-					.pulseDelay = 0,
-					.cm = 400,
-					.alarmDistance = 20 // Ändra denna när centralenheten kan styra över rörelseenheten - Erik
-			};
-			
-			
-	motion1.id = 0;
-	motion1.port = motionPorts[2];
-	motion1.pinLamp = GPIO_Pins[8];
-	motion1.controlbits = bit0 | bit2;
-	motion1.motion = p;
-	
-
-
-
-	/*motion2.id = 1;
-	motion2.controlbits = 1;
-	motion2.password = 2389;
-	motion2.pinTrig = GPIO_Pin_4;
-	motion2.pinEcho = GPIO_Pin_5;
-	motion2.pinLamp = GPIO_Pin_6;
-	motion2.pulseTrig = 0;
-	motion2.pulseEcho = 0;
-	motion2.pulseDelay = 0;
-	motion2.cm = 400;
-	motion2.alarm = 20 */
-	
+	}	
 	char lows[nMaxMotionSensors];
 	uint32_t timeOut = microTicks + 500000;	// 500 ms
 
