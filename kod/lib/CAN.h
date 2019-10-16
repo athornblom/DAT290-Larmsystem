@@ -13,9 +13,14 @@
 
 #define empty_header {0, 0, 0, 0, 0, 0};
 #define default_header {0, 0, ~0, ~0, ~0, 0};
-
 #define empty_mask {0, 0, 0, 0};
 
+//Medelandetyper
+#define ack_msg_type 0
+#define larm_msg_type 1
+#define conf_msg_type 2
+#define assignID_msg_type 3
+#define reqID_msg_type 4
 
 //Struktur som beskriver våran ID-uppdelning
 typedef struct  {
