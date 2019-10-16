@@ -6,4 +6,8 @@
 
 //Blockerande delay mikrosekunder
 void blockingDelayus(uint16_t delay);
+
+//BLockerande delay millisekunder
+void blockingDelayMs(uint16_t delay);
+
 #endif

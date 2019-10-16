@@ -1,6 +1,7 @@
 #include "keypad.h"
 #include "buffer.h"
 #include "misc.h"
+#include "delay.h"
 #include "stm32f4xx_gpio.h"
 #include "stm32f4xx.h"
 #include "stm32f4xx_rcc.h"
@@ -16,7 +17,7 @@ static FIFO *keyBuffer, realKeyBuffer;
 #define KEYPAD_ROWS  4
 static const uint8_t keyMatrix[KEYPAD_ROWS][KEYPAD_COLS] = {{0x1, 0x2, 0x3, 0xa},
                                              {0x4, 0x5, 0x6, 0xb},
-                                             {0x7, 0x8, 0x8, 0xc},
+                                             {0x7, 0x8, 0x9, 0xc},
                                              {0xe, 0x0, 0xf, 0xd}};
 static const uint16_t colPins[KEYPAD_COLS] = {GPIO_Pin_8, GPIO_Pin_9, GPIO_Pin_10, GPIO_Pin_11};
 static const uint16_t rowPins[KEYPAD_ROWS] = {GPIO_Pin_12, GPIO_Pin_13, GPIO_Pin_14, GPIO_Pin_15};
@@ -25,6 +26,11 @@ static const uint16_t rowPins[KEYPAD_ROWS] = {GPIO_Pin_12, GPIO_Pin_13, GPIO_Pin
 //Returnerar 1 om det fanns att läsa 0 annars
 uint8_t readKeypad(uint8_t *dest){
     return bufferGet(keyBuffer, dest);
+}
+
+//Rensar kön som man läser ifrån med readKeypad
+void clearKeypadQue(void){
+    bufferInit(keyBuffer);
 }
 
 void setRows(uint8_t set){
@@ -56,10 +62,8 @@ void setEXTI0(FunctionalState state){
 
 //Avbrottsrutin för keypad
 void keyPad_IRQ(void){
-    //TODO REMOVE
-    //USARTPrint("IRQ*");
-    //TODO skulle det fungera bättre med någon delay någon stans
-    //för man misslyckas med läsningar rätt offta
+    //Delay för att utvänta kontaktstuds
+    blockingDelayus(1000);
 
     //Avaktiverar EXTI0 för att undvika rekursion
     setEXTI0(DISABLE);
