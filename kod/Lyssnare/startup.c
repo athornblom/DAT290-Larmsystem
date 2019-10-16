@@ -1,5 +1,3 @@
-//Centralenhet
-
 #include "CAN.h"
 #include "USART.h"
 #include "misc.h"
@@ -23,11 +21,21 @@ __asm volatile(
 
 
 void msgPrint(CanRxMsg *msg){
-    USARTPrint("new msg:\n");
-    USARTPrintNumBase(msg->StdId,16);
-    USARTPrint("\n");
-    for (uint8_t i = 0; i < msg->DLC; i++){
-        USARTPrintNumBase(msg->Data[i],16);
+    USARTPrint("New msg:\n");
+    uint8_t base = 16;
+
+    //Skriver ut ID
+    if (msg->IDE == CAN_Id_Standard) {
+        USARTPrint("STD ID: \n");
+        USARTPrintNumBase(msg->StdId, base);
+    } else {
+        USARTPrint("Ext ID: \n");
+        USARTPrintNumBase(msg->ExtId, base);
+    }
+
+    USARTPrint("\nData: \n");
+    for (uint8_t i = msg->DLC ; i > 0; i--){
+        USARTPrintNumBase(msg->Data[i -1],base);
     }
     USARTPrint("\n\n");
 }
@@ -35,46 +43,23 @@ void msgPrint(CanRxMsg *msg){
 void main(void) {
     USARTConfig();
     can_init();
-    USARTPrint("start\n");
-    CanTxMsg canMsg;
-    uint8_t USARTmsg;
-    
-    CANFilter testFilter;
-    testFilter.STDID = 0;
-    testFilter.EXDID = 0;
-    testFilter.IDE = 0;
-    testFilter.RTR = 0;
+    USARTPrint("\nstart\n");
+
     uint8_t testIndex;
-    
-    CANFilter testMask;
-    testMask.STDID = 0;
-    testMask.EXDID = 0;
-    testMask.IDE = 0;
-    testMask.RTR = 0;
-    
-    filterUnion test;
-    test.filter = testFilter;
-    USARTPrint("filter\n");
-    USARTPrintNumBase(test.u16bits[1], 2);
-    USARTPrint("-");
-    USARTPrintNumBase(test.u16bits[0], 2);
-    USARTPrint("\n");
-    
-    test.filter = testMask;
-    USARTPrint("mask\n");
-    USARTPrintNumBase(test.u16bits[1], 2);
-    USARTPrint("-");
-    USARTPrintNumBase(test.u16bits[0], 2);
-    USARTPrint("\n");
-    
+
+    //Matchar allt
+    CANFilter mask;
+    mask.IDE = 0;
+    mask.RTR = 0;
+    mask.ID =0;
+
     if (CANhandlerListNotFull()){
         USARTPrint("handler list not full\n");
-        testIndex = CANaddFilterHandler(msgPrint, &testFilter, &testMask);
+        testIndex = CANaddFilterHandler(msgPrint, &mask, &mask);
         USARTPrintNum(testIndex);
     }
     
 
     while (1) {
-        
     }
 }
