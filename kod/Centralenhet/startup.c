@@ -97,28 +97,28 @@ void id_request_handler(CanRxMsg *rxMsgP){
     //TODO hantera meddelandet
     
     
-    if (rxMsg.IDE == CAN_Id_Standard){ //standard meddelande
+    
         
-        CanTxMsg txMsg;
-        encode_assign_id(&txMsg, next_id);
-        if (CANsendMessage(&txMsg) == CAN_TxStatus_NoMailBox){
-            USARTPrint("No mailbox empty\n");
-        }
-        else{
-            blockingDelayMs(300);
-            Door_device *dev = add_door_device(next_id);
-            USARTPrint("Lagt till dorrenhet med id ");
-            
-            uint8_t id = get_door_device(next_id)->id;
-            USARTPrintNum((uint32_t)id);
-            USARTPrint("\n");
-            next_id++;
-            
-        }
-        
-        USARTPrint("StdId ");
-        USARTPrintNum((uint32_t)rxMsg.StdId & 0x7FF);
+    CanTxMsg txMsg;
+    encode_assign_id(&txMsg, next_id);
+    if (CANsendMessage(&txMsg) == CAN_TxStatus_NoMailBox){
+        USARTPrint("No mailbox empty\n");
     }
+    else{
+        blockingDelayMs(300);
+        Door_device *dev = add_door_device(next_id);
+        USARTPrint("Lagt till dorrenhet med id ");
+        
+        uint8_t id = get_door_device(next_id)->id;
+        USARTPrintNum((uint32_t)id);
+        USARTPrint("\n");
+        next_id++;
+        
+    }
+    
+    USARTPrint("StdId ");
+    USARTPrintNum((uint32_t)rxMsg.StdId & 0x7FF);
+
     USARTPrint("\nData ");
     USARTPrintNum((uint32_t)rxMsg.Data);
     USARTPrint("\n");
@@ -211,9 +211,7 @@ uint8_t enterConfMode (void){
     //Filter för ID-Begäran
     filter.IDE = 1;
     filter.RTR = 0;
-    //TODO det är meddelande typ 5 med det har vi ingen???
-    //Borde det inte vara meddelandetyp 4?
-    header.msgType = 0b101;
+    header.msgType = 4;
     header.toCentral = 1;
     header.ID = 0;
     HEADERtoUINT32(header, filter.ID);

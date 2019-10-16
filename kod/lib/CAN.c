@@ -136,7 +136,7 @@ void CANdisableAllFilterHandlers(void){
 //Omvandlar till extended om det inte redan är det samt session ID är aktivt
 //Returnderar numret för mailboxen som används eller CAN_TxStatus_NoMailBox om det misslyckades
 uint8_t CANsendMessage(CanTxMsg *msg){
-    //Justerar endas medelandet om sessionID är aktivt
+    //Justerar endast meddelandet om sessionID är aktivt
     if (SessionIDActive == SESSIONIDACTIVE){
         //Används för omvandling och tilldeling av session ID
         Header header;
@@ -354,10 +354,17 @@ uint8_t handle_door_time_msg(CanRxMsg *msg) {
 uint8_t encode_request_id(CanTxMsg *msg, uint32_t temp_id, uint8_t device_type, uint8_t value_0, uint8_t value_1){
     uint8_t *data_pointer =  &(msg->Data);
     
-    msg->StdId = 0b10110000000;
+    
+    Header header = empty_header;
+    header.msgType = 4;
+    header.toCentral = 1;
+    HEADERtoUINT32(header, msg->ExtId);
+    
+    
+    
     msg->DLC = 7;
     
-    msg->IDE = CAN_Id_Standard; //Alternativen är CAN_Id_Standard eller FCAN_Id_Extended
+    msg->IDE = CAN_Id_Extended;
     msg->RTR = CAN_RTR_Data;
     
     //Id skrivs in i bytearrayen för data
@@ -391,7 +398,7 @@ uint8_t handle_recieve_id_msg(CanRxMsg *msg) {
 }
 
 uint8_t encode_distance_config(CanTxMsg *msg, uint32_t dist){
-    uint8_t *data_pointer =  &(msg->Data);
+    uint8_t *data_pointer =  &(msg->Data[0]);
     
     msg->DLC = 4;
     
