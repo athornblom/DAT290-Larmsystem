@@ -14,6 +14,16 @@ void startup(void) __attribute__((naked)) __attribute__((section (".start_sectio
 #include "stm32f4xx_syscfg.h"
 #include "USARTDebug.h"
 
+
+#define bit0 1
+#define bit1 (1 << 1)
+#define bit2 (1 << 2)
+#define bit3 (1 << 3)
+#define bit4 (1 << 4)
+#define bit5 (1 << 5)
+#define bit6 (1 << 6)
+#define bit7 (1 << 7)
+
 void startup ( void )
 {
 __asm volatile(
@@ -32,10 +42,6 @@ typedef struct MotionSensors {
 } MotionSensor;
 
 
-MotionSensor motion1;
-MotionSensor motion2;
-
-MotionSensor motionArr[10];
 
 //	Struct för vibrationssensor
 typedef struct VibrationSensors{
@@ -45,10 +51,10 @@ typedef struct VibrationSensors{
 /**
  * @brief	Struct för alla sensorer
  * @var 	controlbits: Kontrollbitar för diverse användningsområden:
- * 				0: Aktiv eller ej
+ * 				0: Finns en sensor?
  * 				1: 0 = Motionssensor, 1 = Vibrationssensor
- * 				2: (Motion) Stigande kant på echo puls mätning, (Vibration) @todo
-				3: Sensorn väntar på att ta emot konfiguration ifrån centralenheten
+ * 				2: Aktiv eller ej?
+ * 				3: (Motion) Stigande kant på echo puls mätning
  * 				4-6: @todo
  *				7: Sensorn larmar
  * @var		VibrationSensor: struct av vibrationssensor med vibrationssensor konfiguration. (pinD0)
@@ -70,14 +76,19 @@ typedef struct Sensors {
 // Dessa är konfigurerbara
 GPIO_TypeDef* motionPorts[3] 	= {GPIOA, GPIOB, GPIOC};
 GPIO_TypeDef* vibrationPorts[2] = {GPIOD, GPIOE};
-// todo: ska vi ersätta alla 'GPIO_PIN_n' med 'pins[n]'?
-uint16_t pins[16] = {GPIO_Pin_0, GPIO_Pin_1, GPIO_Pin_2, GPIO_Pin_3, GPIO_Pin_4, GPIO_Pin_5, GPIO_Pin_6, GPIO_Pin_7, GPIO_Pin_8, GPIO_Pin_9, GPIO_Pin_10, GPIO_Pin_11, GPIO_Pin_12, GPIO_Pin_13, GPIO_Pin_14, GPIO_Pin_15};
+
+Sensor motion1;
+
+uint16_t GPIO_Pins[] = {
+	GPIO_Pin_0, GPIO_Pin_1, GPIO_Pin_2, GPIO_Pin_3, GPIO_Pin_4, GPIO_Pin_5,
+	GPIO_Pin_6, GPIO_Pin_7, GPIO_Pin_8, GPIO_Pin_9, GPIO_Pin_10, GPIO_Pin_11,
+	GPIO_Pin_12, GPIO_Pin_13, GPIO_Pin_14, GPIO_Pin_15};
 
 volatile uint32_t microTicks = 0;		 // Variabel för microsekunder.
 
 // Maximalt antal sensorer, använder #define för att kunna använda värden till arrayen 'sensors'.
 #define nMaxMotionSensors 	 sizeof(motionPorts)/sizeof(motionPorts[0])*5			// Max 5 sensorer per port
-#define nMaxVibrationSensors sizeof(vibrationPorts)/sizeof(vibrationPorts[0])*16	// Max 16 sensorer per port
+#define nMaxVibrationSensors sizeof(vibrationPorts)/sizeof(vibrationPorts[0])*8	// Max 8 sensorer per port
 // Alla sensorer, denna initieras under init_Sensors.
 Sensor sensors[nMaxMotionSensors + nMaxVibrationSensors];
 
@@ -102,11 +113,6 @@ void delay_micro(uint32_t micros){
 	}
 }
 
-
-uint16_t GPIO_Pins[] = {
-	GPIO_Pin_0, GPIO_Pin_1, GPIO_Pin_2, GPIO_Pin_3, GPIO_Pin_4, GPIO_Pin_5,
-	GPIO_Pin_6, GPIO_Pin_7, GPIO_Pin_8, GPIO_Pin_9, GPIO_Pin_10, GPIO_Pin_11,
-	GPIO_Pin_12, GPIO_Pin_13, GPIO_Pin_14, GPIO_Pin_15};
 
 /**
  * @brief Konfigurera GPIO portarna
@@ -167,26 +173,56 @@ void init_GPIO_Ports(){
 void init_MotionSensors(){
 
 	// Iterera genom portarna
-	for (int i=0; sizeof(motionPorts[0])*sizeof(motionPorts); i++) {
+	/*for (int i=0; i*sizeof(motionPorts[0]) < sizeof(motionPorts); i++) {
 		// Iterera genom pinnarna
-		for (int j=0; sizeof(pins[0])*sizeof(pins);i+=3) {
-			//todo
+		for (int j=0; j*sizeof(GPIO_Pins[0]) < sizeof(GPIO_Pins);j+=3) {
+			if(!((i*5+j/3) == 15)){
+			MotionSensor m =  {
+					.pinTrig = GPIO_Pins[j],
+					.pinEcho = GPIO_Pins[j+1],
+					.pulseTrig = 0,
+					.pulseEcho = 0,
+					.pulseDelay = 0,
+					.cm = 400,
+					.alarmDistance = 20 // Ändra denna när centralenheten kan styra över rörelseenheten - Erik
+			};
+			
+			Sensor s = {
+					.id = i*5 + j/3, 
+					.port = motionPorts[i], 
+					.pinLamp = GPIO_Pins[j+2], 
+					.motion = m};
+			
+			sensors[0] = s;
+			DebugPrint("\n");
+			DebugPrintNum(i*5+j/3);
+			}
+			
+			
 		}
-	}
+	}*/
 
+	MotionSensor p =  {
+					.pinTrig = GPIO_Pins[6],
+					.pinEcho = GPIO_Pins[7],
+					.pulseTrig = 0,
+					.pulseEcho = 0,
+					.pulseDelay = 0,
+					.cm = 400,
+					.alarmDistance = 20 // Ändra denna när centralenheten kan styra över rörelseenheten - Erik
+			};
+			
+			
 	motion1.id = 0;
-	motion1.controlbits = 1;
-	motion1.password = 2389;
-	motion1.pinTrig = GPIO_Pin_7;
-	motion1.pinEcho = GPIO_Pin_3;
-	motion1.pinLamp = GPIO_Pin_8;
-	motion1.pulseTrig = 0;
-	motion1.pulseEcho = 0;
-	motion1.pulseDelay = 0;
-	motion1.cm = 400;
-	motion1.alarm = 20;
+	motion1.port = motionPorts[2];
+	motion1.pinLamp = GPIO_Pins[8];
+	motion1.controlbits = bit0 | bit2;
+	motion1.motion = p;
+	
 
-	motion2.id = 1;
+
+
+	/*motion2.id = 1;
 	motion2.controlbits = 1;
 	motion2.password = 2389;
 	motion2.pinTrig = GPIO_Pin_4;
@@ -196,46 +232,60 @@ void init_MotionSensors(){
 	motion2.pulseEcho = 0;
 	motion2.pulseDelay = 0;
 	motion2.cm = 400;
-	motion2.alarm = 20;
+	motion2.alarm = 20 */
 	
-	for(int i = 0; i*sizeof(motionArr[0]) < sizeof(motionArr); i++){
-		motionArr[i].id = i;
-		motionArr[i].controlbits = 0;
-		motionArr[i].password = 2389;
-		motionArr[i].GPIO_type = GPIOB;
-		motionArr[i].pinTrig = GPIO_Pins[i*3];
-		motionArr[i].pinEcho = GPIO_Pins[i*3+1];
-		motionArr[i].pinLamp = GPIO_Pins[i*3+2];
-		motionArr[i].pulseTrig = 0;
-		motionArr[i].pulseEcho = 0;
-		motionArr[i].pulseDelay = 0;
-		motionArr[i].cm = 400;
-		motionArr[i].alarm = 20;
+	char lows[nMaxMotionSensors];
+	uint32_t timeOut = microTicks + 500000;	// 500 ms
+
+	while(microTicks < timeOut){
+		for(int i = 0; i < nMaxMotionSensors; i++){
+			MotionSensor* sensor = &(sensors[i].motion);
+			if(lows[i] < 2 && microTicks > sensor->pulseTrig){ // Första låga
+				GPIO_ResetBits(sensors[i].port, sensor->pinTrig);	// Avaktivera triggerpuls
+				lows[i]++;
+			}
+			if(microTicks >= sensor->pulseDelay){
+				GPIO_SetBits(sensors[i].port, sensor->pinTrig);	// Aktivera triggerpuls
+				sensor->pulseTrig = microTicks + 10; // Triggpuls 10µs
+				sensor->pulseDelay = microTicks + 1000000; // Triggpuls 1s
+				
+			}
+			if(GPIO_ReadInputDataBit(sensors[i].port, sensor->pinEcho)){ // Är echo hög?
+				sensors[i].controlbits |= bit0;	// Ettställer kontrollbit 0.
+				sensors[i].controlbits |= bit2;	// Ettställer kontrollbit 2. Ta bort när centralenheten kan kommunicera med oss. - Erik
+			}
+			
+		}
 	}
 	
+	
 }
+
+
+
+
 
 void init_VibrationSensor(){
 	uint8_t sensorCounter = 0;
 	// Iterera genom portarna
 	for (int i=0; i*sizeof(vibrationPorts[0]) < sizeof(vibrationPorts); i++) {
 		// Iterera genom pinnarna
-		for (int j=0; j*sizeof(pins[0]) < sizeof(pins); j += 2) {
+		for (int j=0; j*sizeof(GPIO_Pins[0]) < sizeof(GPIO_Pins); j += 2) {
 			// Är sensorn aktiv?
-			if (GPIO_ReadInputDataBit(vibrationPorts[i], pins[j])) {
+			if (GPIO_ReadInputDataBit(vibrationPorts[i], GPIO_Pins[j])) {
 				VibrationSensor v = {
-					.pinD0 = pins[j]
+					.pinD0 = GPIO_Pins[j]
 				};
 				
 				Sensor s = {
 					.id 			= 0, // TODO
-					.controlbits 	= 1 | (0x1 << 1) | (0x1 << 3),
+					.controlbits 	= bit0 | bit1 | bit2,
 					/* Bit 0 = 0, Sensorn är ej aktiv (Den har ej tagit emot centralenhets konfiguration än)
 					 * Bit 1 = 1, Sensorn är av typen vibration
 					 * Bit 2 = 0, används ej
 					 * Bit 3 = 1, Sensorn väntar på konfiguration från centralenheten */
 					 .port 			= vibrationPorts[i],
-					 .pinLamp 		= pins[j+1],
+					 .pinLamp 		= GPIO_Pins[j+1],
 					 .vibration 	= v
 					// Resten av structen är tom och fylls på när konfigurationen tas emot från centralenheten */
 				};
@@ -249,13 +299,14 @@ void init_VibrationSensor(){
 
 void init_Sensors(){
 	init_VibrationSensor();
+	init_MotionSensors();
 }
 
 void init_app(){
-	DebugPrintInit(); // Todo: ta bort innan slutprodukt
 
-	init_Timer();	
-	init_GPIO_Ports();
+	init_Timer();
+	init_GPIO_Ports();	
+	DebugPrintInit(); // Todo: ta bort innan slutprodukt
 	init_Sensors();
 
 }
@@ -268,29 +319,9 @@ void alarm(Sensor* sensor) {
 
 void main(void){
 	init_app();
-
-	MotionSensor motionSensors[2] = {motion1, motion2};
-	uint32_t timeOut[10];
-	char lows[10];
 	
-
-	for(int i = 0; i*sizeof(motion1) < sizeof(motionArr); i++){
-		char high = 0;
-		if(lows[i] < 2 && microTicks > motionArr[i].pulseTrig){ // Första låga
-			GPIO_ResetBits(motionArr[i].GPIO_type, motionArr[i].pinTrig);	// Avaktivera triggerpuls
-			lows[i]++;
-		}
-		if(microTicks >= motionArr[i].pulseDelay){  // Är triggfördröjningen klar?
-			GPIO_SetBits(GPIOA, GPIO_Pins[i*3+1]);	// Aktivera triggerpuls
-			motionArr[i].pulseTrig = microTicks + 10; // Triggpuls 10µs
-			motionArr[i].pulseDelay = microTicks + 60000;	// Fördröjning mellan triggerpulserna, 60ms
-		}
-		if(!(motionArr[i].controlbits & (1 << 2)) && GPIO_ReadInputDataBit(GPIOA, motionArr[i].pinEcho)){ // Är echo hög för första gången?
-			motionArr[i].pulseEcho = microTicks; // Början av echopulsen.
-			motionArr[i].controlbits |= 1 << 2;  // Ettställer kontrollbit 2.
-		}
-		
-	}
+	//sensors[0] = motion1;
+	
 	
 	
 	while(1){
@@ -299,9 +330,14 @@ void main(void){
 	// Itererar över alla sensorer
 	for(int i = 0; i*sizeof(sensors[0]) < sizeof(sensors); i++){
 		
-		// Är sensorn aktiverad och av typen motion? (controlbit 1 && !2)
-		if(sensors[i].controlbits & 1 && !(sensors[i].controlbits & (1 << 1))){
+		// Är sensorn aktiverad och av typen motion? (controlbit 2 && !1)
+		if(sensors[i].controlbits & bit2 && !(sensors[i].controlbits & bit1)){
 			MotionSensor* sensor = &(sensors[i].motion);
+			
+			// Är trigpulsen klar?
+			if(microTicks >= sensor->pulseTrig){ 					
+				GPIO_ResetBits(sensors[i].port, sensor->pinTrig);	// Avaktivera triggerpuls
+			}
 			
 			// Är triggfördröjningen klar?
 			if(microTicks >= sensor->pulseDelay){  					
@@ -310,20 +346,16 @@ void main(void){
 				sensor->pulseDelay = microTicks + 60000;			// Fördröjning mellan triggerpulserna, 60ms
 			}
 			
-			// Är trigpulsen klar?
-			if(microTicks >= sensor->pulseTrig){ 					
-				GPIO_ResetBits(sensors[i].port, sensor->pinTrig);	// Avaktivera triggerpuls
-			}
-			
+		
 			// Är echo hög för första gången?
-			if(!(sensors[i].controlbits & (1 << 2)) && GPIO_ReadInputDataBit(sensors[i].port, sensor->pinEcho)){
+			if(!(sensors[i].controlbits & bit3) && GPIO_ReadInputDataBit(sensors[i].port, sensor->pinEcho)){
 				sensor->pulseEcho = microTicks; 					// Början av echopulsen.
-				sensors[i].controlbits |= 1 << 2;  					// Ettställer kontrollbit 2.
+				sensors[i].controlbits |= bit3;  					// Ettställer kontrollbit 3.
 			}
 			// Är echo låg för första gången?
-			else if (sensors[i].controlbits & (1 << 2) && !GPIO_ReadInputDataBit(sensors[i].port, sensor->pinEcho)) {	
+			else if (sensors[i].controlbits & bit3 && !GPIO_ReadInputDataBit(sensors[i].port, sensor->pinEcho)) {	
 				sensor->cm = (microTicks - sensor->pulseEcho)/58; 	// Tid tills echo kommer tillbaks.
-				sensors[i].controlbits &= ~(1 << 2);				// Nollställer kontrollbit 2.
+				sensors[i].controlbits &= ~bit3;					// Nollställer kontrollbit 3.
 			}
 			
 			// Upptäcker sensorn något som är för nära?
@@ -336,7 +368,7 @@ void main(void){
 		}
 		
 		// Är sensorn aktiverad och av typen vibration? (controlbit 1 && 2)
-		else if(sensors[i].controlbits & (1 | 1 << 1)) {
+		else if(sensors[i].controlbits & (bit1 | bit2)) {
 			VibrationSensor* sensor = &(sensors[i].vibration);
 			
 			if(!GPIO_ReadInputDataBit(sensors[i].port, sensor->pinD0)){
