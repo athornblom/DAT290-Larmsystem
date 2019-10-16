@@ -31,6 +31,12 @@ typedef struct MotionSensors {
 	float cm, alarmDistance; 					// Avstånd till föremål och larmavstånd.
 } MotionSensor;
 
+
+MotionSensor motion1;
+MotionSensor motion2;
+
+MotionSensor motionArr[10];
+
 //	Struct för vibrationssensor
 typedef struct VibrationSensors{
 	uint16_t pinD0;								// Pin för vibrationssensorns 'digital output'.
@@ -96,6 +102,12 @@ void delay_micro(uint32_t micros){
 	}
 }
 
+
+uint16_t GPIO_Pins[] = {
+	GPIO_Pin_0, GPIO_Pin_1, GPIO_Pin_2, GPIO_Pin_3, GPIO_Pin_4, GPIO_Pin_5,
+	GPIO_Pin_6, GPIO_Pin_7, GPIO_Pin_8, GPIO_Pin_9, GPIO_Pin_10, GPIO_Pin_11,
+	GPIO_Pin_12, GPIO_Pin_13, GPIO_Pin_14, GPIO_Pin_15};
+
 /**
  * @brief Konfigurera GPIO portarna
  * 
@@ -153,6 +165,7 @@ void init_GPIO_Ports(){
 }
 	
 void init_MotionSensors(){
+
 	// Iterera genom portarna
 	for (int i=0; sizeof(motionPorts[0])*sizeof(motionPorts); i++) {
 		// Iterera genom pinnarna
@@ -160,6 +173,46 @@ void init_MotionSensors(){
 			//todo
 		}
 	}
+
+	motion1.id = 0;
+	motion1.controlbits = 1;
+	motion1.password = 2389;
+	motion1.pinTrig = GPIO_Pin_7;
+	motion1.pinEcho = GPIO_Pin_3;
+	motion1.pinLamp = GPIO_Pin_8;
+	motion1.pulseTrig = 0;
+	motion1.pulseEcho = 0;
+	motion1.pulseDelay = 0;
+	motion1.cm = 400;
+	motion1.alarm = 20;
+
+	motion2.id = 1;
+	motion2.controlbits = 1;
+	motion2.password = 2389;
+	motion2.pinTrig = GPIO_Pin_4;
+	motion2.pinEcho = GPIO_Pin_5;
+	motion2.pinLamp = GPIO_Pin_6;
+	motion2.pulseTrig = 0;
+	motion2.pulseEcho = 0;
+	motion2.pulseDelay = 0;
+	motion2.cm = 400;
+	motion2.alarm = 20;
+	
+	for(int i = 0; i*sizeof(motionArr[0]) < sizeof(motionArr); i++){
+		motionArr[i].id = i;
+		motionArr[i].controlbits = 0;
+		motionArr[i].password = 2389;
+		motionArr[i].GPIO_type = GPIOB;
+		motionArr[i].pinTrig = GPIO_Pins[i*3];
+		motionArr[i].pinEcho = GPIO_Pins[i*3+1];
+		motionArr[i].pinLamp = GPIO_Pins[i*3+2];
+		motionArr[i].pulseTrig = 0;
+		motionArr[i].pulseEcho = 0;
+		motionArr[i].pulseDelay = 0;
+		motionArr[i].cm = 400;
+		motionArr[i].alarm = 20;
+	}
+	
 }
 
 void init_VibrationSensor(){
@@ -215,8 +268,34 @@ void alarm(Sensor* sensor) {
 
 void main(void){
 	init_app();
+
+	MotionSensor motionSensors[2] = {motion1, motion2};
+	uint32_t timeOut[10];
+	char lows[10];
+	
+
+	for(int i = 0; i*sizeof(motion1) < sizeof(motionArr); i++){
+		char high = 0;
+		if(lows[i] < 2 && microTicks > motionArr[i].pulseTrig){ // Första låga
+			GPIO_ResetBits(motionArr[i].GPIO_type, motionArr[i].pinTrig);	// Avaktivera triggerpuls
+			lows[i]++;
+		}
+		if(microTicks >= motionArr[i].pulseDelay){  // Är triggfördröjningen klar?
+			GPIO_SetBits(GPIOA, GPIO_Pins[i*3+1]);	// Aktivera triggerpuls
+			motionArr[i].pulseTrig = microTicks + 10; // Triggpuls 10µs
+			motionArr[i].pulseDelay = microTicks + 60000;	// Fördröjning mellan triggerpulserna, 60ms
+		}
+		if(!(motionArr[i].controlbits & (1 << 2)) && GPIO_ReadInputDataBit(GPIOA, motionArr[i].pinEcho)){ // Är echo hög för första gången?
+			motionArr[i].pulseEcho = microTicks; // Början av echopulsen.
+			motionArr[i].controlbits |= 1 << 2;  // Ettställer kontrollbit 2.
+		}
+		
+	}
+	
+	
 	while(1){
-	// Polling
+
+			// Polling
 	// Itererar över alla sensorer
 	for(int i = 0; i*sizeof(sensors[0]) < sizeof(sensors); i++){
 		

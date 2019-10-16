@@ -36,6 +36,10 @@ uint8_t USARTPrintNum(uint32_t num);
 //Returnerar 1 om det lyckades, 0 annars.
 uint8_t USARTPrintNumBase(uint32_t num, uint8_t base);
 
+//Skriver ut en pointer av length bytes staratndes från ptr
+//Returerar 1 om det lyckades 0 annars
+uint8_t USARTPrintPtr(uint8_t *ptr, uint8_t length, uint8_t base);
+
 //Hämta senaste mottagna tecknet till dest
 //Returnerar 1 om det lyckades, dvs det fanns ett meddelande att hämta 0 annars.
 uint8_t USARTGet (uint8_t *dest);

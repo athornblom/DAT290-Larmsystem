@@ -11,7 +11,7 @@
 \usepackage{url}
 \usepackage{hyperref}
 
-\title{Rapportutkast1}
+\title{Larmsystem baserat på MD407-mikrodatorer}
 \author{Grupp 13}
 \date{Läsperiod 1, HT-2019}
 
@@ -37,8 +37,14 @@
 \pagenumbering{arabic}
 
 
-\section{Introduktion}
-\subsection{Syfte} % Svarar på fårgan "Varför"?
+\section{Inledning}
+
+
+\subsection{Syfte} % Svarar på frågan "Varför"?
+Projektet är menat att 
+
+
+
 Rapportens syfte är att beskriva utvecklingen av ett larm- och
  låssystem som i grunden består av ARM-baserade MD407-datorer
   som exekverar kod skriven i programmeringsspråket C.
@@ -76,7 +82,7 @@ För att förhindra stockning i projektet delades projektgruppen in i tre gruppe
 
 \textbf{Dörrenheten}: Gruppen består av Adam och Gustav. Dörrenheten ansvarar för att alla dörrar skall vara uppkopplade och larmade.
 
-\textbf{Rörelseenheten}: Gruppen består av Erik och Ben. Syftet är att koppla upp rörelse- och vibrationssensorer vid exempelvis fönster eller värdefulla föremål.
+\textbf{Rörelseenheten}: Gruppen består av Erik och Ben. Rörelseenheten utvecklar mjukvaran till rörelse- och vibrationssensorerna för larmning av t.ex. fönster och värdefulla föremål.
 
 \subsubsection{Kommunikation}
 Under projekets gång har arbetsgruppens medlemmar skött den skriftliga interna kommunikationen via en gemensam Messenger-chatt.
@@ -110,7 +116,7 @@ Rörelseenheten är kopplad till ett antal avstånds- och vibrationsensorer, och
 En översikt av hårdvaran och hur den är kopplad finns i Figur \ref{fig:hårdvara}.
 \begin{figure}[H] % Samma figur som projektplanen, då hårdvaran fortfarande ser likadan ut, det är värt att göra en ny innan slutgiltiga rapporten.
     \centering
-    \includegraphics[width=1\textwidth]{figurer/HardvaraOversikt.jpg}
+%    \includegraphics[width=1\textwidth]{figurer/HardvaraOversikt.jpg}
     \caption{Översikt Hårdvara}
     \label{fig:hårdvara}
 \end{figure}
@@ -121,10 +127,47 @@ En överblick av mjukvarans tidsflöde finns i Figur \ref{fig:tidsflöde}.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=1\textwidth]{figurer/TidsFlode.jpg}
+%    \includegraphics[width=1\textwidth]{figurer/TidsFlode.jpg}
     \caption{Tidsflöde Mjukvara}
     \label{fig:tidsflöde}
 \end{figure}
+
+
+\subsection{CAN-kommunikation}
+\label{can}
+\subsubsection{Protokoll}
+Protokollet som har skapats för kommunikationen mellan enheterna bygger på protokollet Controller Area Network (CAN).
+CAN är ett bussprotokoll som främst används för kommunikation mellan datorer och givare på fordon där det ställs höga krav på tillförlitlighet.
+För att undvika kollisioner och därmed öka tillförlitligheten har CAN en dominant logisk nivå (0) som dessutom ger automatisk prioritering av meddelanden då den dominanta nivån har företräde på bussen.
+Denna prioritering har använts för att ge brotskande meddelande företräde över meddelande som inte kräver kort responstid. I tabell \ref{tab:meddelandetyper} är de meddelandetyper som använts kortfattat beskrivna. För en mer detaljerad beskrivning av protokollet och dess meddelandetyper se bilaga \ref{bilaga:protokoll}.
+
+
+
+\begin{table}[H]
+	\centering
+	\begin{tabular}{|c|p{0.8\textwidth}|}
+		\hline
+		Meddelandetyp & Används till \\ \hline \hline
+		Bekräftelse		& Bekräftelse för senaste mottagna meddelandet. \\ \hline
+		Skicka larm		& Talar om för centralenheten om någon dörr eller sensor larmar. \\ \hline
+		Skicka konfiguration		& Används för att skicka konfigurationer. \\ \hline
+		Tilldelning av ID		& Används då centralenheten tilldelar en periferienhet dess ID. \\ \hline
+		ID-begäran		& Detta meddelande skickas som en begäran av ID. \\ \hline
+
+	\end{tabular}
+	\caption{Listar de meddelandetyper som används för datakommunikationen. Uppifrån och ned sjunkande prioritering.}
+	\label{tab:meddelandetyper}
+\end{table}
+
+
+\subsubsection{Implementation}
+För hantering av CAN-meddelanden har STM-biblioteket (se \ref{stm}) använts för inledande initiering, hantering av avbrott samt för att skicka meddelanden.
+Utöver detta har det skapats ett system för hantering av mottagana meddelanden.
+Detta har lösts med avbrott där hanteringsfunktionen paras ihop med filtret för tillhörande meddelande.
+Hanteringsfunktionen anropas sedan av avbrottsrutinen då ett meddelande passerat filtret.
+Denna lösning har valts då de flesta meddelanden naturligt hanteras med en kort hanteringsfunktion som inte kräver input från användaren.
+
+
 
 \subsection{Delsystem }
 \subsubsection{Centralenheten}
@@ -151,25 +194,28 @@ Id:t används för att addressera meddelanden till samt identifiera meddelanden 
 
 
 \subsubsection{Dörrenheten}
-%\label{subsec:Dörrenheten}
+\label{subsec:Dörrenheten}
+% Punkter att få med:
+% - Systemuppstart
+% - Lokala / Centrala Larm 
+% - CAN
+% - Initiering?
+% - Systick?
+% - Bilder?
 
-Dörrenheten är en av systemets fristående enheter och kräver ett MD407-kort. Ett kort kan stödja x dörrar.
+Dörrenheten är en av systemets fristående enheter och kräver en MD407-mikrodator för drift.
 
-Vid systemuppstart deteketeras alla stängda dörrar som är kopplade till MD407-kortet. En C-struktur kommer sedan initieras för varje dörr och fungera som en  datarepresentation för dörren. Denna datarepresentation är utrustad med följande värden:
-\begin{itemize}
-  \item {char id;}
-  \item {int controlbits;}
-  \item \textbf{char time\textunderscore{}Larm;}
-  \item \textbf{char time\textunderscore{}Central\textunderscore{}Larm;}
-  \item \textbf{int password;}
-  \item int GPIO\textunderscore{}Lamp;
-  \item int GPIO\textunderscore{}Read;
-  \item int larmTick;
-\end{itemize}
+Fyra av mikrodatorns fem GPIO-portar är designerade för dörranvändning, och en port är designerad för CAN-användning, samt för upplysning av användaren om att systemet körs på rätt sätt. Detta innebär att systemet har stöd för 32 inkopplade dörrar samtidigt per mikrodator. 
 
-De fetstilta värdena är konfigurerbara för användaren, \textbf{time\textunderscore{}Larm} och \\ \textbf{time\textunderscore{}Central\textunderscore{}Larm} sätts med 10-sekunders intervall binärt med 8 bitar. Lösenordet \textbf{password} är 4 hexadecimala siffror som används för att låsa upp dörren på Keypaden.
+Vid systemuppstart kommer läget på samtliga I/O-Pins kontrolleras
+
+deteketeras alla stängda dörrar som är inkopplade i mikrodatorn. Kongifugerbara datarepresentationer av dessa dörrar skapas med basvärden för lokala och centrala larmtider. Larmtiderna sätts med 10-sekunders intervall. Dessa basvärden kan ändras i källkoden, eller konfigueras om från centralenheten.
+
 
 Dörrenheten kan köras i lokaldrift men bör för bästa effekt köras uppkopplad mot centralenheten.\\
+
+
+
 \subsubsection{Rörelseenheten}
 Denna periferienhet använder avståndssensorer av modellen HC-SR04, och vibrationssensorer av modellen SW-18010P, som styrs av ett MD407-kort.
 Vid uppstart av systemet skall alla inkopplade sensorer tilldelas ett id som säger vilken sorts sensor det är och numrerar dem.
@@ -180,23 +226,6 @@ HC-SR04 kan mäta avstånd upp till 400cm och larmavståndet är justerbart frå
 
 \textbf{Vibrationssensorn}: Sensorn sänder ständigt en hög puls till MD407-kortet förutom när den känner av vibrationer, då den istället sänder en låg puls. 
 Sensorns känslighet justeras fysiskt genom en komparator på sensorn.
-
-\subsection{CAN-kommunikation}
-\label{can}
-Nedan finns dokumentationen av protokollet som tagits fram för
-kommunikationen mellan enheterna. Därefter följer en beskrivning av hur kommunikationen har implementerats.
-\subsubsection{Protokoll}
-\input{../protokoll/protokollInput.tex}
-\subsubsection{Implementation}
-För hantering av CAN-meddelanden har STM-biblioteket (se \ref{stm}) använts för inledande initiering, hantering av avbrott samt för att skicka meddelanden.
-Utöver detta har det skapats ett system för hantering av mottagana meddelanden.
-Detta har lösts med avbrott där hanteringsfunktionen paras ihop med filtret för tillhörande meddelande.
-Hanteringsfunktionen anropas sedan av avbrottsrutinen då ett meddelande passerat filtret.
-Denna lösning har valts då de flesta meddelanden naturligt hanteras med en kort hanteringsfunktion som inte kräver input från användaren.
-
-Ett fall som är mer invecklat än en direkt hanteringsfunktion är vid konfiguration av avståndsgivare på rörelselarmet. I detta fall krävs input från användaren... \todo[inline]{Här borde de}\todo[inline]{Skriv färdigt föregående todo}
-\todo[inline]{Här bör detta kapitel utökas när beskrivningarna av meddelandena är klar.}
-
 
 
 
@@ -226,5 +255,7 @@ använts. Detta har används vid initieringar av GPIO-portar, Systick med mera.
 % Avslutningsvis så vill vi påminna om att projektets slutrapport, precis som projektplanen, ska vara projektintern, det väl säga att den ska beskriva det tekniska utvecklingsarbetet och bortse från att projektarbetet faktiskt organiserats inom ramen för en kurs.
 
 \section{Bilagor}
-
+    \subsection{Utförlig beskrivning av meddelandetyper kommunikationsprotokoll}
+    \label{bilaga:protokoll}
+%        \input{../protokoll/protokollInput.tex}
 \end{document}

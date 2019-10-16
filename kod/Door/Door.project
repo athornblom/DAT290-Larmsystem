@@ -20,6 +20,7 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="../lib/delay.h"/>
     <File Name="startup.h"/>
     <File Name="init.h"/>
     <File Name="../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/misc.c"/>

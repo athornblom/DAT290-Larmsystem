@@ -7,6 +7,7 @@
 #include "stm32f4xx_rcc.h"
 #include "stm32f4xx_gpio.h"
 #include "delay.c"
+#include "stringFunc.h"
 
 #define MAXCOMMANDLENGTH 10
 
@@ -100,7 +101,7 @@ void id_request_handler(CanRxMsg *rxMsgP){
         
         CanTxMsg txMsg;
         encode_assign_id(&txMsg, next_id);
-        if (send_can_message(&txMsg) == CAN_TxStatus_NoMailBox){
+        if (CANsendMessage(&txMsg) == CAN_TxStatus_NoMailBox){
             USARTPrint("No mailbox empty\n");
         }
         else{
@@ -132,9 +133,6 @@ void larmHandler(CanRxMsg *rxMsg){
         return;
     }
     
-    STDIDtoHeader converter;
-    converter.STDID = rxMsg->StdId;
-    
     switch (rxMsg->Data[0]) {
         //Dörrsensor
         case 0:
@@ -152,10 +150,13 @@ void larmHandler(CanRxMsg *rxMsg){
             break;
     }
 
+    Header header;
+    UINT32toHEADER(rxMsg->ExtId, header);
+
     USARTPrint(" med ID: ");
     USARTPrintNum(rxMsg->Data[1]);
     USARTPrint(" larmar på enheten med ID: ");
-    USARTPrintNum(converter.header.ID);
+    USARTPrintNum(header.ID);
     USARTPrint("\n");
 }
 
@@ -190,22 +191,32 @@ uint8_t enterConfMode (void){
     USARTWaitPrint("Startar konfigurations-mode. Aktiverar foljande handlers:\n");
     CANFilter filter;
     CANFilter mask;
-    mask.STDID = 0b11111111111;
-    mask.EXDID = 0;
+
+    //Används för omvandling
+    Header header;
+
+    //Skriver mask
     mask.IDE = 1;
     mask.RTR = 1;
+    header.msgType = ~0;
+    header.toCentral = ~0;
+    header.ID = ~0;
+    //ingorera msgNum
+    header.msgNum = 0;
+    HEADERtoUINT32(header, mask.ID);
 
     //Avaktiverar alla filter
     CANdisableAllFilterHandlers();
 
     //Filter för ID-Begäran
-    filter.STDID = 0b10110000000;
+    filter.IDE = 1;
+    filter.RTR = 0;
     //TODO det är meddelande typ 5 med det har vi ingen???
-    //Borde det inte vara förljande (för meddelandetyp 4)?
-    //filter.STDID = 0b10010000000;
-    filter.EXDID = 0;
-    filter.IDE = 0;
-    filter.RTR = 1;
+    //Borde det inte vara meddelandetyp 4?
+    header.msgType = 0b101;
+    header.toCentral = 1;
+    header.ID = 0;
+    HEADERtoUINT32(header, filter.ID);
 
     //Aktiverar handler för ID begäran
     if (CANhandlerListNotFull()){
@@ -242,19 +253,30 @@ uint8_t enterStdMode (void){
      uint8_t retIndex;
     CANFilter filter;
     CANFilter mask;
-    mask.STDID = 0b11110000000;
-    mask.EXDID = 0;
+
+    //För omvandling
+    Header header;
+
+    //Skriver mask
     mask.IDE = 1;
-    mask.RTR = 1;
+    mask.RTR = 0;
+    header.msgType = ~0;
+    header.toCentral = ~0;
+    header.ID = ~0;
+    //ingorera msgNum
+    header.msgNum = 0;
+    HEADERtoUINT32(header, mask.ID);
 
     //Avaktiverar alla filter
     CANdisableAllFilterHandlers();
 
     //Filter för Larm
-    filter.STDID = 0b00110000000;
-    filter.EXDID = 0;
-    filter.IDE = 0;
-    filter.RTR = 1;
+    filter.IDE = 1;
+    filter.RTR = 0;
+    header.msgType = 0b001;
+    header.toCentral = 1;
+    header.ID = 0;
+    HEADERtoUINT32(header, filter.ID);
 
     //Aktiverar handler för larm
     if (CANhandlerListNotFull()){
@@ -263,40 +285,6 @@ uint8_t enterStdMode (void){
         USARTPrintNum(retIndex);
         USARTPrint("\n");
     } else {
-        return 0;
-    }
-
-    return 1;
-}
-
-//Jämför två strängar. Returnerar 1 om de är lika. 0 annars.
-uint8_t strEqual(uint8_t *str1, uint8_t *str2){
-    //Loopa så länge vi inte nått slutet på någon av strängarna
-    while (*str1 && *str2) {
-        //Skiljer sig tecknen åt, returnera 0
-        //Flyttar också pekarna
-        if (*str1++ != *str2++){
-            return 0;
-        }
-    }
-
-    //De är endast lika om de hitills varit lika och de slutar samtidigt
-    return *str1 == *str2;
-}
-
-//Kollar om str1 börjar med str2. Returnerar 1 om det är så. 0 annars.
-uint8_t strStartsWith(uint8_t *str1, uint8_t *str2){
-    //Loopa tills vi kommer till slutet av str2
-    while(*str1 && *str2){
-        //Skiljer sig tecknen åt returnera 0
-        //Flyttar också pekaren
-        if (*str1++ != *str2++){
-            return 0;
-        }
-    }
-
-    //str1 slutar innan str2, returnera 0
-    if (*str1 == 0 && *str2 != 0){
         return 0;
     }
 
@@ -392,7 +380,7 @@ void main(void) {
     USARTConfig();
     can_init();
     USARTPrint("\n");
-    
+
     if (enterConfMode()){
         USARTWaitPrint("Start av konfigurations-mode lyckades\n");
     } else {
