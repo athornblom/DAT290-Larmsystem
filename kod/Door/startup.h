@@ -11,4 +11,4 @@ typedef struct _door
     GPIO_TypeDef * GPIO_type;
 } door;
 
-////Dörren uppstäld?/larmat centralt/Larmar
+////Dörren uppställd?/larmat centralt/Larmar
