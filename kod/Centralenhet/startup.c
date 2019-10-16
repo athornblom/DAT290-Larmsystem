@@ -116,8 +116,8 @@ void id_request_handler(CanRxMsg *rxMsgP){
         
     }
     
-    USARTPrint("StdId ");
-    USARTPrintNum((uint32_t)rxMsg.StdId & 0x7FF);
+    USARTPrint("ExtId ");
+    USARTPrintNum((uint32_t)rxMsg.ExtId);// & 0x7FF);
 
     USARTPrint("\nData ");
     USARTPrintNum((uint32_t)rxMsg.Data);
@@ -190,7 +190,7 @@ void confMsg(CanRxMsg *msg){
 uint8_t enterConfMode (void){
     USARTWaitPrint("Startar konfigurations-mode. Aktiverar foljande handlers:\n");
     CANFilter filter;
-    CANFilter mask;
+    CANFilter mask = empty_mask;
 
     //Används för omvandling
     Header header;
@@ -198,12 +198,14 @@ uint8_t enterConfMode (void){
     //Skriver mask
     mask.IDE = 1;
     mask.RTR = 1;
+    
+    
     header.msgType = ~0;
     header.toCentral = ~0;
     header.ID = ~0;
-    //ingorera msgNum
+    //ignorera msgNum
     header.msgNum = 0;
-    HEADERtoUINT32(header, mask.ID);
+    //HEADERtoUINT32(header, mask.ID);
 
     //Avaktiverar alla filter
     CANdisableAllFilterHandlers();
@@ -216,7 +218,7 @@ uint8_t enterConfMode (void){
     header.ID = 0;
     HEADERtoUINT32(header, filter.ID);
 
-    //Aktiverar handler för ID begäran
+    //Aktiverar handler för ID-begäran
     if (CANhandlerListNotFull()){
         USARTWaitPrint("ID-begaran handler med handler index: ");
         USARTPrintNum(CANaddFilterHandler(id_request_handler, &filter, &mask));

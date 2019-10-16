@@ -12,6 +12,10 @@
 #define UINT32toHEADER(filterID, header) *((uint32_t *)&(header)) = (uint32_t)(filterID);
 
 #define empty_header {0, 0, 0, 0, 0, 0};
+#define default_header {0, 0, ~0, ~0, ~0, 0};
+
+#define empty_mask {0, 0, 0, 0};
+
 
 //Struktur som beskriver våran ID-uppdelning
 typedef struct  {

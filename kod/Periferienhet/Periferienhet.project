@@ -23,6 +23,7 @@
     <File Name="md407-ram.x"/>
   </VirtualDirectory>
   <VirtualDirectory Name="src">
+    <File Name="../lib/CANEncode.c"/>
     <File Name="../lib/delay.c"/>
     <File Name="../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_usart.c"/>
     <File Name="../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c"/>
