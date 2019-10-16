@@ -1,6 +1,3 @@
-Ett CAN-meddelande är uppbyggt av ett antal fält med olika funktioner. Det finns bland annat fält för startbitar, identifiering (ID), data, kontrollsummor samt stoppbitar. Av dessa fält är det i huvudsak ID och datafältet som bär den aktuella informationen.
-De övriga fälten används av CAN-protokollet för att åstadkomma tillförlitlig kommunikation.
-
 Den inbyggda prioriteringen av meddelanden har noga avvägts vid tilldelning av de 29 bitar som finns tillgängliga i ID-fältet.
 Då det är detta fält som avgör prioritringen för meddelanden på bussen så beskriver de i huvudsak meddelandetypen.
 De 29 bitarna har fördelats enligt tabell \ref{tab:idbitar}.
@@ -16,7 +13,7 @@ De 29 bitarna har fördelats enligt tabell \ref{tab:idbitar}.
 		Om riktning är till centralenheten är bitarna sändarens ID.
 		Om riktningen är från centralenheten beskriver bitarna mottagarens ID. \\ \hline
 		17-8 & 10 bitar för session ID, gemensamt ID för sessionen. Används för att förhindra replay attack. \\ \hline
-		7-0 & 8 bitar för meddelande nummer. Används för att identifiera vilket meddelande som bekräftades med ack. \\ \hline
+		7-0 & 8 bitar för meddelande nummer. Används bara av meddelanden som bekräftas med ack. \\ \hline
 
 	\end{tabular}
 	\caption{Beskriver hur de 29 bitarna i ID-fältet av CAN-meddelandet används.}
@@ -42,17 +39,32 @@ Bekräftelse för senaste mottagna meddelandet. Detta meddelande har högsta pri
     \item Meddelandetyp 1
     \item Skickas från periferienhet till centralenheten
 \end{itemize}
-Talar om för centralenheten om någon dörr eller sensor larmar. Detta meddelande har typnummer 1 och skickas endast av periferienheterna. \\
+Talar om för centralenheten om någon dörr eller sensor larmar. Detta meddelande har typnummer 1 och skickas endast av periferienheterna. I första byten talar man om vilken typ av sensor som larmar, i andra byten skickas IDt på sensorn\\
 
 
 \textbf{Skicka konfiguration}
 \begin{itemize}
     \item Meddelandetyp 2
-    \item Skickas i båda riktningar
+    \item Skickas från centralenheten till preferienhet
 \end{itemize}
-Detta meddelande används för att skicka konfigurationer i båda riktningarna.
-Centralenheten skickar konfiguration till periferienheten kontinuerligt under drift för att fösäkra sig om att periferienheten har rätt konfiguration. Detta fungerar även som ping, då ett bestämt antal uteblivna ack tolkas som att enheten inte längre finns på nätverket.
+Detta meddelande används för att skicka konfigurationer till periferienheterna.
+Centralenheten skickar konfiguration till periferienheten kontinuerligt under drift för att försäkra sig om att periferienheten har rätt konfiguration. Detta fungerar även som ping, då ett bestämt antal uteblivna ack tolkas som att enheten inte längre finns på nätverket.
 I så fall uppmärksammar centralenheten detta.
+Första databyten anger sensortyp en tabell
+\begin{table}[H]
+	\centering
+	\begin{tabular}{|c|p{0.8\textwidth}|}
+		\hline
+		Första byte & Används till \\ \hline \hline
+		0 & Dörrsensor. \\ \hline
+		1 & Avståndssensor. \\ \hline
+		2 & Vibrationssensor. \\ \hline
+
+	\end{tabular}
+	\caption{Beskriver konf.}
+	\label{tab:konfsensors}
+\end{table}
+
 
 Periferienheterna skickar sina konfigurationener i andra riktingen vid uppstart.
 Dessa ger centralenheten förslag på hur enheterna borde konfigureras initialt. Rörelselarmet skickar även mätvärden i denna typ av meddelande.
