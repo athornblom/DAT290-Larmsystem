@@ -78,7 +78,7 @@ uint8_t encode_assign_id(CanTxMsg *msg, uint8_t id){
     header.toCentral = 0;
     HEADERtoUINT32(header, msg->ExtId);
     
-    msg->DLC = 2;
+    msg->DLC = 1;
     
     msg->IDE = CAN_Id_Extended; //Alternativen är CAN_Id_Standard eller FCAN_Id_Extended
     msg->RTR = CAN_RTR_Data;
