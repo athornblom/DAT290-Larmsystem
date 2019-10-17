@@ -4,6 +4,7 @@ typedef struct{
     uint8_t id;
     uint8_t time_0;
     uint8_t time_1;
+    uint8_t locked;
 } Door;
 
 typedef struct{

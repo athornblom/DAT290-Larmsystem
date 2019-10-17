@@ -371,9 +371,28 @@ void USARTCommand(void) {
     }
 }
 
+uint8_t doors_equal(Door door_0, Door door_1){
+    return door_0.time_0 == door_1.time_0 && door_0.time_1 == door_1.time_1 && door_0.locked == door_1.locked;
+}
 
 uint8_t send_door_configs(Door_device dev){
+    CanTxMsg msg;
+    Door door_first;
+    Door door_last;
+    uint8_t id_last;
+    //Följande loop samlar största möjliga intervall av dörrar med samma värden och skickar ett meddelande per intervall
+    for(uint8_t id_first = 0; id_first < dev.num_of_doors;){
+        door_first = dev.doors[id_first];
+        for(id_last = id_first; id_last < dev.num_of_doors; ++id_last){
+            door_last = dev.doors[id_last];
+            if(!doors_equal(door_first, door_last)){
+                break;
+            }
+        }
+        encode_door_config(msg, 0, id_first, id_last - 1, door_first.time_0, door_first.time_1, door_first.locked);
     
+        id_first = id_last;
+    }
 }
 
 void main(void) {
