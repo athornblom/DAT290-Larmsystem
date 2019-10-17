@@ -8,7 +8,7 @@ void printRxMsg(CanRxMsg *msg, uint8_t base){
     //Skriver ut ID
     if (msg->IDE == CAN_Id_Standard) {
         USARTPrint("STD ID: \n");
-        USARTPrintNumBase(msg->StdId & 0x1FF, base);
+        USARTPrintNumBase(msg->StdId & 0x7FF, base);
     } else {
         USARTPrint("Ext ID: \n");
         USARTPrintNumBase(msg->ExtId & 0x1FFFFFFF, base);
