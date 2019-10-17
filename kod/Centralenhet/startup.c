@@ -1,12 +1,6 @@
 //Centralenhet
 #include "startup.h"
-#include "CAN.h"
-#include "USART.h"
-#include "stm32f4xx_can.h"
-#include "stm32f4xx_rcc.h"
-#include "stm32f4xx_gpio.h"
-#include "delay.h"
-#include "stringFunc.h"
+
 
 #define MAXCOMMANDLENGTH 10
 
@@ -107,6 +101,8 @@ void id_request_handler(CanRxMsg *rxMsgP){
             door.time_0 = default_time_0;
             door.time_1 = default_time_1;
         }
+        
+        send_door_configs(dev);
     }
     
     USARTPrint("ExtId ");
@@ -351,7 +347,7 @@ void USARTCommand(void) {
             }
 
         } else {
-            //Check om vi skriver ett för lång kommando
+            //Check om vi skriver ett för långt kommando
             if (index >= MAXCOMMANDLENGTH){
                 USARTPrint("\nFor langt kommando\n");
                 index = 0;
@@ -375,24 +371,30 @@ uint8_t doors_equal(Door door_0, Door door_1){
     return door_0.time_0 == door_1.time_0 && door_0.time_1 == door_1.time_1 && door_0.locked == door_1.locked;
 }
 
-uint8_t send_door_configs(Door_device dev){
+uint8_t send_door_configs(Door_device *dev){
     CanTxMsg msg;
     Door door_first;
     Door door_last;
     uint8_t id_last;
     //Följande loop samlar största möjliga intervall av dörrar med samma värden och skickar ett meddelande per intervall
-    for(uint8_t id_first = 0; id_first < dev.num_of_doors;){
-        door_first = dev.doors[id_first];
-        for(id_last = id_first; id_last < dev.num_of_doors; ++id_last){
-            door_last = dev.doors[id_last];
+    for(uint8_t id_first = 0; id_first < dev->num_of_doors;){
+        door_first = dev->doors[id_first];
+        for(id_last = id_first; id_last < dev->num_of_doors; ++id_last){
+            door_last = dev->doors[id_last];
             if(!doors_equal(door_first, door_last)){
                 break;
             }
         }
         encode_door_config(msg, 0, id_first, id_last - 1, door_first.time_0, door_first.time_1, door_first.locked);
-    
-        id_first = id_last;
+        blockingDelayMs(300); //För säkerhets skull TODO: Ta bort om möjligt
+        if (CANsendMessage(&msg) == CAN_TxStatus_NoMailBox){
+            //TODO: Hantera?
+            USARTPrint("No mailbox empty\n");
+            return 0;
+        }
+        id_first = id_last; //Vi behöver ju inte kolla de dörrar som är med i intervallet.
     }
+    return 1;
 }
 
 void main(void) {
