@@ -1,18 +1,38 @@
 #include "CANEncode.h"
+#include "USART.h"
 #include "misc.h"
 #include "stm32f4xx.h"
 #include "stm32f4xx_rcc.h"
 #include "stm32f4xx_gpio.h"
 
 
-uint8_t encode_door_time_config(CanTxMsg *msg, uint32_t time0, uint32_t time1){
+uint8_t encode_door_config(CanTxMsg *msg, uint8_t to_central, uint8_t door_id_0, uint8_t door_id_1, uint16_t time_0, uint16_t time_1, uint8_t locked){
+    if(door_id_0 > door_id_1 || door_id_1 > 31){
+        USARTPrint("Aja baja, nu angav du ett dumt intervall. Inget meddelande skickas.");
+        return 0;
+    }
+    
     uint8_t *data_pointer =  &(msg->Data);
     
-    msg->DLC = 8;
     
-    //De två tidsvärdena skrivs in i bytearrayen för data
-    *data_pointer = time0;
-    *(data_pointer + 4) = time1;
+    Header header = empty_header;
+    header.msgType = 2;
+    header.toCentral = to_central;
+    HEADERtoUINT32(header, msg->ExtId);
+    
+    msg->DLC = 7;
+    
+    //Dörrintervall skrivs till de 16 första databitarna
+    *data_pointer = door_id_0;
+    *(data_pointer + 1) = door_id_1;
+    
+    
+    //De två tidsvärdena skrivs till bit 16-47
+    *(data_pointer + 2) = time_0;
+    *(data_pointer + 4) = time_0;
+    
+    //Låsflagga skrivs till bit 48-55
+    *(data_pointer + 6) = locked;
     
     return 1;
 }
@@ -46,6 +66,7 @@ uint8_t encode_request_id(CanTxMsg *msg, uint32_t temp_id, uint8_t device_type, 
     *(data_pointer + 5) = value_0;
     *(data_pointer + 6) = value_1;
     
+    return 1;
 }
 
 uint8_t encode_assign_id(CanTxMsg *msg, uint8_t id){

@@ -77,6 +77,7 @@ Door_device *get_door_device(uint8_t id){
 Door_device *add_door_device(uint8_t id){
     Door_device dev;
     dev.id = id;
+    dev.type = 0;
     door_devs[id] = dev; //Lägger dev i array av faktiska strukturinstanser för att undvika att den skrivs över
     devices[id] = (void*)(&door_devs[id]);
     return &door_devs[id];
@@ -90,6 +91,7 @@ Motion_device *get_motion_device(uint8_t id){
 Motion_device *add_motion_device(uint8_t id){
     Motion_device dev;
     dev.id = id;
+    dev.type = 1;
     motion_devs[id] = dev; //Lägger dev i array av faktiska strukturinstanser för att undvika att den skrivs över
     devices[id] = (void*)(&motion_devs[id]);
     return &motion_devs[id];
@@ -111,12 +113,7 @@ Motion_device *add_motion_device(uint8_t id){
 }*/
 
 void id_request_handler(CanRxMsg *rxMsgP){
-    //TODO REMOVE
-    USARTPrint("In irq handler\n");
-    
     CanRxMsg rxMsg = *rxMsgP;
-    
-        
     CanTxMsg txMsg;
     encode_assign_id(&txMsg, next_id);
     if (CANsendMessage(&txMsg) == CAN_TxStatus_NoMailBox){
@@ -132,10 +129,9 @@ void id_request_handler(CanRxMsg *rxMsgP){
         next_id++;
         
         dev->num_of_doors = rxMsg.Data[5];
-        USARTPrint("\n och ");
+        USARTPrint("\noch ");
         USARTPrintNum((uint32_t)rxMsg.Data[5]);
         USARTPrint(" dorrar.\n");
-        
         
     }
     
