@@ -1,56 +1,26 @@
 //Centralenhet
-
+#include "startup.h"
 #include "CAN.h"
 #include "USART.h"
-#include "misc.h"
 #include "stm32f4xx_can.h"
 #include "stm32f4xx_rcc.h"
 #include "stm32f4xx_gpio.h"
-#include "delay.c"
+#include "delay.h"
 #include "stringFunc.h"
 
 #define MAXCOMMANDLENGTH 10
 
-CanRxMsg RxMessage;
-CanTxMsg TxMessage;
 
-typedef struct{
-    uint8_t id;
-    uint8_t time_0;
-    uint8_t time_1;
-} Door;
 
-typedef struct{
-    uint8_t type;
-    uint8_t id;
-    uint8_t num_of_doors;
-    Door doors[32];
-} Door_device;
-
-typedef struct{
-    uint8_t id;
-    uint8_t dist;
-} Dist_sensor;
-
-typedef struct{
-    uint8_t id;
-} Vib_sensor;
-
-typedef struct{
-    uint8_t type;
-    uint8_t id;
-    Dist_sensor dist_sensors[32];
-    Vib_sensor vib_sensors[32];
-} Motion_device;
 
 uint8_t next_id = 0;
+uint16_t default_time_0 = 2;
+uint16_t default_time_1 = 3;
 
 void *devices[128];
 Door_device door_devs[128];
 Motion_device motion_devs[128];
-uint32_t messages_to_send;
-uint8_t light;
-uint32_t counter;
+
 
 void startup(void) __attribute__((naked)) __attribute__((section (".start_section")) );
 
@@ -63,9 +33,6 @@ __asm volatile(
 	) ;
 }
 
-void toggle_light() {
-	light = ~light;
-}
 
 
 Door_device *get_door_device(uint8_t id){
@@ -133,6 +100,13 @@ void id_request_handler(CanRxMsg *rxMsgP){
         USARTPrintNum((uint32_t)rxMsg.Data[5]);
         USARTPrint(" dorrar.\n");
         
+        Door door;
+        for(uint8_t id = 0; id < dev->num_of_doors; id++){
+            door = dev->doors[id];
+            door.id = id;
+            door.time_0 = default_time_0;
+            door.time_1 = default_time_1;
+        }
     }
     
     USARTPrint("ExtId ");
@@ -141,6 +115,8 @@ void id_request_handler(CanRxMsg *rxMsgP){
     USARTPrint("\nData ");
     USARTPrintNum((uint32_t)rxMsg.Data);
     USARTPrint("\n");
+    
+    
 
 }
 
@@ -393,6 +369,11 @@ void USARTCommand(void) {
             }
         }
     }
+}
+
+
+uint8_t send_door_configs(Door_device dev){
+    
 }
 
 void main(void) {

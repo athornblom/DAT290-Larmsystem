@@ -23,6 +23,8 @@
     <File Name="md407-ram.x"/>
   </VirtualDirectory>
   <VirtualDirectory Name="src">
+    <File Name="startup.h"/>
+    <File Name="../lib/delay.c"/>
     <File Name="../lib/CANEncode.c"/>
     <File Name="../lib/stringFunc.h"/>
     <File Name="../lib/stringFunc.c"/>
