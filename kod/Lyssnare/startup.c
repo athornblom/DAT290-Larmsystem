@@ -1,12 +1,10 @@
 #include "CAN.h"
 #include "USART.h"
 #include "misc.h"
+#include "printMsg.h"
 #include "stm32f4xx_can.h"
 #include "stm32f4xx_rcc.h"
 #include "stm32f4xx_gpio.h"
-
-CanRxMsg RxMessage;
-CanTxMsg TxMessage;
 
 void startup(void) __attribute__((naked)) __attribute__((section (".start_section")) );
 
@@ -19,25 +17,8 @@ __asm volatile(
 	) ;
 }
 
-
 void msgPrint(CanRxMsg *msg){
-    USARTPrint("New msg:\n");
-    uint8_t base = 16;
-
-    //Skriver ut ID
-    if (msg->IDE == CAN_Id_Standard) {
-        USARTPrint("STD ID: \n");
-        USARTPrintNumBase(msg->StdId, base);
-    } else {
-        USARTPrint("Ext ID: \n");
-        USARTPrintNumBase(msg->ExtId, base);
-    }
-
-    USARTPrint("\nData: \n");
-    for (uint8_t i = msg->DLC ; i > 0; i--){
-        USARTPrintNumBase(msg->Data[i -1],base);
-    }
-    USARTPrint("\n\n");
+    printRxMsg(msg, 16);
 }
 
 void main(void) {
