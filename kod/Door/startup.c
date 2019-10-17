@@ -7,7 +7,9 @@
 #include "startup.h"
 #include "delay.h"
 #include "init.h"
-
+#include "can.h"
+#include "CANEncode.h"
+#include "stm32f4xx_rng.h"
 void startup(void) __attribute__((naked)) __attribute__((section(".start_section")));
 
 void startup(void)
@@ -19,6 +21,9 @@ void startup(void)
 		"_exit: B .\n" /* never return */
 	);
 }
+// GLOBAL VARIABLES
+char id = 0;
+char noid = 1;
 // ========================================= DOOOOOORS INIT =================================================
 uint16_t GPIO_Pins[] = {
 	GPIO_Pin_0, GPIO_Pin_1, GPIO_Pin_2, GPIO_Pin_3, GPIO_Pin_4, GPIO_Pin_5,
@@ -49,11 +54,21 @@ void delay (int mili){
 		int time = msTicks + mili;
 		while(time > msTicks);
 	}
+//======================================== Slumptals generator CAN =========================================
+void init_rng(void){
+	RCC_AHB2PeriphClockCmd(RCC_AHB2Periph_RNG, ENABLE);
+    RNG_Cmd(ENABLE);
+}
+
+void sendAlarm(door);
+void getId (void);
 
 void main(void)
 {
 	init_GPIO_Ports();
 	systick_Init();
+	can_init();
+	init_rng();
 	while(msTicks < 2000);
 
 	//door door1, door2, door3, door4, door5, door6, door8, door9 ,door10, door11, door12, door13,door14,door15,door16, door17, door18, door19, door20, door21, door22, door23, door24 ,door25, door26, door27, door28,door29,door30,door31,door32;
@@ -79,14 +94,15 @@ void main(void)
 				active_doors[counter].GPIO_read = GPIO_Pins[i];
 				active_doors[counter].GPIO_lamp = GPIO_Pins[i+1];
 				active_doors[counter].controlbits = 0;
-				active_doors[counter].time_larm = 1;
-				active_doors[counter].time_central_larm = 2;
+				active_doors[counter].time_larm = 0;
+				active_doors[counter].time_central_larm = 1;
 				active_doors[counter].GPIO_type = GPIO_Ports[j];
 				//active_doors[counter] = all_doors[counter];
 				counter++;
 			}
 		}
 	}
+	getId((sizeof(active_doors)/sizeof(active_doors[0])));
 	// ================================== LIGHTS =========================================================
 	for (int i = 0; i < sizeof(active_doors)/sizeof(active_doors[0]); i++) //CHRISTMAST LIGHTS FTW
 	{
@@ -117,6 +133,7 @@ void main(void)
 	{
 		for (int i = 0; i < sizeof(active_doors)/sizeof(active_doors[0]); i++)
 		{
+		
 			if (!(active_doors[i].controlbits & 4))
 				{
 				if (!GPIO_ReadInputDataBit(active_doors[i].GPIO_type, active_doors[i].GPIO_read)){ //GPIO pinnen är noll ifall dörren är stängd därför !
@@ -141,13 +158,70 @@ void main(void)
 					{
 						GPIO_ResetBits(active_doors[i].GPIO_type, active_doors[i].GPIO_lamp);	// släcker lampan annars
 					}
-					if (active_doors[i].controlbits & 1 && msTicks > (active_doors[i].larmTick + 1000 * 10 * active_doors[i].time_central_larm) && active_doors[i].controlbits & 2)
+					if ((active_doors[i].controlbits & 1 )&& msTicks > (active_doors[i].larmTick + 1000 * 10 * active_doors[i].time_central_larm) && !(active_doors[i].controlbits & 2))
 					{
 						active_doors[i].controlbits |= 2;
-						// Något med CAN
+						sendAlarm(active_doors[i]);
+						
 					}
 				}
 			}
 		}
 	}
+	}
+	
+	void idAssign_Handler(CanRxMsg* msg){
+		id = msg->Data[0];
+		noid = 0;
+	}
+
+	void getId (int nDoors){
+		CANFilter filter = empty_mask;
+		CANFilter mask = empty_mask;
+
+		//används för omvandling
+		Header header;
+
+		//skriver mask
+		mask.IDE = 1;
+		mask.RTR = 1;
+		header.msgType = ~0;
+		header.ID = ~0;
+		header.toCentral = ~0;
+		HEADERtoUINT32(header, mask.ID);
+
+		//Skriver filter
+		filter.IDE = 1;
+		filter.RTR = 0;
+		header.msgType = assignID_msg_type;
+		header.ID = 0;
+		header.toCentral = 1;
+		HEADERtoUINT32(header, filter.ID);
+
+		if (CANhandlerListNotFull()){
+			CANaddFilterHandler(idAssign_Handler, &filter, &mask);
+		}
+
+
+		int timeStamp = msTicks + 60 * 1000; 
+		if (RNG_GetFlagStatus(RNG_FLAG_DRDY) == SET && //Nytt meddelande finns
+             RNG_GetFlagStatus(RNG_FLAG_CECS) == RESET && //Inget klockfel
+             RNG_GetFlagStatus(RNG_FLAG_SECS) == RESET){ //Inget seedfel
+                    uint32_t rand = RNG_GetRandomNumber();
+			 		CanTxMsg idRequest;
+					
+					encode_request_id(&idRequest,rand,0, nDoors, 69);
+					while (msTicks < timeStamp && noid)
+					{
+						CANsendMessage(&idRequest);
+						delay(1000);
+					}
+			 }
+	}
+
+	void sendAlarm (door alarming_door){
+		CanTxMsg testMsg = {
+							0, 0x4, CAN_Id_Extended, CAN_RTR_DATA, 4, {0xa,0xb,0xc,1} 
+						};
+						CANsendMessage(&testMsg);
 	}

@@ -1,5 +1,4 @@
 #include "CANEncode.h"
-#include "USART.h"
 #include "misc.h"
 #include "stm32f4xx.h"
 #include "stm32f4xx_rcc.h"
@@ -8,7 +7,6 @@
 
 uint8_t encode_door_config(CanTxMsg *msg, uint8_t to_central, uint8_t door_id_0, uint8_t door_id_1, uint16_t time_0, uint16_t time_1, uint8_t locked){
     if(door_id_0 > door_id_1 || door_id_1 > 31){
-        USARTPrint("Aja baja, nu angav du ett dumt intervall. Inget meddelande skickas.");
         return 0;
     }
     
