@@ -14,6 +14,7 @@
  */
 
 #include "USART.h"
+#inlcude "printMsg.h"
 #ifdef DEBUG
     #define DEBUG_ENABLE 1
 #else
@@ -26,6 +27,10 @@
 #define DebugPrintNum(num) do { if (DEBUG_ENABLE) USARTPrintNum(num); } while (0)
 #define DebugPrintNumBase(num, base) do { if (DEBUG_ENABLE) USARTPrintNumBase(num, base); } while (0)
 #define DebugPrintPtr(ptr, length, base) do { if (DEBUG_ENABLE) USARTPrintPtr(ptr, length, base); } while (0)
+
+//Skriver ut meddelanden
+#define DebugPrintTxMsg(msgPtr, base) do { if (DEBUG_ENABLE) printTxMsg(msgPtr, base); } while (0)
+#define DebugPrintRxMsg(msgPtr, base) do { if (DEBUG_ENABLE) printRxMsg(msgPtr, base); } while (0)
 
 
 #endif
