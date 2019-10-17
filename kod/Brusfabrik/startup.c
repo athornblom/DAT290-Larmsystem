@@ -2,13 +2,13 @@
 
 #include "delay.h"
 #include "misc.h"
-#include "stm32f4xx_can.h"
-#include "stm32f4xx_gpio.h"
-#include "stm32f4xx_rng.h"
+#include "CAN.h"
+#include "printMsg.h"
 #include "stm32f4xx_rcc.h"
+#include "stm32f4xx_rng.h"
 
 uint8_t tryRandomizeCANMsg(CanTxMsg *msg);
-uint8_t can_init();
+
 void startup(void) __attribute__((naked)) __attribute__((section (".start_section")) );
 
 void startup ( void ) {
@@ -29,90 +29,55 @@ void main(void) {
     RNG_Cmd(ENABLE);
     
     CanTxMsg canMsg;
+    uint8_t usartRead;
+    uint8_t active = 0;
+    uint16_t delay = 128;
 
-    USARTPrint("\nStarted\n");
+    USARTPrint("\nStarar med ");
+    USARTPrintNumBase(delay,10);
+    USARTPrint(" ms delay\nAnvand x for att toggle on/off\nAnvand s/f for att andra delay\n");
                     
     while (1) {
-        //Ändra fördröjningen för att justera hur mycket snabbt data som skickas
-        blockingDelayus(100000);
-        
-        tryRandomizeCANMsg(&canMsg);
-        
-        //Prova att skicka
-        if (CAN_Transmit(CAN1, &canMsg) == CAN_TxStatus_NoMailBox){
-            USARTPrint("no mailbox empty\n");
+        if (USARTGet(&usartRead)){
+            if (usartRead == 'x'){
+                if(active){
+                    active = 0;
+                    USARTPrint("off\n");
+                } else {
+                    active = 1;
+                    USARTPrint("on\n");
+                }
+            }
+            //Minskar spamhastigheten 's' som i slower
+            else if (usartRead == 's'){
+                delay = delay == (1 << 11) ? delay : (delay << 1);
+                USARTPrintNumBase(delay,10);
+                USARTPrint(" ms delay\n");
+            }
+
+            //Ökar spamhastigheten 'f' som i faster
+            else if (usartRead == 'f'){
+                delay = delay == 1 ? 1 : (delay >> 1);
+                USARTPrintNumBase(delay,10);
+                USARTPrint(" ms delay\n");
+            }
+        }
+
+        if (active){
+            //Ändra fördröjningen för att justera hur mycket snabbt data som skickas
+            blockingDelayMs(delay);
+
+            tryRandomizeCANMsg(&canMsg);
+
+            //Prova att skicka
+            if (CANsendMessage(&canMsg) != CAN_TxStatus_NoMailBox){
+                USARTPrint("Msg sent:\n");
+                printTxMsg(&canMsg, 16);
+            } else {
+                USARTPrint("no mailbox empty\n");
+            }
         }
     }
-}
-
-uint8_t can_init() {
-	CAN_InitTypeDef CAN_InitStructure;
-	NVIC_InitTypeDef NVIC_InitStructure;
-	CAN_FilterInitTypeDef CAN_FilterInitStructure;
-	GPIO_InitTypeDef GPIO_InitStructure;
-
-	RCC_APB1PeriphClockCmd(RCC_APB1Periph_CAN1, ENABLE);
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_SYSCFG, ENABLE);
-	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
-	
-	// Connect CAN pins to AF9. See more below
-	GPIO_PinAFConfig(GPIOB, GPIO_PinSource9, GPIO_AF_CAN1);
-    GPIO_PinAFConfig(GPIOB, GPIO_PinSource8, GPIO_AF_CAN1);  
-
-	// Configure CAN RX and TX pins
-	// See page 41 of MD407 reference manual
-	// Connect CAN1 pins to AF
-    // PB9 - CAN1 TX
-    // PB8 - CAN1 RX
-    GPIO_PinAFConfig(GPIOB, GPIO_PinSource9, GPIO_AF_CAN1);  	
-    GPIO_PinAFConfig(GPIOB, GPIO_PinSource8, GPIO_AF_CAN1);  
-
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_9;
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
-    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_Init(GPIOB, &GPIO_InitStructure);	
-
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8;	
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
-    GPIO_InitStructure.GPIO_OType = GPIO_Mode_IN;
-    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;	
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_Init(GPIOB, &GPIO_InitStructure);
-	 
-	/* CAN register init */
-	CAN_DeInit(CAN1);
-
-	/* CAN filter init */
-	CAN_FilterInitStructure.CAN_FilterNumber = 0;
-	CAN_FilterInitStructure.CAN_FilterMode = CAN_FilterMode_IdMask;
-	CAN_FilterInitStructure.CAN_FilterScale = CAN_FilterScale_32bit;
-	CAN_FilterInitStructure.CAN_FilterIdHigh = 0x0000;
-	CAN_FilterInitStructure.CAN_FilterIdLow = 0x0000;
-	CAN_FilterInitStructure.CAN_FilterMaskIdHigh = 0x0000;
-	CAN_FilterInitStructure.CAN_FilterMaskIdLow = 0x0000;
-	CAN_FilterInitStructure.CAN_FilterFIFOAssignment = 0;
-	CAN_FilterInitStructure.CAN_FilterActivation = ENABLE;
-	CAN_FilterInit(&CAN_FilterInitStructure);
-	
-	/* CAN cell init */
-	CAN_InitStructure.CAN_TTCM = DISABLE; // time-triggered communication mode = DISABLED
-    CAN_InitStructure.CAN_ABOM = DISABLE; // automatic bus-off management mode = DISABLED
-    CAN_InitStructure.CAN_AWUM = DISABLE; // automatic wake-up mode = DISABLED
-    CAN_InitStructure.CAN_NART = DISABLE; // non-automatic retransmission mode = DISABLED
-    CAN_InitStructure.CAN_RFLM = DISABLE; // receive FIFO locked mode = DISABLED
-    CAN_InitStructure.CAN_TXFP = DISABLE; // transmit FIFO priority = DISABLED
-    CAN_InitStructure.CAN_Mode = CAN_Mode_Normal; // normal CAN mode
-
-	/* CAN Baudrate = 1 MBps (CAN clocked at 30 MHz) */
-	CAN_InitStructure.CAN_BS1 = CAN_BS1_3tq;
-	CAN_InitStructure.CAN_BS2 = CAN_BS2_4tq;
-	CAN_InitStructure.CAN_Prescaler = 7;
-	
-	uint8_t can_init_status = CAN_Init(CAN1, &CAN_InitStructure);
-	
-	return can_init_status;
 }
 
 //Slumpar ett meddelande, RNG måste ha initsieras innan användning
@@ -123,12 +88,16 @@ uint8_t tryRandomizeCANMsg(CanTxMsg *msg){
              RNG_GetFlagStatus(RNG_FLAG_SECS) == RESET){ //Inget seedfel
                     uint32_t rand = RNG_GetRandomNumber();
                     //skriv meddelande
-                    msg->StdId = rand;
-                    msg->ExtId = rand;
-                    msg->IDE = CAN_Id_Standard; //Alternativen är CAN_Id_Standard eller FCAN_Id_Extended
+                    if (rand & 1){
+                        msg->IDE = CAN_Id_Standard;
+                        msg->StdId = rand & 0x7FF;
+                    } else {
+                        msg->IDE = CAN_Id_Extended;
+                        msg->ExtId = rand & 0x1FFFFFFF;
+                    }
                     msg->RTR = CAN_RTR_Data;
-                    msg->DLC = 8;
-                    for (uint8_t i = 0; i < 7; i++){
+                    msg->DLC = rand % 9;
+                    for (uint8_t i = 0; i < msg->DLC; i++){
                         msg->Data[i] = ((uint8_t *) &rand)[i%4];
                     }
 
