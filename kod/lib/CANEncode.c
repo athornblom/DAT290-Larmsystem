@@ -42,12 +42,12 @@ uint8_t encode_door_config(CanTxMsg *msg, uint8_t to_central, uint8_t door_id_0,
  * uint8_t value_0: antal dörrar eller avståndssensorer
  * uint8_t value_1: antal vibrationssensorer
  */
-uint8_t encode_request_id(CanTxMsg *msg, uint32_t temp_id, uint8_t device_type, uint8_t value_0, uint8_t value_1){
-    uint8_t *data_pointer =  &(msg->Data);
+uint8_t encode_request_id(CanTxMsg *msg, uint8_t temp_id, uint8_t device_type, uint8_t value_0, uint8_t value_1){
+    uint8_t *data_pointer =  &(msg->Data[0]);
     
     
     Header header = empty_header;
-    header.msgType = 4;
+    header.msgType = reqID_msg_type;
     header.toCentral = 1;
     HEADERtoUINT32(header, msg->ExtId);
     
@@ -60,29 +60,32 @@ uint8_t encode_request_id(CanTxMsg *msg, uint32_t temp_id, uint8_t device_type, 
     
     //Id skrivs in i bytearrayen för data
     *data_pointer = temp_id;
-    *(data_pointer + 4) = device_type;
-    *(data_pointer + 5) = value_0;
-    *(data_pointer + 6) = value_1;
+    *(data_pointer + 1) = device_type;
+    *(data_pointer + 2) = value_0;
+    *(data_pointer + 3) = value_1;
     
     return 1;
 }
 
-uint8_t encode_assign_id(CanTxMsg *msg, uint8_t id){
+uint8_t encode_assign_id(CanTxMsg *msg, CanRxMsg *request, uint8_t id){
     uint8_t *data_pointer =  &(msg->Data);
     
     
     Header header = empty_header;
-    header.msgType = 3;
+    header.msgType = assignID_msg_type;
     header.toCentral = 0;
     HEADERtoUINT32(header, msg->ExtId);
     
-    msg->DLC = 1;
+    msg->DLC = 2;
     
     msg->IDE = CAN_Id_Extended; //Alternativen är CAN_Id_Standard eller FCAN_Id_Extended
     msg->RTR = CAN_RTR_Data;
     
-    //Id skrivs in i bytearrayen för data
-    *data_pointer = id;
+    //Första byten är slumptalet från förfrågan
+    *data_pointer = request->Data[0];
+
+    //Id skickas i andra byten
+    *(data_pointer + 1) = id;
 }
 
 uint8_t encode_distance_config(CanTxMsg *msg, uint32_t dist){
