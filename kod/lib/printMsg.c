@@ -12,6 +12,19 @@ void printRxMsg(CanRxMsg *msg, uint8_t base){
     } else {
         USARTPrint("Ext ID: \n");
         USARTPrintNumBase(msg->ExtId & 0x1FFFFFFF, base);
+        //Skriver ut header enl vårat protokoll
+        Header header;
+        UINT32toHEADER(msg->ExtId, header);
+        USARTPrint("\nMsg type: ");
+        USARTPrintNumBase(header.msgType, base);
+        USARTPrint("\nTo central: ");
+        USARTPrintNumBase(header.toCentral, base);
+        USARTPrint("\nID: ");
+        USARTPrintNumBase(header.ID, base);
+        USARTPrint("\nSession ID: ");
+        USARTPrintNumBase(header.sessionID, base);
+        USARTPrint("\nMsg Num: ");
+        USARTPrintNumBase(header.msgNum, base);
     }
     USARTPrint("\n");
 
