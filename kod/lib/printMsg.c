@@ -13,17 +13,25 @@ void printRxMsg(CanRxMsg *msg, uint8_t base){
         USARTPrint("Ext ID: \n");
         USARTPrintNumBase(msg->ExtId & 0x1FFFFFFF, base);
     }
-    //Förhindrar för stora DLC
-    msg->DLC %= 9;
-    USARTPrint("\nData (");
-    USARTPrintNumBase(msg->DLC, base);
-    USARTPrint(" bytes): \n");
-    for (uint8_t i = msg->DLC ; i > 0; i--){
-        USARTPrintNumBase(msg->Data[i -1],base);
-        if(i > 1){
-            USARTPrint("-");
-        }
+    USARTPrint("\n");
+
+    if(msg->RTR == CAN_RTR_Remote){
+        USARTPrint("Remote frame\n");
+    } else if (msg->RTR == CAN_RTR_Data){
+            //Förhindrar för stora DLC
+            msg->DLC %= 9;
+            USARTPrint("Data (");
+            USARTPrintNumBase(msg->DLC, base);
+            USARTPrint(" bytes): \n");
+            for (uint8_t i = msg->DLC ; i > 0; i--){
+                USARTPrintNumBase(msg->Data[i -1],base);
+                if(i > 1){
+                    USARTPrint("-");
+                }
+            }
     }
+
+
     USARTPrint("\n\n");
 }
 
