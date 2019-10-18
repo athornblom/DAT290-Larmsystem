@@ -1,6 +1,8 @@
 #include "misc.h"
 #include "CAN.h"
 #include "USART.h"
+#include "printMsg.h"
+#include "CANEncode.h"
 #include "stm32f4xx_can.h"
 #include "stm32f4xx_rcc.h"
 #include "stm32f4xx_gpio.h"

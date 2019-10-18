@@ -52,10 +52,8 @@ uint8_t encode_request_id(CanTxMsg *msg, uint8_t temp_id, uint8_t device_type, u
     header.msgType = reqID_msg_type;
     header.toCentral = 1;
     HEADERtoUINT32(header, msg->ExtId);
-    
-    
-    
-    msg->DLC = 7;
+
+    msg->DLC = 4;
     
     msg->IDE = CAN_Id_Extended;
     msg->RTR = CAN_RTR_Data;
@@ -97,4 +95,19 @@ uint8_t encode_distance_config(CanTxMsg *msg, uint32_t dist){
     
     //Avstånd skrivs in i bytearrayen för data
     *data_pointer = dist;
+}
+
+uint8_t decode_door_config_msg(CanRxMsg *msg, uint8_t *door_id_0, uint8_t *door_id_1, uint16_t *time_0, uint16_t *time_1, uint8_t *locked) {
+    uint8_t *data_pointer =  &(msg->Data);
+    
+    door_id_0 = data_pointer;
+    door_id_1 = data_pointer + 1;
+    
+    time_0 = data_pointer + 2;
+    time_1 = data_pointer + 4;
+    
+    locked = data_pointer + 6;
+    
+    
+    return 1;
 }

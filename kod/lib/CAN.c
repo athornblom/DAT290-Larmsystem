@@ -321,36 +321,3 @@ uint8_t can_init() {
 
 	return can_init_status;
 }
-
-
-
-uint8_t decode_door_config_msg(CanRxMsg *msg, uint8_t *door_id_0, uint8_t *door_id_1, uint16_t *time_0, uint16_t *time_1, uint8_t *locked) {
-    uint8_t *data_pointer =  &(msg->Data);
-    
-    door_id_0 = data_pointer;
-    door_id_1 = data_pointer + 1;
-    
-    time_0 = data_pointer + 2;
-    time_1 = data_pointer + 4;
-    
-    locked = data_pointer + 6;
-    
-    
-    return 1;
-}
-
-
-
-
-
-uint8_t handle_recieve_id_msg(CanRxMsg *msg) {
-    uint16_t id;
-    uint8_t *data_pointer =  &(msg->Data);
-    
-    id = *data_pointer;
-    
-    //TODO: Gör grejer med id
-}
-
-
-
