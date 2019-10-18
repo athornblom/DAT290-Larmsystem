@@ -136,7 +136,7 @@ void id_request_handler(CanRxMsg *rxMsgP){
             }
         }
         
-        send_door_configs(dev);
+        //send_door_configs(dev);
     }
     
     USARTPrint("ExtId ");

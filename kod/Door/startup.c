@@ -22,15 +22,15 @@ void startup(void)
 	);
 }
 // GLOBAL VARIABLES
-char id = 0;
-char noid = 1;
+uint32_t id = 0;
+char nocid = 1;
 // ========================================= DOOOOOORS INIT =================================================
 uint16_t GPIO_Pins[] = {
 	GPIO_Pin_0, GPIO_Pin_1, GPIO_Pin_2, GPIO_Pin_3, GPIO_Pin_4, GPIO_Pin_5,
 	GPIO_Pin_6, GPIO_Pin_7, GPIO_Pin_8, GPIO_Pin_9, GPIO_Pin_10, GPIO_Pin_11,
 	GPIO_Pin_12, GPIO_Pin_13, GPIO_Pin_14, GPIO_Pin_15};
 
-GPIO_TypeDef* GPIO_Ports[] = {GPIOE, GPIOA, GPIOC, GPIOD};
+GPIO_TypeDef* GPIO_Ports[] = {GPIOE, GPIOA, GPIOD, GPIOC};
 
 // ========================================= SYSTICK ================================================
 volatile uint32_t msTicks = 0; /* Variable to store millisecond ticks */
@@ -102,7 +102,11 @@ void main(void)
 			}
 		}
 	}
+	
 	getId((sizeof(active_doors)/sizeof(active_doors[0])));
+	if(id == 0){ // debugging
+		GPIO_SetBits(GPIOC, GPIO_Pin_13);
+	}
 	// ================================== LIGHTS =========================================================
 	for (int i = 0; i < sizeof(active_doors)/sizeof(active_doors[0]); i++) //CHRISTMAST LIGHTS FTW
 	{
@@ -171,8 +175,12 @@ void main(void)
 	}
 	
 	void idAssign_Handler(CanRxMsg* msg){
-		id = msg->Data[0];
-		noid = 0;
+		uint32_t rndid = *(uint32_t *)(&(msg->Data[0]));
+		if(rndid == id){
+			id = msg->Data[1];
+			nocid = 0;
+
+		}
 	}
 
 	void getId (int nDoors){
@@ -180,7 +188,7 @@ void main(void)
 		CANFilter mask = empty_mask;
 
 		//används för omvandling
-		Header header;
+		Header header = empty_header;
 
 		//skriver mask
 		mask.IDE = 1;
@@ -195,7 +203,7 @@ void main(void)
 		filter.RTR = 0;
 		header.msgType = assignID_msg_type;
 		header.ID = 0;
-		header.toCentral = 1;
+		header.toCentral = 0;
 		HEADERtoUINT32(header, filter.ID);
 
 		if (CANhandlerListNotFull()){
@@ -207,11 +215,11 @@ void main(void)
 		if (RNG_GetFlagStatus(RNG_FLAG_DRDY) == SET && //Nytt meddelande finns
              RNG_GetFlagStatus(RNG_FLAG_CECS) == RESET && //Inget klockfel
              RNG_GetFlagStatus(RNG_FLAG_SECS) == RESET){ //Inget seedfel
-                    uint32_t rand = RNG_GetRandomNumber();
+                    id = RNG_GetRandomNumber();
 			 		CanTxMsg idRequest;
 					
-					encode_request_id(&idRequest,rand,0, nDoors, 69);
-					while (msTicks < timeStamp && noid)
+					encode_request_id(&idRequest,id,0, nDoors, 69);
+					while (msTicks < timeStamp && nocid)
 					{
 						CANsendMessage(&idRequest);
 						delay(1000);

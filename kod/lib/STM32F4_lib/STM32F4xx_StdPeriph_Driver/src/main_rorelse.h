@@ -10,6 +10,8 @@
 #define bit6 (1 << 6)
 #define bit7 (1 << 7)
 
+char bits[] = {bit0, bit1, bit2, bit3, bit4, bit5, bit6, bit7};
+
 // Maximalt antal sensorer, använder #define för att kunna använda värden till arrayen 'sensors'.
 #define nMaxMotionSensors 	 sizeof(motionPorts)/sizeof(motionPorts[0])*5			// Max 5 sensorer per port
 #define nMaxVibrationSensors sizeof(vibrationPorts)/sizeof(vibrationPorts[0])*8		// Max 8 sensorer per port
@@ -52,6 +54,7 @@ typedef struct Sensors {
 	MotionSensor 	motion;
 } Sensor;
 
+GPIO_TypeDef* ports[] 	= {GPIOA, GPIOB, GPIOC, GPIOD, GPIOE};
 
 uint16_t GPIO_Pins[] = {
 	GPIO_Pin_0, GPIO_Pin_1, GPIO_Pin_2, GPIO_Pin_3, GPIO_Pin_4, GPIO_Pin_5,
