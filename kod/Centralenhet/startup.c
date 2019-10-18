@@ -11,9 +11,9 @@ uint8_t next_id = 0;
 uint16_t default_time_0 = 2;
 uint16_t default_time_1 = 3;
 
-void *devices[128];
-Door_device door_devs[128];
-Motion_device motion_devs[128];
+void *devices[max_num_of_devs];
+Door_device door_devs[max_num_of_devs];
+Motion_device motion_devs[max_num_of_devs];
 
 
 void startup(void) __attribute__((naked)) __attribute__((section (".start_section")) );
@@ -73,35 +73,67 @@ Motion_device *add_motion_device(uint8_t id){
         }
 }*/
 
+uint8_t get_id_by_random_id(uint32_t random_id, uint8_t device_type){
+    if(!device_type){
+        for(uint8_t i = 0; i < next_id; i++){
+            if(get_door_device(i)->random_id == random_id){
+                return i;
+            }
+        }
+    }
+    
+    //TODO: Motsvarande grejs för rörelseenheter.
+    
+    //Returnerar ~0 för att ange att ingen enhet hittades. ~0 förutsätts vara ett ogiltigt id
+    return ~0;
+}
+
+
 void id_request_handler(CanRxMsg *rxMsgP){
     CanRxMsg rxMsg = *rxMsgP;
     CanTxMsg txMsg;
-    encode_assign_id(&txMsg, rxMsgP, next_id);
-    if (CANsendMessage(&txMsg) == CAN_TxStatus_NoMailBox){
-        USARTPrint("No mailbox empty\n");
+    
+    
+    uint8_t device_type = rxmsg.data[1];
+    uint32_t random_id = rxmsg.id;
+    uint8_t id = get_id_by_random_id(random_id, device_type);
+    
+    //Om random_id känns igen behöver vi bara skicka 
+    if(!~id){
+        encode_assign_id(&txMsg, rxMsgP, id);
+        if (CANsendMessage(&txMsg) == CAN_TxStatus_NoMailBox){
+            USARTPrint("No mailbox empty\n");
+        }
+        
     }
-    //TODO att lägga till en enhet borde först ske vid mottagande av ack
     else{
-	//TODO ta bort delay såsmåningom
+        encode_assign_id(&txMsg, rxMsgP, next_id);
+        if (CANsendMessage(&txMsg) == CAN_TxStatus_NoMailBox){
+            USARTPrint("No mailbox empty\n");
+        }
+        //TODO att lägga till en enhet borde först ske vid mottagande av ack
+        //TODO ta bort delay såsmåningom
         blockingDelayMs(300);
-        Door_device *dev = add_door_device(next_id);
-        USARTPrint("Lagt till dorrenhet med id ");
-        
-        uint8_t id = get_door_device(next_id)->id;
-        USARTPrintNum((uint32_t)id);
-        next_id++;
-        
-        dev->num_of_doors = rxMsg.Data[5];
-        USARTPrint("\noch ");
-        USARTPrintNum((uint32_t)rxMsg.Data[5]);
-        USARTPrint(" dorrar.\n");
-        
-        Door door;
-        for(uint8_t id = 0; id < dev->num_of_doors; id++){
-            door = dev->doors[id];
-            door.id = id;
-            door.time_0 = default_time_0;
-            door.time_1 = default_time_1;
+        else{
+            Door_device *dev = add_door_device(next_id);
+            USARTPrint("Lagt till dorrenhet med id ");
+            
+            id = get_door_device(next_id)->id;
+            USARTPrintNum((uint32_t)id);
+            next_id++;
+            
+            dev->num_of_doors = rxMsg.Data[5];
+            USARTPrint("\noch ");
+            USARTPrintNum((uint32_t)rxMsg.Data[5]);
+            USARTPrint(" dorrar.\n");
+            
+            Door door;
+            for(uint8_t id = 0; id < dev->num_of_doors; id++){
+                door = dev->doors[id];
+                door.id = id;
+                door.time_0 = default_time_0;
+                door.time_1 = default_time_1;
+            }
         }
         
         //send_door_configs(dev);

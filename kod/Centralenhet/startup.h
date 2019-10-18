@@ -9,6 +9,8 @@
 #include "delay.h"
 #include "stringFunc.h"
 
+#define max_num_of_devs 32;
+
 typedef struct{
     uint8_t id;
     uint8_t time_0;
@@ -19,6 +21,7 @@ typedef struct{
 typedef struct{
     uint8_t type;
     uint8_t id;
+	uint32_t random_id;
     uint8_t num_of_doors;
     Door doors[32];
 } Door_device;
@@ -35,6 +38,7 @@ typedef struct{
 typedef struct{
     uint8_t type;
     uint8_t id;
+	uint32_t random_id;
     Dist_sensor dist_sensors[32];
     Vib_sensor vib_sensors[32];
 } Motion_device;

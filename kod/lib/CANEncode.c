@@ -5,7 +5,7 @@
 #include "stm32f4xx_gpio.h"
 
 
-uint8_t encode_door_config(CanTxMsg *msg, uint8_t to_central, uint8_t door_id_0, uint8_t door_id_1, uint16_t time_0, uint16_t time_1, uint8_t locked){
+uint8_t encode_door_time_config(CanTxMsg *msg, uint8_t to_central, uint8_t door_id_0, uint8_t door_id_1, uint16_t time_0, uint16_t time_1, uint8_t locked){
     if(door_id_0 > door_id_1 || door_id_1 > 31){
         return 0;
     }
@@ -29,7 +29,7 @@ uint8_t encode_door_config(CanTxMsg *msg, uint8_t to_central, uint8_t door_id_0,
     
     //De två tidsvärdena skrivs till bit 16-47
     *(data_pointer + 2) = time_0;
-    *(data_pointer + 4) = time_0;
+    *(data_pointer + 4) = time_1;
     
     //Låsflagga skrivs till bit 48-55
     *(data_pointer + 6) = locked;
