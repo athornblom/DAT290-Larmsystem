@@ -19,6 +19,8 @@ uint8_t encode_door_config(CanTxMsg *msg, uint8_t to_central, uint8_t door_id_0,
     HEADERtoUINT32(header, msg->ExtId);
     
     msg->DLC = 7;
+    msg->IDE = CAN_Id_Extended;
+    msg->RTR = CAN_RTR_Data;
     
     //Dörrintervall skrivs till de 16 första databitarna
     *data_pointer = door_id_0;
