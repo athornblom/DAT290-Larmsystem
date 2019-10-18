@@ -80,7 +80,9 @@ void id_request_handler(CanRxMsg *rxMsgP){
     if (CANsendMessage(&txMsg) == CAN_TxStatus_NoMailBox){
         USARTPrint("No mailbox empty\n");
     }
+    //TODO att lägga till en enhet borde först ske vid mottagande av ack
     else{
+	//TODO ta bort delay såsmåningom
         blockingDelayMs(300);
         Door_device *dev = add_door_device(next_id);
         USARTPrint("Lagt till dorrenhet med id ");
