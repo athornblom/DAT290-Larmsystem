@@ -61,7 +61,7 @@ void init_rng(void){
 }
 
 void sendAlarm(door);
-void getId (void);
+void getId (int);
 
 void main(void)
 {
