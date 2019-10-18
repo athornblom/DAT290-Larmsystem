@@ -14,7 +14,7 @@
  */
 
 #include "USART.h"
-#inlcude "printMsg.h"
+#include "printMsg.h"
 #ifdef DEBUG
     #define DEBUG_ENABLE 1
 #else

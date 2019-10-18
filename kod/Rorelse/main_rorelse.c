@@ -13,16 +13,9 @@ void startup(void) __attribute__((naked)) __attribute__((section (".start_sectio
 #include "stm32f4xx_rcc.h"
 #include "stm32f4xx_syscfg.h"
 #include "USARTDebug.h"
+#include "main_rorelse.h"
 
 
-#define bit0 1
-#define bit1 (1 << 1)
-#define bit2 (1 << 2)
-#define bit3 (1 << 3)
-#define bit4 (1 << 4)
-#define bit5 (1 << 5)
-#define bit6 (1 << 6)
-#define bit7 (1 << 7)
 
 void startup ( void )
 {
@@ -34,42 +27,7 @@ __asm volatile(
 	) ;
 }
 
-// Struct för motionsensorer
-typedef struct MotionSensors {
-	uint16_t pinTrig, pinEcho;					// Pinnar för trig, echo t.ex GPIO_Pin_4, GPIO_Pin_5.
-	uint32_t pulseTrig, pulseEcho, pulseDelay;	// Längd på triggerpuls(10µs), tid tills pulsen kommer tillbaks och fördröjning mellan pulser.
-	float cm, alarmDistance; 					// Avstånd till föremål och larmavstånd.
-} MotionSensor;
 
-
-
-//	Struct för vibrationssensor
-typedef struct VibrationSensors{
-	uint16_t pinD0;								// Pin för vibrationssensorns 'digital output'.
-} VibrationSensor;
-
-/**
- * @brief	Struct för alla sensorer
- * @var 	controlbits: Kontrollbitar för diverse användningsområden:
- * 				0: Finns en sensor?
- * 				1: 0 = Motionssensor, 1 = Vibrationssensor
- * 				2: Aktiv eller ej?
- * 				3: (Motion) Stigande kant på echo puls mätning
- * 				4-6: @todo
- *				7: Sensorn larmar
- * @var		VibrationSensor: struct av vibrationssensor med vibrationssensor konfiguration. (pinD0)
- * @var		MotionSensor: struct av motionsensor med motionssensor konfiguration. (pinTrig, pinEcho, pulseTrig, pulseEcho, pulseDelay, cm, alarm)
- */
-typedef struct Sensors {
-	char 			id, controlbits;	// ID och 8 kontrollbitar
-	short 			password;			// 4 sifferig kod för att aktivera/avaktivera sensorn.
-	
-	GPIO_TypeDef*	port;				// Porten sensorn är kopplad till
-	uint16_t 		pinLamp;			// Pin för lysdiod för sensorn
-	
-	VibrationSensor vibration;
-	MotionSensor 	motion;
-} Sensor;
 
 // == Globala Variabler ==
 
@@ -77,41 +35,27 @@ typedef struct Sensors {
 GPIO_TypeDef* motionPorts[3] 	= {GPIOA, GPIOB, GPIOC};
 GPIO_TypeDef* vibrationPorts[2] = {GPIOD, GPIOE};
 
-Sensor motion1;
 
-uint16_t GPIO_Pins[] = {
-	GPIO_Pin_0, GPIO_Pin_1, GPIO_Pin_2, GPIO_Pin_3, GPIO_Pin_4, GPIO_Pin_5,
-	GPIO_Pin_6, GPIO_Pin_7, GPIO_Pin_8, GPIO_Pin_9, GPIO_Pin_10, GPIO_Pin_11,
-	GPIO_Pin_12, GPIO_Pin_13, GPIO_Pin_14, GPIO_Pin_15};
-
-volatile uint32_t microTicks = 0;		 // Variabel för microsekunder.
-
-// Maximalt antal sensorer, använder #define för att kunna använda värden till arrayen 'sensors'.
-#define nMaxMotionSensors 	 sizeof(motionPorts)/sizeof(motionPorts[0])*5			// Max 5 sensorer per port
-#define nMaxVibrationSensors sizeof(vibrationPorts)/sizeof(vibrationPorts[0])*8	// Max 8 sensorer per port
 // Alla sensorer, denna initieras under init_Sensors.
 Sensor sensors[nMaxMotionSensors + nMaxVibrationSensors];
+
+
+
+volatile uint32_t microTicks = 0;		 // Variabel för microsekunder.
 
 void SysTick_Handler(void)  {			 // SysTick interrupt Handler.
 	microTicks++;
 }
 
+
+
 void init_Timer(){
 	//Systick
 	*((void (**)(void) ) 0x2001C03C ) = SysTick_Handler;
 	uint32_t returnCode;
-  	returnCode = SysTick_Config(168000000/1000000);      // Konfigurera SysTick att generera avbrott varje mikrosekund 
-	if (returnCode) {
-		//DebugPrint("SysTick Fail");
-	}
+  	returnCode = SysTick_Config(168000000/1000000);      // Konfigurera SysTick att generera avbrott varje mikrosekund.
 }
 
-// Fördröjningsfunktion i mikrosekunder.
-void delay_micro(uint32_t micros){
-	uint32_t wait = microTicks + micros;
-	while(wait > microTicks){
-	}
-}
 
 
 /**
@@ -120,7 +64,7 @@ void delay_micro(uint32_t micros){
  * @note 
  * Portar A, B, och C används till rörelsesensor; D och E används till vibrationsmätare.
  * För rörelsesensor används pinnar 3n, 3n + 1, 3n + 2, till trigg, echo, respektive lysdioden.
- * För vibrationsmätaren används jämna pinnar till D0 (Sensor avmätning), och udda till lysdioder.
+ * För vibrationsmätaren används jämna pinnar till DO (Sensor avmätning), och udda till lysdioder.
  * 
  * Det finns stöd för 5 rörelsesensor per port och 8 vibrationsmätare per port.
  */
@@ -132,6 +76,7 @@ void init_GPIO_Ports(){
 	}
 	GPIO_InitTypeDef init;
 	
+	// Initierar portarna som tilldelats till rörelsesensorerna.
 	for (int i=0; i*sizeof(motionPorts[0]) < sizeof(motionPorts); i++)
 	{
 		// Konfigurerar inportar för avståndsmätare
@@ -139,7 +84,7 @@ void init_GPIO_Ports(){
 		init.GPIO_Pin = GPIO_Pin_1 | GPIO_Pin_4 | GPIO_Pin_7 | GPIO_Pin_10 | GPIO_Pin_13;  // Echo pinnar
 		init.GPIO_Mode = GPIO_Mode_IN;
 		init.GPIO_PuPd = GPIO_PuPd_UP;
-		init.GPIO_Speed = GPIO_Fast_Speed; // 50 Mhz
+		init.GPIO_Speed = GPIO_Fast_Speed;	// 50 Mhz
 		GPIO_Init(motionPorts[i], &init);
 		
 		// Konfigurerar utportar för avståndsmätare
@@ -147,17 +92,18 @@ void init_GPIO_Ports(){
 		init.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_2 | GPIO_Pin_3 | GPIO_Pin_5 | GPIO_Pin_6 | GPIO_Pin_8 | GPIO_Pin_9 | GPIO_Pin_11 | GPIO_Pin_12 | GPIO_Pin_14;  // Trigg & Lysdiod pinnar
 		init.GPIO_Mode = GPIO_Mode_OUT;
 		init.GPIO_OType = GPIO_OType_PP;
-		init.GPIO_Speed = GPIO_Fast_Speed;
+		init.GPIO_Speed = GPIO_Fast_Speed;	// 50 Mhz
 		GPIO_Init(motionPorts[i], &init);
 	}
-
+	
+	// Initierar portarna som tilldelats till vibrationssensorerna.
 	for (int i=0; i*sizeof(vibrationPorts[0]) < sizeof(vibrationPorts); i++) {
 		// Konfigurerar inportar vibrationssensor
 		GPIO_StructInit(&init);
-		init.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_2 | GPIO_Pin_4 | GPIO_Pin_6 | GPIO_Pin_8 | GPIO_Pin_10 | GPIO_Pin_12 | GPIO_Pin_14; // D0 pinnar
+		init.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_2 | GPIO_Pin_4 | GPIO_Pin_6 | GPIO_Pin_8 | GPIO_Pin_10 | GPIO_Pin_12 | GPIO_Pin_14; // DO pinnar
 		init.GPIO_Mode = GPIO_Mode_IN;
 		init.GPIO_PuPd = GPIO_PuPd_DOWN;
-		init.GPIO_Speed = GPIO_Fast_Speed; // 50 Mhz
+		init.GPIO_Speed = GPIO_Fast_Speed;	// 50 Mhz
 		GPIO_Init(vibrationPorts[i], &init);
 		
 		// Konfigurerar utportar vibrationssensor
@@ -165,7 +111,7 @@ void init_GPIO_Ports(){
 		init.GPIO_Pin = GPIO_Pin_1 | GPIO_Pin_3 | GPIO_Pin_5 | GPIO_Pin_7 | GPIO_Pin_9 | GPIO_Pin_11 | GPIO_Pin_13 | GPIO_Pin_15; // Lysdiod pinnar
 		init.GPIO_Mode = GPIO_Mode_OUT;
 		init.GPIO_OType = GPIO_OType_PP;
-		init.GPIO_Speed = GPIO_Fast_Speed; // 50 Mhz
+		init.GPIO_Speed = GPIO_Fast_Speed;	// 50 Mhz
 		GPIO_Init(vibrationPorts[i], &init);
 	}
 }
@@ -176,7 +122,7 @@ void init_MotionSensors(){
 	for (int i=0; i*sizeof(motionPorts[0]) < sizeof(motionPorts); i++) {
 		// Iterera genom pinnarna
 		for (int j=0; j*sizeof(GPIO_Pins[0]) < sizeof(GPIO_Pins);j+=3) {
-			if(!((i*5+j/3) == 15)){
+			if(!((i*5+j/3) == 15)){ // Hårdvaran begränsar oss till 15 rörelsesensorer, alltså kollar vi inte 16:e elementet(för det finns inte).
 			MotionSensor m =  {
 					.pinTrig = GPIO_Pins[j],
 					.pinEcho = GPIO_Pins[j+1],
@@ -240,7 +186,7 @@ void init_VibrationSensor(){
 			// Är sensorn aktiv?
 			if (GPIO_ReadInputDataBit(vibrationPorts[i], GPIO_Pins[j])) {
 				VibrationSensor v = {
-					.pinD0 = GPIO_Pins[j]
+					.pinDO = GPIO_Pins[j]
 				};
 				
 				Sensor s = {
@@ -285,9 +231,6 @@ void alarm(Sensor* sensor) {
 
 void main(void){
 	init_app();
-	
-	//sensors[0] = motion1;
-	
 	
 	
 	while(1){
@@ -337,7 +280,7 @@ void main(void){
 		else if(sensors[i].controlbits & (bit1 | bit2)) {
 			VibrationSensor* sensor = &(sensors[i].vibration);
 			
-			if(!GPIO_ReadInputDataBit(sensors[i].port, sensor->pinD0)){
+			if(!GPIO_ReadInputDataBit(sensors[i].port, sensor->pinDO)){
 				GPIO_SetBits(sensors[i].port, sensors[i].pinLamp);
 			}
 			else{
