@@ -104,7 +104,7 @@ void id_request_handler(CanRxMsg *rxMsgP){
             door.time_1 = default_time_1;
         }
         
-        send_door_configs(dev);
+        //send_door_configs(dev);
     }
     
     USARTPrint("ExtId ");
