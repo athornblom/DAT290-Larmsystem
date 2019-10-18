@@ -227,10 +227,6 @@ void init_MotionSensors(){
 	
 }
 
-
-
-
-
 void init_VibrationSensor(){
 	uint8_t sensorCounter = 0;
 	// Iterera genom portarna
@@ -281,6 +277,11 @@ void alarm(Sensor* sensor) {
 	sensor->controlbits |= 1 << 7; 					// Markera att larmet går
 	GPIO_SetBits(sensor->port, sensor->pinLamp); 	// Tänd lampa
 	// Todo notifiera centralneheten via CAN
+}
+
+void disarm(Sensor* sensor) {
+	sensor->controlbits &= ~(1 << 7); 					// Markera att larmet inte längre går
+	GPIO_SetBits(sensor->port, sensor->pinLamp);	
 }
 
 void main(void){
