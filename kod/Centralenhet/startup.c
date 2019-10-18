@@ -76,7 +76,7 @@ Motion_device *add_motion_device(uint8_t id){
 void id_request_handler(CanRxMsg *rxMsgP){
     CanRxMsg rxMsg = *rxMsgP;
     CanTxMsg txMsg;
-    encode_assign_id(&txMsg, next_id);
+    encode_assign_id(&txMsg, rxMsgP, next_id);
     if (CANsendMessage(&txMsg) == CAN_TxStatus_NoMailBox){
         USARTPrint("No mailbox empty\n");
     }
