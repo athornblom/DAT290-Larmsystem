@@ -49,6 +49,9 @@ char nocid = 1;
 // Alla sensorer, denna initieras under init_Sensors.
 Sensor sensors[nMaxMotionSensors + nMaxVibrationSensors];
 
+uint8_t nMotionSensors = 0;		// Antalet rörelsesensorer kopplade till MD407-kortet.
+uint8_t nVibrationSensors = 0;	// Antalet vibrationssensorer kopplade till MD407-kortet.
+
 volatile uint32_t microTicks = 0;		 // Variabel för microsekunder.
 
 void SysTick_Handler(void)  {			 // SysTick interrupt Handler.
@@ -61,6 +64,12 @@ void init_Timer(){
 	uint32_t returnCode;
   	returnCode = SysTick_Config(168000000/1000000);      // Konfigurera SysTick att generera avbrott varje mikrosekund.
 }
+
+
+void delayMicro (uint32_t micro){
+		uint32_t wait = microTicks + micro;
+		while(wait > microTicks);
+	}
 
 
 
@@ -171,6 +180,7 @@ void init_MotionSensors(){
 			if(GPIO_ReadInputDataBit(sensors[i].port, sensor->pinEcho)){ // Är echo hög?
 				sensors[i].controlbits |= bit0;	// Ettställer kontrollbit 0.
 				sensors[i].controlbits |= bit2;	// Ettställer kontrollbit 2. Ta bort när centralenheten kan kommunicera med oss. - Erik
+				nMotionSensors++;
 			}
 			
 		}
@@ -205,6 +215,7 @@ void init_VibrationSensor(){
 				};
 				// Initiera en sensor i sensors listan efter alla rörelsesensorer
 				sensors[nMaxMotionSensors + sensorCounter] = s;
+				nVibrationSensors++;
 				sensorCounter++;
 			}
 		}
@@ -311,10 +322,14 @@ void CANGetConfig() {
 
 
 void idAssign_Handler(CanRxMsg* msg){
-		uint32_t rndid = *(uint32_t *)(&(msg->Data[0]));
-		if(rndid == id){
-			id = msg->Data[1];
+		uint32_t rndID = (((uint32_t)msg->Data[0])) | (((uint32_t)msg->Data[1]) << 8) | (((uint32_t)msg->Data[2]) << 16) | (((uint32_t)msg->Data[3]) << 24);
+		DebugPrint("\n");
+		DebugPrintNumBase(rndID,16);
+		if(rndID == id){
+			id = msg->Data[4];
 			nocid = 0;
+			DebugPrint("\n");
+			DebugPrint("Rullar som rullatorn\n");
 
 		}
 	}
@@ -325,7 +340,7 @@ void init_rng(){
 }
 
 
-void getId (int nDoors){
+void getId (){
 		CANFilter filter = empty_mask;
 		CANFilter mask = empty_mask;
 
@@ -353,19 +368,19 @@ void getId (int nDoors){
 		}
 
 
-		/*int timeStamp = msTicks + 60 * 1000; 
+		uint32_t timeStamp = microTicks + 60 * 1000000; 
 		if (RNG_GetFlagStatus(RNG_FLAG_DRDY) == SET && //Nytt meddelande finns
             RNG_GetFlagStatus(RNG_FLAG_CECS) == RESET && //Inget klockfel
             RNG_GetFlagStatus(RNG_FLAG_SECS) == RESET){ //Inget seedfel
 			id = RNG_GetRandomNumber();
 			CanTxMsg idRequest;
 					
-			encode_request_id(&idRequest,id,0, nDoors, 69);
-			while (msTicks < timeStamp && nocid) {
+			encode_request_id(&idRequest, id, 1, nMotionSensors, nVibrationSensors);
+			while (microTicks < timeStamp && nocid) {
 				CANsendMessage(&idRequest);
-				delay(1000);
+				delayMicro(1000000);
 			}
-		}*/
+		}
 }
 
 void alarm(Sensor* sensor) {
@@ -389,6 +404,7 @@ void init_app(){
 	init_Sensors();
 	init_rng();
 	can_init();
+	getId();
 
 }
 
@@ -443,7 +459,8 @@ void main(void){
 		else if(sensors[i].controlbits & (bit1 | bit2)) {
 			VibrationSensor* sensor = &(sensors[i].vibration);
 			
-			if(!GPIO_ReadInputDataBit(sensors[i].port, sensor->pinDO)){
+			
+			if(!GPIO_ReadInputDataBit(sensors[i].port, sensor->pinDO)){	// Vibration detekterat.
 				GPIO_SetBits(sensors[i].port, sensors[i].pinLamp);
 			}
 			else{

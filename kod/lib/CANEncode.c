@@ -41,7 +41,7 @@ uint8_t encode_door_time_config(CanTxMsg *msg, uint8_t to_central, uint8_t door_
  * CanTxMsg *msg: förslagsvis tomt meddeleande som görs till id-förfrågan
  * uint32_t temp_id: temporärt, förslagsvis slumpgenererat id
  * uint8_t device_type: 0 för dörrenhet, 1 för rörelseenhet
- * uint8_t value_0: antal dörrar eller avståndssensorer
+ * uint8_t value_0: antal dörrar eller rörelsesensorer
  * uint8_t value_1: antal vibrationssensorer
  */
 uint8_t encode_request_id(CanTxMsg *msg, uint32_t temp_id, uint8_t device_type, uint8_t value_0, uint8_t value_1){
