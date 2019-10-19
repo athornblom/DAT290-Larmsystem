@@ -176,10 +176,13 @@ void can_irq_handler(void){
 
             //Anropar hanteringsfunktionen för meddelandet
             if (rxMsg.FMI < HANDLERLISTSIZE){
-                if (handlerList[rxMsg.FMI].state == ENABLE){
-                    handlerList[rxMsg.FMI].handler(&rxMsg);
+                //Dubbelkollar så att filtrer är aktivt och att DLC matchar
+                if (handlerList[rxMsg.FMI].state == ENABLE &&
+                    (handlerList[rxMsg.FMI].mask.DLC & handlerList[rxMsg.FMI].filter.DLC) == rxMsg->DLC ){
+                        //Anropar handler funktionen
+                        handlerList[rxMsg.FMI].handler(&rxMsg);
+                    }
                 }
-            }
         }
     }
 }
