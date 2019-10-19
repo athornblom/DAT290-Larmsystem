@@ -20,14 +20,21 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
-    <File Name="../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/main_rorelse.h"/>
+    <File Name="../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c"/>
+    <File Name="../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_can.c"/>
+    <File Name="../lib/buffer.h"/>
+    <File Name="../lib/CANEncode.h"/>
+    <File Name="../lib/CANEncode.c"/>
+    <File Name="../lib/CAN.h"/>
+    <File Name="../lib/CAN.c"/>
+    <File Name="../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/main_motion.h"/>
+    <File Name="main_motion.c"/>
     <File Name="../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/misc.c"/>
     <File Name="../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_usart.c"/>
     <File Name="../lib/buffer.c"/>
     <File Name="../lib/USARTDebug.h"/>
     <File Name="../lib/USART.h"/>
     <File Name="../lib/USART.c"/>
-    <File Name="main_rorelse.c"/>
     <File Name="../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_syscfg.h"/>
     <File Name="../lib/STM32F4_lib/CMSIS/Include/core_cm4.h"/>
     <File Name="../lib/STM32F4_lib/STM32F4xx_StdPeriph_Examples/WWDG/WWDG_Example/system_stm32f4xx.c"/>
