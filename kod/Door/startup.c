@@ -8,7 +8,7 @@
 #include "delay.h"
 #include "init.h"
 #include "can.h"
-#include "CANEncode.h"
+#include "CANEncodeDecode.h"
 #include "stm32f4xx_rng.h"
 void startup(void) __attribute__((naked)) __attribute__((section(".start_section")));
 

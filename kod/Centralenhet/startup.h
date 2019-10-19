@@ -2,14 +2,14 @@
 #include "CAN.h"
 #include "USART.h"
 #include "printMsg.h"
-#include "CANEncode.h"
+#include "CANEncodeDecode.h"
 #include "stm32f4xx_can.h"
 #include "stm32f4xx_rcc.h"
 #include "stm32f4xx_gpio.h"
 #include "delay.h"
 #include "stringFunc.h"
 
-#define max_num_of_devs 32;
+#define max_num_of_devs 32
 
 typedef struct{
     uint8_t id;

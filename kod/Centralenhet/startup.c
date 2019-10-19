@@ -82,6 +82,7 @@ uint8_t get_id_by_random_id(uint32_t random_id, uint8_t device_type){
 
 
 void id_request_handler(CanRxMsg *rxMsgP){
+    /*TODO KOMPILERAR INTE
     CanRxMsg rxMsg = *rxMsgP;
     CanTxMsg txMsg;
     
@@ -144,7 +145,7 @@ void id_request_handler(CanRxMsg *rxMsgP){
     USARTPrint("\n");
     
     
-
+*/
 }
 
 //Förslag på struktur för larmhanterare
@@ -416,7 +417,8 @@ uint8_t send_door_configs(Door_device *dev){
                 break;
             }
         }
-        encode_door_config(msg, 0, id_first, id_last - 1, door_first.time_0, door_first.time_1, door_first.locked);
+        //TODO KOMPILERAR INTE
+        //encode_door_config(msg, 0, id_first, id_last - 1, door_first.time_0, door_first.time_1, door_first.locked);
         blockingDelayMs(300); //För säkerhets skull TODO: Ta bort om möjligt
         if (CANsendMessage(&msg) == CAN_TxStatus_NoMailBox){
             //TODO: Hantera?

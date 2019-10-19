@@ -1,5 +1,5 @@
-#ifndef CANEncode_H
-#define CANEncode_H
+#ifndef CANEncodeDecode_H
+#define CANEncodeDecode_H
 
 #include <stdint.h>
 #include <stm32f4xx_can.h>
