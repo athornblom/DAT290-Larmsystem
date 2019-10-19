@@ -67,7 +67,7 @@ uint8_t encode_request_id(CanTxMsg *msg, uint32_t temp_id, uint8_t device_type, 
     return 1;
 }
 
-//Encodar en idbegäran
+//Encodar en id-tilldelning
 //msg är en pektare till meddelande som ska skickas
 //request är en pekare till förfrågan
 //id är id man tilldelar enheten
@@ -120,4 +120,21 @@ uint8_t decode_door_config_msg(CanRxMsg *msg, uint8_t *door_id_0, uint8_t *door_
     
     
     return 1;
+}
+
+//Returnerar tempID ur ett ID-tilldelings meddelande
+//Filtrering av header måste redan ha gjorts
+uint32_t decode_tempID(CanRxMsg *msg){
+    if (msg->DLC == assignID_msg_length){
+        return (((uint32_t)msg->Data[0])) | (((uint32_t)msg->Data[1]) << 8) | (((uint32_t)msg->Data[2]) << 16) | (((uint32_t)msg->Data[3]) << 24);
+    }
+    return 0;
+}
+
+//Returnerar ID ur ett ID-tilldelings meddelande
+//Filtrering av header och rätt tempID måste redan ha gjorts
+uint8_t decode_ID(CanRxMsg *msg){
+    if (msg->DLC == assignID_msg_length){
+        return msg->Data[4];
+    }
 }
