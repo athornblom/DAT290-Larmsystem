@@ -158,9 +158,9 @@ void id_request_handler(CanRxMsg *rxMsgP){
     USARTPrint("\n");
     
     
-*/
-}
 
+}
+*/
 
 //Förslag på struktur för larmhanterare
 void larmHandler(CanRxMsg *rxMsg){

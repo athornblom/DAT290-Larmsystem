@@ -55,7 +55,7 @@ void encode_door_larm_msg(CanTxMsg *msg, uint8_t uinitID, uint8_t id);
 //unitID är enhetens egna ID
 //sensorType är antingen motion_sensor eller vibration_sensor
 //id är idt till sensorn som larmar
-void encode_motion_larm_msg(CanTx, *msg, uint8_t uinitID, uint8_t sensorType, uint8_t id);
+void encode_motion_larm_msg(CanTxMsg *msg, uint8_t uinitID, uint8_t sensorType, uint8_t id);
 
 uint8_t decode_door_config_msg(CanRxMsg *msg, uint8_t *door_id_0, uint8_t *door_id_1, uint16_t *time_0, uint16_t *time_1, uint8_t *locked);
 
