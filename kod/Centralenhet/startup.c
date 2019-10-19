@@ -58,31 +58,23 @@ Motion_device *add_motion_device(uint8_t id){
     return &motion_devs[id];
 }
 
-/*void setup_doors(){
-    Door_device door_dev;
-        
-        door_dev = door_devs[i];
-        //TODO: Fråga via usart om användaren vill konfigurera antal dörrar
-        //TODO: Om ja, lägg antal dörrar i door_dev.num_of_doors
-        
-        num_of_doors = door_dev.num_of_doors;
-        
-        
-        for(unsigned int j = 0; j < num_of_doors; j++){
-            
-        }
-}*/
 
 uint8_t get_id_by_random_id(uint32_t random_id, uint8_t device_type){
-    if(!device_type){
+    if(!device_type){ //Om det är en dörrenhet
         for(uint8_t i = 0; i < next_id; i++){
             if(get_door_device(i)->random_id == random_id){
                 return i;
             }
         }
     }
-    
-    //TODO: Motsvarande grejs för rörelseenheter.
+	//Motsvarande för rörelseenhet
+	else {
+		for(uint8_t i = 0; i < next_id; i++){
+            if(get_motion_device(i)->random_id == random_id){
+                return i;
+            }
+        }
+	}
     
     //Returnerar ~0 för att ange att ingen enhet hittades. ~0 förutsätts vara ett ogiltigt id
     return ~0;
@@ -120,7 +112,12 @@ void id_request_handler(CanRxMsg *rxMsgP){
             
             id = get_door_device(next_id)->id;
             USARTPrintNum((uint32_t)id);
-            next_id++;
+			if (next_id < max_num_of_devs) {
+				next_id++;
+			}
+			else {
+				USARTPrint("Max antal periferienheter har nu lagts till. Om du lagger till fler kan det handa dumma saker.")
+			}
             
             dev->num_of_doors = rxMsg.Data[5];
             USARTPrint("\noch ");
