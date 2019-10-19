@@ -5,15 +5,14 @@ Debug/startup.c.o: startup.c \
  ../lib/STM32F4_lib/CMSIS/include/core_cmFunc.h \
  ../lib/STM32F4_lib/CMSIS/include/core_cmSimd.h \
  ../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/inc/system_stm32f4xx.h \
- ../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_rcc.h \
- ../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx.h \
- ../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c \
- ../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_gpio.h \
  ../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/inc/system_stm32f4xx.h \
- startup.h ../lib/delay.h init.h ../lib/can.h \
+ ../lib/delay.h init_GPIO.h \
+ ../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_gpio.h \
+ ../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx.h \
+ ../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_rcc.h \
+ door_can.h \
  ../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_can.h \
- ../lib/CANEncode.h ../lib/CAN.h \
- ../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_rng.h
+ startup.h globalVar.h
 
 ../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx.h:
 
@@ -27,28 +26,22 @@ Debug/startup.c.o: startup.c \
 
 ../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/inc/system_stm32f4xx.h:
 
-../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_rcc.h:
-
-../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx.h:
-
-../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c:
-
-../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_gpio.h:
-
 ../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/inc/system_stm32f4xx.h:
-
-startup.h:
 
 ../lib/delay.h:
 
-init.h:
+init_GPIO.h:
 
-../lib/can.h:
+../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_gpio.h:
+
+../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx.h:
+
+../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_rcc.h:
+
+door_can.h:
 
 ../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_can.h:
 
-../lib/CANEncode.h:
+startup.h:
 
-../lib/CAN.h:
-
-../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_rng.h:
+globalVar.h:

@@ -1,4 +1,6 @@
-typedef struct _door
+#ifndef StartUp_H_INCLUDED
+#define StartUp_H_INCLUDED
+typedef struct door
 {
     char id;
     int controlbits; // 16 kontrollbitar, 1 st är ifall dörren larmar, 2, göra så det inte spammar can tex den minst signifikanta biten är ifall dörren är upplåst eller ej
@@ -11,4 +13,6 @@ typedef struct _door
     GPIO_TypeDef * GPIO_type;
 } door;
 
+ /* Variable to store millisecond ticks */
 ////Dörren uppställd?/larmat centralt/Larmar
+#endif StartUp_H_INCLUDED
