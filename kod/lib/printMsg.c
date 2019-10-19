@@ -12,18 +12,39 @@ void printRxMsg(CanRxMsg *msg, uint8_t base){
     } else {
         USARTPrint("Ext ID: \n");
         USARTPrintNumBase(msg->ExtId & 0x1FFFFFFF, base);
+        //Skriver ut header enl vårat protokoll
+        Header header;
+        UINT32toHEADER(msg->ExtId, header);
+        USARTPrint("\nMsg type: ");
+        USARTPrintNumBase(header.msgType, base);
+        USARTPrint("\nTo central: ");
+        USARTPrintNumBase(header.toCentral, base);
+        USARTPrint("\nID: ");
+        USARTPrintNumBase(header.ID, base);
+        USARTPrint("\nSession ID: ");
+        USARTPrintNumBase(header.sessionID, base);
+        USARTPrint("\nMsg Num: ");
+        USARTPrintNumBase(header.msgNum, base);
     }
-    //Förhindrar för stora DLC
-    msg->DLC %= 9;
-    USARTPrint("\nData (");
-    USARTPrintNumBase(msg->DLC, base);
-    USARTPrint(" bytes): \n");
-    for (uint8_t i = msg->DLC ; i > 0; i--){
-        USARTPrintNumBase(msg->Data[i -1],base);
-        if(i > 1){
-            USARTPrint("-");
-        }
+    USARTPrint("\n");
+
+    if(msg->RTR == CAN_RTR_Remote){
+        USARTPrint("Remote frame\n");
+    } else if (msg->RTR == CAN_RTR_Data){
+            //Förhindrar för stora DLC
+            msg->DLC %= 9;
+            USARTPrint("Data (");
+            USARTPrintNumBase(msg->DLC, base);
+            USARTPrint(" bytes): \n");
+            for (uint8_t i = msg->DLC ; i > 0; i--){
+                USARTPrintNumBase(msg->Data[i -1],base);
+                if(i > 1){
+                    USARTPrint("-");
+                }
+            }
     }
+
+
     USARTPrint("\n\n");
 }
 

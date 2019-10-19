@@ -95,12 +95,19 @@ uint8_t tryRandomizeCANMsg(CanTxMsg *msg){
                         msg->IDE = CAN_Id_Extended;
                         msg->ExtId = rand & 0x1FFFFFFF;
                     }
-                    msg->RTR = CAN_RTR_Data;
-                    msg->DLC = rand % 9;
-                    for (uint8_t i = 0; i < msg->DLC; i++){
-                        msg->Data[i] = ((uint8_t *) &rand)[i%4];
+                    //Ca var 8onde meddelande är remote
+                    if (!(rand & 0b1110)){
+                        msg->RTR = CAN_RTR_Remote;
                     }
-
+                    //Resten är data. rand skiftas för att inte använda
+                    //samma bitar som ovan för att bestämma hur långt
+                    else {
+                        msg->RTR = CAN_RTR_Data;
+                        msg->DLC = (rand >> 4) % 9;
+                        for (uint8_t i = 0; i < msg->DLC; i++){
+                            msg->Data[i] = ((uint8_t *) &rand)[i%4];
+                        }
+                    }
                     return 1;
     }
     return 0;
