@@ -28,59 +28,54 @@ Datafältets maximala längd är 8 bytes och bildar tillsammans med ID-fältet u
 
 \textbf{Ack}
 \begin{itemize}
-    \item Meddelandetyp 0
+    \item Skickas som remote meddelande
     \item Skickas i båda riktningar
 \end{itemize}
-Bekräftelse för senaste mottagna meddelandet. Detta meddelande har högsta prioritet och skickas som svar på något annat meddelande som inte är av typen ack. \\
+Bekräftelse för senaste mottagna meddelandet. Man skickar samma header men av remote typ och utan data. \\
 
 
 \textbf{Skicka larm}
 \begin{itemize}
-    \item Meddelandetyp 1
+    \item Meddelandetyp 0
     \item Skickas från periferienhet till centralenheten
 \end{itemize}
-Talar om för centralenheten om någon dörr eller sensor larmar. Detta meddelande har typnummer 1 och skickas endast av periferienheterna. I första byten talar man om vilken typ av sensor som larmar, i andra byten skickas IDt på sensorn\\
+Talar om för centralenheten om någon dörr eller sensor larmar. Detta meddelande skickas endast av periferienheterna. I första byten talar man om vilken typ av sensor som larmar, i andra byten skickas IDt på sensorn\\
 
 
 \textbf{Skicka konfiguration}
 \begin{itemize}
-    \item Meddelandetyp 2
+    \item Meddelandetyp 1
     \item Skickas från centralenheten till preferienhet
 \end{itemize}
 Detta meddelande används för att skicka konfigurationer till periferienheterna.
 Centralenheten skickar konfiguration till periferienheten kontinuerligt under drift för att försäkra sig om att periferienheten har rätt konfiguration. Detta fungerar även som ping, då ett bestämt antal uteblivna ack tolkas som att enheten inte längre finns på nätverket.
 I så fall uppmärksammar centralenheten detta.
-Första databyten anger sensortyp en tabell
-\begin{table}[H]
+Första databyten anger enhetstyp enligt tabell \ref{tab:enhetstyper}.
+\begin{table}
 	\centering
 	\begin{tabular}{|c|p{0.8\textwidth}|}
 		\hline
-		Första byte & Används till \\ \hline \hline
-		0 & Dörrsensor. \\ \hline
-		1 & Avståndssensor. \\ \hline
-		2 & Vibrationssensor. \\ \hline
+		Nummer & Används till \\ \hline \hline
+		0 & Dörrenhet. \\ \hline
+		1 & Rörelseenhet. \\ \hline
 
 	\end{tabular}
-	\caption{Beskriver konf.}
-	\label{tab:konfsensors}
+	\caption{Nummer enhetstyper.}
+	\label{tab:enhetstyper}
 \end{table}
-
-
-Periferienheterna skickar sina konfigurationener i andra riktingen vid uppstart.
-Dessa ger centralenheten förslag på hur enheterna borde konfigureras initialt. Rörelselarmet skickar även mätvärden i denna typ av meddelande.
 
 
 \textbf{Tilldelning av ID}
 \begin{itemize}
-    \item Meddelandetyp 3
+    \item Meddelandetyp 2
     \item Skickas från centralenheten till preferienhet
 \end{itemize}
-Detta meddelande används då centralenheten tilldelar en periferienhet dess ID. I datafältet skickas ett slumptal som periferienheten använder som identifiering vid tilldelningen av ID. Detta meddelande skickas bara då centralenheten är i konfigurationsläge. Periferienheterna adresseras med bara nollor i de sju bitarna avsedda för ID. \\
+Detta meddelande används då centralenheten tilldelar en periferienhet dess ID. Detta meddelande skickas bara då centralenheten är i konfigurationsläge. I första byten i datafältet skickas ett samma slumptal som skickade i begäran, i andra byten skickas det tilldelade IDt. \\
 
 
 \textbf{ID-begäran}
 \begin{itemize}
-    \item Meddelandetyp 4
+    \item Meddelandetyp 3
     \item Skickas från periferienhet till centralenheten
 \end{itemize}
-Detta meddelande skickas som en begäran av ID. De sju bitar i ID-fältet som annars ska ange periferienhetens ID är bara nollor i detta meddelande.
+Detta meddelande skickas som en begäran av ID. De sju bitar i ID-fältet som annars ska ange periferienhetens ID är bara nollor i detta meddelande. I första databyten skickas ett slumptal som används för idenifiering innan man fått sitt ID.
