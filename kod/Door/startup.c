@@ -95,18 +95,14 @@ void main(void)
 				active_doors[counter].GPIO_lamp = GPIO_Pins[i+1];
 				active_doors[counter].controlbits = 0;
 				active_doors[counter].time_larm = 0;
-				active_doors[counter].time_central_larm = 1;
+				active_doors[counter].time_central_larm = 0;
 				active_doors[counter].GPIO_type = GPIO_Ports[j];
 				//active_doors[counter] = all_doors[counter];
 				counter++;
 			}
 		}
 	}
-	
 	getId((sizeof(active_doors)/sizeof(active_doors[0])));
-	if(id == 0){ // debugging
-		GPIO_SetBits(GPIOC, GPIO_Pin_13);
-	}
 	// ================================== LIGHTS =========================================================
 	for (int i = 0; i < sizeof(active_doors)/sizeof(active_doors[0]); i++) //CHRISTMAST LIGHTS FTW
 	{
@@ -175,9 +171,9 @@ void main(void)
 	}
 	
 	void idAssign_Handler(CanRxMsg* msg){
-		uint32_t rndid = *(uint32_t *)(&(msg->Data[0]));
+		uint32_t rndid = (((uint32_t)msg->Data[0])) | (((uint32_t)msg->Data[1]) << 8) | (((uint32_t)msg->Data[2]) << 16) | (((uint32_t)msg->Data[3]) << 24);
 		if(rndid == id){
-			id = msg->Data[1];
+			id = msg->Data[4];
 			nocid = 0;
 
 		}
@@ -211,7 +207,7 @@ void main(void)
 		}
 
 
-		int timeStamp = msTicks + 60 * 1000; 
+		int timeStamp = msTicks + 5 * 1000; 
 		if (RNG_GetFlagStatus(RNG_FLAG_DRDY) == SET && //Nytt meddelande finns
              RNG_GetFlagStatus(RNG_FLAG_CECS) == RESET && //Inget klockfel
              RNG_GetFlagStatus(RNG_FLAG_SECS) == RESET){ //Inget seedfel

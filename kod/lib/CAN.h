@@ -44,7 +44,7 @@ typedef struct  {
 //Denna stuktur fungerar både som filter och mask
 typedef struct {
     //En bit oanvänd
-    uint32_t __unused : 1;
+    uint32_t __unused__ : 1;
 
     //0 för data 1 för remote
     uint32_t RTR : 1;

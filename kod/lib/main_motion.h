@@ -1,5 +1,5 @@
-#ifndef MAIN_RORELSE_H
-#define MAIN_RORELSE_H
+#ifndef MAIN_MOTION_H
+#define MAIN_MOTION_H
 
 #define bit0 1
 #define bit1 (1 << 1)

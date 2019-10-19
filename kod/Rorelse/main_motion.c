@@ -11,9 +11,13 @@ void startup(void) __attribute__((naked)) __attribute__((section (".start_sectio
 #include "stm32f4xx_gpio.h"
 #include "core_cm4.h"
 #include "stm32f4xx_rcc.h"
+#include "stm32f4xx_rng.h"
 #include "stm32f4xx_syscfg.h"
 #include "USARTDebug.h"
-#include "main_rorelse.h"
+#include "main_motion.h"
+#include "misc.h"
+#include "CAN.h"
+#include "CANEncode.h"
 
 
 
@@ -29,6 +33,8 @@ __asm volatile(
 
 
 
+
+
 // == Globala Variabler ==
 
 // Dessa är konfigurerbara
@@ -36,8 +42,15 @@ GPIO_TypeDef* motionPorts[3] 	= {GPIOA, GPIOB, GPIOC};
 GPIO_TypeDef* vibrationPorts[2] = {GPIOD, GPIOE};
 
 
+uint32_t id = 0;
+char nocid = 1;
+
+
 // Alla sensorer, denna initieras under init_Sensors.
 Sensor sensors[nMaxMotionSensors + nMaxVibrationSensors];
+
+uint8_t nMotionSensors = 0;		// Antalet rörelsesensorer kopplade till MD407-kortet.
+uint8_t nVibrationSensors = 0;	// Antalet vibrationssensorer kopplade till MD407-kortet.
 
 volatile uint32_t microTicks = 0;		 // Variabel för microsekunder.
 
@@ -51,6 +64,12 @@ void init_Timer(){
 	uint32_t returnCode;
   	returnCode = SysTick_Config(168000000/1000000);      // Konfigurera SysTick att generera avbrott varje mikrosekund.
 }
+
+
+void delayMicro (uint32_t micro){
+		uint32_t wait = microTicks + micro;
+		while(wait > microTicks);
+	}
 
 
 
@@ -161,6 +180,7 @@ void init_MotionSensors(){
 			if(GPIO_ReadInputDataBit(sensors[i].port, sensor->pinEcho)){ // Är echo hög?
 				sensors[i].controlbits |= bit0;	// Ettställer kontrollbit 0.
 				sensors[i].controlbits |= bit2;	// Ettställer kontrollbit 2. Ta bort när centralenheten kan kommunicera med oss. - Erik
+				nMotionSensors++;
 			}
 			
 		}
@@ -195,6 +215,7 @@ void init_VibrationSensor(){
 				};
 				// Initiera en sensor i sensors listan efter alla rörelsesensorer
 				sensors[nMaxMotionSensors + sensorCounter] = s;
+				nVibrationSensors++;
 				sensorCounter++;
 			}
 		}
@@ -206,14 +227,10 @@ void init_Sensors(){
 	init_MotionSensors();
 }
 
-void init_app(){
 
-	init_Timer();
-	init_GPIO_Ports();	
-	DebugPrintInit(); // Todo: ta bort innan slutprodukt
-	init_Sensors();
 
-}
+
+//=============================CAN====================================
 /**
  * @brief Hanterar CAN meddelanden
  * 
@@ -302,6 +319,70 @@ void CANGetConfig() {
 	}
 }
 
+
+
+void idAssign_Handler(CanRxMsg* msg){
+		uint32_t rndID = (((uint32_t)msg->Data[0])) | (((uint32_t)msg->Data[1]) << 8) | (((uint32_t)msg->Data[2]) << 16) | (((uint32_t)msg->Data[3]) << 24);
+		DebugPrint("\n");
+		DebugPrintNumBase(rndID,16);
+		if(rndID == id){
+			id = msg->Data[4];
+			nocid = 0;
+			DebugPrint("\n");
+			DebugPrint("Rullar som rullatorn\n");
+
+		}
+	}
+
+void init_rng(){
+	RCC_AHB2PeriphClockCmd(RCC_AHB2Periph_RNG, ENABLE);
+    RNG_Cmd(ENABLE);
+}
+
+
+void getId (){
+		CANFilter filter = empty_mask;
+		CANFilter mask = empty_mask;
+
+		//används för omvandling
+		Header header = empty_header;
+
+		//skriver mask
+		mask.IDE = 1;
+		mask.RTR = 1;
+		header.msgType = ~0;
+		header.ID = ~0;
+		header.toCentral = ~0;
+		HEADERtoUINT32(header, mask.ID);
+
+		//Skriver filter
+		filter.IDE = 1;
+		filter.RTR = 0;
+		header.msgType = assignID_msg_type;
+		header.ID = 0;
+		header.toCentral = 0;
+		HEADERtoUINT32(header, filter.ID);
+
+		if (CANhandlerListNotFull()){
+			CANaddFilterHandler(idAssign_Handler, &filter, &mask);
+		}
+
+
+		uint32_t timeStamp = microTicks + 60 * 1000000; 
+		if (RNG_GetFlagStatus(RNG_FLAG_DRDY) == SET && //Nytt meddelande finns
+            RNG_GetFlagStatus(RNG_FLAG_CECS) == RESET && //Inget klockfel
+            RNG_GetFlagStatus(RNG_FLAG_SECS) == RESET){ //Inget seedfel
+			id = RNG_GetRandomNumber();
+			CanTxMsg idRequest;
+					
+			encode_request_id(&idRequest, id, 1, nMotionSensors, nVibrationSensors);
+			while (microTicks < timeStamp && nocid) {
+				CANsendMessage(&idRequest);
+				delayMicro(1000000);
+			}
+		}
+}
+
 void alarm(Sensor* sensor) {
 	sensor->controlbits |= 1 << 7; 					// Markera att larmet går
 	GPIO_SetBits(sensor->port, sensor->pinLamp); 	// Tänd lampa
@@ -313,6 +394,19 @@ void disarm(Sensor* sensor) {
 	GPIO_SetBits(sensor->port, sensor->pinLamp);	
 }
 
+
+
+void init_app(){
+
+	init_Timer();
+	init_GPIO_Ports();	
+	DebugPrintInit(); // Todo: ta bort innan slutprodukt
+	init_Sensors();
+	init_rng();
+	can_init();
+	getId();
+
+}
 
 
 void main(void){
@@ -365,7 +459,8 @@ void main(void){
 		else if(sensors[i].controlbits & (bit1 | bit2)) {
 			VibrationSensor* sensor = &(sensors[i].vibration);
 			
-			if(!GPIO_ReadInputDataBit(sensors[i].port, sensor->pinDO)){
+			
+			if(!GPIO_ReadInputDataBit(sensors[i].port, sensor->pinDO)){	// Vibration detekterat.
 				GPIO_SetBits(sensors[i].port, sensors[i].pinLamp);
 			}
 			else{

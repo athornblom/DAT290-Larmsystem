@@ -38,54 +38,59 @@
 
 
 \section{Inledning}
-
+Rapporten beskriver utvecklingen av ett modulärt larmsystem som i grunden
+ \newline består av ARM-baserade MD407-enkortsdatorer.
 
 \subsection{Syfte} % Svarar på frågan "Varför"?
-Ett centralt uppkopplat larmsystem är en produkt som är väldigt
-effektivt för att kunna upptäcka pågående inbrott så snabbt
-som möjligt. Inte för att glömma att ett centralt uppkopplat
-larmsystem även kan avskräcka personer ifrån att göra olaga 
-intrång. Eftersom att Rekomendationen enligt 
-stöldskyddsföreningen\cite{SSF} är att ha ett 
-larm som är uppkopplat till en larmcentral, har grupp13 (insert cool name)
-valt att utveckla en del av ett uppkopplat larmsystem.
+Larmsystemets syfte är att vara ett finansiellt dynamiskt alternativ för 
+företag och organisationer som har behov av anpassad larmning beroende på 
+rådande behov. Detta uppnås genom att erbjuda mindre delsystem som kan kopplas 
+ihop till ett större centraliserat system.
 
-Systemets uppgift är att öka säkerheten och översikten av
-kundens lokaler, genom att larma önskade dörrar. Säkerheten 
-ökas då i systemet eftersom att ifall en dörr är öppen längre
-än en tid som kunden själv väljer, så larmar den dörren centralt,
-vilket gör att det upptäckts så fort som möjligt. Säkerheten
-kan även ökas genom att kompletera med våra rörelse och vibrationsensorer
-som även dem är uppkopplade, för att detektera rörelse eller vibrationer.
+Systemet ökar översikten och säkerheten av användarens lokaler genom \newline att 
+implementera konfiguerbar larmning av dörrar, samt rörelse- och vibrationsdetektering.
 
 \subsection{Mål} % Svarar på frågan "Vad"?
 % I detta avsnitt beskrivs koncist samtliga övergripande tekniska mål med projektet, det vill säga, vad som ska konstrueras. De mål som anges här kommer att styra projektets utveckling. När projektet närmar sig sitt slut och den slutliga projektrapporten lämnas in kommer beställaren att kritiskt analysera hur väl projektet lyckats genom att jämföra planens mål med den tekniska konstruktion som redovisas i projektrapporten.
-Vår del utav larmsystemet ska bestå utav tre typer av enheter.
+Ett komplett larmsystem i minimal form består av 3 enheter:
 \begin{itemize}
-    \item Centralenhet 
+    \item 1st Dörrenhet
+    \item 1st Rörelseenhet
+    \item 1st Centralenhet
 \end{itemize}
+Samtliga enheter kräver en MD407-mikrodator för individuell drift. För att 
+kopplas samman fristående enheter till ett centraliserat system krävs en CAN-buss.
 
+Dörrenheten hanterar detektering- och larmande av dörrar. Vid systemuppstart 
+ dörrenheten antalet dörrar kopplade på enkortsdatorn. Datarepresentationer av
+  dessa dörrar skapas, vilket möjliggör för dörrarna att efter en förutbestämd 
+  tid utlösa lokala larm genom att en LED-lampa på den larmande dörren tänds. 
+  Dörrarna har också förmågan att skicka centrala larm via en CAN-buss till 
+  centralenheten. Tider innan larmen utlöstes kan konfigueras från centralenheten. 
+  Från centralenheten har man även förmågan att avlarma dörrar, vilket hindrar 
+  samtliga larm på dörren från att utlöstas.
 
+Röreleseenheten består av en rörelse- och en vibrationssensor. Om endera sensor 
+utlöstes skickas ett centralt larm via en CAN-buss till centralenheten. Känsligheten 
+på rörelsesensorn konfigueras från centralenheten. Vibrationssensorn konfigueras direkt på hårdvaran.
 
-
-
-Larm- och låssystemet skall konstrueras av en dörrenhet och en rörelseenhet, kopplade till en central larmenhet.
-
-Dörrenheten skall ha stöd för en justerbar mängd dörrar. Varje dörr i systemet utrustas med en dörrsensor kopplad till en MD407 minidator, som sköter lokallarmning och kan begära centrallarm cia centralenheten.
-
-Rörelseenheten är uppbyggd med avståndsmätare och vibrationssensorer. Likt dörreneheten kopplas en justerbar mängd av dessa sensorer till en MD407 minidator, som kan begära centrallarm vid behov.
-
-Centralenheten är också en MD407 minidator, den hanterar konfiguration av periferienheterna och larmning. Ett larm som går på centralenheten skall kunnas stängas av via en pin-kod kopplad till enheten som larmar. Centralenheten skall även sköta initial konfiguration av systemet samt se till att inga enheter kan kopplas in/ut när systemet är i drift.
+Centralenheten hanterar konfiguration av de andra enheterna, samt fungerar som en 
+centrum för samtliga larm som utlöstes i systemet. Om ett centralt larm utlöstes så 
+kan detta endast ackkrediteras och nollstälals från centralenheten.
 
 \subsection{Arbetsmetod} % svarar på frågan "hur har vi gått tillväga i det tekniska utvecklingsarbetet"?
 \subsubsection{Subgrupper}
-För att förhindra stockning i projektet delades projektgruppen in i tre grupper om två personer vardera, en för varje periferienhet, då parallellt arbete ansågs effektivare.
+För att förhindra stockning i projektet delades projektgruppen in i tre grupper om två personer vardera, 
+en för varje periferienhet, då parallellt arbete ansågs effektivare.
 
-\textbf{Centralenheten}: Gruppen består av Josef och Filip. Målet är att kunna styra alla de andra periferienheterna från centralenheten samt implementera CAN-bussen.
+\textbf{Centralenheten}: Gruppen består av Josef och Filip. Målet är att kunna styra alla de andra 
+periferienheterna från centralenheten samt implementera CAN-bussen.
 
-\textbf{Dörrenheten}: Gruppen består av Adam och Gustav. Dörrenheten ansvarar för att alla dörrar skall vara uppkopplade och larmade.
+\textbf{Dörrenheten}: Gruppen består av Adam och Gustav. Dörrenheten ansvarar för att alla dörrar 
+skall vara uppkopplade och larmade.
 
-\textbf{Rörelseenheten}: Gruppen består av Erik och Ben. Rörelseenheten utvecklar mjukvaran till rörelse- och vibrationssensorerna för larmning av t.ex. fönster och värdefulla föremål.
+\textbf{Rörelseenheten}: Gruppen består av Erik och Ben. Rörelseenheten utvecklar mjukvaran till 
+rörelse- och vibrationssensorerna för larmning av t.ex. fönster och värdefulla föremål.
 
 \subsubsection{Kommunikation}
 Under projekets gång har arbetsgruppens medlemmar skött den skriftliga interna kommunikationen via en gemensam Messenger-chatt.
@@ -236,7 +241,7 @@ Slutligen tänds lampan som är kopplad till pinne 2 på port B som signalerar a
 Systemet kontrollerar nu fortlöpande alla dörrar enligt flödesdiagrammet i figur 3: \linebreak \newline
 \end{flushleft} 
 \centering
-\includegraphics[scale=0.5]{Flow-Chart.png}
+\includegraphics[scale=0.5]{figurer\Flow-Chart.png}
 \caption{Flödesschema över dörrenhetens funktionalitet som visar vilka beslut systemet tar beroende på externa och interna händelser.}
 \end{figure}
 
