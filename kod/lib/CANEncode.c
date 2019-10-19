@@ -45,47 +45,57 @@ uint8_t encode_door_time_config(CanTxMsg *msg, uint8_t to_central, uint8_t door_
  * uint8_t value_1: antal vibrationssensorer
  */
 uint8_t encode_request_id(CanTxMsg *msg, uint32_t temp_id, uint8_t device_type, uint8_t value_0, uint8_t value_1){
-    uint8_t *data_pointer =  &(msg->Data[0]);
-    
-    
     Header header = empty_header;
     header.msgType = reqID_msg_type;
     header.toCentral = 1;
     HEADERtoUINT32(header, msg->ExtId);
 
-    msg->DLC = 7;
-    
+    msg->DLC = reqID_msg_length;
     msg->IDE = CAN_Id_Extended;
     msg->RTR = CAN_RTR_Data;
     
     //Id skrivs in i bytearrayen för data
-    *data_pointer = temp_id;
-    *(data_pointer + 4) = device_type;
-    *(data_pointer + 5) = value_0;
-    *(data_pointer + 6) = value_1;
+    msg->Data[0] = (uint8_t)temp_id;
+    msg->Data[1] = (uint8_t)(temp_id >> 8);
+    msg->Data[2] = (uint8_t)(temp_id >> 16);
+    msg->Data[3] = (uint8_t)(temp_id >> 24);
+
+    msg->Data[4] = device_type;
+    msg->Data[5] = value_0;
+    msg->Data[6] = value_1;
     
     return 1;
 }
 
+//Encodar en idbegäran
+//msg är en pektare till meddelande som ska skickas
+//request är en pekare till förfrågan
+//id är id man tilldelar enheten
+//Returnerar 1 om det lyckade 0 annars
 uint8_t encode_assign_id(CanTxMsg *msg, CanRxMsg *request, uint8_t id){
-    uint8_t *data_pointer =  &(msg->Data[0]);
-    
-    
-    Header header = empty_header;
-    header.msgType = assignID_msg_type;
-    header.toCentral = 0;
-    HEADERtoUINT32(header, msg->ExtId);
-    
-    msg->DLC = 5;
-    
-    msg->IDE = CAN_Id_Extended; //Alternativen är CAN_Id_Standard eller FCAN_Id_Extended
-    msg->RTR = CAN_RTR_Data;
-    
-    //Första 4 bytes är slumptalet från förfrågan
-    *data_pointer = *(uint32_t *)(&(request->Data[0]));
+    //Kollar så längden av request stämmer för idReq
+    if (request->DLC == reqID_msg_length){
+        Header header = empty_header;
+        header.msgType = assignID_msg_type;
+        header.toCentral = 0;
+        HEADERtoUINT32(header, msg->ExtId);
 
-    //Id skickas i andra byten
-    *(data_pointer + 4) = id;
+        msg->DLC = assignID_msg_length;
+        msg->IDE = CAN_Id_Extended;
+        msg->RTR = CAN_RTR_Data;
+
+        //Första 4 bytes är slumptalet från förfrågan
+       msg->Data[0] = request->Data[0];
+       msg->Data[1] = request->Data[1];
+       msg->Data[2] = request->Data[2];
+       msg->Data[3] = request->Data[3];
+
+        //Id skickas i andra byten
+        msg->Data[4] = id;
+
+        return 1;
+    }
+    return 0;
 }
 
 uint8_t encode_distance_config(CanTxMsg *msg, uint32_t dist){
