@@ -1,5 +1,5 @@
 Den inbyggda prioriteringen av meddelanden har noga avvägts vid tilldelning av de 29 bitar som finns tillgängliga i ID-fältet.
-Då det är detta fält som avgör prioritringen för meddelanden på bussen så beskriver de i huvudsak meddelandetypen.
+Då det är detta fält som avgör prioriteringen för meddelanden på bussen så beskriver de i huvudsak meddelandetypen.
 De 29 bitarna har fördelats enligt tabell \ref{tab:idbitar}.
 
 \begin{table}[H]
@@ -21,17 +21,17 @@ De 29 bitarna har fördelats enligt tabell \ref{tab:idbitar}.
 \end{table}
 
 
-Datafältets maximala längd är 8 bytes och bildar tillsammans med ID-fältet unika meddelanden. De meddelanden som används beskrivs nedan.
+Datafältets maximala längd är 8 bytes. Det bildar tillsammans med ID-fältet unika meddelanden. De meddelanden som används beskrivs nedan.
 
 
 \todo[inline]{Beskrivningarna av meddelandena nedan är mycket övergripande då meddelandena inte är implementerade än.}
 
 \textbf{Ack}
 \begin{itemize}
-    \item Skickas som remote meddelande
+    \item Skickas som remote-meddelande
     \item Skickas i båda riktningar
 \end{itemize}
-Bekräftelse för senaste mottagna meddelandet. Man skickar samma header men av remote typ och utan data. \\
+Bekräftelse för senaste mottagna meddelandet. Man skickar samma header men av typen remote och utan data. \\
 
 
 \textbf{Skicka larm}
@@ -39,7 +39,7 @@ Bekräftelse för senaste mottagna meddelandet. Man skickar samma header men av 
     \item Meddelandetyp 0
     \item Skickas från periferienhet till centralenheten
 \end{itemize}
-Talar om för centralenheten om någon dörr eller sensor larmar. Detta meddelande skickas endast av periferienheterna. I första byten talar man om vilken typ av sensor som larmar, i andra byten skickas IDt på sensorn\\
+Talar om för centralenheten om någon dörr eller sensor larmar. Detta meddelande skickas endast av periferienheterna. I första byten anges vilken typ av sensor som larmar, i andra byten ID:t på sensorn\\
 
 
 \textbf{Skicka konfiguration}
@@ -70,7 +70,7 @@ Första databyten anger enhetstyp enligt tabell \ref{tab:enhetstyper}.
     \item Meddelandetyp 2
     \item Skickas från centralenheten till preferienhet
 \end{itemize}
-Detta meddelande används då centralenheten tilldelar en periferienhet dess ID. Detta meddelande skickas bara då centralenheten är i konfigurationsläge. I första byten i datafältet skickas ett samma slumptal som skickade i begäran, i andra byten skickas det tilldelade IDt. \\
+Detta meddelande används då centralenheten tilldelar en periferienhet dess ID. Detta meddelande skickas bara då centralenheten är i konfigurationsläge. I första byten i datafältet skickas samma slumptal som periferienheten skickade i begäran, i andra byten det tilldelade ID:t. \\
 
 
 \textbf{ID-begäran}
@@ -78,4 +78,4 @@ Detta meddelande används då centralenheten tilldelar en periferienhet dess ID.
     \item Meddelandetyp 3
     \item Skickas från periferienhet till centralenheten
 \end{itemize}
-Detta meddelande skickas som en begäran av ID. De sju bitar i ID-fältet som annars ska ange periferienhetens ID är bara nollor i detta meddelande. I första databyten skickas ett slumptal som används för idenifiering innan man fått sitt ID.
+Detta meddelande skickas som en begäran av ID. De sju bitarna i ID-fältet som annars ska ange periferienhetens ID är bara nollor i detta meddelande. I första databyten skickas ett slumptal som används för idenifiering innan enheten har fått sitt ID.
