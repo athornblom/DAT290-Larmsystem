@@ -39,7 +39,7 @@ Bekräftelse för senaste mottagna meddelandet. Man skickar samma header men av 
     \item Meddelandetyp 0
     \item Skickas från periferienhet till centralenheten
 \end{itemize}
-Talar om för centralenheten om någon dörr eller sensor larmar. Detta meddelande skickas endast av periferienheterna. I första byten talar man om vilken typ av sensor som larmar, i andra byten skickas IDt på sensorn\\
+Talar om för centralenheten om någon dörr eller sensor larmar. Detta meddelande skickas endast av periferienheterna. Om det är en dörr som larmar skickas en byte med IDt till dörren. Om det är en rörelseenhet talar första byten man om vilken typ av sensor som larmar, i andra byten skickas IDt på sensorn.\\
 
 
 \textbf{Skicka konfiguration}
