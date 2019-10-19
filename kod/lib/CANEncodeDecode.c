@@ -1,5 +1,6 @@
 #include "CANEncodeDecode.h"
 #include "misc.h"
+#include "CAN.h"
 #include "stm32f4xx.h"
 #include "stm32f4xx_rcc.h"
 #include "stm32f4xx_gpio.h"
@@ -105,6 +106,44 @@ uint8_t encode_distance_config(CanTxMsg *msg, uint32_t dist){
     
     //Avstånd skrivs in i bytearrayen för data
     *data_pointer = dist;
+}
+
+//Encodar ett larmmeddelande från dörrenhet
+//msg är en pekare till meddelandet som ska skickas
+//unitID är enhetens egna ID
+//id är idt till dörren som larmar
+void encode_door_larm_msg(CanTxMsg *msg, uint8_t uinitID, uint8_t id){
+    Header header = empty_header;
+    header.msgType = larm_msg_type;
+    header.ID = uinitID;
+    header.toCentral = 1;
+    HEADERtoUINT32(header, msg->ExtId);
+
+    msg->DLC = door_larm_msg_length;
+    msg->IDE = CAN_Id_Extended;
+    msg->RTR = CAN_RTR_Data;
+
+    msg->Data[0] = id;
+}
+
+//Encodar ett larmmeddelande från rörelseenhet
+//msg är en pekare till meddelandet som ska skickas
+//unitID är enhetens egna ID
+//sensorType är antingen motion_sensor eller vibration_sensor
+//id är idt till sensorn som larmar
+void encode_motion_larm_msg(CanTx, *msg, uint8_t uinitID, uint8_t sensorType, uint8_t id){
+    Header header = empty_header;
+    header.msgType = larm_msg_type;
+    header.ID = uinitID;
+    header.toCentral = 1;
+    HEADERtoUINT32(header, msg->ExtId);
+
+    msg->DLC = motion_larm_msg_length;
+    msg->IDE = CAN_Id_Extended;
+    msg->RTR = CAN_RTR_Data;
+
+    msg->Data[0] = sensorType;
+    msg->Data[1] = id;
 }
 
 uint8_t decode_door_config_msg(CanRxMsg *msg, uint8_t *door_id_0, uint8_t *door_id_1, uint16_t *time_0, uint16_t *time_1, uint8_t *locked) {

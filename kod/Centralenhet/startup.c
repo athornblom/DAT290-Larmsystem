@@ -82,6 +82,19 @@ uint8_t get_id_by_random_id(uint32_t random_id, uint8_t device_type){
 
 
 void id_request_handler(CanRxMsg *rxMsgP){
+        CanRxMsg rxMsg = *rxMsgP;
+        CanTxMsg txMsg;
+        static uint8_t counter = 0;
+        if (encode_assign_id(&txMsg, rxMsgP, counter++)){
+            if (CANsendMessage(&txMsg) == CAN_TxStatus_NoMailBox){
+                    USARTPrint("No mailbox empty\n");
+            } else {
+                printTxMsg(&txMsg, 16);
+            }
+        } else {
+            USARTPrint("encodefel\n");
+        }
+}
     /*TODO KOMPILERAR INTE
     CanRxMsg rxMsg = *rxMsgP;
     CanTxMsg txMsg;
@@ -148,39 +161,21 @@ void id_request_handler(CanRxMsg *rxMsgP){
 */
 }
 
+
 //Förslag på struktur för larmhanterare
 void larmHandler(CanRxMsg *rxMsg){
-    //Är datadelen kortare än 2 byte är något fel
-    if (rxMsg->DLC & 0xf < 2){
-        USARTPrint("Error: for kort larmmeddelande\n");
-        return;
-    }
-    
-    switch (rxMsg->Data[0]) {
-        //Dörrsensor
-        case 0:
-            USARTPrint("Dörrsensor");
-            break;
-
-        //Avståndssensor
-        case 1:
-            USARTPrint("Rörelsesensor");
-            break;
-
-        //Vibrationssensor
-        case 2:
-            USARTPrint("Vibrationssensor");
-            break;
-    }
-
-    Header header;
+    Header header = empty_header;
     UINT32toHEADER(rxMsg->ExtId, header);
-
-    USARTPrint(" med ID: ");
-    USARTPrintNum(rxMsg->Data[1]);
-    USARTPrint(" larmar på enheten med ID: ");
-    USARTPrintNum(header.ID);
-    USARTPrint("\n");
+    //header.ID .... TODO kolla enhetstyp
+    uint8_t unitType; //TODO
+    if(unitType == door_unit){
+        //TODO
+        //IDt för dörren som larmar finns i rxMsg->Data[0]
+    } else if (unitType == motion_unit){
+        //TODO
+        //sensortypen finns i rxMsg->Data[0]
+        //IDt för sensorn finns i rxMsg->Data[1]
+    }
 }
 
 uint8_t msgPrint(CanRxMsg *msg, uint8_t base){
@@ -236,7 +231,7 @@ uint8_t enterConfMode (void){
     //Filter för ID-Begäran
     filter.IDE = 1;
     filter.RTR = 0;
-    header.msgType = 4;
+    header.msgType = reqID_msg_type;
     header.toCentral = 1;
     header.ID = 0;
     HEADERtoUINT32(header, filter.ID);
