@@ -7,12 +7,11 @@ Debug/startup.c.o: startup.c \
  ../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/inc/system_stm32f4xx.h \
  ../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_rcc.h \
  ../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx.h \
- ../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c \
+ functions.h startup.h \
  ../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_gpio.h \
- ../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/inc/system_stm32f4xx.h \
- startup.h ../lib/delay.h init.h ../lib/can.h \
+ init_GPIO.h door_can.h ../lib/can.h \
  ../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_can.h \
- ../lib/CANEncode.h ../lib/CAN.h \
+ ../lib/CANEncodeDecode.h ../lib/CAN.h \
  ../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_rng.h
 
 ../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx.h:
@@ -31,23 +30,21 @@ Debug/startup.c.o: startup.c \
 
 ../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx.h:
 
-../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c:
-
-../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_gpio.h:
-
-../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/inc/system_stm32f4xx.h:
+functions.h:
 
 startup.h:
 
-../lib/delay.h:
+../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_gpio.h:
 
-init.h:
+init_GPIO.h:
+
+door_can.h:
 
 ../lib/can.h:
 
 ../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_can.h:
 
-../lib/CANEncode.h:
+../lib/CANEncodeDecode.h:
 
 ../lib/CAN.h:
 

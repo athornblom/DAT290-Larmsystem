@@ -1,3 +1,6 @@
+#ifndef STARTUP_H
+#define STARTUP_H
+#include "stm32f4xx_gpio.h"
 typedef struct _door
 {
     char id;
@@ -11,4 +14,8 @@ typedef struct _door
     GPIO_TypeDef * GPIO_type;
 } door;
 
+volatile uint32_t msTicks; /* Variable to store millisecond ticks */
+uint32_t id;
+char nocid;
+#endif
 ////Dörren uppställd?/larmat centralt/Larmar
