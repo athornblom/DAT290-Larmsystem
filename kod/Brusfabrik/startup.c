@@ -4,6 +4,7 @@
 #include "misc.h"
 #include "CAN.h"
 #include "printMsg.h"
+#include "CANEncodeDecode.h"
 #include "stm32f4xx_rcc.h"
 #include "stm32f4xx_rng.h"
 
@@ -20,7 +21,8 @@ __asm volatile(
 
 void help(uint16_t delay){
     USARTPrintNumBase(delay,10);
-    USARTWaitPrint(" ms delay\nx for att toggla on/off\ns/f for att andra delay\np for att toggla tx print\nl for att toggla lyssnare\ne for att skicka ett rnd meddelande\n? for att se denna hjalp\n\n");
+    USARTWaitPrint(" ms delay\nx for att toggla on/off\ns/f for att andra delay\np for att toggla tx print\nl for att toggla lyssnare\ne for att skicka ett rnd meddelande\n");
+    USARTWaitPrint("c for clear\n1 for dorr larm\n2 for motion larm\n3 for idbegaran\n? for att se denna hjalp\n\n");
 }
 
 void msgPrint(CanRxMsg *msg){
@@ -68,7 +70,7 @@ void sendRnd(uint8_t print){
             USARTPrint("\n");
             printTxMsg(&msg, 16);
         }
-    } 
+    }
 }
 
 void main(void) {
@@ -142,6 +144,11 @@ void main(void) {
                 }
             }
             
+            //c för clear
+            else if (usartRead == 'c'){
+                USARTPrint("\n\n\n\n\n\n\n\n\n\n\n\n");
+            }
+            
             //e för att skicka ett meddelande
             else if (usartRead == 'e'){
                 sendRnd(outputPrint);
@@ -150,6 +157,51 @@ void main(void) {
             //? för hjälp
             else if (usartRead == '?'){
                 help(delay);
+            }
+
+            //1 för larmmedelande dörrenhet
+            else if (usartRead == '1'){
+               CanTxMsg msg;
+               static uint8_t counter;
+               encode_door_larm_msg(&msg, 0, counter++);
+               if (CANsendMessage(&msg) != CAN_TxStatus_NoMailBox){
+                    if (outputPrint){
+                        USARTPrint("\n");
+                        printTxMsg(&msg, 16);
+                    }
+                }
+            }
+
+            //2 för larmmedelande rörelsesensor
+            else if (usartRead == '2'){
+               CanTxMsg msg;
+               static uint8_t counter;
+               encode_motion_larm_msg(&msg, 1, (counter % 2) ? motion_sensor : vibration_sensor, counter++);
+               if (CANsendMessage(&msg) != CAN_TxStatus_NoMailBox){
+                    if (outputPrint){
+                        USARTPrint("\n");
+                        printTxMsg(&msg, 16);
+                    }
+                }
+            }
+            
+            //3 för id begäran
+            else if (usartRead == '3'){
+               CanTxMsg msg;
+               static uint8_t counter;
+               static uint32_t rand;
+                if (RNG_GetFlagStatus(RNG_FLAG_DRDY) == SET && //Nytt meddelande finns
+                 RNG_GetFlagStatus(RNG_FLAG_CECS) == RESET && //Inget klockfel
+                 RNG_GetFlagStatus(RNG_FLAG_SECS) == RESET){ //Inget seedfel
+                        rand = RNG_GetRandomNumber();
+                 }
+               encode_request_id(&msg, rand, rand % 2 ? door_unit : motion_unit, 0x42, 0x69);
+               if (CANsendMessage(&msg) != CAN_TxStatus_NoMailBox){
+                    if (outputPrint){
+                        USARTPrint("\n");
+                        printTxMsg(&msg, 16);
+                    }
+                }
             }
         }
 

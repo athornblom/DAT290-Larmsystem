@@ -167,15 +167,15 @@ void larmHandler(CanRxMsg *rxMsg){
     Header header = empty_header;
     UINT32toHEADER(rxMsg->ExtId, header);
     //header.ID .... TODO kolla enhetstyp
-    uint8_t unitType; //TODO
-    if(unitType == door_unit){
-        //TODO
-        //IDt för dörren som larmar finns i rxMsg->Data[0]
-    } else if (unitType == motion_unit){
-        //TODO
-        //sensortypen finns i rxMsg->Data[0]
-        //IDt för sensorn finns i rxMsg->Data[1]
-    }
+    //TODO göra resten
+
+    //Detta är för utveckling
+    USARTPrint("Dorr ");
+    USARTPrintNumBase(rxMsg->Data[0], 10);
+    USARTPrint(" larmar pa enhet med ID ");
+    USARTPrintNumBase(header.ID, 16);
+    USARTPrint("\n");
+
 }
 
 uint8_t msgPrint(CanRxMsg *msg, uint8_t base){
@@ -207,11 +207,11 @@ void confMsg(CanRxMsg *msg){
 //returnerar 1 om det lyckades, 0 annars
 uint8_t enterConfMode (void){
     USARTWaitPrint("Startar konfigurations-mode. Aktiverar foljande handlers:\n");
-    CANFilter filter;
+    CANFilter filter = empty_filter;
     CANFilter mask = empty_mask;
 
     //Används för omvandling
-    Header header;
+    Header header = empty_header;
 
     //Skriver mask
     mask.IDE = 1;
@@ -223,7 +223,7 @@ uint8_t enterConfMode (void){
     header.ID = ~0;
     //ignorera msgNum
     header.msgNum = 0;
-    //HEADERtoUINT32(header, mask.ID);
+    HEADERtoUINT32(header, mask.ID);
 
     //Avaktiverar alla filter
     CANdisableAllFilterHandlers();
@@ -277,10 +277,10 @@ uint8_t enterStdMode (void){
 
     //Skriver mask
     mask.IDE = 1;
-    mask.RTR = 0;
+    mask.RTR = 1;
     header.msgType = ~0;
     header.toCentral = ~0;
-    header.ID = ~0;
+    header.ID = 0;
     //ingorera msgNum
     header.msgNum = 0;
     HEADERtoUINT32(header, mask.ID);
@@ -291,7 +291,7 @@ uint8_t enterStdMode (void){
     //Filter för Larm
     filter.IDE = 1;
     filter.RTR = 0;
-    header.msgType = 0b001;
+    header.msgType = larm_msg_type;
     header.toCentral = 1;
     header.ID = 0;
     HEADERtoUINT32(header, filter.ID);

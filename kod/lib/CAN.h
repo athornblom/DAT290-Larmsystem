@@ -14,6 +14,7 @@
 #define empty_header {0, 0, 0, 0, 0, 0};
 #define default_header {0, 0, ~0, ~0, ~0, 0};
 #define empty_mask {0, 0, 0, 0};
+#define empty_filter empty_mask
 
 //Struktur som beskriver våran ID-uppdelning
 typedef struct  {
