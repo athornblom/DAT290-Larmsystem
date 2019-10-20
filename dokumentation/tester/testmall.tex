@@ -1,50 +1,35 @@
-\documentclass[a4paper]{article}
-
-\usepackage[swedish]{babel}
-\usepackage[T1]{fontenc}
-\usepackage{parskip}
-\usepackage{multicol}
-\usepackage[utf8]{inputenc}
+%Beskrivande titel av testet samt en unik label
+\subsubsection{test titel}
+\label{test:uinikIdentifiering}
 
 \setlength{\columnsep}{1cm}
-\begin{document}
-\pagenumbering{gobble}
 
 
 % Vid utförande av test fylls mallen nedan i, vilket resulterar i ett protokoll som sedan sparas som verifikation. Målet med dessa protokoll är att man utan sakkunskap ska kunna skapa sig en överblick av att systemet fungerar som det ska.
 
-\begin{center}
-	\LARGE\textbf{Test protokoll}
-\end{center}
 
 \begin{multicols}{2}
-\section*{Test formulerat av}
-\label{sec:formuleratav}
+\subsubsection*{Test formulerat av}
 % Namn på den/de som formulerade testet.
 
 
-
-\section*{Utfört av}
-\label{sec:namndatum}
+\subsubsection*{Utfört av}
 % Namn på den/de som utförande testet.
 
 
 
 \end{multicols}
-\section*{Komponent}
-\label{sec:komponent}
+\subsubsection*{Komponent}
 %Vilken del av systemet testas?
 
 
 
-\section*{Testsyfte}
-\label{sec:testsyfte}
+\subsubsection*{Testsyfte}
 %Vad ska testet visa? Är testet till följd av tidigare test?
 
 
 
-\section*{Hjälpmedel}
-\label{sec:hjalpmedel}
+\subsubsection*{Hjälpmedel}
 %Lista hjälpmedlen som användes i samband med testet.
 \begin{itemize}
 	\item 
@@ -52,23 +37,18 @@
 
 
 
-\section*{Utförande}
-\label{sec:utfarande}
+\subsubsection*{Utförande}
 %Hur ska testet utföras?
 
 
 
-\section*{Resultat}
-\label{sec:resultat}
+\subsubsection*{Resultat}
 %Vad är testresultatet? Hittades några buggar?
 
 
 
-\section*{Analys}
-\label{sec:analys}
+\subsubsection*{Analys}
 %Vad innebär testets resultat? Behövs fler test av komponenten? Behöver andra komponenter testas ytterligare, och i så fall hur?
 
 
 
-
-\end{document}

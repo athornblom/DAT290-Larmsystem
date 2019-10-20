@@ -10,6 +10,7 @@
 \usepackage{todonotes}
 \usepackage{url}
 \usepackage{hyperref}
+\usepackage{multicol}
 
 \title{Larmsystem baserat på MD407-mikrodatorer}
 \author{Grupp 13}
@@ -234,11 +235,11 @@ Slutligen tänds lampan som är kopplad till pinne 2 på port B för att signale
 Systemet kontrollerar nu fortlöpande alla dörrar enligt flödesdiagrammet i figur 3: \linebreak \newline
 \end{flushleft} 
 \centering
-\includegraphics[scale=0.5]{figurer\Flow-Chart.png}
+\includegraphics[scale=0.5]{figurer/Flow-Chart.png}
 \caption{Flödesschema över dörrenhetens funktionalitet som visar vilka beslut systemet tar beroende på externa och interna händelser.}
 \end{figure}
 
-Dörrenhetens flöde bygger på polling. Samtliga dörrar har i sina datarepresentationer ett antal kontrollbitar. I flödesschemat i figur 3 är dessa kontrollbitar representerade som 'beslut' som anger huruvida en kontrollbit är satt till 1 (för \texit{ja}) eller 0 (för \textit{nej}). Dessa kontrollbitar sätts till 1 eller 0 beroende på externa händelser.
+Dörrenhetens flöde bygger på polling. Samtliga dörrar har i sina datarepresentationer ett antal kontrollbitar. I flödesschemat i figur 3 är dessa kontrollbitar representerade som 'beslut' som anger huruvida en kontrollbit är satt till 1 (för \textit{ja}) eller 0 (för \textit{nej}). Dessa kontrollbitar sätts till 1 eller 0 beroende på externa händelser.
 
 Avlarmning av en specifik dörr sker via CAN-kommunikation från centralenheten. Att en dörr är avlarmad innebär att dess larm inte kan utlösas.
 
@@ -309,4 +310,8 @@ STM används för att bespara projektgruppen jobb med att implementera \\ genere
     \subsection{Utförlig beskrivning av meddelandetyper kommunikationsprotokoll}
     \label{bilaga:protokoll}
         \input{../protokoll/protokollInput.tex}
+        
+	\subsection{Tester}
+    		\label{bilaga:tester}
+     	%\input{../tester/Centralenhet/test.tex}
 \end{document}
