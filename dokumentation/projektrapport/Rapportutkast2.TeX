@@ -124,7 +124,7 @@ En översikt av hårdvaran och hur den är kopplad finns i Figur \ref{fig:hårdv
 \begin{figure}[H] % Samma figur som projektplanen, då hårdvaran fortfarande ser likadan ut, det är värt att göra en ny innan slutgiltiga rapporten.
     \centering
     \includegraphics[width=1\textwidth]{figurer/HardvaraOversikt.jpg}
-    \caption{Översikt Hårdvara}
+    \caption{Översikt över hårdvara}
     \label{fig:hårdvara}
 \end{figure}
 
@@ -149,7 +149,7 @@ En överblick av mjukvarans tidsflöde finns i Figur \ref{fig:tidsflöde}.
 Protokollet som har skapats för kommunikationen mellan enheterna bygger på protokollet Controller Area Network (CAN).
 CAN är ett bussprotokoll som främst används för kommunikation mellan datorer och givare på fordon där det ställs höga krav på tillförlitlighet.
 För att undvika kollisioner och därmed öka tillförlitligheten har CAN en dominant logisk nivå (0) som dessutom ger automatisk prioritering av meddelanden då den dominanta nivån har företräde på bussen.
-Denna prioritering har använts för att ge brådskande meddelanden företräde över meddelanden som inte kräver kort responstid. I tabell \ref{tab:meddelandetyper} är de meddelandetyper som använts kortfattat beskrivna. För en mer detaljerad beskrivning av protokollet och dess meddelandetyper se bilaga \ref{bilaga:protokoll}.
+Denna prioritering har använts för att ge brådskande meddelanden företräde över meddelanden som inte kräver kort responstid. I tabell \ref{tab:meddelandetyper} är de meddelandetyper som används kortfattat beskrivna. För en mer detaljerad beskrivning av protokollet och dess meddelandetyper se bilaga \ref{bilaga:protokoll}.
 
 
 
@@ -160,9 +160,9 @@ Denna prioritering har använts för att ge brådskande meddelanden företräde 
 		Meddelandetyp & Används till \\ \hline \hline
 		Bekräftelse		& Bekräftelse för senaste mottagna meddelandet. \\ \hline
 		Skicka larm		& Talar om för centralenheten om någon dörr eller sensor larmar. \\ \hline
-		Skicka konfiguration		& Används för att skicka konfigurationer. \\ \hline
+		Konfiguration		& Används för att skicka konfigurationer. \\ \hline
 		Tilldelning av ID		& Används då centralenheten tilldelar en periferienhet dess ID. \\ \hline
-		ID-begäran		& Används för att skicka ett medelande som en begäran av ID. \\ \hline
+		ID-begäran		& Används för att begära ett ID. \\ \hline
 
 	\end{tabular}
 	\caption{Listar de meddelandetyper som används för datakommunikationen.}
@@ -171,9 +171,8 @@ Denna prioritering har använts för att ge brådskande meddelanden företräde 
 
 
 \subsubsection{Implementation}
-För hantering av CAN-meddelanden har STM-biblioteket (se \ref{stm}) använts för inledande initiering, hantering av avbrott samt för att skicka meddelanden.
-Utöver det har det skapats ett system för hantering av mottagna meddelanden.
-vilket har lösts med avbrott där hanteringsfunktionen paras ihop med filtret för tillhörande meddelande.
+För hantering av CAN-meddelanden har STM-biblioteket (se \ref{stm}) använts för inledande initiering, hantering av avbrott och att skicka meddelanden.
+Utöver det har det skapats ett system för att hantera mottagna meddelanden med hjälp av avbrott. Hanteringsfunktionen paras ihop med filtret för tillhörande meddelande.
 Hanteringsfunktionen anropas sedan av avbrottsrutinen då ett meddelande passerat filtret.
 Denna lösning har valts då de flesta meddelanden naturligt hanteras med en kort hanteringsfunktion som inte kräver input från användaren.
 
@@ -188,10 +187,10 @@ Centralenheten styr och har uppsikt över övriga enheter.
 Centralenheten har följande två lägen:
 
 \begin{enumerate}
-    \item Standardläge: Enheten väntar på larm-meddelanden från periferienheterna eller användarinput via USART. Dessutom skickar den regelbundet  konfigurationen för anslutna dörrar och sensorer till periferienheterna, som förväntas bekräfta konfigurationen. Om en enhet inte svarar efter ett förbestämt antal meddelanden går larmet.
-    \item Konfigurationsläge: är det läget Enheten startar i. 
+    \item Standardläge: Enheten väntar på larm-meddelanden från periferienheterna eller användarinput via USART. Dessutom skickar den regelbundet  konfigurationen för anslutna dörrar och sensorer till periferienheterna, som förväntas bekräfta konfigurationen. Om en enhet inte svarar efter ett visst antal meddelanden går larmet.
+    \item Konfigurationsläge: Detta är det läge enheten startar i. 
      Här kan användaren konfigurera anslutna dörr- och
- rörelseenheter via USART. Användaren kan sätta centralenheten till konfigurationsläget
+ rörelseenheter via USART. Användaren kan sätta centralenheten i konfigurationsläge
       via USART för att lägga till eller konfigurera periferienheter.
 \end{enumerate}
 
