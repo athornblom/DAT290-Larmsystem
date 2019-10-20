@@ -268,11 +268,28 @@ Sensorns känslighet justeras fysiskt genom en komparator på sensorn.
 \section{Metoder}
 \label{stm}
 \subsection{Verifikation}
-\todo[inline]{Har inte utfört några tester}
+För att evaluera huruvida larmsystemet uppnår de mål och krav som formulerats används tester. 
+De tre undergrupperna har skrivit tester för sina respektive delsystem som försäkrar att 
+delsystemen fungerar enligt specifikationen. Ett test som är skrivit av en undergrupp utförs
+av en annan undergrupp för att se minimera partiskhet i utförandet. 
+
+Testet för det kompletta centraliserade systemet formulerades och utfördes av gruppen som helhet.
+
+För att se samtliga testspecifikationer, samt resultat och analys, hänvisas till avsnitt '6 Bilagor'.
+
+
 \subsection{Programbibliotek}
 \label{stm}
-För att minska arbetet har programbiblioteket STM32\cite{stm}
-använts. Detta har används vid initieringar av GPIO-portar, Systick, med mera.
+Programbiblioteket STM32\cite{stm} används för:
+\begin{itemize}
+    \item Initieringar av enkortsdatorernas GPIO.
+    \item Implementation av en System Timer (SysTick).
+    \item "Väntetid'-funktionalitet. (Delay-funktioner)
+    \item Implementation av CAN-kommunikation.
+\end{itemize}
+
+STM används för att bespara projektgruppen jobb med att implementera \\ generell funktionalitet
+ som redan skrivits för MD407-enkortsdatorer.. 
 
 \section{Resultat och diskussion} % Kan dela upp dessa om vi vill.
 % Detta avsnitt redovisar resultatet av genomförd verifirering av systemet; dels fördelarna, dels för komplett system. Detta avsnitt redovisar även resultatet av det slutgiltiga fysiska testet när hela systemet körs i skarpt läge. Ni ska främst redovisa resultat i form av funktionalitet, men ta ocks upp prestanda aspekter om dessa är viktiga. Diskutea hur väl ni lyckats med er slutprodukt i förhållande till er projektplan.
