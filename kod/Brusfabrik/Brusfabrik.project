@@ -20,6 +20,9 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="../lib/CANEncodeDecode.h"/>
+    <File Name="../lib/CANEncodeDecode.c"/>
+    <File Name="../lib/buffer.h"/>
     <File Name="../lib/printMsg.h"/>
     <File Name="../lib/printMsg.c"/>
     <File Name="../lib/CAN.h"/>

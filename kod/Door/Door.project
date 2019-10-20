@@ -20,13 +20,19 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="door_can.h"/>
+    <File Name="door_can.c"/>
+    <File Name="../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c"/>
+    <File Name="init_GPIO.h"/>
+    <File Name="init.GPIO.c"/>
+    <File Name="functions.h"/>
+    <File Name="functions.c"/>
     <File Name="../lib/CANEncodeDecode.h"/>
     <File Name="../lib/CANEncodeDecode.c"/>
     <File Name="../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c"/>
     <File Name="../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_can.c"/>
     <File Name="../lib/CAN.c"/>
     <File Name="../lib/CAN.h"/>
-    <File Name="../lib/delay.h"/>
     <File Name="startup.h"/>
     <File Name="init.h"/>
     <File Name="../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/misc.c"/>
