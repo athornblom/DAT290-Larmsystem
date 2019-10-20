@@ -252,14 +252,35 @@ Dörrenheten kan köras utan uppkoppling till centralenheten. I detta läge finn
 
 
 \subsubsection{Rörelseenheten}
-Denna periferienhet använder avståndssensorer av modellen HC-SR04, och vibrationssensorer av modellen SW-18010P, som styrs av ett MD407-kort.
-Vid uppstart av systemet skall alla inkopplade sensorer tilldelas ett id som säger vilken sorts sensor det är och numrerar dem.
+Denna periferienhet använder avståndsmätarer av modellen HC-SR04 till rörelsesensor,
+ och vibrationssensorer av modellen SW-18010P, som styrs av ett MD407-mikrodator.
 
-\textbf{Avståndssensorn}: Aktiveras genom att MD407-kortet skickar en hög puls till sensorn i minst 10 mikrosekunder, 
- varpå sensorn skickar ut ultraljudsvågor och sänder en hög puls tills ultraljudsvågorna kommer tillbaka till MD407-kortet, där avståndet till närmaste föremål beräknas genom att mäta längden på pulsen. 
+Rörelseenheten använder mikrodatorns alla fem GPIO-portar, port A, B, C, D och E. 
+Portarna är uppdelade mellan rörelse- och vibrationssensorerna, port A, B och C till rörelsesensorerna, 
+och port D och E till vibrationssensorerna.
+
+Vid uppstart initieras först portarna och pinnarna på mikrodatorn så att de kan addresseras 
+och avläsas på rätt sätt. Därefter startas en System Timer (SysTick) vilket används som klocka. 
+Fortsättningsvis detekterar systemet hur många rörelse- och vibrationssensorer som är inkopplade till kortet, och på vilka 
+pinnar de är kopplade. För att vibrationssensorerna skall detekteras får de ej utsättas för vibrationer under uppstart.
+
+Efter detekteringen skapas datarepresentationer med förinställda värden för de
+sensorer som systemet hittade. Efter att samtliga datarepresentationer är skapade skickas 
+en lista av de inkopplade sensorerna till centralenheten som bestämmer vilka sensorer som ska vara aktiva 
+samt sätter larmavståndet för rörelsesensorerna.
+
+Båda typerna av sensorer larmar och avlarmas endast via centralenheten, dock finns en LED-lampa lokalt som blinkar till när ett larm går.
+
+\textbf{Rörelsesensorn}: 
+En rörelsesensor tar upp 3 pinnar och får därmed plats med 5 sensorer per port. 
+Trig- och echo-pinnen från HC-SR04 samt en LED-lampan kopplas resepktive till  pin-n, -(n+1) och -(n+2).
+
+
+Sensorn aktiveras genom att MD407-mikrodatorn skickar en hög puls till sensorn i minst 10 mikrosekunder, 
+ varpå sensorn skickar ut ultraljudsvågor och sänder en hög puls till MD407-mikrodatorn fram tills ultraljudsvågorna har återvänt , där avståndet till närmaste föremål beräknas genom att mäta längden på pulsen. 
 HC-SR04 kan mäta avstånd upp till 400cm och larmavståndet är justerbart från centralenheten.
 
-\textbf{Vibrationssensorn}: Sensorn sänder ständigt en hög puls till MD407-kortet utom när den känner av vibrationer, då den istället sänder en låg puls. 
+\textbf{Vibrationssensorn}: Sensorn sänder ständigt en hög puls till MD407-mikrodatorn utom när den känner av vibrationer, då den istället sänder en låg puls. 
 Sensorns känslighet justeras fysiskt genom en komparator på sensorn.
 
 
@@ -317,7 +338,12 @@ STM används för att bespara projektgruppen jobb med att implementera \\ genere
  \subsection{Rörelseenheten}
  Rörelseenheten har följande funktionalitet:
  \begin{enumerate}
-     \item
+ 	\item Automatiskt detektera antalet inkopplade rörelse- och vibrationssensorer vid uppstart.
+	\item Larma vid upptäckt av vibrationer eller rörelse.
+    	\item Central larmning via CAN-buss.
+	\item LED-lampa som signalerar när ett larm skickas till centralenheten.
+	\item Konfigurerbart larmavstånd på rörelsesensorerna.
+	\item Avlarmning via centralenheten
  \end{enumerate}
  För att säkerställa att funktionalitet ovan fungerar utfördes följande tester:
  \begin{enumerate}
