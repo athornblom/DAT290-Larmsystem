@@ -1,0 +1,63 @@
+\clearpage
+%Beskrivande titel av testet samt en unik label
+\subsubsection{Test av ID-tilldelning och larm}
+\label{test:idLarm}
+
+\setlength{\columnsep}{1cm}
+
+
+% Vid utförande av test fylls mallen nedan i, vilket resulterar i ett protokoll som sedan sparas som verifikation. Målet med dessa protokoll är att man utan sakkunskap ska kunna skapa sig en överblick av att systemet fungerar som det ska.
+
+
+\begin{multicols}{2}
+\subsubsection*{Test formulerat av}
+% Namn på den/de som formulerade testet.
+Adam
+
+\subsubsection*{Utfört av}
+% Namn på den/de som utförande testet.
+Erik
+
+
+\end{multicols}
+\subsubsection*{Komponent}
+%Vilken del av systemet testas?
+Centralenhet och dörrenhet
+
+
+
+\subsubsection*{Testsyfte}
+%Vad ska testet visa? Är testet till följd av tidigare test?
+Kontrollera att dörrenheten blir tilldelad ett ID av centralenheten vid uppstart. Därefter ska dörrenheten larma om dörrbrytaren bryts.
+
+
+\subsubsection*{Hjälpmedel}
+%Lista hjälpmedlen som användes i samband med testet.
+\begin{itemize}
+	\item CAN-kabel
+	\item Dörrbrytare
+	\item kopplingskabel
+	\item CAN-lyssnare
+\end{itemize}
+
+
+
+\subsubsection*{Utförande}
+%Hur ska testet utföras?
+Koppla upp en dörrbrytar på en port (A, C, D eller E). Därefter kopplas CAN-nätverket upp med lyssnare, centralenhet och dörrenhet. Starta sedan lyssnaren och centralenheten. Se till att centralenheten är i konfigurationsläge och starta därefter dörrenheten. Kontrollera nu att ID-tilldelningen sker genom att kolla på kommunikationen som lyssnare detekterar samt utskriften från centralenheten. 
+
+Efter ID-tilldeningen är färdig sätts centralenheten i standarsläge genom att skriva komandot start i konsolen. Testa nu att centralenheten detekterar larm som skickas från dörrenheten då dörrbrytaren öppnas. Läs första byten av meddelandet, här skickas ID till dörrenheten och ska vid detta läge vara 0.
+
+Starta om dörrenheten och utför samma test igen. Denna gång ska IDt vara 1.
+
+
+\subsubsection*{Resultat}
+%Vad är testresultatet? Hittades några buggar?
+ID-tilldelningen sker som den ska. Larmet skickas efter ett par sekunder efter att dörrbrytaren öppnats och mottas av centralenheten med en utskrift i konsolen.
+
+
+\subsubsection*{Analys}
+%Vad innebär testets resultat? Behövs fler test av komponenten? Behöver andra komponenter testas ytterligare, och i så fall hur?
+ID-tilldelningen utförs korrekt och dörrenheten kan därefter larma om en öppen dörrbrytare detekterats.
+
+
