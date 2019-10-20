@@ -178,6 +178,13 @@ Hanteringsfunktionen anropas sedan av avbrottsrutinen då ett meddelande passera
 Denna lösning har valts då de flesta meddelanden naturligt hanteras med en kort hanteringsfunktion som inte kräver input från användaren.
 
 
+\subsection{USART}
+För att ge användaren möjlighet att interagera med systemet har Universal asynchronous receiver-transmitter (USART) implementerats. USART sköter kommunikationen mellan mikrodatorn och den terminal som finns då man anslutit sig till mikrodatorn via en dator. Via terminalen får användaren utskrifter från programet och har även möjlighet att ge kommandon till systemet.
+
+
+\subsection{Störenhet}
+För att ha möjlighet att testa systemet på ett tungt traffikerat CAN-nätverk har en störenhet utvecklats. Störenheten skickar frekvent meddelanden med slumpartat innehåll. Hastigheten är reglerbar via USART. Utöver att generera brus kan enheten också fungera som en lyssnare med avaktiverad störfunktion.
+
 
 \subsection{Delsystem }
 \subsubsection{Centralenheten}
