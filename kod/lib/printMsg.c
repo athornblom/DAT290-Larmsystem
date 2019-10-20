@@ -2,9 +2,7 @@
 #include "CAN.h"
 #include "USART.h"
 
-void printRxMsg(CanRxMsg *msg, uint8_t base){
-    USARTPrint("Rx msg:\n");
-
+void printMsg(CanRxMsg *msg, uint8_t base){
     //Skriver ut ID
     if (msg->IDE == CAN_Id_Standard) {
         USARTPrint("STD ID: \n");
@@ -43,13 +41,17 @@ void printRxMsg(CanRxMsg *msg, uint8_t base){
                 }
             }
     }
+    USARTPrint("\n");
+}
 
-
-    USARTPrint("\n\n");
+void printRxMsg(CanRxMsg *msg, uint8_t base){
+    USARTPrint("Rx msg:\n");
+    printMsg(msg, base);
 }
 
 void printTxMsg(CanTxMsg *msg, uint8_t base){
-    printRxMsg((CanRxMsg *)msg, base);
+    USARTPrint("Tx msg:\n");
+    printMsg((CanRxMsg *)msg, base);
 }
 
 
