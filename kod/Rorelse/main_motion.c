@@ -47,12 +47,28 @@ char nocid = 1;
 
 
 // Alla sensorer, denna initieras under init_Sensors.
-Sensor sensors[nMaxMotionSensors + nMaxVibrationSensors];
+Sensor sensors[nMaxMotionSensors + nMaxVibrationSensors];	// Array för max antalet sensorer.
+char connectedSensors[nMaxMotionSensors + nMaxVibrationSensors];	// Ska innehålla id för de inkopplade sensorerna. Om ett element i arrayn är 100 
+																// så indikerar det att det finns inga mer inkopplade sensorer.
+char connectedCounter = 0;	// Räknare till connectedSensors, en global variabel för den används i 'init_MotionSensors' och 'init_VibrationSensors'.
 
 uint8_t nMotionSensors = 0;		// Antalet rörelsesensorer kopplade till MD407-kortet.
 uint8_t nVibrationSensors = 0;	// Antalet vibrationssensorer kopplade till MD407-kortet.
 
+
 volatile uint32_t microTicks = 0;		 // Variabel för microsekunder.
+
+
+// Kollar ifall det är en giltlig pinne en sensor kopplas till. OBS!!! Funkar endast när GPIOA och GPIOB är designerade portar för rörelsesensorer. (Detta skall ändras -Erik)
+int validPin(GPIO_TypeDef* port, uint16_t pin){
+	if((port == GPIOA) && (pin == GPIO_Pin_1 || pin == GPIO_Pin_10 || pin == GPIO_Pin_13))
+		return 0;
+		
+	if((port == GPIOB) && (pin == GPIO_Pin_1 || pin == GPIO_Pin_4 || pin == GPIO_Pin_7 || pin == GPIO_Pin_10))
+		return 0;
+	
+	return 1;
+}
 
 void SysTick_Handler(void)  {			 // SysTick interrupt Handler.
 	microTicks++;
@@ -98,7 +114,7 @@ void init_GPIO_Ports(){
 		GPIO_StructInit(&init);  // Default-ställer init konfigurationen
 		init.GPIO_Pin = GPIO_Pin_1 | GPIO_Pin_4 | GPIO_Pin_7 | GPIO_Pin_10 | GPIO_Pin_13;  // Echo pinnar
 		init.GPIO_Mode = GPIO_Mode_IN;
-		init.GPIO_PuPd = GPIO_PuPd_UP;
+		init.GPIO_PuPd = GPIO_PuPd_DOWN;
 		init.GPIO_Speed = GPIO_Fast_Speed;	// 50 Mhz
 		GPIO_Init(motionPorts[i], &init);
 		
@@ -161,36 +177,46 @@ void init_MotionSensors(){
 			
 		}
 	}	
-	char lows[nMaxMotionSensors];
+	char lows[nMaxMotionSensors];	// Räknar antalet gånger en rörelsesensors 'pinTrig' varit låg.
 	uint32_t timeOut = microTicks + 500000;	// 500 ms
 
 	while(microTicks < timeOut){
 		for(int i = 0; i < nMaxMotionSensors; i++){
 			MotionSensor* sensor = &(sensors[i].motion);
-			if(lows[i] < 2 && microTicks > sensor->pulseTrig){ // Första låga
-				GPIO_ResetBits(sensors[i].port, sensor->pinTrig);	// Avaktivera triggerpuls
-				lows[i]++;
-			}
-			if(microTicks >= sensor->pulseDelay){
-				GPIO_SetBits(sensors[i].port, sensor->pinTrig);	// Aktivera triggerpuls
-				sensor->pulseTrig = microTicks + 10; // Triggpuls 10µs
-				sensor->pulseDelay = microTicks + 1000000; // Triggpuls 1s
-				
-			}
-			if(GPIO_ReadInputDataBit(sensors[i].port, sensor->pinEcho)){ // Är echo hög?
-				sensors[i].controlbits |= bit0;	// Ettställer kontrollbit 0.
-				sensors[i].controlbits |= bit2;	// Ettställer kontrollbit 2. Ta bort när centralenheten kan kommunicera med oss. - Erik
-				nMotionSensors++;
+			if (validPin(sensors[i].port, sensor->pinEcho)){
+				if(lows[i] < 2 && microTicks > sensor->pulseTrig){ // Första låga
+					GPIO_ResetBits(sensors[i].port, sensor->pinTrig);	// Avaktivera triggerpuls
+					lows[i]++;
+				}
+				if(microTicks >= sensor->pulseDelay){
+					GPIO_SetBits(sensors[i].port, sensor->pinTrig);	// Aktivera triggerpuls
+					sensor->pulseTrig = microTicks + 10; // Triggpuls 10µs
+					sensor->pulseDelay = microTicks + 1000000; // Triggpuls 1s
+					
+				}
+				if(GPIO_ReadInputDataBit(sensors[i].port, sensor->pinEcho)){ // Är echo hög?
+					sensors[i].controlbits |= bit0;	// Ettställer kontrollbit 0.
+					sensors[i].controlbits |= bit2;	// Ettställer kontrollbit 2. Ta bort när centralenheten kan kommunicera med oss. - Erik
+					nMotionSensors++;
+				}
 			}
 			
 		}
 	}
 	
+	// Lägger till inkopplade rörelsesensorers id i 'connectedSensors'.
+	for(int i = 0; i < nMaxMotionSensors; i++){
+		if(sensors[i].controlbits & bit0){
+			connectedSensors[connectedCounter] = sensors[i].id;
+			connectedCounter++;
+		}
+	}
+	
+	
 	
 }
 
 void init_VibrationSensor(){
-	uint8_t sensorCounter = 0;
 	// Iterera genom portarna
 	for (int i=0; i*sizeof(vibrationPorts[0]) < sizeof(vibrationPorts); i++) {
 		// Iterera genom pinnarna
@@ -202,29 +228,40 @@ void init_VibrationSensor(){
 				};
 				
 				Sensor s = {
-					.id 			= 0, // TODO
+					.id 			= nMaxMotionSensors + i*8 + j/2,
 					.controlbits 	= bit0 | bit1 | bit2,
-					/* Bit 0 = 0, Sensorn är ej aktiv (Den har ej tagit emot centralenhets konfiguration än)
+					/* Bit 0 = 1, Sensor inkopplad
 					 * Bit 1 = 1, Sensorn är av typen vibration
-					 * Bit 2 = 0, används ej
-					 * Bit 3 = 1, Sensorn väntar på konfiguration från centralenheten */
+					 * Bit 2 = 1, Sensorn är aktiv (Ändra när centralenheten kan konfigurerar sensorerna)*/
 					 .port 			= vibrationPorts[i],
 					 .pinLamp 		= GPIO_Pins[j+1],
 					 .vibration 	= v
 					// Resten av structen är tom och fylls på när konfigurationen tas emot från centralenheten */
 				};
 				// Initiera en sensor i sensors listan efter alla rörelsesensorer
-				sensors[nMaxMotionSensors + sensorCounter] = s;
+				sensors[nMaxMotionSensors + i*8 + j/2] = s;
 				nVibrationSensors++;
-				sensorCounter++;
 			}
 		}
+	}
+	
+	// Lägger till inkopplade vibrationssensorers id i 'connectedSensors'.
+	for(int i = 0; i < nMaxVibrationSensors; i++){
+		if(sensors[nMaxMotionSensors + i].controlbits & bit0){
+			connectedSensors[connectedCounter] = sensors[nMaxMotionSensors + i].id;
+			connectedCounter++;
+		}
+	}
+	
+	// Ifall arrayen inte är fylld av id:n så läggs elementet '100' till för att signalera att det ej finns fler id:n.
+	if(connectedCounter < nMaxMotionSensors + nMaxVibrationSensors){
+		connectedSensors[connectedCounter] = 100;
 	}
 }
 
 void init_Sensors(){
-	init_VibrationSensor();
 	init_MotionSensors();
+	init_VibrationSensor();
 }
 
 
@@ -404,70 +441,84 @@ void init_app(){
 	init_Sensors();
 	init_rng();
 	can_init();
-	getId();
+	//getId();
 
 }
 
 
 void main(void){
 	init_app();
-	
+	uint32_t vanta = 0;
 	while(1){
 
-			// Polling
-	// Itererar över alla sensorer
-	for(int i = 0; i*sizeof(sensors[0]) < sizeof(sensors); i++){
+				// Polling
+		// Itererar över alla inkopplade sensorer. Det vilkor som kommenteras bort kollar alla sensorer.
+		for(int i = 0; /*i*sizeof(sensors[0]) < sizeof(sensors)*/ i < sizeof(connectedSensors) && connectedSensors[i] != 100; i++){
+			
+			//=====TEST============================
+			//DebugPrint("\n");
+			//DebugPrintNum(connectedSensors[i]);
+			//delayMicro(500000);
+			//=====================================
+			int j = connectedSensors[i];	// Används för att byta värdet på j för tester.
+			// Är sensorn aktiverad och av typen motion? (controlbit 2 && !1)
+			if(sensors[j].controlbits & bit2 && !(sensors[j].controlbits & bit1)){
+				MotionSensor* sensor = &(sensors[j].motion);
+				
+				// Är trigpulsen klar?
+				if(microTicks >= sensor->pulseTrig){ 					
+					GPIO_ResetBits(sensors[j].port, sensor->pinTrig);	// Avaktivera triggerpuls
+				}
+				
+				// Är triggfördröjningen klar?
+				if(microTicks >= sensor->pulseDelay){  					
+					GPIO_SetBits(sensors[j].port, sensor->pinTrig);		// Aktivera triggerpuls
+					sensor->pulseTrig  = microTicks + 10; 				// Triggpuls 10µs
+					sensor->pulseDelay = microTicks + 60000;			// Fördröjning mellan triggerpulserna, 60ms
+				}
+				
+			
+				// Är echo hög för första gången?
+				if(!(sensors[j].controlbits & bit3) && GPIO_ReadInputDataBit(sensors[j].port, sensor->pinEcho)){
+					sensor->pulseEcho = microTicks; 					// Början av echopulsen.
+					sensors[j].controlbits |= bit3;  					// Ettställer kontrollbit 3.
+				}
+				// Är echo låg för första gången?
+				else if (sensors[j].controlbits & bit3 && !GPIO_ReadInputDataBit(sensors[j].port, sensor->pinEcho)) {	
+					sensor->cm = (microTicks - sensor->pulseEcho)/58; 	// Tid tills echo kommer tillbaks.
+					sensors[j].controlbits &= ~bit3;					// Nollställer kontrollbit 3.
+				}
+				
+				// Upptäcker sensorn något som är för nära?
+				if(sensor->cm < sensor->alarmDistance){					
+					GPIO_SetBits(sensors[j].port, sensors[j].pinLamp);	// Tänd lampa.
+					//======TEST=======
+					//DebugPrintNum(j);
+					//DebugPrint("\n");
+					//=================
+				}
+				else{
+					GPIO_ResetBits(sensors[j].port, sensors[j].pinLamp);// Släck lampa.
+				}
+			}
+			
+			// Är sensorn aktiverad och av typen vibration? (controlbit 1 && 2)
+			else if(sensors[j].controlbits & (bit1 | bit2)) {
+				VibrationSensor* sensor = &(sensors[j].vibration);
+				
+				
+				if(!GPIO_ReadInputDataBit(sensors[j].port, sensor->pinDO)){	// Vibration detekterat.
+					GPIO_SetBits(sensors[j].port, sensors[j].pinLamp);
+					//====TEST=========
+					//DebugPrintNum(j);
+					//DebugPrint("\n");
+					//=================
+				}
+				else{
+					GPIO_ResetBits(sensors[j].port, sensors[j].pinLamp);
+				}
+			}
 		
-		// Är sensorn aktiverad och av typen motion? (controlbit 2 && !1)
-		if(sensors[i].controlbits & bit2 && !(sensors[i].controlbits & bit1)){
-			MotionSensor* sensor = &(sensors[i].motion);
-			
-			// Är trigpulsen klar?
-			if(microTicks >= sensor->pulseTrig){ 					
-				GPIO_ResetBits(sensors[i].port, sensor->pinTrig);	// Avaktivera triggerpuls
-			}
-			
-			// Är triggfördröjningen klar?
-			if(microTicks >= sensor->pulseDelay){  					
-				GPIO_SetBits(sensors[i].port, sensor->pinTrig);		// Aktivera triggerpuls
-				sensor->pulseTrig  = microTicks + 10; 				// Triggpuls 10µs
-				sensor->pulseDelay = microTicks + 60000;			// Fördröjning mellan triggerpulserna, 60ms
-			}
-			
-		
-			// Är echo hög för första gången?
-			if(!(sensors[i].controlbits & bit3) && GPIO_ReadInputDataBit(sensors[i].port, sensor->pinEcho)){
-				sensor->pulseEcho = microTicks; 					// Början av echopulsen.
-				sensors[i].controlbits |= bit3;  					// Ettställer kontrollbit 3.
-			}
-			// Är echo låg för första gången?
-			else if (sensors[i].controlbits & bit3 && !GPIO_ReadInputDataBit(sensors[i].port, sensor->pinEcho)) {	
-				sensor->cm = (microTicks - sensor->pulseEcho)/58; 	// Tid tills echo kommer tillbaks.
-				sensors[i].controlbits &= ~bit3;					// Nollställer kontrollbit 3.
-			}
-			
-			// Upptäcker sensorn något som är för nära?
-			if(sensor->cm < sensor->alarmDistance){					
-				GPIO_SetBits(sensors[i].port, sensors[i].pinLamp);	// Tänd lampa.
-			}
-			else{
-				GPIO_ResetBits(sensors[i].port, sensors[i].pinLamp);// Släck lampa.
-			}
 		}
-		
-		// Är sensorn aktiverad och av typen vibration? (controlbit 1 && 2)
-		else if(sensors[i].controlbits & (bit1 | bit2)) {
-			VibrationSensor* sensor = &(sensors[i].vibration);
-			
-			
-			if(!GPIO_ReadInputDataBit(sensors[i].port, sensor->pinDO)){	// Vibration detekterat.
-				GPIO_SetBits(sensors[i].port, sensors[i].pinLamp);
-			}
-			else{
-				GPIO_ResetBits(sensors[i].port, sensors[i].pinLamp);
-			}
-		}
-	
-	}
 	}
 }

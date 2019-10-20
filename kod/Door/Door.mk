@@ -5,15 +5,15 @@
 ## Debug
 ProjectName            :=Door
 ConfigurationName      :=Debug
-WorkspacePath          :="C:/Users/Adamt/OneDrive/Chalmers/EDA482 (Mop)/Moplaborationer"
-ProjectPath            :=C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door
+WorkspacePath          :=C:/Users/Erik/Documents/Datateknisktprojekt/kod
+ProjectPath            :=C:/Users/Erik/Documents/Datateknisktprojekt/kod/Door
 IntermediateDirectory  :=./Debug
 OutDir                 := $(IntermediateDirectory)
 CurrentFileName        :=
 CurrentFilePath        :=
 CurrentFileFullPath    :=
-User                   :=Adamt
-Date                   :=19/10/2019
+User                   :=Erik
+Date                   :=20/10/2019
 CodeLitePath           :=C:/cseapp/CodeLite
 LinkerName             :=$(CodeLiteDir)/tools/gcc-arm/bin/arm-none-eabi-g++.exe
 SharedObjectLinkerName :=$(CodeLiteDir)/tools/gcc-arm/arm-none-eabi-g++.exe -shared -fPIC
@@ -66,7 +66,7 @@ ARM_V6LIB:=$(CodeLiteDir)/tools/gcc-arm/arm-none-eabi/lib/thumb/v6-m
 ARM_GCC_V6LIB:=$(CodeLiteDir)/tools/gcc-arm/lib/gcc/arm-none-eabi/7.2.1/thumb/v6-m
 ARM_M4FPLIB:=$(CodeLiteDir)/tools/gcc-arm/arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard
 ARM_GCC_M4FPLIB:=$(CodeLiteDir)/tools/gcc-arm/lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m
-Objects0=$(IntermediateDirectory)/up_lib_CAN.c$(ObjectSuffix) $(IntermediateDirectory)/up_lib_STM32F4_lib_STM32F4xx_StdPeriph_Driver_src_stm32f4xx_can.c$(ObjectSuffix) $(IntermediateDirectory)/startup.c$(ObjectSuffix) $(IntermediateDirectory)/up_lib_STM32F4_lib_STM32F4xx_StdPeriph_Driver_src_stm32f4xx_rng.c$(ObjectSuffix) $(IntermediateDirectory)/up_lib_CANEncode.c$(ObjectSuffix) $(IntermediateDirectory)/up_lib_buffer.c$(ObjectSuffix) $(IntermediateDirectory)/up_lib_STM32F4_lib_STM32F4xx_StdPeriph_Driver_src_misc.c$(ObjectSuffix) $(IntermediateDirectory)/up_lib_STM32F4_lib_STM32F4xx_StdPeriph_Driver_src_stm32f4xx_gpio.c$(ObjectSuffix) 
+Objects0=$(IntermediateDirectory)/up_lib_CAN.c$(ObjectSuffix) $(IntermediateDirectory)/up_lib_STM32F4_lib_STM32F4xx_StdPeriph_Driver_src_stm32f4xx_can.c$(ObjectSuffix) $(IntermediateDirectory)/up_lib_STM32F4_lib_STM32F4xx_StdPeriph_Driver_src_stm32f4xx_gpio.c$(ObjectSuffix) $(IntermediateDirectory)/up_lib_CANEncodeDecode.c$(ObjectSuffix) $(IntermediateDirectory)/up_lib_STM32F4_lib_STM32F4xx_StdPeriph_Driver_src_stm32f4xx_rng.c$(ObjectSuffix) $(IntermediateDirectory)/up_lib_STM32F4_lib_STM32F4xx_StdPeriph_Driver_src_misc.c$(ObjectSuffix) $(IntermediateDirectory)/startup.c$(ObjectSuffix) $(IntermediateDirectory)/up_lib_buffer.c$(ObjectSuffix) 
 
 
 
@@ -104,7 +104,7 @@ PreBuild:
 ## Objects
 ##
 $(IntermediateDirectory)/up_lib_CAN.c$(ObjectSuffix): ../lib/CAN.c $(IntermediateDirectory)/up_lib_CAN.c$(DependSuffix)
-	$(CC) $(SourceSwitch) "C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/lib/CAN.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/up_lib_CAN.c$(ObjectSuffix) $(IncludePath)
+	$(CC) $(SourceSwitch) "C:/Users/Erik/Documents/Datateknisktprojekt/kod/lib/CAN.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/up_lib_CAN.c$(ObjectSuffix) $(IncludePath)
 $(IntermediateDirectory)/up_lib_CAN.c$(DependSuffix): ../lib/CAN.c
 	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/up_lib_CAN.c$(ObjectSuffix) -MF$(IntermediateDirectory)/up_lib_CAN.c$(DependSuffix) -MM ../lib/CAN.c
 
@@ -112,60 +112,60 @@ $(IntermediateDirectory)/up_lib_CAN.c$(PreprocessSuffix): ../lib/CAN.c
 	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/up_lib_CAN.c$(PreprocessSuffix) ../lib/CAN.c
 
 $(IntermediateDirectory)/up_lib_STM32F4_lib_STM32F4xx_StdPeriph_Driver_src_stm32f4xx_can.c$(ObjectSuffix): ../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_can.c $(IntermediateDirectory)/up_lib_STM32F4_lib_STM32F4xx_StdPeriph_Driver_src_stm32f4xx_can.c$(DependSuffix)
-	$(CC) $(SourceSwitch) "C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_can.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/up_lib_STM32F4_lib_STM32F4xx_StdPeriph_Driver_src_stm32f4xx_can.c$(ObjectSuffix) $(IncludePath)
+	$(CC) $(SourceSwitch) "C:/Users/Erik/Documents/Datateknisktprojekt/kod/lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_can.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/up_lib_STM32F4_lib_STM32F4xx_StdPeriph_Driver_src_stm32f4xx_can.c$(ObjectSuffix) $(IncludePath)
 $(IntermediateDirectory)/up_lib_STM32F4_lib_STM32F4xx_StdPeriph_Driver_src_stm32f4xx_can.c$(DependSuffix): ../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_can.c
 	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/up_lib_STM32F4_lib_STM32F4xx_StdPeriph_Driver_src_stm32f4xx_can.c$(ObjectSuffix) -MF$(IntermediateDirectory)/up_lib_STM32F4_lib_STM32F4xx_StdPeriph_Driver_src_stm32f4xx_can.c$(DependSuffix) -MM ../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_can.c
 
 $(IntermediateDirectory)/up_lib_STM32F4_lib_STM32F4xx_StdPeriph_Driver_src_stm32f4xx_can.c$(PreprocessSuffix): ../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_can.c
 	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/up_lib_STM32F4_lib_STM32F4xx_StdPeriph_Driver_src_stm32f4xx_can.c$(PreprocessSuffix) ../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_can.c
 
-$(IntermediateDirectory)/startup.c$(ObjectSuffix): startup.c $(IntermediateDirectory)/startup.c$(DependSuffix)
-	$(CC) $(SourceSwitch) "C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/Door/startup.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/startup.c$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/startup.c$(DependSuffix): startup.c
-	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/startup.c$(ObjectSuffix) -MF$(IntermediateDirectory)/startup.c$(DependSuffix) -MM startup.c
+$(IntermediateDirectory)/up_lib_STM32F4_lib_STM32F4xx_StdPeriph_Driver_src_stm32f4xx_gpio.c$(ObjectSuffix): ../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_gpio.c $(IntermediateDirectory)/up_lib_STM32F4_lib_STM32F4xx_StdPeriph_Driver_src_stm32f4xx_gpio.c$(DependSuffix)
+	$(CC) $(SourceSwitch) "C:/Users/Erik/Documents/Datateknisktprojekt/kod/lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_gpio.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/up_lib_STM32F4_lib_STM32F4xx_StdPeriph_Driver_src_stm32f4xx_gpio.c$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/up_lib_STM32F4_lib_STM32F4xx_StdPeriph_Driver_src_stm32f4xx_gpio.c$(DependSuffix): ../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_gpio.c
+	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/up_lib_STM32F4_lib_STM32F4xx_StdPeriph_Driver_src_stm32f4xx_gpio.c$(ObjectSuffix) -MF$(IntermediateDirectory)/up_lib_STM32F4_lib_STM32F4xx_StdPeriph_Driver_src_stm32f4xx_gpio.c$(DependSuffix) -MM ../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_gpio.c
 
-$(IntermediateDirectory)/startup.c$(PreprocessSuffix): startup.c
-	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/startup.c$(PreprocessSuffix) startup.c
+$(IntermediateDirectory)/up_lib_STM32F4_lib_STM32F4xx_StdPeriph_Driver_src_stm32f4xx_gpio.c$(PreprocessSuffix): ../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_gpio.c
+	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/up_lib_STM32F4_lib_STM32F4xx_StdPeriph_Driver_src_stm32f4xx_gpio.c$(PreprocessSuffix) ../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_gpio.c
+
+$(IntermediateDirectory)/up_lib_CANEncodeDecode.c$(ObjectSuffix): ../lib/CANEncodeDecode.c $(IntermediateDirectory)/up_lib_CANEncodeDecode.c$(DependSuffix)
+	$(CC) $(SourceSwitch) "C:/Users/Erik/Documents/Datateknisktprojekt/kod/lib/CANEncodeDecode.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/up_lib_CANEncodeDecode.c$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/up_lib_CANEncodeDecode.c$(DependSuffix): ../lib/CANEncodeDecode.c
+	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/up_lib_CANEncodeDecode.c$(ObjectSuffix) -MF$(IntermediateDirectory)/up_lib_CANEncodeDecode.c$(DependSuffix) -MM ../lib/CANEncodeDecode.c
+
+$(IntermediateDirectory)/up_lib_CANEncodeDecode.c$(PreprocessSuffix): ../lib/CANEncodeDecode.c
+	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/up_lib_CANEncodeDecode.c$(PreprocessSuffix) ../lib/CANEncodeDecode.c
 
 $(IntermediateDirectory)/up_lib_STM32F4_lib_STM32F4xx_StdPeriph_Driver_src_stm32f4xx_rng.c$(ObjectSuffix): ../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c $(IntermediateDirectory)/up_lib_STM32F4_lib_STM32F4xx_StdPeriph_Driver_src_stm32f4xx_rng.c$(DependSuffix)
-	$(CC) $(SourceSwitch) "C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/up_lib_STM32F4_lib_STM32F4xx_StdPeriph_Driver_src_stm32f4xx_rng.c$(ObjectSuffix) $(IncludePath)
+	$(CC) $(SourceSwitch) "C:/Users/Erik/Documents/Datateknisktprojekt/kod/lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/up_lib_STM32F4_lib_STM32F4xx_StdPeriph_Driver_src_stm32f4xx_rng.c$(ObjectSuffix) $(IncludePath)
 $(IntermediateDirectory)/up_lib_STM32F4_lib_STM32F4xx_StdPeriph_Driver_src_stm32f4xx_rng.c$(DependSuffix): ../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c
 	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/up_lib_STM32F4_lib_STM32F4xx_StdPeriph_Driver_src_stm32f4xx_rng.c$(ObjectSuffix) -MF$(IntermediateDirectory)/up_lib_STM32F4_lib_STM32F4xx_StdPeriph_Driver_src_stm32f4xx_rng.c$(DependSuffix) -MM ../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c
 
 $(IntermediateDirectory)/up_lib_STM32F4_lib_STM32F4xx_StdPeriph_Driver_src_stm32f4xx_rng.c$(PreprocessSuffix): ../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c
 	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/up_lib_STM32F4_lib_STM32F4xx_StdPeriph_Driver_src_stm32f4xx_rng.c$(PreprocessSuffix) ../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c
 
-$(IntermediateDirectory)/up_lib_CANEncode.c$(ObjectSuffix): ../lib/CANEncode.c $(IntermediateDirectory)/up_lib_CANEncode.c$(DependSuffix)
-	$(CC) $(SourceSwitch) "C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/lib/CANEncode.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/up_lib_CANEncode.c$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/up_lib_CANEncode.c$(DependSuffix): ../lib/CANEncode.c
-	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/up_lib_CANEncode.c$(ObjectSuffix) -MF$(IntermediateDirectory)/up_lib_CANEncode.c$(DependSuffix) -MM ../lib/CANEncode.c
-
-$(IntermediateDirectory)/up_lib_CANEncode.c$(PreprocessSuffix): ../lib/CANEncode.c
-	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/up_lib_CANEncode.c$(PreprocessSuffix) ../lib/CANEncode.c
-
-$(IntermediateDirectory)/up_lib_buffer.c$(ObjectSuffix): ../lib/buffer.c $(IntermediateDirectory)/up_lib_buffer.c$(DependSuffix)
-	$(CC) $(SourceSwitch) "C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/lib/buffer.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/up_lib_buffer.c$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/up_lib_buffer.c$(DependSuffix): ../lib/buffer.c
-	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/up_lib_buffer.c$(ObjectSuffix) -MF$(IntermediateDirectory)/up_lib_buffer.c$(DependSuffix) -MM ../lib/buffer.c
-
-$(IntermediateDirectory)/up_lib_buffer.c$(PreprocessSuffix): ../lib/buffer.c
-	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/up_lib_buffer.c$(PreprocessSuffix) ../lib/buffer.c
-
 $(IntermediateDirectory)/up_lib_STM32F4_lib_STM32F4xx_StdPeriph_Driver_src_misc.c$(ObjectSuffix): ../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/misc.c $(IntermediateDirectory)/up_lib_STM32F4_lib_STM32F4xx_StdPeriph_Driver_src_misc.c$(DependSuffix)
-	$(CC) $(SourceSwitch) "C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/misc.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/up_lib_STM32F4_lib_STM32F4xx_StdPeriph_Driver_src_misc.c$(ObjectSuffix) $(IncludePath)
+	$(CC) $(SourceSwitch) "C:/Users/Erik/Documents/Datateknisktprojekt/kod/lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/misc.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/up_lib_STM32F4_lib_STM32F4xx_StdPeriph_Driver_src_misc.c$(ObjectSuffix) $(IncludePath)
 $(IntermediateDirectory)/up_lib_STM32F4_lib_STM32F4xx_StdPeriph_Driver_src_misc.c$(DependSuffix): ../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/misc.c
 	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/up_lib_STM32F4_lib_STM32F4xx_StdPeriph_Driver_src_misc.c$(ObjectSuffix) -MF$(IntermediateDirectory)/up_lib_STM32F4_lib_STM32F4xx_StdPeriph_Driver_src_misc.c$(DependSuffix) -MM ../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/misc.c
 
 $(IntermediateDirectory)/up_lib_STM32F4_lib_STM32F4xx_StdPeriph_Driver_src_misc.c$(PreprocessSuffix): ../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/misc.c
 	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/up_lib_STM32F4_lib_STM32F4xx_StdPeriph_Driver_src_misc.c$(PreprocessSuffix) ../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/misc.c
 
-$(IntermediateDirectory)/up_lib_STM32F4_lib_STM32F4xx_StdPeriph_Driver_src_stm32f4xx_gpio.c$(ObjectSuffix): ../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_gpio.c $(IntermediateDirectory)/up_lib_STM32F4_lib_STM32F4xx_StdPeriph_Driver_src_stm32f4xx_gpio.c$(DependSuffix)
-	$(CC) $(SourceSwitch) "C:/Users/Adamt/OneDrive/Dokument/GitHub/DAT290-Larmsystem/kod/lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_gpio.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/up_lib_STM32F4_lib_STM32F4xx_StdPeriph_Driver_src_stm32f4xx_gpio.c$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/up_lib_STM32F4_lib_STM32F4xx_StdPeriph_Driver_src_stm32f4xx_gpio.c$(DependSuffix): ../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_gpio.c
-	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/up_lib_STM32F4_lib_STM32F4xx_StdPeriph_Driver_src_stm32f4xx_gpio.c$(ObjectSuffix) -MF$(IntermediateDirectory)/up_lib_STM32F4_lib_STM32F4xx_StdPeriph_Driver_src_stm32f4xx_gpio.c$(DependSuffix) -MM ../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_gpio.c
+$(IntermediateDirectory)/startup.c$(ObjectSuffix): startup.c $(IntermediateDirectory)/startup.c$(DependSuffix)
+	$(CC) $(SourceSwitch) "C:/Users/Erik/Documents/Datateknisktprojekt/kod/Door/startup.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/startup.c$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/startup.c$(DependSuffix): startup.c
+	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/startup.c$(ObjectSuffix) -MF$(IntermediateDirectory)/startup.c$(DependSuffix) -MM startup.c
 
-$(IntermediateDirectory)/up_lib_STM32F4_lib_STM32F4xx_StdPeriph_Driver_src_stm32f4xx_gpio.c$(PreprocessSuffix): ../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_gpio.c
-	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/up_lib_STM32F4_lib_STM32F4xx_StdPeriph_Driver_src_stm32f4xx_gpio.c$(PreprocessSuffix) ../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_gpio.c
+$(IntermediateDirectory)/startup.c$(PreprocessSuffix): startup.c
+	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/startup.c$(PreprocessSuffix) startup.c
+
+$(IntermediateDirectory)/up_lib_buffer.c$(ObjectSuffix): ../lib/buffer.c $(IntermediateDirectory)/up_lib_buffer.c$(DependSuffix)
+	$(CC) $(SourceSwitch) "C:/Users/Erik/Documents/Datateknisktprojekt/kod/lib/buffer.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/up_lib_buffer.c$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/up_lib_buffer.c$(DependSuffix): ../lib/buffer.c
+	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/up_lib_buffer.c$(ObjectSuffix) -MF$(IntermediateDirectory)/up_lib_buffer.c$(DependSuffix) -MM ../lib/buffer.c
+
+$(IntermediateDirectory)/up_lib_buffer.c$(PreprocessSuffix): ../lib/buffer.c
+	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/up_lib_buffer.c$(PreprocessSuffix) ../lib/buffer.c
 
 
 -include $(IntermediateDirectory)/*$(DependSuffix)
