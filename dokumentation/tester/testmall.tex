@@ -2,27 +2,35 @@
 
 \usepackage[swedish]{babel}
 \usepackage[T1]{fontenc}
+\usepackage{parskip}
+\usepackage{multicol}
 \usepackage[utf8]{inputenc}
 
-
+\setlength{\columnsep}{1cm}
 \begin{document}
 \pagenumbering{gobble}
 
 
 % Vid utförande av test fylls mallen nedan i, vilket resulterar i ett protokoll som sedan sparas som verifikation. Målet med dessa protokoll är att man utan sakkunskap ska kunna skapa sig en överblick av att systemet fungerar som det ska.
 
-
 \begin{center}
 	\LARGE\textbf{Test protokoll}
 \end{center}
 
+\begin{multicols}{2}
+\section*{Test formulerat av}
+\label{sec:formuleratav}
+% Namn på den/de som formulerade testet.
+
+
 
 \section*{Utfört av}
 \label{sec:namndatum}
-% Namn på de involverade samt datum för testets utförande.
+% Namn på den/de som utförande testet.
 
 
 
+\end{multicols}
 \section*{Komponent}
 \label{sec:komponent}
 %Vilken del av systemet testas?
