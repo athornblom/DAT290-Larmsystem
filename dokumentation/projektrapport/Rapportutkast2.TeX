@@ -145,7 +145,7 @@ En överblick av mjukvarans tidsflöde finns i Figur \ref{fig:tidsflöde}.
 
 \subsection{CAN-kommunikation}
 \label{can}
-\subsubsection{Protokoll}
+\subsubsection{Beskrivning av CAN-protokollet}
 Protokollet som har skapats för kommunikationen mellan enheterna bygger på protokollet Controller Area Network (CAN).
 CAN är ett bussprotokoll som främst används för kommunikation mellan datorer och givare på fordon där det ställs höga krav på tillförlitlighet.
 För att undvika kollisioner och därmed öka tillförlitligheten har CAN en dominant logisk nivå (0) som dessutom ger automatisk prioritering av meddelanden då den dominanta nivån har företräde på bussen.
@@ -176,6 +176,13 @@ Utöver det har det skapats ett system för att hantera mottagna meddelanden med
 Hanteringsfunktionen anropas sedan av avbrottsrutinen då ett meddelande passerat filtret.
 Denna lösning har valts då de flesta meddelanden naturligt hanteras med en kort hanteringsfunktion som inte kräver input från användaren.
 
+
+\subsection{USART}
+För att ge användaren möjlighet att interagera med systemet har Universal asynchronous receiver-transmitter (USART) implementerats. USART sköter kommunikationen mellan mikrodatorn och den terminal som finns då man anslutit sig till mikrodatorn via en dator. Via terminalen får användaren utskrifter från programet och har även möjlighet att ge kommandon till systemet.
+
+
+\subsection{Störenhet}
+För att ha möjlighet att testa systemet på ett tungt traffikerat CAN-nätverk har en störenhet utvecklats. Störenheten skickar frekvent meddelanden med slumpartat innehåll. Hastigheten är reglerbar via USART. Utöver att generera brus kan enheten också fungera som en lyssnare med avaktiverad störfunktion.
 
 
 \subsection{Delsystem }
@@ -292,16 +299,22 @@ Sensorns känslighet justeras fysiskt genom en komparator på sensorn.
 % Användarhandledning?
 
 \section{Metoder}
-\label{stm}
+\subsection{Tillvägagångsätt}
+\label{tillvägagångsätt}
+För att säkerhetställa bästa ressultatet av vårt larmsystem har det mesta arbetet bedrivits i samma
+rum, Vilket har gjort att gruppen har kunnat samråda om eventuella frågor eller funderningar ifrån
+en gruppmedlem.
+
 \subsection{Verifikation}
-För att evaluera huruvida larmsystemet uppnår de mål och krav som formulerats används tester. 
+\label{verifikation}
+För att evaluera huruvida larmsystemet uppnår de mål och krav som formulerats i målet används tester. 
 De tre undergrupperna har skrivit tester för sina respektive delsystem som försäkrar att 
 delsystemen fungerar enligt specifikationen. Ett test som är skrivit av en undergrupp utförs
-av en annan undergrupp för att se minimera partiskhet i utförandet. 
+av en annan undergrupp för att minimera partiskhet i utförandet. 
 
 Testet för det kompletta centraliserade systemet formulerades och utfördes av gruppen som helhet.
 
-För att se samtliga testspecifikationer, samt resultat och analys, hänvisas till avsnitt '6 Bilagor'.
+För att se samtliga testspecifikationer, samt resultat och analys, hänvisas till avsnitt bilaga \ref{bilaga:tester}.
 
 
 \subsection{Programbibliotek}
@@ -318,7 +331,7 @@ STM används för att bespara projektgruppen jobb med att implementera \\ genere
  som redan skrivits för MD407-enkortsdatorer.. 
 
  \section{Resultat}
- För kompletta testspecifikationer hänvisas till '6 Bilagor'.
+ För kompletta testspecifikationer hänvisas till bilaga \ref{bilaga:tester}.
  
  % Detta avsnitt redovisar resultatet av genomförd verifirering av systemet; dels fördelarna, dels för komplett system. Detta avsnitt redovisar även resultatet av det slutgiltiga fysiska testet när hela systemet körs i skarpt läge. Ni ska främst redovisa resultat i form av funktionalitet, men ta ocks upp prestanda aspekter om dessa är viktiga. Diskutea hur väl ni lyckats med er slutprodukt i förhållande till er projektplan.
  
@@ -358,11 +371,15 @@ STM används för att bespara projektgruppen jobb med att implementera \\ genere
  \subsection{Centralenheten}
  Centralenheten har följande funktionalitet:
  \begin{enumerate}
-     \item
+     \item Tilldelning av ID till periferienheter.
+     \item Konfiguration av periferienheter via USART.
+     \item Automatisk detektering av enheter som lämnar nätverket.
+     \item Larmhantering.
  \end{enumerate}
  För att säkerställa att funktionalitet ovan fungerar utfördes följande tester:
  \begin{enumerate}
-     \item 
+     \item Test av ID-tilldelning och larmmeddelnade se bilaga \ref{test:idLarm}.
+     \todo{Kommer kompleteras med fler tester.}
  \end{enumerate}
  \subsection{Larmsystemet som helhet}
 \section{Slutsats och diskussion}
