@@ -7,8 +7,6 @@
 #include "stm32f4xx_rcc.h"
 #include "stm32f4xx_rng.h"
 
-uint8_t tryRandomizeCANMsg(CanTxMsg *msg);
-
 void startup(void) __attribute__((naked)) __attribute__((section (".start_section")) );
 
 void startup ( void ) {
@@ -20,68 +18,18 @@ __asm volatile(
 	) ;
 }
 
-void main(void) {
-    USARTConfig();
-    can_init();
-    
-    //Initsierar random number generator
-    RCC_AHB2PeriphClockCmd(RCC_AHB2Periph_RNG, ENABLE);
-    RNG_Cmd(ENABLE);
-    
-    CanTxMsg canMsg;
-    uint8_t usartRead;
-    uint8_t active = 0;
-    uint16_t delay = 128;
-
-    USARTPrint("\nStarar med ");
+void help(uint16_t delay){
     USARTPrintNumBase(delay,10);
-    USARTPrint(" ms delay\nAnvand x for att toggle on/off\nAnvand s/f for att andra delay\n");
-                    
-    while (1) {
-        if (USARTGet(&usartRead)){
-            if (usartRead == 'x'){
-                if(active){
-                    active = 0;
-                    USARTPrint("off\n");
-                } else {
-                    active = 1;
-                    USARTPrint("on\n");
-                }
-            }
-            //Minskar spamhastigheten 's' som i slower
-            else if (usartRead == 's'){
-                delay = delay == (1 << 11) ? delay : (delay << 1);
-                USARTPrintNumBase(delay,10);
-                USARTPrint(" ms delay\n");
-            }
+    USARTWaitPrint(" ms delay\nx for att toggla on/off\ns/f for att andra delay\np for att toggla tx print\nl for att toggla lyssnare\ne for att skicka ett rnd meddelande\n? for att se denna hjalp\n\n");
+}
 
-            //Ökar spamhastigheten 'f' som i faster
-            else if (usartRead == 'f'){
-                delay = delay == 1 ? 1 : (delay >> 1);
-                USARTPrintNumBase(delay,10);
-                USARTPrint(" ms delay\n");
-            }
-        }
-
-        if (active){
-            //Ändra fördröjningen för att justera hur mycket snabbt data som skickas
-            blockingDelayMs(delay);
-
-            tryRandomizeCANMsg(&canMsg);
-
-            //Prova att skicka
-            if (CANsendMessage(&canMsg) != CAN_TxStatus_NoMailBox){
-                USARTPrint("Msg sent:\n");
-                printTxMsg(&canMsg, 16);
-            } else {
-                USARTPrint("no mailbox empty\n");
-            }
-        }
-    }
+void msgPrint(CanRxMsg *msg){
+    USARTPrint("\n");
+    printRxMsg(msg, 16);
 }
 
 //Slumpar ett meddelande, RNG måste ha initsieras innan användning
-uint8_t tryRandomizeCANMsg(CanTxMsg *msg){
+void tryRandomizeCANMsg(CanTxMsg *msg){
     //kollar om vi kan hämta ett nytt slumptal
      if (RNG_GetFlagStatus(RNG_FLAG_DRDY) == SET && //Nytt meddelande finns
              RNG_GetFlagStatus(RNG_FLAG_CECS) == RESET && //Inget klockfel
@@ -108,7 +56,107 @@ uint8_t tryRandomizeCANMsg(CanTxMsg *msg){
                             msg->Data[i] = ((uint8_t *) &rand)[i%4];
                         }
                     }
-                    return 1;
     }
-    return 0;
+}
+
+void sendRnd(uint8_t print){
+    static CanTxMsg msg;
+    tryRandomizeCANMsg(&msg);
+    //Prova att skicka
+    if (CANsendMessage(&msg) != CAN_TxStatus_NoMailBox){
+        if (print){
+            USARTPrint("\n");
+            printTxMsg(&msg, 16);
+        }
+    } 
+}
+
+void main(void) {
+    USARTConfig();
+    can_init();
+    
+    //Initsierar random number generator
+    RCC_AHB2PeriphClockCmd(RCC_AHB2Periph_RNG, ENABLE);
+    RNG_Cmd(ENABLE);
+    
+    uint8_t usartRead;
+    uint8_t spammerActive = 0;
+    uint16_t delay = 128;
+    uint8_t listnerHandlerIndex;
+    uint8_t listnerActive = 0;
+    uint8_t outputPrint = 1;
+    
+    USARTPrint("\n");
+    help(delay);
+    
+    while (1) {
+        if (USARTGet(&usartRead)){
+            if (usartRead == 'x'){
+                if(spammerActive){
+                    spammerActive = 0;
+                    USARTPrint("off\n");
+                } else {
+                    spammerActive = 1;
+                    USARTPrint("on\n");
+                }
+            }
+            //Minskar spamhastigheten 's' som i slower
+            else if (usartRead == 's'){
+                delay = delay == (1 << 11) ? delay : (delay << 1);
+                USARTPrintNumBase(delay,10);
+                USARTPrint(" ms delay\n");
+            }
+
+            //Ökar spamhastigheten 'f' som i faster
+            else if (usartRead == 'f'){
+                delay = delay == 1 ? 1 : (delay >> 1);
+                USARTPrintNumBase(delay,10);
+                USARTPrint(" ms delay\n");
+            }
+            
+            //Togglar lyssnare
+            else if (usartRead == 'l'){
+                if (listnerActive){
+                    CANdisableFilterHandler(listnerHandlerIndex);
+                    USARTPrint("Lyssnare off\n");
+                    listnerActive = 0;
+                } else {
+                    //Matchar allt
+                    CANFilter mask = empty_mask;
+                    if (CANhandlerListNotFull()){
+                        listnerHandlerIndex = CANaddFilterHandler(msgPrint, &mask, &mask);
+                        USARTPrint("Lyssnare on\n");
+                        listnerActive = 1;
+                    }
+                }
+            }
+
+            //p för att toggla output print
+            else if (usartRead == 'p'){
+                if (outputPrint){
+                    outputPrint = 0;
+                    USARTPrint("Tx print off\n");
+                } else {
+                    outputPrint = 1;
+                    USARTPrint("Tx print on\n");
+                }
+            }
+            
+            //e för att skicka ett meddelande
+            else if (usartRead == 'e'){
+                sendRnd(outputPrint);
+            }
+            
+            //? för hjälp
+            else if (usartRead == '?'){
+                help(delay);
+            }
+        }
+
+        if (spammerActive){
+            //Ändra fördröjningen för att justera hur mycket snabbt data som skickas
+            blockingDelayMs(delay);
+            sendRnd(outputPrint);
+        }
+    }
 }
