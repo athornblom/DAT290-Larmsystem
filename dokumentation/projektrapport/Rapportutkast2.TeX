@@ -12,8 +12,11 @@
 \usepackage{hyperref}
 \usepackage{multicol}
 
-\title{Larmsystem baserat på MD407-mikrodatorer}
-\author{Grupp 13}
+\title{Larmsystem baserat på MD407-mikrodatorer\\
+\large Grupp 13}
+
+\author{Gustav Fåhraeus, Erik Nilsson, Filip Borg, Adam Thörnblom\\
+Josef Karlsson, Ben Wooldridge}
 \date{Läsperiod 1, HT-2019}
 
 % I utvärderingen granskas hur väl studenterna i sina rapporter har lyckats visa att de genom de teknikutvärderingar, konstruktionsval, tester och analys som de har gjort har förstått de problem de har ställts inför, samt hur de på basis av denna förståelse och utifrån rådande förutsättningar har lyckats agera för att lösa dessa problem.
@@ -58,7 +61,7 @@ Ett komplett larmsystem i minimal form består av 3 enheter:
 \end{itemize}
 Samtliga enheter kräver en MD407-mikrodator för individuell drift. För att koppla samman fristående enheter till ett centraliserat system krävs en CAN-buss.
 
-Dörrenheten hanterar detektering och larmning av dörrar. Vid systemuppstart \todo[inline]{Lägg till ett verb här.}
+Dörrenheten hanterar detektering och larmning av dörrar. Vid systemuppstart kontrollerar
 dörrenheten antalet dörrar kopplade på enkortsdatorn. Datarepresentationer av
   dessa dörrar skapas, vilket möjliggör för dörrarna att efter en förutbestämd 
   tid utlösa lokala larm genom att en LED-lampa på den larmande dörren tänds. 
@@ -125,8 +128,10 @@ En översikt av hårdvaran och hur den är kopplad finns i Figur \ref{fig:hårdv
     \label{fig:hårdvara}
 \end{figure}
 
-När centralenheten samt periferienheterna startar befinner de sig i konfigurationsläge, där de först konfigurerar sina egna enheter \todo[inline]{Är inte portar är ett bättre ord?}
- (USART, CAN-bussen, GPIO), varpå centralenheten skickar konfigurationer för sensorerna till periferienheterna, som de använder för att konfigurera sina respektive sensorer. Efter att ha konfigurerats går enehterna i var sin kontinuerlig loop. Periferienheterna mäter ständigt av sensorerna och skickar larm-meddelanden över CAN-bussen till centralenheten vid behov. Centralenheten skickar periodiskt konfigurationer till periferinheterna och larmar om dessa inte bekräftas.
+När centralenheten samt periferienheterna startar befinner de sig i konfigurationsläge,
+ där varje enhet konfiguerar sig på lokal nivå
+ (USART, CAN-bussen, GPIO), varpå centralenheten skickar konfigurationer
+  för sensorerna till periferienheterna, som de använder för att konfigurera sina respektive sensorer. Efter att ha konfigurerats går enehterna i var sin kontinuerlig loop. Periferienheterna mäter ständigt av sensorerna och skickar larm-meddelanden över CAN-bussen till centralenheten vid behov. Centralenheten skickar periodiskt konfigurationer till periferinheterna och larmar om dessa inte bekräftas.
 
 En överblick av mjukvarans tidsflöde finns i Figur \ref{fig:tidsflöde}.
 
@@ -353,5 +358,6 @@ STM används för att bespara projektgruppen jobb med att implementera \\ genere
 	\subsection{Tester}
     		\label{bilaga:tester}
      	\input{../tester/dorrenhet/portTest.tex}
-     	\input{../tester/system/IDochLarm.tex}
+         \input{../tester/system/IDochLarm.tex}
+         \input{../tester/dorrenhet/lokalDriftTest.tex}
 \end{document}
