@@ -65,10 +65,11 @@ Detta meddelande används då centralenheten tilldelar en periferienhet dess ID.
     \item Meddelandetyp 3
     \item Skickas från periferienhet till centralenheten
 \end{itemize}
-Detta meddelande skickas av en periferienhet innan den har tilldelats ett ID. De sju bitarna i ID-fältet som annars ska ange periferienhetens ID är bara nollor i detta meddelande. I datafältets första byte skickas ett slumptal som används för identifiering innan enheten har fått sitt ID.
-
-\newpage
-\begin{table}
+Detta meddelande skickas av en periferienhet innan den har tilldelats ett ID. 
+De sju bitarna i ID-fältet som annars ska ange periferienhetens ID är bara nollor i meddelandet.
+ I datafältets första byte skickas ett slumptal som används för identifiering 
+ innan enheten har fått sitt ID.\\
+\begin{table}[htb]
 	\centering
 	\begin{tabular}{|c|c|}
 		\hline
@@ -81,7 +82,7 @@ Detta meddelande skickas av en periferienhet innan den har tilldelats ett ID. De
 	\label{tab:enhetstyper}
 \end{table}
 
-\begin{table}
+\begin{table}[htb]
 	\centering
 	\begin{tabular}{|c|c|}
 		\hline
