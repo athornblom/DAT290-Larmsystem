@@ -39,7 +39,7 @@ Bekräftelse för senaste mottagna meddelandet. Man skickar samma header men av 
     \item Meddelandetyp 0
     \item Skickas från periferienhet till centralenheten
 \end{itemize}
-Talar om för centralenheten om någon dörr eller sensor larmar. Detta meddelande skickas endast av periferienheterna. Om det är en dörr som larmar skickas en byte med dörrens ID. Om det är en rörelseenhet anger första byten vilken typ av sensor som larmar. I andra byten skickas sensorns ID.\\
+Talar om för centralenheten om någon dörr eller sensor larmar. Detta meddelande skickas endast av periferienheterna. Om det är en dörr som larmar skickas en byte med dörrens ID. Om det är en rörelseenhet anger första byten enligt tabell \ref{tab:sensortyper} vilken typ av sensor som larmar. I andra byten skickas sensorns ID.\\
 
 
 \textbf{Skicka konfiguration}
@@ -51,18 +51,6 @@ Detta meddelande används för att skicka konfigurationer till periferienheterna
 Centralenheten skickar konfiguration till periferienheten kontinuerligt under drift för att försäkra sig om att periferienheten har rätt konfiguration. Detta fungerar även som ping, då ett bestämt antal uteblivna ack tolkas som att enheten inte längre finns på nätverket.
 I så fall uppmärksammar centralenheten detta.
 Första databyten anger enhetstyp enligt tabell \ref{tab:enhetstyper}.
-\begin{table}
-	\centering
-	\begin{tabular}{|c|p{0.8\textwidth}|}
-		\hline
-		Nummer & Används till \\ \hline \hline
-		0 & Dörrenhet. \\ \hline
-		1 & Rörelseenhet. \\ \hline
-
-	\end{tabular}
-	\caption{Nummer enhetstyper.}
-	\label{tab:enhetstyper}
-\end{table}
 
 
 \textbf{Tilldelning av ID}
@@ -70,7 +58,7 @@ Första databyten anger enhetstyp enligt tabell \ref{tab:enhetstyper}.
     \item Meddelandetyp 2
     \item Skickas från centralenheten till preferienhet
 \end{itemize}
-Detta meddelande används då centralenheten tilldelar en periferienhet dess ID. Detta meddelande skickas bara då centralenheten är i konfigurationsläge. I första byten i datafältet skickas samma slumptal som periferienheten skickade i begäran, i andra byten det tilldelade ID:t. \\
+Detta meddelande används då centralenheten tilldelar en periferienhet dess ID. Detta meddelande skickas bara då centralenheten är i konfigurationsläge. I de första fyra byten av datafältet skickas samma slumptal som periferienheten skickade i begäran, i den femte byten den skickas det tilldelade ID:t. \\
 
 
 \textbf{ID-begäran}
@@ -79,3 +67,30 @@ Detta meddelande används då centralenheten tilldelar en periferienhet dess ID.
     \item Skickas från periferienhet till centralenheten
 \end{itemize}
 Detta meddelande skickas som en begäran av ID. De sju bitarna i ID-fältet som annars ska ange periferienhetens ID är bara nollor i detta meddelande. I första databyten skickas ett slumptal som används för idenifiering innan enheten har fått sitt ID.
+
+\newpage
+\begin{table}
+	\centering
+	\begin{tabular}{|c|c|}
+		\hline
+		Nummer & Enhet \\ \hline \hline
+		0 & Dörrenhet \\ \hline
+		1 & Rörelseenhet \\ \hline
+
+	\end{tabular}
+	\caption{Besriver nummer får enhetstyper.}
+	\label{tab:enhetstyper}
+\end{table}
+
+\begin{table}
+	\centering
+	\begin{tabular}{|c|c|}
+		\hline
+		Nummer & Sensortyp \\ \hline \hline
+		0 & Rörelsesensor \\ \hline
+		1 & Vibrationssensor \\ \hline
+
+	\end{tabular}
+	\caption{Beskriver nummrering för sensortyper för rörelseenheter.}
+	\label{tab:sensortyper}
+\end{table}
