@@ -46,7 +46,7 @@ Rapporten beskriver utvecklingen av ett modulärt larmsystem som i grunden
  \newline består av ARM-baserade MD407-enkortsdatorer.
 
 \subsection{Syfte} % Svarar på frågan "Varför"?
-Larmsystemets syfte är att vara ett finansiellt dynamiskt alternativ för företag och organisationer som har behov av anpassad larmning beroende på rådande behov. Detta uppnås genom att erbjuda mindre delsystem som kan kopplas ihop till ett större centraliserat system.
+Larmsystemets syfte är att vara ett finansiellt dynamiskt alternativ för företag och organisationer som har behov av anpassad larmning beroende på rådande behov. Vilket uppnås genom att erbjuda mindre delsystem som kan kopplas ihop till ett större centraliserat system.
 
 Systemet ökar översikten och säkerheten av användarens lokaler genom \newline att 
 implementera konfigurerbar larmning av dörrar, samt rörelse- och vibrationsdetektering.
@@ -76,7 +76,7 @@ på rörelsesensorn konfigueras från centralenheten. Vibrationssensorn konfigue
 
 Centralenheten hanterar konfiguration av de andra enheterna, samt fungerar som en 
 central för samtliga larm som utlöses i systemet. Om ett centralt larm utlöses så 
-kan detta endast ackkrediteras och nollställas via centralenheten.
+kan det endast ackkrediteras och nollställas via centralenheten.
 
 \subsection{Arbetsmetod} % svarar på frågan "hur har vi gått tillväga i det tekniska utvecklingsarbetet"?
 \subsubsection{Undergrupper}
@@ -162,7 +162,7 @@ Denna prioritering har använts för att ge brådskande meddelanden företräde 
 		Skicka larm		& Talar om för centralenheten om någon dörr eller sensor larmar. \\ \hline
 		Skicka konfiguration		& Används för att skicka konfigurationer. \\ \hline
 		Tilldelning av ID		& Används då centralenheten tilldelar en periferienhet dess ID. \\ \hline
-		ID-begäran		& Detta meddelande skickas som en begäran av ID. \\ \hline
+		ID-begäran		& Används för att skicka ett medelande som en begäran av ID. \\ \hline
 
 	\end{tabular}
 	\caption{Listar de meddelandetyper som används för datakommunikationen.}
@@ -172,8 +172,8 @@ Denna prioritering har använts för att ge brådskande meddelanden företräde 
 
 \subsubsection{Implementationsbeskrivning CAN}
 För hantering av CAN-meddelanden har STM-biblioteket (se \ref{stm}) använts för inledande initiering, hantering av avbrott samt för att skicka meddelanden.
-Utöver detta har det skapats ett system för hantering av mottagna meddelanden.
-Detta har lösts med avbrott där hanteringsfunktionen paras ihop med filtret för tillhörande meddelande.
+Utöver det har det skapats ett system för hantering av mottagna meddelanden.
+vilket har lösts med avbrott där hanteringsfunktionen paras ihop med filtret för tillhörande meddelande.
 Hanteringsfunktionen anropas sedan av avbrottsrutinen då ett meddelande passerat filtret.
 Denna lösning har valts då de flesta meddelanden naturligt hanteras med en kort hanteringsfunktion som inte kräver input från användaren.
 
@@ -189,10 +189,10 @@ Centralenheten har följande två lägen:
 
 \begin{enumerate}
     \item Standardläge: Enheten väntar på larm-meddelanden från periferienheterna eller användarinput via USART. Dessutom skickar den regelbundet  konfigurationen för anslutna dörrar och sensorer till periferienheterna, som förväntas bekräfta konfigurationen. Om en enhet inte svarar efter ett förbestämt antal meddelanden går larmet.
-    \item Konfigurationsläge: Enheten startar i detta läge.
+    \item Konfigurationsläge: är det läget Enheten startar i. 
      Här kan användaren konfigurera anslutna dörr- och
- rörelseenheter via USART. Användaren kan sätta centralenheten
-      i detta läge via USART för att lägga till eller konfigurera periferienheter.
+ rörelseenheter via USART. Användaren kan sätta centralenheten till konfigurationsläget
+      via USART för att lägga till eller konfigurera periferienheter.
 \end{enumerate}
 
 För att kunna adressera olika periferienheter måste centralenheten tilldela dessa varsitt unikt id. Detta görs i konfigurationsläget genom att varje enhet som saknar id skickar en förfrågan via CAN. När centralenheten tar emot en sådan förfrågan från en periferienhet, skickar den tillbaka det lägsta lediga id:t och skapar en ny instans av en struktur som representerar periferienheten och lägger den i en lista. Strukturen innehåller enhetens id och konfiguration (d.v.s. tider för varje dörr för dörrenheter respektive avstånd för varje avståndssensor och antal vibrationssensorer för rörelseenheter).
@@ -219,7 +219,7 @@ För att koppla upp en dörr till systemet krävs det två anslutningar till en 
   I/O-pinnar (\textit{n}), samt en koppling från en LED-lampa på dörren till en ojämn I/O-pinne (\textit{n+1}).
 
 Fyra av mikrodatorns fem portar är designerade för dörranslutningar (\textit{A,C,D,E}). \\ 
-Eftersom samtliga portar har 16 tillgängliga pinnar innebär detta att systemet maximalt kan stötta 32 dörrar per dörrenhet.
+Eftersom samtliga portar har 16 tillgängliga pinnar innebär vilket att systemet maximalt kan stötta 32 dörrar per dörrenhet.
 
 Port B är inte avsedd för dörranslutningar, utan används främst för CAN-\\kommunikationen 
 med centralenheten. En LED-lampa kan även kopplas till \\ pinne 2 på port B. Denna lampa är till för att vid uppstart signalera när systemets initiering är färdig.
@@ -231,7 +231,7 @@ pinnar de är kopplade. För att dörrarna ska kunna detekteras krävs det att d
 
 Efter detekteringen skapas datarepresentationer med förinställda värden för de dörrar som systemet 
 hittade. Efter att samtliga datarepresentationer är skapade kommer systemet att tända dörrarnas lampor 
-i den ordning de initierades. Detta görs för att testa om de lokala larmen fungerar hos dörrarna. Efter att samtliga lampor är tända så släcker systemet dem igen.
+i den ordning de initierades. Vilket görs för att testa om de lokala larmen fungerar hos dörrarna. Efter att samtliga lampor är tända så släcker systemet dem igen.
 Slutligen tänds lampan som är kopplad till pinne 2 på port B för att signalera till användaren att enheten är redo för drift.
 \newpage
 
@@ -252,7 +252,7 @@ Att en dörr är öppen innebär att kretsen som går via strömbrytaren på dö
 
 När dörrenheten larmar centralt så skickas ett meddelande via CAN till systemets centralenhet. Meddelanden kommer skickas med jämna intervall tills centralenheten skickar tillbaka en ackreditering om att larmet har mottagits. Väntetiden konfigureras från centralenheten, liksom för det lokala larmet.
 
-Dörrenheten kan köras utan uppkoppling till centralenheten. I detta läge finns dock inget centralt larm och enskilda dörrar kan inte konfigureras.\\ \\
+Dörrenheten kan köras utan uppkoppling till centralenheten. I det läget finns det dock inget centralt larm och enskilda dörrar kan inte konfigureras.\\ \\
 
 
 
@@ -316,7 +316,9 @@ STM används för att bespara projektgruppen jobb med att implementera \\ genere
  \end{enumerate}
  För att säkerställa att funktionalitet ovan fungerar utfördes följande tester:
  \begin{enumerate}
-     \item 
+     \item Test av pinnar för dörrar
+     \item Test av lokal drift
+     \item Test av ID-tilldelning och larm
  \end{enumerate}
  
  \subsection{Rörelseenheten}
@@ -344,7 +346,10 @@ STM används för att bespara projektgruppen jobb med att implementera \\ genere
  \subsection{Larmsystemet som helhet}
 \section{Slutsats och diskussion}
 % Detta avsnitt innehåller en sammanfattning av konstruktionen och en diskussion av resultatet. Om detta är möjligt, dra slutsatser av ert projekt och identifiera förbättringsmöjligheter. (Vilka kan vara användbara för en beställare)
-\todo[inline]{Vi har ingen slutsats än}
+Utifrån vårt resultat kan vi dar slutsatsen att dörrenheten fungerar som den
+ska enligt målet. Testerna som har utförts styrker att dörrenheten fungerar som
+den ska.
+\todo[inline]{inte färdig}
 
 % Referenser enligtIEEE.
 %För referenser
