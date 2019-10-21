@@ -134,6 +134,7 @@ void encode_door_larm_ack(CanTxMsg *msg, CanRxMsg *larm){
     msg->ExtId = larm->ExtId;
     msg->DLC = 0;
     msg->RTR = CAN_RTR_Remote;
+    msg->IDE = CAN_Id_Extended;
 }
 
 //Encodar ett larmmeddelande från rörelseenhet
