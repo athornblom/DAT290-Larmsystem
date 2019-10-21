@@ -1,13 +1,15 @@
 #include "stm32f4xx.h"
+#include "stm32f4xx_rcc.h"
+#include "stm32f4xx_rcc.c"
 #include "core_cm4.h"
+#include "stm32f4xx_gpio.h"
 #include "system_stm32f4xx.h"
+#include "startup.h"
 #include "delay.h"
-
-#include "init_GPIO.h"
-#include "door_can.h"
-#include "globalVar.h"
-
-
+#include "init.h"
+#include "can.h"
+#include "CANEncode.h"
+#include "stm32f4xx_rng.h"
 void startup(void) __attribute__((naked)) __attribute__((section(".start_section")));
 
 void startup(void)
@@ -20,7 +22,8 @@ void startup(void)
 	);
 }
 // GLOBAL VARIABLES
-
+uint32_t id = 0;
+char nocid = 1;
 // ========================================= DOOOOOORS INIT =================================================
 uint16_t GPIO_Pins[] = {
 	GPIO_Pin_0, GPIO_Pin_1, GPIO_Pin_2, GPIO_Pin_3, GPIO_Pin_4, GPIO_Pin_5,
@@ -30,7 +33,7 @@ uint16_t GPIO_Pins[] = {
 GPIO_TypeDef* GPIO_Ports[] = {GPIOE, GPIOA, GPIOD, GPIOC};
 
 // ========================================= SYSTICK ================================================
- /* Variable to store millisecond ticks */
+volatile uint32_t msTicks = 0; /* Variable to store millisecond ticks */
 void SysTick_Handler(void)
 { /* SysTick interrupt Handler. */
 	msTicks++;
@@ -51,7 +54,14 @@ void delay (int mili){
 		int time = msTicks + mili;
 		while(time > msTicks);
 	}
+//======================================== Slumptals generator CAN =========================================
+void init_rng(void){
+	RCC_AHB2PeriphClockCmd(RCC_AHB2Periph_RNG, ENABLE);
+    RNG_Cmd(ENABLE);
+}
 
+void sendAlarm(door);
+void getId (int);
 
 void main(void)
 {
@@ -63,6 +73,7 @@ void main(void)
 
 	//door door1, door2, door3, door4, door5, door6, door8, door9 ,door10, door11, door12, door13,door14,door15,door16, door17, door18, door19, door20, door21, door22, door23, door24 ,door25, door26, door27, door28,door29,door30,door31,door32;
 	//door all_doors[32] = {door1, door2, door3, door4, door5, door6, door8, door9 ,door10, door11, door12, door13,door14,door15,door16, door17, door18, door19, door20, door21, door22, door23, door24 ,door25, door26, door27, door28,door29,door30,door31,door32};
+
 	volatile int amountOfActiveDoors = 0;
 	for (int j = 0; j < (sizeof(GPIO_Ports) /sizeof(GPIO_TypeDef *)); j++)
 	{
@@ -92,8 +103,34 @@ void main(void)
 		}
 	}
 	
-	//getId((sizeof(active_doors)/sizeof(active_doors[0])));
-	startUpLights(active_doors);
+	getId((sizeof(active_doors)/sizeof(active_doors[0])));
+	if(id == 0){ // debugging
+		GPIO_SetBits(GPIOC, GPIO_Pin_13);
+	}
+	// ================================== LIGHTS =========================================================
+	for (int i = 0; i < sizeof(active_doors)/sizeof(active_doors[0]); i++) //CHRISTMAST LIGHTS FTW
+	{
+		GPIO_SetBits(active_doors[i].GPIO_type, active_doors[i].GPIO_lamp);
+		delay(100);	
+		
+	}
+	for (int i = sizeof(active_doors)/sizeof(active_doors[0]); i >= 0 ; i--) //CHRISTMAST LIGHTS FTW
+	{
+		GPIO_ResetBits(active_doors[i].GPIO_type, active_doors[i].GPIO_lamp);
+		delay(100);
+	}
+	delay(200);
+	for (int i = 0; i < sizeof(active_doors)/sizeof(active_doors[0]); i++) //CHRISTMAST LIGHTS FTW
+	{
+		GPIO_SetBits(active_doors[i].GPIO_type, active_doors[i].GPIO_lamp);
+	}
+	delay(3000);
+	for (int i = 0; i < sizeof(active_doors)/sizeof(active_doors[0]); i++) //CHRISTMAST LIGHTS FTW
+	{
+		GPIO_ResetBits(active_doors[i].GPIO_type, active_doors[i].GPIO_lamp);
+	}
+	
+
 	GPIO_SetBits(GPIOB, GPIO_Pin_2);
 	//active_doors[2].controlbits |= 4;
 	while (1)
@@ -135,30 +172,64 @@ void main(void)
 			}
 		}
 	}
-}
-	// ================================== LIGHTS =========================================================
-void startUpLights (door active_doors[]){
+	}
 	
-	for (int i = 0; i < sizeof(active_doors)/sizeof(active_doors[0]); i++) //CHRISTMAST LIGHTS FTW
-	{
-		GPIO_SetBits(active_doors[i].GPIO_type, active_doors[i].GPIO_lamp);
-		delay(100);	
-		
+	void idAssign_Handler(CanRxMsg* msg){
+		uint32_t rndid = *(uint32_t *)(&(msg->Data[0]));
+		if(rndid == id){
+			id = msg->Data[1];
+			nocid = 0;
+
+		}
 	}
-	for (int i = sizeof(active_doors)/sizeof(active_doors[0]); i >= 0 ; i--) //CHRISTMAST LIGHTS FTW
-	{
-		GPIO_ResetBits(active_doors[i].GPIO_type, active_doors[i].GPIO_lamp);
-		delay(100);
+
+	void getId (int nDoors){
+		CANFilter filter = empty_mask;
+		CANFilter mask = empty_mask;
+
+		//används för omvandling
+		Header header = empty_header;
+
+		//skriver mask
+		mask.IDE = 1;
+		mask.RTR = 1;
+		header.msgType = ~0;
+		header.ID = ~0;
+		header.toCentral = ~0;
+		HEADERtoUINT32(header, mask.ID);
+
+		//Skriver filter
+		filter.IDE = 1;
+		filter.RTR = 0;
+		header.msgType = assignID_msg_type;
+		header.ID = 0;
+		header.toCentral = 0;
+		HEADERtoUINT32(header, filter.ID);
+
+		if (CANhandlerListNotFull()){
+			CANaddFilterHandler(idAssign_Handler, &filter, &mask);
+		}
+
+
+		int timeStamp = msTicks + 60 * 1000; 
+		if (RNG_GetFlagStatus(RNG_FLAG_DRDY) == SET && //Nytt meddelande finns
+             RNG_GetFlagStatus(RNG_FLAG_CECS) == RESET && //Inget klockfel
+             RNG_GetFlagStatus(RNG_FLAG_SECS) == RESET){ //Inget seedfel
+                    id = RNG_GetRandomNumber();
+			 		CanTxMsg idRequest;
+					
+					encode_request_id(&idRequest,id,0, nDoors, 69);
+					while (msTicks < timeStamp && nocid)
+					{
+						CANsendMessage(&idRequest);
+						delay(1000);
+					}
+			 }
 	}
-	delay(200);
-	for (int i = 0; i < sizeof(active_doors)/sizeof(active_doors[0]); i++) //CHRISTMAST LIGHTS FTW
-	{
-		GPIO_SetBits(active_doors[i].GPIO_type, active_doors[i].GPIO_lamp);
+
+	void sendAlarm (door alarming_door){
+		CanTxMsg testMsg = {
+							0, 0x4, CAN_Id_Extended, CAN_RTR_DATA, 4, {0xa,0xb,0xc,1} 
+						};
+						CANsendMessage(&testMsg);
 	}
-	delay(3000);
-	for (int i = 0; i < sizeof(active_doors)/sizeof(active_doors[0]); i++) //CHRISTMAST LIGHTS FTW
-	{
-		GPIO_ResetBits(active_doors[i].GPIO_type, active_doors[i].GPIO_lamp);
-	}
-}
-// ================================== end of LIGHTS =========================================================

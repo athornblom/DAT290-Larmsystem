@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<CodeLite_Project Name="door-n" Version="10.0.0" InternalType="User templates">
+<CodeLite_Project Name="Door" Version="10.0.0" InternalType="User templates">
   <Plugins>
     <Plugin Name="qmake">
       <![CDATA[00010001N0005Debug000000000000]]>
@@ -20,19 +20,14 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
-    <File Name="../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c"/>
-    <File Name="globalVar.h"/>
-    <File Name="globalVar.c"/>
-    <File Name="init_GPIO.c"/>
-    <File Name="door_can.c"/>
-    <File Name="init_GPIO.h"/>
-    <File Name="door_can.h"/>
     <File Name="../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c"/>
     <File Name="../lib/CANEncode.c"/>
     <File Name="../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_can.c"/>
     <File Name="../lib/CAN.c"/>
     <File Name="../lib/CAN.h"/>
+    <File Name="../lib/delay.h"/>
     <File Name="startup.h"/>
+    <File Name="init.h"/>
     <File Name="../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/misc.c"/>
     <File Name="../lib/buffer.c"/>
     <File Name="../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/inc/system_stm32f4xx.h"/>
