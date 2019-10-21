@@ -94,7 +94,7 @@ void main(void)
 	door active_doors[amountOfActiveDoors];
 	active_doors_add_doors(&active_doors[0], amountOfActiveDoors);
 	
-	getId(amountOfActiveDoors);
+	//getId(amountOfActiveDoors);
 
 	startup_lights(&active_doors[0],amountOfActiveDoors);
 	GPIO_SetBits(GPIOB, GPIO_Pin_2); // tells system is ready

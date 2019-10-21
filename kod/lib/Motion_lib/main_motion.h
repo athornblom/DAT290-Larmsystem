@@ -1,6 +1,17 @@
 #ifndef MAIN_MOTION_H
 #define MAIN_MOTION_H
 
+
+#include <stdio.h>
+#include "string.h"
+#include "stm32f4xx_gpio.h"
+#include "core_cm4.h"
+#include "stm32f4xx_rcc.h"
+#include "stm32f4xx_rng.h"
+#include "USARTDebug.h"
+#include "misc.h"
+#include "SysTick_motion.h"
+
 #define bit0 1
 #define bit1 (1 << 1)
 #define bit2 (1 << 2)
@@ -10,11 +21,6 @@
 #define bit6 (1 << 6)
 #define bit7 (1 << 7)
 
-char bits[] = {bit0, bit1, bit2, bit3, bit4, bit5, bit6, bit7};
-
-// Maximalt antal sensorer, använder #define för att kunna använda värden till arrayen 'sensors'.
-#define nMaxMotionSensors 	 sizeof(motionPorts)/sizeof(motionPorts[0])*5			// Max 5 sensorer per port
-#define nMaxVibrationSensors sizeof(vibrationPorts)/sizeof(vibrationPorts[0])*8		// Max 8 sensorer per port
 
 
 // Struct för motionsensorer
@@ -54,12 +60,40 @@ typedef struct Sensors {
 	MotionSensor 	motion;
 } Sensor;
 
-GPIO_TypeDef* ports[] 	= {GPIOA, GPIOB, GPIOC, GPIOD, GPIOE};
 
-uint16_t GPIO_Pins[] = {
-	GPIO_Pin_0, GPIO_Pin_1, GPIO_Pin_2, GPIO_Pin_3, GPIO_Pin_4, GPIO_Pin_5,
-	GPIO_Pin_6, GPIO_Pin_7, GPIO_Pin_8, GPIO_Pin_9, GPIO_Pin_10, GPIO_Pin_11,
-	GPIO_Pin_12, GPIO_Pin_13, GPIO_Pin_14, GPIO_Pin_15};
+// =============================== Globala Variabler =========================================================
+// Array med bit0-bit7.
+char bits[8];
+
+
+GPIO_TypeDef* ports[5];
+
+// Dessa är konfigurerbara
+GPIO_TypeDef* motionPorts[3];
+GPIO_TypeDef* vibrationPorts[2];
+
+// Maximalt antal sensorer, använder #define för att kunna använda värden till arrayen 'sensors'.
+#define nMaxMotionSensors 	 sizeof(motionPorts)/sizeof(motionPorts[0])*5			// Max 5 sensorer per port
+#define nMaxVibrationSensors sizeof(vibrationPorts)/sizeof(vibrationPorts[0])*8		// Max 8 sensorer per port
+
+
+uint32_t id;
+char nocid;
+
+
+// Alla sensorer, denna initieras under init_Sensors.
+Sensor sensors[nMaxMotionSensors + nMaxVibrationSensors];	// Array för max antalet sensorer.
+char connectedSensors[nMaxMotionSensors + nMaxVibrationSensors];	// Ska innehålla id för de inkopplade sensorerna. Om ett element i arrayn är 100 
+																	// så indikerar det att det finns inga mer inkopplade sensorer.
+char connectedCounter;	// Räknare till connectedSensors, en global variabel för den används i 'init_MotionSensors' och 'init_VibrationSensors'.
+
+uint8_t nMotionSensors;		// Antalet rörelsesensorer kopplade till MD407-kortet.
+uint8_t nVibrationSensors;	// Antalet vibrationssensorer kopplade till MD407-kortet.
+
+
+volatile uint32_t microTicks;		 // Variabel för microsekunder.
+
+uint16_t GPIO_Pins[16];
 
 
 
