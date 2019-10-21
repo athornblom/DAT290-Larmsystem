@@ -117,6 +117,7 @@ void encode_door_larm_msg(CanTxMsg *msg, uint8_t uinitID, uint8_t id){
     header.msgType = larm_msg_type;
     header.ID = uinitID;
     header.toCentral = 1;
+    header.msgNum = id;
     HEADERtoUINT32(header, msg->ExtId);
 
     msg->DLC = door_larm_msg_length;
@@ -124,6 +125,15 @@ void encode_door_larm_msg(CanTxMsg *msg, uint8_t uinitID, uint8_t id){
     msg->RTR = CAN_RTR_Data;
 
     msg->Data[0] = id;
+}
+
+//Encodar ackmeddelande för dörrlarm
+//msg är en pekare till meddelandet som ska skickas
+//larm är en pekare till meddelandet som larmar
+void encode_door_larm_ack(CanTxMsg *msg, CanRxMsg *larm){
+    msg->ExtId = larm->ExtId;
+    msg->DLC = 0;
+    msg->RTR = CAN_RTR_Remote;
 }
 
 //Encodar ett larmmeddelande från rörelseenhet

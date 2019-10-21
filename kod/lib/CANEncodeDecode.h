@@ -51,6 +51,11 @@ uint8_t encode_distance_config(CanTxMsg *msg, uint32_t dist);
 //id är idt till dörren som larmar
 void encode_door_larm_msg(CanTxMsg *msg, uint8_t uinitID, uint8_t id);
 
+//Encodar ackmeddelande för dörrlarm
+//msg är en pekare till meddelandet som ska skickas
+//larm är en pekare till meddelandet som larmar
+void encode_door_larm_ack(CanTxMsg *msg, CanRxMsg *larm);
+
 //msg är en pekare till meddelandet som ska skickas
 //unitID är enhetens egna ID
 //sensorType är antingen motion_sensor eller vibration_sensor

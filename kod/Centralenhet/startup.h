@@ -2,6 +2,7 @@
 #include "CAN.h"
 #include "USART.h"
 #include "printMsg.h"
+#include "keypad.h"
 #include "CANEncodeDecode.h"
 #include "stm32f4xx_can.h"
 #include "stm32f4xx_rcc.h"
