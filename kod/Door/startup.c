@@ -101,12 +101,7 @@ void main(void)
 	door active_doors[amountOfActiveDoors];  
 	active_doors_add_doors(&active_doors[0], amountOfActiveDoors); // initierar standard värden och portar
 	
-<<<<<<< HEAD
-	//getId(amountOfActiveDoors);
-=======
-	getId(amountOfActiveDoors); //Skickar till centralenheten hur många aktiva dörrar dörrenheten har och får ett id
->>>>>>> 306e57ac6beec1786a4c563561682c2e2ff51a0d
-
+	//getId(amountOfActiveDoors); //Skickar till centralenheten hur många aktiva dörrar dörrenheten har och får ett id
 	startup_lights(&active_doors[0],amountOfActiveDoors); // Mest för cool het's faktorns skull ingen riktigt funktionallitet
 	GPIO_SetBits(GPIOB, GPIO_Pin_2); // Lampa som lyser när systemet är färdig initierat.
 
