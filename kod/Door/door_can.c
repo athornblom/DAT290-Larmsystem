@@ -1,11 +1,12 @@
 #include "door_can.h"
 
 //======================================== Slumptals generator CAN =========================================
+//funktion som generar ett 32bitars slumptal
 void init_rng(void){
 	RCC_AHB2PeriphClockCmd(RCC_AHB2Periph_RNG, ENABLE);
     RNG_Cmd(ENABLE);
 }
-
+// funktion som genererar avbrott när centralenheten skicakr tillbaka ett id
 void idAssign_Handler(CanRxMsg* msg){
 		uint32_t rndid = decode_tempID(msg);
 		if(rndid == id){
@@ -14,7 +15,7 @@ void idAssign_Handler(CanRxMsg* msg){
 
 		}
 	}
-
+//funktion som förfrågar efter ett id 
 void getId (int nDoors){
     CANFilter filter = empty_mask;
     CANFilter mask = empty_mask;
@@ -59,6 +60,7 @@ void getId (int nDoors){
         }
 }
 
+//funktion för att skicka larm till centralenheten.
 void sendAlarm (char Doorid){
     CanTxMsg AMsg;
     encode_door_larm_msg(&AMsg,(char) id,Doorid);	

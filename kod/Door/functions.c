@@ -1,17 +1,16 @@
 #include "functions.h"
 
-
-// =============================== ALL FUNCTIONS FOR THE DOORS CHECKING
-const int larming = 1;
+// Variabel där man ställer in vilken bit i kontrollbitarna som representerar vad.
+const int open = 1;
 const int cLarm = 2;
 const int dissarmedBit = 4;
-// allmäna
+// allmän dynamisk delay funktion.
 void delay (int mili){
 		int time = msTicks + mili;
 		while(time > msTicks);
 	}
 
-// functions for while loop in main
+// Kollar så att dörren inte är avlarmad. Returnar 0 ifall avlarmad
 int is_door_armed(int controlbitts){
     if (controlbitts & dissarmedBit){
         return 0;
@@ -20,72 +19,73 @@ int is_door_armed(int controlbitts){
         return 1;
     }
 }
-
+// Uppdaterar kontrollbitarna för varje dörr.
 void check_door_status (door *aDoors, int arrayLength){
     for (int i = 0; i < arrayLength; i++)
     {
-        if (is_door_armed(aDoors->controlbits))
+        if (is_door_armed(aDoors->controlbits)) // ifall dörren är avlarmad uppdateras inte dens pinnar.
         {
            if (!GPIO_ReadInputDataBit(aDoors->GPIO_type, aDoors->GPIO_read)){ //GPIO pinnen är noll ifall dörren är stängd därför !
-					aDoors->controlbits &= 0xFFFF - larming - cLarm; //Nollställer kontrollbiten för larm ifall en dörr är öppen och spam kontrollbiten för central		
+					aDoors->controlbits &= 0xFFFF - open - cLarm; //Nollställer kontrollbiten för larm ifall en dörr är öppen och spam kontrollbiten för central		
 			}
 			else{
-                if (!aDoors->controlbits & larming) // Kollar så att dörren inte larmar sen innan så larmtick inte uppdateras hela tiden
+                if (!aDoors->controlbits & open) // Kollar så att dörren inte har detekteras som öppen innan
                 {
                     aDoors->larmTick = msTicks;
                 }
-                aDoors->controlbits |= larming; //sätter dörrens kontrolbit för larm
+                aDoors->controlbits |= open; //sätter dörrens kontrolbit för att den är öppen
             }
         }
        aDoors++;   
     }
     
 }
-
+// Funktion som tänder eller släcker den lokala larmnings lampan
 void door_uppdate_lamps (door *door){
-    uint32_t larmTime = door->larmTick + 1000 * 10 * door->time_larm;
-    if (door->controlbits & larming && msTicks > larmTime) {
+    uint32_t larmTime = door->larmTick + 1000 * 10 * door->time_larm; // gångrar med 10 * 1000 eftersom att tiden anges i 10 s interval
+    if (door->controlbits & open && msTicks > larmTime) {
             GPIO_SetBits(door->GPIO_type, door->GPIO_lamp); // tänder lampan ifall tiden för att dörren ska larma har gått
     }
     else{
             GPIO_ResetBits(door->GPIO_type, door->GPIO_lamp);	// släcker lampan annars
         }
 }
-
+// Funktion som kollar ifall dörren har vart öppen tillräckligt länge för att den ska larma centralt.
 int central_larm(door *door){
-    uint32_t larmTime = door->larmTick + 1000 * 10 * door->time_central_larm;
-    if(door->controlbits&larming && msTicks>larmTime && !(door->controlbits & cLarm)){
-    	door->controlbits |= cLarm;    
+    uint32_t larmTime = door->larmTick + 1000 * 10 * door->time_central_larm;// gångrar med 10 * 1000 eftersom att tiden anges i 10 s interval
+    if(door->controlbits&open && msTicks>larmTime && !(door->controlbits & cLarm)){
+    	door->controlbits |= cLarm;    // sätter kontrollbiten som säger att dörren har larmat centralt.
         return 1;
     }else{
         return 0;
     }
 }
 
-// ================================== LIGHTS ========================================================= 
+// ================================== LIGHTS =========================================================
+//bara för cool-het's faktorn. 
 void startup_lights (door *aDoors, int aLength){
 	
-	for (int i = 0; i < aLength; i++) //CHRISTMAST LIGHTS FTW
+	for (int i = 0; i < aLength; i++) 
 	{
 		GPIO_SetBits(aDoors->GPIO_type, aDoors->GPIO_lamp);
 		delay(100);	
         aDoors++;
 		
 	}
-	for (int i = aLength; i > 0 ; i--) //CHRISTMAST LIGHTS FTW
+	for (int i = aLength; i > 0 ; i--) 
 	{
 		GPIO_ResetBits(aDoors->GPIO_type, aDoors->GPIO_lamp);
 		delay(100);
         aDoors--;
 	}
 	delay(200);
-	for (int i = 0; i < aLength; i++) //CHRISTMAST LIGHTS FTW
+	for (int i = 0; i < aLength; i++) 
 	{
 		GPIO_SetBits(aDoors->GPIO_type, aDoors->GPIO_lamp);
         aDoors++;
 	}
 	delay(3000);
-	for (int i = 0; i < aLength; i++) //CHRISTMAST LIGHTS FTW
+	for (int i = 0; i < aLength; i++) 
 	{
 		GPIO_ResetBits(aDoors->GPIO_type, aDoors->GPIO_lamp);
         aDoors--;
