@@ -20,7 +20,7 @@ void startup(void)
 // Global
 uint32_t id = 0; // Dörrenhetens id, 0 vid uppstart -> randome nr -> asignat nr av centralenheten
 char nocid = 1; //Kontrollbit som ettställs ifall dörrenheten har fått ett id.
-//char annydoorLarm = 0;
+volatile char annydoorLarm = 0;
 
 // Två listor som behövs för att dörrenheten ska kunna detektera dörrar vid uppstart.
 uint16_t GPIO_Pins[] = {
@@ -71,8 +71,10 @@ volatile uint32_t msTicks = 0;
 void SysTick_Handler(void)
 { /* SysTick interrupt Handler. */
 	msTicks++;
-	//GPIO_SetBits(GPIOA, GPIO_Pin_5);
-	//GPIO_ResetBits(GPIOA, GPIO_Pin_5);
+	if(annydoorLarm){
+	GPIO_SetBits(GPIOA, GPIO_Pin_5);
+	GPIO_ResetBits(GPIOA, GPIO_Pin_5);
+	}
 }
 
 void systick_Init(void)
@@ -108,6 +110,7 @@ void main(void)
 	while (1)
 	{
 		check_door_status(&active_doors[0],amountOfActiveDoors); // Uppdatterar kontrollbitarna för varje dörr.
+		check_door_sound (&active_doors[0],amountOfActiveDoors);
 		for (int i = 0; i < amountOfActiveDoors; i++)
 			{
 				door_uppdate_lamps(&active_doors[i]);

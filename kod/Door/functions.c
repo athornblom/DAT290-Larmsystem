@@ -20,6 +20,7 @@ int is_door_armed(int controlbitts){
     }
 }
 // Uppdaterar kontrollbitarna för varje dörr.
+
 void check_door_status (door *aDoors, int arrayLength){
     for (int i = 0; i < arrayLength; i++)
     {
@@ -45,6 +46,7 @@ void door_uppdate_lamps (door *door){
     uint32_t larmTime = door->larmTick + 1000 * 10 * door->time_larm; // gångrar med 10 * 1000 eftersom att tiden anges i 10 s interval
     if (door->controlbits & open && msTicks > larmTime) {
             GPIO_SetBits(door->GPIO_type, door->GPIO_lamp); // tänder lampan ifall tiden för att dörren ska larma har gått
+            annydoorLarm = 1;
     }
     else{
             GPIO_ResetBits(door->GPIO_type, door->GPIO_lamp);	// släcker lampan annars
@@ -61,6 +63,16 @@ int central_larm(door *door){
     }
 }
 
+void check_door_sound (door *aDoors, int arrayLength){
+    annydoorLarm = 0;
+    for (int i = 0; i < arrayLength; i++){
+        if(GPIO_ReadInputDataBit(aDoors->GPIO_type,aDoors->GPIO_read)){
+        annydoorLarm = 1;
+        break;
+        }
+        aDoors++;
+    }
+}
 // ================================== LIGHTS =========================================================
 //bara för cool-het's faktorn. 
 void startup_lights (door *aDoors, int aLength){

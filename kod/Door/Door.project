@@ -34,7 +34,6 @@
     <File Name="../lib/CAN.c"/>
     <File Name="../lib/CAN.h"/>
     <File Name="startup.h"/>
-    <File Name="init.h"/>
     <File Name="../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/misc.c"/>
     <File Name="../lib/buffer.c"/>
     <File Name="../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/inc/system_stm32f4xx.h"/>

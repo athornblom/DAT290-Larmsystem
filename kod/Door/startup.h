@@ -17,6 +17,6 @@ typedef struct _door
 volatile uint32_t msTicks; /* Variable to store millisecond ticks */
 uint32_t id;
 char nocid;
-//char annydoorLarm;
+volatile char annydoorLarm;
 #endif
 ////Dörren uppställd?/larmat centralt/Larmar
