@@ -184,9 +184,24 @@ void can_irq_handler(void){
     }
 }
 
+//Aktiverar sessionID, ändrar inte befintliga filter
+//Använder de första 10 bitarna av ID
+void activateSessionId(uint16_t ID){
+    SessionIDActive = SESSIONIDACTIVE;
+    SessionID = ID;
+}
+
+//Aktiverar samma sessionID som msg använder
+void copySessionID(CanRxMsg *msg){
+        //Aktiviterar sessionID
+        Header header;
+        UINT32toHEADER(msg->ExtId, header);
+        activateSessionId(header.sessionID);
+}
+
 //Sätter session ID,  ändra även session ID för aktiva filter
 //Använder de första 10 bitarna av ID
-void setSessionId(uint16_t ID){
+void changeSessionId(uint16_t ID){
     SessionIDActive = SESSIONIDACTIVE;
     SessionID = ID;
 

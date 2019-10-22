@@ -3,7 +3,7 @@
 
 
 #define MAXCOMMANDLENGTH 10
-#define SESSIONIDACTIVE 0
+#define SESSIONIDACTIVE 1
 
 
 
@@ -203,11 +203,6 @@ uint8_t msgPrint(CanRxMsg *msg, uint8_t base){
     USARTPrint("\n\n");
 }
 
-void confMsg(CanRxMsg *msg){
-    USARTPrint("Nytt konf msg:\n");
-    msgPrint(msg, 16);
-}
-
 //Aktiverar centralenhetens konfigurationsläge
 //Aktiverar ID-tilldelningshantering och initial konfiguration
 //returnerar 1 om det lyckades, 0 annars
@@ -222,8 +217,7 @@ uint8_t enterConfMode (void){
     //Skriver mask
     mask.IDE = 1;
     mask.RTR = 1;
-    
-    
+
     header.msgType = ~0;
     header.toCentral = ~0;
     header.ID = ~0;
@@ -250,21 +244,21 @@ uint8_t enterConfMode (void){
     } else {
         return 0;
     }
-
-    //Filter för mottagen konfiguration
-    /*filter.STDID = 0b01010000000;
-    filter.EXDID = 0;
-    filter.IDE = 0;
-    filter.RTR = 1;
-
-    //Aktiverar handler för ID begäran
-    if (CANhandlerListNotFull()){
-        USARTPrint("Mottagen konfigurations handler med handler index: ");
-        USARTPrintNum(CANaddFilterHandler(confHandler, &filter, &mask));
-        USARTPrint("\n");
+    
+    //Aktiverar sessionID
+    if (SESSIONIDACTIVE){
+         if (RNG_GetFlagStatus(RNG_FLAG_DRDY) == SET && //Nytt meddelande finns
+             RNG_GetFlagStatus(RNG_FLAG_CECS) == RESET && //Inget klockfel
+             RNG_GetFlagStatus(RNG_FLAG_SECS) == RESET){ //Inget seedfel
+                activateSessionId(RNG_GetRandomNumber());
+        } else {
+            return 0;
+        }
     } else {
-        return 0;
-    }*/
+        //För "inaktiv" sessionID avnänds 0.
+        //I bakgrunden kommer sessionID fortfarande vara aktivt fast med endast nollor
+        activateSessionId(0);
+    }
 
     return 1;
 }
@@ -474,14 +468,6 @@ void main(void) {
         USARTWaitPrint("Start av konfigurations-mode lyckades\n");
     } else {
         USARTWaitPrint("Start av konfigurations-mode misslyckades\n");
-    }
-    
-    if (SESSIONIDACTIVE){
-         if (RNG_GetFlagStatus(RNG_FLAG_DRDY) == SET && //Nytt meddelande finns
-             RNG_GetFlagStatus(RNG_FLAG_CECS) == RESET && //Inget klockfel
-             RNG_GetFlagStatus(RNG_FLAG_SECS) == RESET){ //Inget seedfel
-                setSessionId(RNG_GetRandomNumber());
-        }
     }
 
     while (1) {

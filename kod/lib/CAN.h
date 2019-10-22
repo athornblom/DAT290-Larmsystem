@@ -80,9 +80,16 @@ void CANdisableFilterHandler(uint8_t index);
 //Avaktiverar alla CANFilterHandlers
 void CANdisableAllFilterHandlers(void);
 
+//Aktiverar sessionID, ändrar inte befintliga filter
+//Använder de första 10 bitarna av ID
+void activateSessionId(uint16_t ID);
+
+//Aktiverar samma sessionID som msg använder
+void copySessionID(CanRxMsg *msg);
+
 //Sätter session ID,  ändra även session ID för aktiva filter
 //Använder de första 10 bitarna av ID
-void setSessionId(uint16_t ID);
+void changeSessionId(uint16_t ID);
 
 //Avaktiverar session ID för aktiva filter och kommande filter
 void noSessionId(void);

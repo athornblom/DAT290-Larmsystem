@@ -192,14 +192,6 @@ uint32_t decode_tempID(CanRxMsg *msg){
 //Filtrering av header och rätt tempID måste redan ha gjorts
 uint8_t decode_ID(CanRxMsg *msg){
     if (msg->DLC == assignID_msg_length){
-        Header header;
-        UINT32toHEADER(msg->ExtId, header);
-        //om sessionID skilt från 0 i meddelandet
-        //så aktiverar vi session id till samma
-        if(header.sessionID != 0){
-            setSessionId(header.sessionID);
-        }
-        
         //returnerar IDt
         return msg->Data[4];
     }
