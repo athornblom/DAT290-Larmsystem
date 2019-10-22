@@ -145,7 +145,7 @@ void getId(){
 			id = RNG_GetRandomNumber();
 			CanTxMsg idRequest;
 					
-			encode_request_id(&idRequest, id, 1, nMotionSensors, nVibrationSensors);
+			encode_motion_request_id(&idRequest, id, nMotionSensors, nVibrationSensors);
 			while (microTicks < timeStamp && nocid) {
 				CANsendMessage(&idRequest);
 				delayMicro(1000000);

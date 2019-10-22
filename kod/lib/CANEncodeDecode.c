@@ -45,7 +45,7 @@ uint8_t encode_door_time_config(CanTxMsg *msg, uint8_t to_central, uint8_t door_
  * uint8_t value_0: antal dörrar eller rörelsesensorer
  * uint8_t value_1: antal vibrationssensorer
  */
-uint8_t encode_request_id(CanTxMsg *msg, uint32_t temp_id, uint8_t device_type, uint8_t value_0, uint8_t value_1){
+void encode_request_id(CanTxMsg *msg, uint32_t temp_id, uint8_t device_type, uint8_t value_0, uint8_t value_1){
     Header header = empty_header;
     header.msgType = reqID_msg_type;
     header.toCentral = 1;
@@ -64,8 +64,29 @@ uint8_t encode_request_id(CanTxMsg *msg, uint32_t temp_id, uint8_t device_type, 
     msg->Data[4] = device_type;
     msg->Data[5] = value_0;
     msg->Data[6] = value_1;
-    
-    return 1;
+}
+
+/*
+ *  * skapar meddelnade för IDbegäran för dörr
+ * CanTxMsg *msg: förslagsvis tomt meddeleande som görs till id-förfrågan
+ * uint32_t temp_id: temporärt, förslagsvis slumpgenererat id
+ * uint32_t tmpID slumptal för idbegäran
+ * uint8_t nDoors: antal dörrar
+ */
+void encode_door_request_id(CanTxMsg *msg, uint32_t tmpID, uint8_t nDoors){
+    encode_request_id(msg,tmpID,door_unit,nDoors,0);
+}
+
+/*
+ * skapar meddelande för idbegäran rörelse
+ * CanTxMsg *msg: förslagsvis tomt meddeleande som görs till id-förfrågan
+ * uint32_t temp_id: temporärt, förslagsvis slumpgenererat id
+ * uint32_t tmpID slumptal för idbegäran
+ * uint8_t nMotion: antal rörelsesensorer
+ * uint8_t nvib: antalet vibrationssensorer
+ */
+void encode_motion_request_id(CanTxMsg *msg, uint32_t tmpID, uint8_t nMotion, uint8_t nVib){
+    encode_request_id(msg, tmpID, motion_unit, nMotion, nVib);
 }
 
 //Encodar en id-tilldelning

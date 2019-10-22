@@ -28,13 +28,23 @@
 uint8_t encode_door_time_config(CanTxMsg *msg, uint8_t to_central, uint8_t door_id_0, uint8_t door_id_1, uint16_t time_0, uint16_t time_1, uint8_t locked);
 
 /*
+ * skapar meddelnade för IDbegäran för dörr
  * CanTxMsg *msg: förslagsvis tomt meddeleande som görs till id-förfrågan
  * uint32_t temp_id: temporärt, förslagsvis slumpgenererat id
- * uint8_t device_type: 0 för dörrenhet, 1 för rörelseenhet
- * uint8_t value_0: antal dörrar eller rörelsesensorer
- * uint8_t value_1: antal vibrationssensorer
+ * uint32_t tmpID slumptal för idbegäran
+ * uint8_t nDoors: antal dörrar
  */
-uint8_t encode_request_id(CanTxMsg *msg, uint32_t temp_id, uint8_t device_type, uint8_t value_0, uint8_t value_1);
+void encode_door_request_id(CanTxMsg *msg, uint32_t tmpID, uint8_t nDoors);
+
+/*
+ * skapar meddelande för idbegäran rörelse
+ * CanTxMsg *msg: förslagsvis tomt meddeleande som görs till id-förfrågan
+ * uint32_t temp_id: temporärt, förslagsvis slumpgenererat id
+ * uint32_t tmpID slumptal för idbegäran
+ * uint8_t nMotion: antal rörelsesensorer
+ * uint8_t nvib: antalet vibrationssensorer
+ */
+void encode_motion_request_id(CanTxMsg *msg, uint32_t tmpID, uint8_t nMotion, uint8_t nVib);
 
 //Encodar en id-tilldelning
 //msg är en pektare till meddelande som ska skickas
