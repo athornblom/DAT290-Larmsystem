@@ -22,8 +22,7 @@
 //Meddelande längder
 #define reqID_msg_length 7
 #define assignID_msg_length 5
-#define door_larm_msg_length 1
-#define motion_larm_msg_length 2
+#define larm_msg_length 1
 
 uint8_t encode_door_time_config(CanTxMsg *msg, uint8_t to_central, uint8_t door_id_0, uint8_t door_id_1, uint16_t time_0, uint16_t time_1, uint8_t locked);
 
@@ -55,22 +54,20 @@ uint8_t encode_assign_id(CanTxMsg *msg, CanRxMsg *request, uint8_t id);
 
 uint8_t encode_distance_config(CanTxMsg *msg, uint32_t dist);
 
-//Encodar ett larmmeddelande från dörrenhet
+//Encodar ett larmmeddelande
 //msg är en pekare till meddelandet som ska skickas
 //unitID är enhetens egna ID
-//id är idt till dörren som larmar
-void encode_door_larm_msg(CanTxMsg *msg, uint8_t uinitID, uint8_t id);
+//id är idt till sensorn som larmar 
+//För rörelseenheten ligger ID för rörelse och vibrationssensorer efter varandra.
+//första röresesensorerna har ID 0 sista ID är antalet rörelsesensorer -1
+//Första vibrationssensorn har ID antal rörelsesensorer och sista antalt rörelsesensorer +
+//antalet vibrationssensorer - 1
+void encode_larm_msg(CanTxMsg *msg, uint8_t uinitID, uint8_t id);
 
-//Encodar ackmeddelande för dörrlarm
+//Encodar ackmeddelande
 //msg är en pekare till meddelandet som ska skickas
 //larm är en pekare till meddelandet som larmar
-void encode_door_larm_ack(CanTxMsg *msg, CanRxMsg *larm);
-
-//msg är en pekare till meddelandet som ska skickas
-//unitID är enhetens egna ID
-//sensorType är antingen motion_sensor eller vibration_sensor
-//id är idt till sensorn som larmar
-void encode_motion_larm_msg(CanTxMsg *msg, uint8_t uinitID, uint8_t sensorType, uint8_t id);
+void encode_larm_ack(CanTxMsg *msg, CanRxMsg *larm);
 
 uint8_t decode_door_config_msg(CanRxMsg *msg, uint8_t *door_id_0, uint8_t *door_id_1, uint16_t *time_0, uint16_t *time_1, uint8_t *locked);
 
