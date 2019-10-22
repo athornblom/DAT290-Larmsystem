@@ -1,5 +1,5 @@
-
 #include "CAN_motion.h"
+
 
 /**
  * @brief Hanterar CAN meddelanden
@@ -146,6 +146,10 @@ void getId(){
 			CanTxMsg idRequest;
 					
 			encode_motion_request_id(&idRequest, id, nMotionSensors, nVibrationSensors);
+			DebugPrint("\n");
+			DebugPrintNum(nMotionSensors);
+			DebugPrint("\n");
+			DebugPrintNum(nVibrationSensors);
 			while (microTicks < timeStamp && nocid) {
 				CANsendMessage(&idRequest);
 				delayMicro(1000000);
@@ -153,13 +157,17 @@ void getId(){
 		}
 }
 
-void alarm(Sensor* sensor) {
+void alarm(int i) {
+	Sensor* sensor = &(sensors[connectedSensors[i]]);
+	
 	sensor->controlbits |= 1 << 7; 					// Markera att larmet går
 	GPIO_SetBits(sensor->port, sensor->pinLamp); 	// Tänd lampa
 	// Todo notifiera centralneheten via CAN
 }
 
-void disarm(Sensor* sensor) {
+void disarm(int i) {
+	Sensor* sensor = &(sensors[connectedSensors[i]]);
+	
 	sensor->controlbits &= ~(1 << 7); 					// Markera att larmet inte längre går
-	GPIO_SetBits(sensor->port, sensor->pinLamp);	
+	GPIO_ResetBits(sensor->port, sensor->pinLamp);	
 }

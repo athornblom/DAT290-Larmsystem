@@ -1,6 +1,7 @@
 #ifndef MAIN_MOTION_H
 #define MAIN_MOTION_H
 
+#define DEBUG
 
 #include <stdio.h>
 #include "string.h"

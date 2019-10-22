@@ -4,12 +4,9 @@
  */
 void startup(void) __attribute__((naked)) __attribute__((section (".start_section")) );
 
-#define DEBUG
-
 
 
 #include "CAN_motion.h"
-#include "main_motion.h"
 
 
 
@@ -180,7 +177,6 @@ void init_MotionSensors(){
 				if(GPIO_ReadInputDataBit(sensors[i].port, sensor->pinEcho)){ // Är echo hög?
 					sensors[i].controlbits |= bit0;	// Ettställer kontrollbit 0.
 					sensors[i].controlbits |= bit2;	// Ettställer kontrollbit 2. Ta bort när centralenheten kan kommunicera med oss. - Erik
-					nMotionSensors++;
 				}
 			}
 			
@@ -192,6 +188,7 @@ void init_MotionSensors(){
 		if(sensors[i].controlbits & bit0){
 			connectedSensors[connectedCounter] = sensors[i].id;
 			connectedCounter++;
+			nMotionSensors++;
 		}
 	}
 	
@@ -257,7 +254,7 @@ void init_app(){
 	init_Sensors();
 	init_rng();
 	can_init();
-	//getId();
+	getId();
 
 }
 
@@ -266,6 +263,8 @@ void init_app(){
 void main(void){
 	init_app();
 	//uint32_t vanta = 0;
+	DebugPrint("\n");
+	DebugPrint("Test");
 	while(1){
 
 				// Polling
