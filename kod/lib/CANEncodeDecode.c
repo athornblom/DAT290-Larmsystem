@@ -129,11 +129,15 @@ uint8_t encode_distance_config(CanTxMsg *msg, uint32_t dist){
     *data_pointer = dist;
 }
 
-//Encodar ett larmmeddelande från dörrenhet
+//Encodar ett larmmeddelande
 //msg är en pekare till meddelandet som ska skickas
 //unitID är enhetens egna ID
-//id är idt till dörren som larmar
-void encode_door_larm_msg(CanTxMsg *msg, uint8_t uinitID, uint8_t id){
+//id är idt till sensorn som larmar 
+//För rörelseenheten ligger ID för rörelse och vibrationssensorer efter varandra.
+//första röresesensorerna har ID 0 sista ID är antalet rörelsesensorer -1
+//Första vibrationssensorn har ID antal rörelsesensorer och sista antalt rörelsesensorer +
+//antalet vibrationssensorer - 1
+void encode_larm_msg(CanTxMsg *msg, uint8_t uinitID, uint8_t id){
     Header header = empty_header;
     header.msgType = larm_msg_type;
     header.ID = uinitID;
@@ -141,41 +145,21 @@ void encode_door_larm_msg(CanTxMsg *msg, uint8_t uinitID, uint8_t id){
     header.msgNum = id;
     HEADERtoUINT32(header, msg->ExtId);
 
-    msg->DLC = door_larm_msg_length;
+    msg->DLC = larm_msg_length;
     msg->IDE = CAN_Id_Extended;
     msg->RTR = CAN_RTR_Data;
 
     msg->Data[0] = id;
 }
 
-//Encodar ackmeddelande för dörrlarm
+//Encodar ackmeddelande
 //msg är en pekare till meddelandet som ska skickas
 //larm är en pekare till meddelandet som larmar
-void encode_door_larm_ack(CanTxMsg *msg, CanRxMsg *larm){
+void encode_larm_ack(CanTxMsg *msg, CanRxMsg *larm){
     msg->ExtId = larm->ExtId;
     msg->DLC = 0;
     msg->RTR = CAN_RTR_Remote;
     msg->IDE = CAN_Id_Extended;
-}
-
-//Encodar ett larmmeddelande från rörelseenhet
-//msg är en pekare till meddelandet som ska skickas
-//unitID är enhetens egna ID
-//sensorType är antingen motion_sensor eller vibration_sensor
-//id är idt till sensorn som larmar
-void encode_motion_larm_msg(CanTxMsg *msg, uint8_t uinitID, uint8_t sensorType, uint8_t id){
-    Header header = empty_header;
-    header.msgType = larm_msg_type;
-    header.ID = uinitID;
-    header.toCentral = 1;
-    HEADERtoUINT32(header, msg->ExtId);
-
-    msg->DLC = motion_larm_msg_length;
-    msg->IDE = CAN_Id_Extended;
-    msg->RTR = CAN_RTR_Data;
-
-    msg->Data[0] = sensorType;
-    msg->Data[1] = id;
 }
 
 uint8_t decode_door_config_msg(CanRxMsg *msg, uint8_t *door_id_0, uint8_t *door_id_1, uint16_t *time_0, uint16_t *time_1, uint8_t *locked) {

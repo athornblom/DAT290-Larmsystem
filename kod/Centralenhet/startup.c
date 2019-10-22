@@ -82,6 +82,7 @@ uint8_t get_id_by_random_id(uint32_t random_id, uint8_t device_type){
 
 
 void id_request_handler(CanRxMsg *rxMsgP){
+    printRxMsg(rxMsgP, 16);
         CanRxMsg rxMsg = *rxMsgP;
         CanTxMsg txMsg;
         static uint8_t counter = 0;
@@ -170,7 +171,7 @@ void larmHandler(CanRxMsg *rxMsg){
     //TODO göra resten
 
     //Detta är för utveckling
-    USARTPrint("Dorr ");
+    USARTPrint("Larmande sensor ");
     USARTPrintNumBase(rxMsg->Data[0], 10);
     USARTPrint(" larmar pa enhet med ID ");
     USARTPrintNumBase(header.ID, 16);
@@ -179,7 +180,7 @@ void larmHandler(CanRxMsg *rxMsg){
     //TODO kolla vilken typ av enhet det är osv
     //Skicka ack för dörr
     CanTxMsg msg;
-    encode_door_larm_ack(&msg, rxMsg);
+    encode_larm_ack(&msg, rxMsg);
     CANsendMessage(&msg);
 }
 
