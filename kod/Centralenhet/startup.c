@@ -3,7 +3,7 @@
 
 
 #define MAXCOMMANDLENGTH 10
-
+#define SESSIONIDACTIVE 0
 
 
 
@@ -463,12 +463,25 @@ void main(void) {
     USARTConfig();
     can_init();
     keypadnit();
+
+    //Initsierar random number generator
+    RCC_AHB2PeriphClockCmd(RCC_AHB2Periph_RNG, ENABLE);
+    RNG_Cmd(ENABLE);
+
     USARTPrint("\n");
 
     if (enterConfMode()){
         USARTWaitPrint("Start av konfigurations-mode lyckades\n");
     } else {
         USARTWaitPrint("Start av konfigurations-mode misslyckades\n");
+    }
+    
+    if (SESSIONIDACTIVE){
+         if (RNG_GetFlagStatus(RNG_FLAG_DRDY) == SET && //Nytt meddelande finns
+             RNG_GetFlagStatus(RNG_FLAG_CECS) == RESET && //Inget klockfel
+             RNG_GetFlagStatus(RNG_FLAG_SECS) == RESET){ //Inget seedfel
+                setSessionId(RNG_GetRandomNumber());
+        }
     }
 
     while (1) {

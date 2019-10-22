@@ -142,6 +142,8 @@ void encode_larm_msg(CanTxMsg *msg, uint8_t uinitID, uint8_t id){
     header.msgType = larm_msg_type;
     header.ID = uinitID;
     header.toCentral = 1;
+    //msgNum är givarens index. används när vi sedan ackar
+    //och periferienheten då vet vilket id acket är för
     header.msgNum = id;
     HEADERtoUINT32(header, msg->ExtId);
 
@@ -190,6 +192,18 @@ uint32_t decode_tempID(CanRxMsg *msg){
 //Filtrering av header och rätt tempID måste redan ha gjorts
 uint8_t decode_ID(CanRxMsg *msg){
     if (msg->DLC == assignID_msg_length){
+        Header header;
+        UINT32toHEADER(msg->ExtId, header);
+        //om sessionID skilt från 0 i meddelandet
+        //så aktiverar vi session id till samma
+        if(header.sessionID != 0){
+            setSessionId(header.sessionID);
+        }
+        
+        //returnerar IDt
         return msg->Data[4];
     }
+    //Filtrering ska redan ha gjorts och så detta ska
+    //inte hända om man använder funktionen rätt
+    return 0xff;
 }
