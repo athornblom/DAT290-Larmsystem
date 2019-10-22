@@ -18,6 +18,15 @@ void CANMsg_handler() {
 void CANSendMeasurement(Sensor motionSensor) {
 	while (!motionMeasure(&motionSensor)) {};
 	char distance = motionSensor.motion.cm;
+	char id = motionSensor.id;
+}
+
+void CANGetCalibration() {
+	char data[8];
+	char id = data[0];
+	float multiple = data[1];
+	
+	sensors[id].motion.multiple = multiple;
 }
 
 /**
