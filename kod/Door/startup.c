@@ -20,7 +20,7 @@ void startup(void)
 // Global
 uint32_t id = 0; // Dörrenhetens id, 0 vid uppstart -> randome nr -> asignat nr av centralenheten
 char nocid = 1; //Kontrollbit som ettställs ifall dörrenheten har fått ett id.
-volatile char annydoorLarm = 0;
+volatile char annydoorLarm = 0; //kontrollbit ifall någon dörr larmar
 
 // Två listor som behövs för att dörrenheten ska kunna detektera dörrar vid uppstart.
 uint16_t GPIO_Pins[] = {
@@ -68,12 +68,18 @@ void active_doors_add_doors(door *active_doors,int saftyNum){
 
 // ========================================= SYSTICK ================================================
 volatile uint32_t msTicks = 0;
+char control = 0;
 void SysTick_Handler(void)
 { /* SysTick interrupt Handler. */
+	
 	msTicks++;
 	if(annydoorLarm){
-	GPIO_SetBits(GPIOA, GPIO_Pin_5);
-	GPIO_ResetBits(GPIOA, GPIO_Pin_5);
+	if(control){
+		GPIO_SetBits(GPIOA, GPIO_Pin_5);
+	}else{
+		GPIO_ResetBits(GPIOA,GPIO_Pin_5);
+	}
+	control = ~control;
 	}
 }
 
@@ -82,7 +88,7 @@ void systick_Init(void)
 	// Initiera SysTick.
 	*((void (**)(void))0x2001C03C) = SysTick_Handler;
 	uint32_t returnCode;
-	returnCode = SysTick_Config(168000000 / 1000); // Genererar ett SysTick-avbrott varje ms.
+	returnCode = SysTick_Config(168000000 / 10000); // Genererar ett SysTick-avbrott varje ms.
 
 	if (returnCode != 0)
 	{   
@@ -103,14 +109,14 @@ void main(void)
 	door active_doors[amountOfActiveDoors];  
 	active_doors_add_doors(&active_doors[0], amountOfActiveDoors); // initierar standard värden och portar
 	
-	//getId(amountOfActiveDoors); //Skickar till centralenheten hur många aktiva dörrar dörrenheten har och får ett id
+	getId(amountOfActiveDoors); //Skickar till centralenheten hur många aktiva dörrar dörrenheten har och får ett id
 	startup_lights(&active_doors[0],amountOfActiveDoors); // Mest för cool het's faktorns skull ingen riktigt funktionallitet
 	GPIO_SetBits(GPIOB, GPIO_Pin_2); // Lampa som lyser när systemet är färdig initierat.
 
 	while (1)
 	{
 		check_door_status(&active_doors[0],amountOfActiveDoors); // Uppdatterar kontrollbitarna för varje dörr.
-		check_door_sound (&active_doors[0],amountOfActiveDoors);
+		check_door_sound (&active_doors[0],amountOfActiveDoors); // kollar ifall någon dörr är öppen
 		for (int i = 0; i < amountOfActiveDoors; i++)
 			{
 				door_uppdate_lamps(&active_doors[i]);

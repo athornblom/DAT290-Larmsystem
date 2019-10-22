@@ -164,8 +164,37 @@ void alarm(int i) {
 	Sensor* sensor = &(sensors[connectedSensors[i]]);
 	
 	sensor->controlbits |= 1 << 7; 					// Markera att larmet går
-	GPIO_SetBits(sensor->port, sensor->pinLamp); 	// Tänd lampa
+	GPIO_SetBits(sensor->port, sensor->pinLamp); 	// Släck lampa
 	// Todo notifiera centralneheten via CAN
+	
+	CanTxMsg msg;
+	encode_larm_msg(&msg, id, i);
+	
+	// Aktiverar handler för larmmeddelande-ACK.
+	CANFilter filter = empty_mask;
+	CANFilter mask = empty_mask;
+	Header header = empty_header;
+	
+	//Skriver mask
+	mask.IDE = 1;
+	mask.RTR = 1;
+	header.msgType = ~0;
+	header.ID = ~0;
+	header.toCentral = ~0;
+	HEADERtoUINT32(header, mask.ID);
+
+	//Skriver filter
+	filter.IDE = 1;
+	filter.RTR = 1;
+	header.msgType = larm_msg_type;
+	header.ID = id;
+	header.toCentral = 1;
+	HEADERtoUINT32(header, filter.ID);
+
+	// TODO av CAN.
+	/*if (CANhandlerListNotFull()){
+		CANaddFilterHandler(handler_larmAck, &filter, &mask);	
+	}*/
 }
 
 void disarm(int i) {
