@@ -51,7 +51,7 @@ void getId (int nDoors){
             id = RNG_GetRandomNumber();
             CanTxMsg idRequest;
             
-            encode_request_id(&idRequest,id,0, nDoors, 69);
+            encode_door_request_id(&idRequest,id,nDoors);
             while (msTicks < timeStamp && nocid)
             {
                 CANsendMessage(&idRequest);
@@ -63,6 +63,6 @@ void getId (int nDoors){
 //funktion för att skicka larm till centralenheten.
 void sendAlarm (char Doorid){
     CanTxMsg AMsg;
-    encode_door_larm_msg(&AMsg,(char) id,Doorid);	
+    encode_larm_msg(&AMsg,(char) id,Doorid);	
     CANsendMessage(&AMsg);
 }
