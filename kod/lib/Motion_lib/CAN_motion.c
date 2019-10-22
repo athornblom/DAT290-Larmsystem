@@ -2,7 +2,7 @@
 
 
 uint32_t id = 0;
-char nocid = 1;
+char noID = 1;
 
 
 /**
@@ -25,11 +25,11 @@ void alarmAck_Handler(CanRxMsg* msg){
 
 void idAssign_Handler(CanRxMsg* msg){
 	uint32_t rndID = (((uint32_t)msg->Data[0])) | (((uint32_t)msg->Data[1]) << 8) | (((uint32_t)msg->Data[2]) << 16) | (((uint32_t)msg->Data[3]) << 24);
-	DebugPrint("\n");
+	DebugPrint("\nrndID:");
 	DebugPrintNumBase(rndID,16);
 	if(rndID == id){
 		id = msg->Data[4];
-		nocid = 0;
+		noID = 0;
 		DebugPrint("\n");
 		DebugPrint("Rullar som rullatorn\n");
 
@@ -161,9 +161,9 @@ void getId(){
 		encode_motion_request_id(&idRequest, id, nMotionSensors, nVibrationSensors);
 		DebugPrint("\nnMotionsensors:");
 		DebugPrintNum(nMotionSensors);
-		DebugPrint("\nnVibrationsensors");
+		DebugPrint("\nnVibrationsensors:");
 		DebugPrintNum(nVibrationSensors);
-		while (microTicks < timeOut && nocid) {
+		while (noID) {
 			CANsendMessage(&idRequest);
 			delayMicro(1000000);
 		}

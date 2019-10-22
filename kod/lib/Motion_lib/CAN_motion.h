@@ -8,7 +8,7 @@
 
 
 uint32_t id;
-char nocid;
+char noID;
 
 
 // CAN-meddelande hanterare.
