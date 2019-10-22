@@ -28,7 +28,7 @@
 typedef struct MotionSensors {
 	uint16_t pinTrig, pinEcho;					// Pinnar för trig, echo t.ex GPIO_Pin_4, GPIO_Pin_5.
 	uint32_t pulseTrig, pulseEcho, pulseDelay;	// Längd på triggerpuls(10µs), tid tills pulsen kommer tillbaks och fördröjning mellan pulser.
-	float cm, alarmDistance; 					// Avstånd till föremål och larmavstånd.
+	float cm, alarmDistance, multiple;			// Avstånd till föremål och larmavstånd, multipel av avstånded för kalibrering.
 } MotionSensor;
 
 
@@ -96,6 +96,6 @@ volatile uint32_t microTicks;		 // Variabel för microsekunder.
 
 uint16_t GPIO_Pins[16];
 
-
+int motionMeasure(Sensor* sensor);
 
 #endif
