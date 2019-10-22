@@ -11,6 +11,11 @@ void CANMsg_handler() {
 	
 }
 
+void CANSendMeasurement(Sensor motionSensor) {
+	while (!motionMeasure(&motionSensor)) {};
+	char distance = motionSensor.motion.cm;
+}
+
 /**
  * @brief Hanterar att ta emot konfigurationer för rörelsesenorer från centralenheten
  * 
@@ -89,20 +94,18 @@ void CANGetConfig() {
 	}
 }
 
-
-
 void idAssign_Handler(CanRxMsg* msg){
-		uint32_t rndID = (((uint32_t)msg->Data[0])) | (((uint32_t)msg->Data[1]) << 8) | (((uint32_t)msg->Data[2]) << 16) | (((uint32_t)msg->Data[3]) << 24);
+	uint32_t rndID = (((uint32_t)msg->Data[0])) | (((uint32_t)msg->Data[1]) << 8) | (((uint32_t)msg->Data[2]) << 16) | (((uint32_t)msg->Data[3]) << 24);
+	DebugPrint("\n");
+	DebugPrintNumBase(rndID,16);
+	if(rndID == id){
+		id = msg->Data[4];
+		nocid = 0;
 		DebugPrint("\n");
-		DebugPrintNumBase(rndID,16);
-		if(rndID == id){
-			id = msg->Data[4];
-			nocid = 0;
-			DebugPrint("\n");
-			DebugPrint("Rullar som rullatorn\n");
+		DebugPrint("Rullar som rullatorn\n");
 
-		}
 	}
+}
 
 void init_rng(){
 	RCC_AHB2PeriphClockCmd(RCC_AHB2Periph_RNG, ENABLE);
@@ -111,50 +114,50 @@ void init_rng(){
 
 
 void getId(){
-		CANFilter filter = empty_mask;
-		CANFilter mask = empty_mask;
+	CANFilter filter = empty_mask;
+	CANFilter mask = empty_mask;
 
-		//används för omvandling
-		Header header = empty_header;
+	//används för omvandling
+	Header header = empty_header;
 
-		//skriver mask
-		mask.IDE = 1;
-		mask.RTR = 1;
-		header.msgType = ~0;
-		header.ID = ~0;
-		header.toCentral = ~0;
-		HEADERtoUINT32(header, mask.ID);
+	//skriver mask
+	mask.IDE = 1;
+	mask.RTR = 1;
+	header.msgType = ~0;
+	header.ID = ~0;
+	header.toCentral = ~0;
+	HEADERtoUINT32(header, mask.ID);
 
-		//Skriver filter
-		filter.IDE = 1;
-		filter.RTR = 0;
-		header.msgType = assignID_msg_type;
-		header.ID = 0;
-		header.toCentral = 0;
-		HEADERtoUINT32(header, filter.ID);
+	//Skriver filter
+	filter.IDE = 1;
+	filter.RTR = 0;
+	header.msgType = assignID_msg_type;
+	header.ID = 0;
+	header.toCentral = 0;
+	HEADERtoUINT32(header, filter.ID);
 
-		if (CANhandlerListNotFull()){
-			CANaddFilterHandler(idAssign_Handler, &filter, &mask);
+	if (CANhandlerListNotFull()){
+		CANaddFilterHandler(idAssign_Handler, &filter, &mask);
+	}
+
+
+	uint32_t timeOut = microTicks + 60 * 1000000; 
+	if (RNG_GetFlagStatus(RNG_FLAG_DRDY) == SET &&		//Nytt meddelande finns
+		RNG_GetFlagStatus(RNG_FLAG_CECS) == RESET && 	//Inget klockfel
+		RNG_GetFlagStatus(RNG_FLAG_SECS) == RESET){ 	//Inget seedfel
+		id = RNG_GetRandomNumber();
+		CanTxMsg idRequest;
+				
+		encode_motion_request_id(&idRequest, id, nMotionSensors, nVibrationSensors);
+		DebugPrint("\nnMotionsensors:");
+		DebugPrintNum(nMotionSensors);
+		DebugPrint("\nnVibrationsensors");
+		DebugPrintNum(nVibrationSensors);
+		while (microTicks < timeOut && nocid) {
+			CANsendMessage(&idRequest);
+			delayMicro(1000000);
 		}
-
-
-		uint32_t timeStamp = microTicks + 60 * 1000000; 
-		if (RNG_GetFlagStatus(RNG_FLAG_DRDY) == SET && //Nytt meddelande finns
-            RNG_GetFlagStatus(RNG_FLAG_CECS) == RESET && //Inget klockfel
-            RNG_GetFlagStatus(RNG_FLAG_SECS) == RESET){ //Inget seedfel
-			id = RNG_GetRandomNumber();
-			CanTxMsg idRequest;
-					
-			encode_motion_request_id(&idRequest, id, nMotionSensors, nVibrationSensors);
-			DebugPrint("\n");
-			DebugPrintNum(nMotionSensors);
-			DebugPrint("\n");
-			DebugPrintNum(nVibrationSensors);
-			while (microTicks < timeStamp && nocid) {
-				CANsendMessage(&idRequest);
-				delayMicro(1000000);
-			}
-		}
+	}
 }
 
 void alarm(int i) {
