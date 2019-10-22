@@ -7,6 +7,10 @@
 #include "main_motion.h"
 
 
+uint32_t id;
+char nocid;
+
+
 // CAn-meddelande hanterare.
 void CANMsg_handler();
 
