@@ -10,10 +10,32 @@ char nocid = 1;
  * 
  * 
  */
-void CANMsg_handler() {
+void CANMsg_Handler() {
 	// switch
 	
 }
+
+
+void alarmAck_Handler(CanRxMsg* msg){
+	Header header;
+	UINT32toHEADER(msg->ExtId, header);
+	sensors[connectedSensors[header.msgNum]].controlbits &= ~bit7;
+}
+
+
+void idAssign_Handler(CanRxMsg* msg){
+	uint32_t rndID = (((uint32_t)msg->Data[0])) | (((uint32_t)msg->Data[1]) << 8) | (((uint32_t)msg->Data[2]) << 16) | (((uint32_t)msg->Data[3]) << 24);
+	DebugPrint("\n");
+	DebugPrintNumBase(rndID,16);
+	if(rndID == id){
+		id = msg->Data[4];
+		nocid = 0;
+		DebugPrint("\n");
+		DebugPrint("Rullar som rullatorn\n");
+
+	}
+}
+
 
 void CANSendMeasurement(Sensor motionSensor) {
 	while (!motionMeasure(&motionSensor)) {};
@@ -53,9 +75,9 @@ void CANGetConfig() {
 		
 		// Typen rörelsesensor
 		if(!sensorType){
-			for(int i = startIndex; i <= endIndex; i++){
+			for(int i = startIndex; i <= endIndex && i >= 0 && i < connectedCounter; i++){
 				char index = connectedSensors[i];
-				if(sensorType == (sensors[index].controlbits & bit1) && sensors[index].controlbits & bit0){
+				if(sensorType == (sensors[index].controlbits & bit1)){
 					if(active){
 					sensors[index].controlbits |= bit2;
 					sensors[index].motion.alarmDistance = setAlarmDistance;
@@ -84,18 +106,7 @@ void CANGetConfig() {
 	}
 }
 
-void idAssign_Handler(CanRxMsg* msg){
-	uint32_t rndID = (((uint32_t)msg->Data[0])) | (((uint32_t)msg->Data[1]) << 8) | (((uint32_t)msg->Data[2]) << 16) | (((uint32_t)msg->Data[3]) << 24);
-	DebugPrint("\n");
-	DebugPrintNumBase(rndID,16);
-	if(rndID == id){
-		id = msg->Data[4];
-		nocid = 0;
-		DebugPrint("\n");
-		DebugPrint("Rullar som rullatorn\n");
 
-	}
-}
 
 void init_rng(){
 	RCC_AHB2PeriphClockCmd(RCC_AHB2Periph_RNG, ENABLE);
@@ -153,7 +164,7 @@ void getId(){
 void alarm(int i) {
 	Sensor* sensor = &(sensors[connectedSensors[i]]);
 	
-	sensor->controlbits |= 1 << 7; 					// Markera att larmet går
+	sensor->controlbits |= bit6 | bit7; 			// Markera att larmet går
 	GPIO_SetBits(sensor->port, sensor->pinLamp); 	// Släck lampa
 	// Todo notifiera centralneheten via CAN
 	
@@ -181,15 +192,16 @@ void alarm(int i) {
 	header.toCentral = 1;
 	HEADERtoUINT32(header, filter.ID);
 
-	// TODO av CAN.
-	/*if (CANhandlerListNotFull()){
-		CANaddFilterHandler(handler_larmAck, &filter, &mask);	
-	}*/
+	if (CANhandlerListNotFull()){
+		CANaddFilterHandler(alarmAck_Handler, &filter, &mask);	
+	}
+	
+	CANsendMessage(&msg);
 }
 
 void disarm(int i) {
 	Sensor* sensor = &(sensors[connectedSensors[i]]);
 	
-	sensor->controlbits &= ~(1 << 7); 					// Markera att larmet inte längre går
+	sensor->controlbits &= ~bit6; 					// Markera att larmet inte längre går
 	GPIO_ResetBits(sensor->port, sensor->pinLamp);	
 }

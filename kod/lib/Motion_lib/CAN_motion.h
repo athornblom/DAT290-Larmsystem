@@ -11,8 +11,19 @@ uint32_t id;
 char nocid;
 
 
-// CAn-meddelande hanterare.
-void CANMsg_handler();
+// CAN-meddelande hanterare.
+void CANMsg_Handler();
+
+
+
+// H
+void alarmAck_Handler(CanRxMsg* msg);
+
+
+
+// Hanterar ID:et från centralenheten.
+void idAssign_Handler(CanRxMsg* msg);
+
 
 
 // Hanterar att ta emot konfigurationer för rörelsesenorer från centralenheten.
@@ -22,11 +33,6 @@ void CANGetConfig();
 
 // Begär ett ID från centralenheten. Mainloopen startar ej utan ID.
 void getId();
-
-
-
-// Hanterar ID:et från centralenheten.
-void idAssign_Handler(CanRxMsg* msg);
 
 
 

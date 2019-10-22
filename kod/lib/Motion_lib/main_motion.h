@@ -45,8 +45,9 @@ typedef struct VibrationSensors{
  * 				1: 0 = Motionssensor, 1 = Vibrationssensor
  * 				2: Aktiv eller ej?
  * 				3: (Motion) Stigande kant på echo puls mätning
- * 				4-6: @todo
- *				7: Sensorn larmar
+ * 				4-5: @todo
+ *				6: Sensorn larmar
+ *				7: Har centralenheten fått larmet?
  * @var		VibrationSensor: struct av vibrationssensor med vibrationssensor konfiguration. (pinDO)
  * @var		MotionSensor: struct av motionsensor med motionssensor konfiguration. (pinTrig, pinEcho, pulseTrig, pulseEcho, pulseDelay, cm, alarm)
  */
@@ -56,6 +57,8 @@ typedef struct Sensors {
 	
 	GPIO_TypeDef*	port;				// Porten sensorn är kopplad till
 	uint16_t 		pinLamp;			// Pin för lysdiod för sensorn
+	
+	uint32_t		alarmDelay;			// Fördröjning mellan att skicka larm
 	
 	VibrationSensor vibration;
 	MotionSensor 	motion;

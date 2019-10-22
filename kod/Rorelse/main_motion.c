@@ -139,9 +139,10 @@ void init_MotionSensors(){
 			};
 
 			Sensor s = {
-					.id = i*5 + j/3,
-					.port = motionPorts[i],
-					.pinLamp = GPIO_Pins[j+2],
+					.id 		= i*5 + j/3,
+					.port 		= motionPorts[i],
+					.pinLamp 	= GPIO_Pins[j+2],
+					.alarmDelay	= 0,
 					.motion = m};
 
 			sensors[i*5+j/3] = s;
@@ -202,6 +203,7 @@ void init_VibrationSensor(){
 					 * Bit 2 = 1, Sensorn är aktiv (Ändra när centralenheten kan konfigurerar sensorerna)*/
 					 .port 			= vibrationPorts[i],
 					 .pinLamp 		= GPIO_Pins[j+1],
+					 .alarmDelay	= 0,
 					 .vibration 	= v
 					// Resten av structen är tom och fylls på när konfigurationen tas emot från centralenheten */
 				};
@@ -283,12 +285,13 @@ int motionMeasure(Sensor *sensor) {
 	return 0;
 }
 
+
 /**
  * @brief sköter alla pollingfunktioner för rörelsensorer
  *
  * @returval returnar 0 vid fel, 1 vid inga fel
  */
-char motionPolling(Sensor *sensor) {
+char motionPolling(Sensor *sensor, int i) {
 	if (sensor->controlbits & bit1) {  // Ogiltig sensortyp
 		return 0;
 	}
@@ -298,34 +301,38 @@ char motionPolling(Sensor *sensor) {
 	MotionSensor* mSensor = &(sensor->motion);
 
 	// Sensorn upptäcker att något är för nära, larma.
-	if(mSensor->cm < mSensor->alarmDistance){
-		GPIO_SetBits(sensor->port, sensor->pinLamp);	// Tänd lampa.
+	if((mSensor->cm < mSensor->alarmDistance || sensor->controlbits & bit7) && microTicks > sensor->alarmDelay){
+		sensor->alarmDelay = microTicks + 1000000;	// Skickar larm en gång i sekunden till det är kviterat.
+		alarm(i);	// Larmar centralenheten
+		//GPIO_SetBits(sensor->port, sensor->pinLamp);	// Tänd lampa.
 
 	}
 
-	else{
+	/*else{
 		GPIO_ResetBits(sensor->port, sensor->pinLamp);	// Släck lampa.
-	}
+	}*/
 }
 
-void vibrationPolling(Sensor *sensor) {
+
+void vibrationPolling(Sensor *sensor, int i) {
 	VibrationSensor* vSensor = &(sensor->vibration);
 
 	// Vibration detekterat, larma.
-	if(!GPIO_ReadInputDataBit(sensor->port, vSensor->pinDO)){
-		GPIO_SetBits(sensor->port, sensor->pinLamp);
+	if((!GPIO_ReadInputDataBit(sensor->port, vSensor->pinDO) || sensor->controlbits & bit7) && microTicks > sensor->alarmDelay){
+		sensor->alarmDelay = microTicks + 1000000;	// Skickar larm en gång i sekunden till det är kviterat.
+		alarm(i);	// Larmar centralenheten){
+		
+		//GPIO_SetBits(sensor->port, sensor->pinLamp);
 	}
 
-	else{
+	/*else{
 		GPIO_ResetBits(sensor->port, sensor->pinLamp);
-	}
+	}*/
 }
 
 
 void main(void){
 	init_app();
-	DebugPrint("\n");
-	DebugPrint("Test");
 	while(1){
 
 		// Polling
@@ -338,16 +345,16 @@ void main(void){
 			//delayMicro(500000);
 			//=============================================================================
 
-			int j = connectedSensors[i];	// Används för att byta värdet på j för tester.
+			int index = connectedSensors[i];	// Används för att byta värdet på index för tester.
 
 			// Är sensorn aktiverad och av typen motion? (controlbit 2 && !1)
-			if(sensors[j].controlbits & bit2 && !(sensors[j].controlbits & bit1)){
-				motionPolling(&sensors[j]);
+			if(sensors[index].controlbits & bit2 && !(sensors[index].controlbits & bit1)){
+				motionPolling(&sensors[index], i);
 			}
 
 			// Är sensorn aktiverad och av typen vibration? (controlbit 1 && 2)
-			else if(sensors[j].controlbits & (bit1 | bit2)) {
-				vibrationPolling(&sensors[j]);
+			else if(sensors[index].controlbits & (bit1 | bit2)) {
+				vibrationPolling(&sensors[index], i);
 			}
 		}
 	}
