@@ -5,7 +5,7 @@
 
 #ifndef BUFFERSIZE
 //Standard storlek på buffer
-#define BUFFERSIZE 200
+#define BUFFERSIZE 300
 #endif
 
 //Struktur för buffert

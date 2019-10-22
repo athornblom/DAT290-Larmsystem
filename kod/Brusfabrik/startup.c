@@ -230,7 +230,7 @@ void main(void) {
                  RNG_GetFlagStatus(RNG_FLAG_SECS) == RESET){ //Inget seedfel
                         rand = RNG_GetRandomNumber();
                  }
-               encode_request_id(&msg, rand, rand % 2 ? door_unit : motion_unit, 0x42, 0x69);
+               encode_door_request_id(&msg, rand, 0x69);
                if (CANsendMessage(&msg) != CAN_TxStatus_NoMailBox){
                     if (outputPrint){
                         USARTPrint("\n");
