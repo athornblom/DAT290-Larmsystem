@@ -44,7 +44,7 @@ void getId (int nDoors){
     }
 
 
-    int timeStamp = msTicks + 60 * 1000; 
+    int timeStamp = msTicks + 30 * 10000; 
     if (RNG_GetFlagStatus(RNG_FLAG_DRDY) == SET && //Nytt meddelande finns
         RNG_GetFlagStatus(RNG_FLAG_CECS) == RESET && //Inget klockfel
         RNG_GetFlagStatus(RNG_FLAG_SECS) == RESET){ //Inget seedfel
@@ -55,7 +55,7 @@ void getId (int nDoors){
             while (msTicks < timeStamp && nocid)
             {
                 CANsendMessage(&idRequest);
-                delay(1000);
+                delay(10000);
             }
         }
 }
