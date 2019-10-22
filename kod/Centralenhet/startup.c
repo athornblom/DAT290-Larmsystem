@@ -82,6 +82,7 @@ uint8_t get_id_by_random_id(uint32_t random_id, uint8_t device_type){
 
 
 void id_request_handler(CanRxMsg *rxMsgP){
+    printRxMsg(rxMsgP, 16);
         CanRxMsg rxMsg = *rxMsgP;
         CanTxMsg txMsg;
         static uint8_t counter = 0;
@@ -170,12 +171,17 @@ void larmHandler(CanRxMsg *rxMsg){
     //TODO göra resten
 
     //Detta är för utveckling
-    USARTPrint("Dorr ");
+    USARTPrint("Larmande sensor ");
     USARTPrintNumBase(rxMsg->Data[0], 10);
     USARTPrint(" larmar pa enhet med ID ");
     USARTPrintNumBase(header.ID, 16);
     USARTPrint("\n");
-
+    
+    //TODO kolla vilken typ av enhet det är osv
+    //Skicka ack för dörr
+    CanTxMsg msg;
+    encode_larm_ack(&msg, rxMsg);
+    CANsendMessage(&msg);
 }
 
 uint8_t msgPrint(CanRxMsg *msg, uint8_t base){
@@ -327,6 +333,34 @@ uint8_t Command(uint8_t *command){
         return 1;
     }
 
+    if (strStartsWith(command, "avlarma")) {
+        //TODO läs vad som ska avlarmas
+
+        //Lösenord som sträng sista 0an för att terminera
+        #define passwordLength 4
+        uint8_t readKey;
+        uint8_t password[passwordLength + 1] = {1,2,3,4,0};
+        uint8_t entered[passwordLength]; 
+        USARTPrint("Skriv losenord: ");
+        clearKeypadQue();
+        for (uint8_t i = 0; i < passwordLength; i++){
+            while(!readKeypad(&readKey));
+            entered[i] = readKey;
+            USARTPrintNumBase(readKey, 16);
+        }
+
+        //Efter som enterd inte har terminering kollar vi om entered börjar med password
+        if (strStartsWith(entered, password)){
+            //Inloggning lyckades
+            USARTPrint(" ratt!\n");
+        } else {
+            //Inloggning misslyckades
+            USARTPrint(" fel\n");
+        }
+
+        return 1;
+    }
+
     if (strEqual(command, "test")) {
         USARTPrint("Hanterar test\n");
         return 1;
@@ -428,6 +462,7 @@ uint8_t send_door_configs(Door_device *dev){
 void main(void) {
     USARTConfig();
     can_init();
+    keypadnit();
     USARTPrint("\n");
 
     if (enterConfMode()){

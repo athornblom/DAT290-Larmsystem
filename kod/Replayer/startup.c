@@ -174,6 +174,13 @@ void exitRecordMode (void){
     CANdisableAllFilterHandlers();
 }
 
+//Hjälputskrift
+void help(void){
+    USARTWaitPrint("Kommandon:\nrecord for starta record-mode\nexit record for att avsluta record-mode\n");
+    USARTWaitPrint("replay for att starta replay\nexit replay for att avsluta replay\nclear for att avlsuta alla aktiva modes och ta bort inspelning\n");
+    USARTWaitPrint("info for info\n? for denna hjalp\n");
+}
+
 //Kör kommandot som finns i strängen command
 //Retrunrerar 1 det fanns ett kommando att köra. 0 annars.
 uint8_t Command(uint8_t *command){
@@ -264,6 +271,12 @@ uint8_t Command(uint8_t *command){
         return 1;
     }
 
+    else if (strEqual(command, "?")){
+        help();
+
+        return 1;
+    }
+
     return 0;
 }
 
@@ -320,6 +333,7 @@ void main(void) {
     can_init();
     systick_Init();
     USARTPrint("\n");
+    help();
 
     while (1) {
         USARTCommand();

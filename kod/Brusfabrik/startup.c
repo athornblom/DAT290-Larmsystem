@@ -8,6 +8,9 @@
 #include "stm32f4xx_rcc.h"
 #include "stm32f4xx_rng.h"
 
+uint8_t larmAck = 0;
+uint8_t counter = 0;
+
 void startup(void) __attribute__((naked)) __attribute__((section (".start_section")) );
 
 void startup ( void ) {
@@ -22,7 +25,7 @@ __asm volatile(
 void help(uint16_t delay){
     USARTPrintNumBase(delay,10);
     USARTWaitPrint(" ms delay\nx for att toggla on/off\ns/f for att andra delay\np for att toggla tx print\nl for att toggla lyssnare\ne for att skicka ett rnd meddelande\n");
-    USARTWaitPrint("c for clear\n1 for dorr larm\n2 for motion larm\n3 for idbegaran\n? for att se denna hjalp\n\n");
+    USARTWaitPrint("c for clear\n1 for larm\n3 for idbegaran\n? for att se denna hjalp\n\n");
 }
 
 void msgPrint(CanRxMsg *msg){
@@ -71,6 +74,11 @@ void sendRnd(uint8_t print){
             printTxMsg(&msg, 16);
         }
     }
+}
+
+//ack handler
+void handler_larmAck(CanRxMsg *msg){
+    larmAck = 1;
 }
 
 void main(void) {
@@ -159,32 +167,59 @@ void main(void) {
                 help(delay);
             }
 
-            //1 för larmmedelande dörrenhet
+            //1 för larmmedelande
             else if (usartRead == '1'){
                CanTxMsg msg;
-               static uint8_t counter;
-               encode_door_larm_msg(&msg, 0, counter++);
-               if (CANsendMessage(&msg) != CAN_TxStatus_NoMailBox){
-                    if (outputPrint){
-                        USARTPrint("\n");
-                        printTxMsg(&msg, 16);
+               const uint8_t ID = 0;
+               encode_larm_msg(&msg, ID, counter);
+               larmAck = 0;
+
+               CANFilter filter = empty_mask;
+                CANFilter mask = empty_mask;
+                Header header = empty_header;
+                
+                //Skriver mask
+                mask.IDE = 1;
+                mask.RTR = 1;
+                header.msgType = ~0;
+                header.ID = ~0;
+                header.toCentral = ~0;
+                header.msgNum = ~0;
+                HEADERtoUINT32(header, mask.ID);
+
+                //Skriver filter
+                filter.IDE = 1;
+                filter.RTR = 1;
+                header.msgType = larm_msg_type;
+                header.ID = ID;
+                header.toCentral = 1;
+                header.msgNum = counter;
+                HEADERtoUINT32(header, filter.ID);
+
+                if (CANhandlerListNotFull()){
+                    uint8_t handlerIndex = CANaddFilterHandler(handler_larmAck, &filter, &mask);
+                    uint8_t read = 0;
+                    while (!larmAck){
+                        if (CANsendMessage(&msg) != CAN_TxStatus_NoMailBox){
+                            if (outputPrint){
+                                USARTPrint("\n");
+                                printTxMsg(&msg, 16);
+                            }
+                        }
+                        //Avbryt med q
+                        if (USARTGet(&read)){
+                            if (read == 'q'){
+                                break;
+                            }
+                        }
+
+                        blockingDelayMs(1000);
                     }
+                    CANdisableFilterHandler(handlerIndex);
+                    counter++;
                 }
             }
 
-            //2 för larmmedelande rörelsesensor
-            else if (usartRead == '2'){
-               CanTxMsg msg;
-               static uint8_t counter;
-               encode_motion_larm_msg(&msg, 1, (counter % 2) ? motion_sensor : vibration_sensor, counter++);
-               if (CANsendMessage(&msg) != CAN_TxStatus_NoMailBox){
-                    if (outputPrint){
-                        USARTPrint("\n");
-                        printTxMsg(&msg, 16);
-                    }
-                }
-            }
-            
             //3 för id begäran
             else if (usartRead == '3'){
                CanTxMsg msg;

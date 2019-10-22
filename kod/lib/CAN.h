@@ -12,9 +12,13 @@
 #define UINT32toHEADER(filterID, header) *((uint32_t *)&(header)) = (uint32_t)(filterID);
 
 #define empty_header {0, 0, 0, 0, 0, 0};
+//msb
+#define full_header {~0, ~0, ~0, ~0, ~0, 0};
 #define default_header {0, 0, ~0, ~0, ~0, 0};
 #define empty_mask {0, 0, 0, 0};
 #define empty_filter empty_mask
+#define full_mask {0, ~0, ~0, ~0};
+#define full_filter full_mask
 
 //Struktur som beskriver våran ID-uppdelning
 typedef struct  {
@@ -37,7 +41,7 @@ typedef struct  {
     uint32_t msgType: 3;
 
     //3 oanvända bitar
-    uint32_t _unused : 3;
+    uint32_t _unused__ : 3;
 } Header;
 
 //Strukt för att beskriva bitfördelningen vid ett 32 bitars filter

@@ -1,5 +1,5 @@
-
 #include "CAN_motion.h"
+
 
 /**
  * @brief Hanterar CAN meddelanden
@@ -145,7 +145,11 @@ void getId(){
 			id = RNG_GetRandomNumber();
 			CanTxMsg idRequest;
 					
-			encode_request_id(&idRequest, id, 1, nMotionSensors, nVibrationSensors);
+			encode_motion_request_id(&idRequest, id, nMotionSensors, nVibrationSensors);
+			DebugPrint("\n");
+			DebugPrintNum(nMotionSensors);
+			DebugPrint("\n");
+			DebugPrintNum(nVibrationSensors);
 			while (microTicks < timeStamp && nocid) {
 				CANsendMessage(&idRequest);
 				delayMicro(1000000);
@@ -153,13 +157,46 @@ void getId(){
 		}
 }
 
-void alarm(Sensor* sensor) {
+void alarm(int i) {
+	Sensor* sensor = &(sensors[connectedSensors[i]]);
+	
 	sensor->controlbits |= 1 << 7; 					// Markera att larmet går
-	GPIO_SetBits(sensor->port, sensor->pinLamp); 	// Tänd lampa
+	GPIO_SetBits(sensor->port, sensor->pinLamp); 	// Släck lampa
 	// Todo notifiera centralneheten via CAN
+	
+	CanTxMsg msg;
+	encode_larm_msg(&msg, id, i);
+	
+	// Aktiverar handler för larmmeddelande-ACK.
+	CANFilter filter = empty_mask;
+	CANFilter mask = empty_mask;
+	Header header = empty_header;
+	
+	//Skriver mask
+	mask.IDE = 1;
+	mask.RTR = 1;
+	header.msgType = ~0;
+	header.ID = ~0;
+	header.toCentral = ~0;
+	HEADERtoUINT32(header, mask.ID);
+
+	//Skriver filter
+	filter.IDE = 1;
+	filter.RTR = 1;
+	header.msgType = larm_msg_type;
+	header.ID = id;
+	header.toCentral = 1;
+	HEADERtoUINT32(header, filter.ID);
+
+	// TODO av CAN.
+	/*if (CANhandlerListNotFull()){
+		CANaddFilterHandler(handler_larmAck, &filter, &mask);	
+	}*/
 }
 
-void disarm(Sensor* sensor) {
+void disarm(int i) {
+	Sensor* sensor = &(sensors[connectedSensors[i]]);
+	
 	sensor->controlbits &= ~(1 << 7); 					// Markera att larmet inte längre går
-	GPIO_SetBits(sensor->port, sensor->pinLamp);	
+	GPIO_ResetBits(sensor->port, sensor->pinLamp);	
 }
