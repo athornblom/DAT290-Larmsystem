@@ -37,9 +37,6 @@ GPIO_TypeDef* motionPorts[3] 	= {GPIOA, GPIOB, GPIOC};
 GPIO_TypeDef* vibrationPorts[2] = {GPIOD, GPIOE};
 
 
-uint32_t id = 0;
-char nocid = 1;
-
 
 // Alla sensorer, denna initieras under init_Sensors.
 Sensor sensors[nMaxMotionSensors + nMaxVibrationSensors];	// Array för max antalet sensorer.

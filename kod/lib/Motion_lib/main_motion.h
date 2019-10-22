@@ -78,9 +78,6 @@ GPIO_TypeDef* vibrationPorts[2];
 #define nMaxVibrationSensors sizeof(vibrationPorts)/sizeof(vibrationPorts[0])*8		// Max 8 sensorer per port
 
 
-uint32_t id;
-char nocid;
-
 
 // Alla sensorer, denna initieras under init_Sensors.
 Sensor sensors[nMaxMotionSensors + nMaxVibrationSensors];	// Array för max antalet sensorer.
