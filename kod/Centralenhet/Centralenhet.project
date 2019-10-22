@@ -23,6 +23,10 @@
     <File Name="md407-ram.x"/>
   </VirtualDirectory>
   <VirtualDirectory Name="src">
+    <File Name="../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_syscfg.c"/>
+    <File Name="../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_exti.c"/>
+    <File Name="../lib/keypad.h"/>
+    <File Name="../lib/keypad.c"/>
     <File Name="../lib/printMsg.c"/>
     <File Name="../lib/CANEncodeDecode.h"/>
     <File Name="../lib/CANEncodeDecode.c"/>
