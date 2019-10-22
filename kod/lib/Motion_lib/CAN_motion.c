@@ -24,15 +24,14 @@ void alarmAck_Handler(CanRxMsg* msg){
 
 
 void idAssign_Handler(CanRxMsg* msg){
-	uint32_t rndID = (((uint32_t)msg->Data[0])) | (((uint32_t)msg->Data[1]) << 8) | (((uint32_t)msg->Data[2]) << 16) | (((uint32_t)msg->Data[3]) << 24);
+	uint32_t rndID = decode_tempID(msg);
 	DebugPrint("\nrndID:");
 	DebugPrintNumBase(rndID,16);
 	if(rndID == id){
-		id = msg->Data[4];
+		id = decode_ID(msg);
 		noID = 0;
-		DebugPrint("\n");
-		DebugPrint("Rullar som rullatorn\n");
-
+        //Aktiverar samma sessionID som skickades i id-tilldelningen
+        copySessionID(msg);
 	}
 }
 

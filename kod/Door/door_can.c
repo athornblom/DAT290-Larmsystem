@@ -12,7 +12,8 @@ void idAssign_Handler(CanRxMsg* msg){
 		if(rndid == id){
 			id = decode_ID(msg);
 			nocid = 0;
-
+            //Aktiverar samma sessionID som skickades i id-tilldelningen
+            copySessionID(msg);
 		}
 	}
 //funktion som förfrågar efter ett id 
