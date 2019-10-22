@@ -265,7 +265,7 @@ void init_app(){
 
 void main(void){
 	init_app();
-	uint32_t vanta = 0;
+	//uint32_t vanta = 0;
 	while(1){
 
 				// Polling
