@@ -312,7 +312,10 @@ void main(void){
 				
 				// Sensorn upptäcker att något är för nära, larma.
 				if(sensor->cm < sensor->alarmDistance){					
-					GPIO_SetBits(sensors[j].port, sensors[j].pinLamp);	// Tänd lampa.
+					alarm(i);
+					
+					//GPIO_SetBits(sensors[j].port, sensors[j].pinLamp);	// Tänd lampa.
+					
 					//======TEST=======
 					//DebugPrintNum(j);
 					//DebugPrint("\n");
@@ -320,9 +323,9 @@ void main(void){
 					 
 				}
 				
-				else{
+				/*else{
 					GPIO_ResetBits(sensors[j].port, sensors[j].pinLamp);// Släck lampa.
-				}
+				}*/
 			}
 			
 			// Är sensorn aktiverad och av typen vibration? (controlbit 1 && 2)
