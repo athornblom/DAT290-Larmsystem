@@ -4,9 +4,10 @@
 const int open = 1;
 const int cLarm = 2;
 const int dissarmedBit = 4;
+const int addaptS = 10;
 // allmän dynamisk delay funktion.
 void delay (int mili){
-		int time = msTicks + mili;
+		int time = msTicks + mili * addaptS;
 		while(time > msTicks);
 	}
 
@@ -43,10 +44,9 @@ void check_door_status (door *aDoors, int arrayLength){
 }
 // Funktion som tänder eller släcker den lokala larmnings lampan
 void door_uppdate_lamps (door *door){
-    uint32_t larmTime = door->larmTick + 1000 * 10 * door->time_larm; // gångrar med 10 * 1000 eftersom att tiden anges i 10 s interval
+    uint32_t larmTime = door->larmTick + 1000 * 10 * addaptS *door->time_larm; // gångrar med 10 * 1000 eftersom att tiden anges i 10 s interval
     if (door->controlbits & open && msTicks > larmTime) {
             GPIO_SetBits(door->GPIO_type, door->GPIO_lamp); // tänder lampan ifall tiden för att dörren ska larma har gått
-            annydoorLarm = 1;
     }
     else{
             GPIO_ResetBits(door->GPIO_type, door->GPIO_lamp);	// släcker lampan annars
@@ -54,7 +54,7 @@ void door_uppdate_lamps (door *door){
 }
 // Funktion som kollar ifall dörren har vart öppen tillräckligt länge för att den ska larma centralt.
 int central_larm(door *door){
-    uint32_t larmTime = door->larmTick + 1000 * 10 * door->time_central_larm;// gångrar med 10 * 1000 eftersom att tiden anges i 10 s interval
+    uint32_t larmTime = door->larmTick + 1000 * 10 * addaptS*door->time_central_larm;// gångrar med 10 * 1000 eftersom att tiden anges i 10 s interval
     if(door->controlbits&open && msTicks>larmTime && !(door->controlbits & cLarm)){
     	door->controlbits |= cLarm;    // sätter kontrollbiten som säger att dörren har larmat centralt.
         return 1;
@@ -64,14 +64,16 @@ int central_larm(door *door){
 }
 
 void check_door_sound (door *aDoors, int arrayLength){
-    annydoorLarm = 0;
+    int checkV = 0;
     for (int i = 0; i < arrayLength; i++){
-        if(GPIO_ReadInputDataBit(aDoors->GPIO_type,aDoors->GPIO_read)){
-        annydoorLarm = 1;
+        uint32_t larmTime = aDoors->larmTick + 1000 * 10 * addaptS*aDoors->time_larm; // gångrar med 10 * 1000 eftersom att tiden anges i 10 s interval
+        if(aDoors->controlbits & open && msTicks > larmTime){
+        checkV = 1;
         break;
         }
         aDoors++;
     }
+    annydoorLarm = checkV;
 }
 // ================================== LIGHTS =========================================================
 //bara för cool-het's faktorn. 
@@ -79,8 +81,10 @@ void startup_lights (door *aDoors, int aLength){
 	
 	for (int i = 0; i < aLength; i++) 
 	{
+		GPIO_SetBits(GPIOA, GPIO_Pin_5);
 		GPIO_SetBits(aDoors->GPIO_type, aDoors->GPIO_lamp);
 		delay(100);	
+		GPIO_ResetBits(GPIOA, GPIO_Pin_5);
         aDoors++;
 		
 	}
