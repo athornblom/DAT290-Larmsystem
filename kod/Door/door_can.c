@@ -66,47 +66,18 @@ void sendAlarm (char Doorid){
     CanTxMsg AMsg;
     encode_larm_msg(&AMsg,(char) id,Doorid);	
     CANsendMessage(&AMsg);
+
 }
 
-
-
-
-
-receiveConfig_handler(CanRxMsg* msg){
+/*receiveConfig_handler(CanRxMsg* msg){
     uint8_t *door_id_0, *door_id_1, *locked;
     uint16_t *time_0, *time_1;
     
     //Tolkar meddelandet och skriver värden till pekarna
     decode_door_config_msg(msg, door_id_0, door_id_1, time_0, time_1, locked);
     
+    
     //TODO: Gör grejer med värdena som finns på pekarna
-}
+}*/
 
 //TODO: Kalla den här funktionen när enheten är redo att ta emot konfigurationsmeddelanden
-void receiveConfig (uint16_t id){
-    CANFilter filter = empty_mask;
-    CANFilter mask = empty_mask;
-
-    //används för omvandling
-    Header header = empty_header;
-
-    //skriver mask
-    mask.IDE = 1;
-    mask.RTR = 1;
-    header.msgType = ~0;
-    header.ID = ~0;
-    header.toCentral = ~0;
-    HEADERtoUINT32(header, mask.ID);
-
-    //Skriver filter
-    filter.IDE = 1;
-    filter.RTR = 0;
-    header.msgType = conf_msg_type;
-    header.ID = id;
-    header.toCentral = 0;
-    HEADERtoUINT32(header, filter.ID);
-
-    if (CANhandlerListNotFull()){
-        CANaddFilterHandler(receiveConfig_Handler, &filter, &mask);
-    }
-}

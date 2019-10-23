@@ -11,7 +11,7 @@ uint8_t encode_door_time_config(CanTxMsg *msg, uint8_t to_central, uint8_t door_
         return 0;
     }
     
-    uint8_t *data_pointer =  &(msg->Data);
+    uint8_t *data_pointer =  (uint8_t*)&(msg->Data);
     
     
     Header header = empty_header;
@@ -39,7 +39,7 @@ uint8_t encode_door_time_config(CanTxMsg *msg, uint8_t to_central, uint8_t door_
 }
 
 uint8_t encode_motion_config(CanTxMsg *msg, uint8_t to_central, uint8_t sensor_type, uint8_t sensor_id_0, uint8_t sensor_id_1, uint8_t active, uint8_t distance){
-    uint8_t *data_pointer =  &(msg->Data);
+    uint8_t *data_pointer = (uint8_t*)&(msg->Data);
     
     
     Header header = empty_header;
@@ -190,13 +190,13 @@ void encode_larm_ack(CanTxMsg *msg, CanRxMsg *larm){
 }
 
 uint8_t decode_door_config_msg(CanRxMsg *msg, uint8_t *door_id_0, uint8_t *door_id_1, uint16_t *time_0, uint16_t *time_1, uint8_t *locked) {
-    uint8_t *data_pointer =  &(msg->Data);
+    uint8_t *data_pointer = (uint8_t*)&(msg->Data);
     
     door_id_0 = data_pointer;
     door_id_1 = data_pointer + 1;
     
-    time_0 = data_pointer + 2;
-    time_1 = data_pointer + 4;
+    time_0 = (uint16_t*)data_pointer + 2;
+    time_1 = (uint16_t*)data_pointer + 4;
     
     locked = data_pointer + 6;
     
@@ -223,4 +223,33 @@ uint8_t decode_ID(CanRxMsg *msg){
     //Filtrering ska redan ha gjorts och så detta ska
     //inte hända om man använder funktionen rätt
     return 0xff;
+}
+
+//Aktiverar handler för mottagning av larm-ack
+//ID är enehetens ID
+//returnerar 1 om det lyckad 0 annars
+uint8_t activate_larmAck_handler(void (*handler)(CanRxMsg *), uint8_t ID){
+	CANFilter filter = empty_mask;
+	CANFilter mask = empty_mask;
+	Header header = empty_header;
+	
+	//Skriver mask
+	mask.IDE = 1;
+	mask.RTR = 1;
+	header.msgType = ~0;
+	header.ID = ~0;
+	header.toCentral = ~0;
+	HEADERtoUINT32(header, mask.ID);
+
+	//Skriver filter
+	filter.IDE = 1;
+	filter.RTR = 1;
+	header.msgType = larm_msg_type;
+	header.ID = ID;
+	header.toCentral = 1;
+	HEADERtoUINT32(header, filter.ID);
+
+	if (CANhandlerListNotFull()){
+		CANaddFilterHandler(handler, &filter, &mask);	
+	}
 }

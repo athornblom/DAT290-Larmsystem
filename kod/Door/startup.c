@@ -21,6 +21,9 @@ void startup(void)
 uint32_t id = 0; // Dörrenhetens id, 0 vid uppstart -> randome nr -> asignat nr av centralenheten
 char nocid = 1; //Kontrollbit som ettställs ifall dörrenheten har fått ett id.
 volatile char annydoorLarm = 0; //kontrollbit ifall någon dörr larmar
+door doors[32];
+int amountOfActiveDoors = 0;
+int maxDoors = 32;
 
 // Två listor som behövs för att dörrenheten ska kunna detektera dörrar vid uppstart.
 uint16_t GPIO_Pins[] = {
@@ -32,33 +35,22 @@ GPIO_TypeDef* GPIO_Ports[] = {GPIOE, GPIOA, GPIOD, GPIOC};
 
 // ========================== Dynamisk Dörr initiering =================================
 //Funktion vars uppgift är att räkna hur många stängda dörrar som är inkopplade till kortet
-void num_active_doors (int *counter){
-	for (int j = 0; j < (sizeof(GPIO_Ports) /sizeof(GPIO_TypeDef *)); j++)
-		{
-			for (int i = 0; i < sizeof(GPIO_Pins) / sizeof(uint16_t); i = i + 2)
-			{
-				if(!GPIO_ReadInputDataBit(GPIO_Ports[j], GPIO_Pins[i])){
-					(*counter)++;
-				}
-			}
-		}
-}
 // Funktion som lägger in standard värden för varje detekterad dörr och vilken pin de sitter på
-void active_doors_add_doors(door *active_doors,int saftyNum){
+void active_doors_add_doors(){
 	int counter = 0;
 	for (int j = 0; j < (sizeof(GPIO_Ports) /sizeof(GPIO_TypeDef *)); j++)
 	{
 		for (int i = 0; i < sizeof(GPIO_Pins) / sizeof(uint16_t); i = i + 2)
 		{
-			if(!GPIO_ReadInputDataBit(GPIO_Ports[j], GPIO_Pins[i]) && counter < saftyNum){
-				active_doors->id = counter;
-				active_doors->GPIO_read = GPIO_Pins[i];
-				active_doors->GPIO_lamp = GPIO_Pins[i+1];
-				active_doors->controlbits = 0;
-				active_doors->time_larm = 0;
-				active_doors->time_central_larm = 0;
-				active_doors->GPIO_type = GPIO_Ports[j];
-				active_doors++;
+			if(!GPIO_ReadInputDataBit(GPIO_Ports[j], GPIO_Pins[i])){
+				doors[counter].id = counter;
+				doors[counter].GPIO_read = GPIO_Pins[i];
+				doors[counter].GPIO_lamp = GPIO_Pins[i+1];
+				doors[counter].controlbits = 0;
+				doors[counter].time_larm = 0;
+				doors[counter].time_central_larm = 0;
+				doors[counter].GPIO_type = GPIO_Ports[j];
+				amountOfActiveDoors++;
 				counter++;
 			}
 		}
@@ -88,7 +80,7 @@ void systick_Init(void)
 	// Initiera SysTick.
 	*((void (**)(void))0x2001C03C) = SysTick_Handler;
 	uint32_t returnCode;
-	returnCode = SysTick_Config(168000000 / 10000); // Genererar ett SysTick-avbrott varje ms.
+	returnCode = SysTick_Config(168000000 / 10000); // Genererar ett SysTick-avbrott varje mikro s.
 
 	if (returnCode != 0)
 	{   
@@ -104,25 +96,24 @@ void main(void)
 	init_rng();
 	delay(2000); // väntar 2s för att säkerhetställa så att GPIO init har hunnit verkställas på kortet
 
-	int amountOfActiveDoors = 0;
-	num_active_doors(&amountOfActiveDoors); //ökar ammountOFactiveDoors till så många stängda dörrar som är inkopplade
+	//ökar ammountOFactiveDoors till så många stängda dörrar som är inkopplade
 	door active_doors[amountOfActiveDoors];  
-	active_doors_add_doors(&active_doors[0], amountOfActiveDoors); // initierar standard värden och portar
+	active_doors_add_doors(); // initierar standard värden och portar
 	
 	getId(amountOfActiveDoors); //Skickar till centralenheten hur många aktiva dörrar dörrenheten har och får ett id
-	startup_lights(&active_doors[0],amountOfActiveDoors); // Mest för cool het's faktorns skull ingen riktigt funktionallitet
+	startup_lights(); // Mest för cool het's faktorns skull ingen riktigt funktionallitet
 	GPIO_SetBits(GPIOB, GPIO_Pin_2); // Lampa som lyser när systemet är färdig initierat.
 
 	while (1)
 	{
-		check_door_status(&active_doors[0],amountOfActiveDoors); // Uppdatterar kontrollbitarna för varje dörr.
-		check_door_sound (&active_doors[0],amountOfActiveDoors); // kollar ifall någon dörr är öppen
+		check_door_status(); // Uppdatterar kontrollbitarna för varje dörr.
+		check_door_sound (); // kollar ifall någon dörr är öppen
 		for (int i = 0; i < amountOfActiveDoors; i++)
 			{
-				door_uppdate_lamps(&active_doors[i]);
-				if (central_larm(&active_doors[i])) //kollar ifall dörren vart upppe längre än den inställda tiden för centralt larm.
+				door_uppdate_lamps(i);
+				if (central_larm(i)) //kollar ifall dörren vart upppe längre än den inställda tiden för centralt larm.
 				{
-					sendAlarm((active_doors[i].id));
+					sendAlarm(i);
 				}
 			}
 	}

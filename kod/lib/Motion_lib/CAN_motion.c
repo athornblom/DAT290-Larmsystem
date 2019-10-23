@@ -32,6 +32,9 @@ void idAssign_Handler(CanRxMsg* msg){
 		noID = 0;
         //Aktiverar samma sessionID som skickades i id-tilldelningen
         copySessionID(msg);
+
+        //Aktiverar handler för ack för larm
+        activate_larmAck_handler(alarmAck_Handler, MD407_ID);
 	}
 }
 
@@ -66,46 +69,44 @@ void CANGetCalibration() {
  * 
  * Byte 5-7: Används ej.
  */
-void CANGetConfig() {
-	char data[8]; 	 // todo
+void CANGetConfig_handler(CanRxMsg* msg) {
+	char *data = (char*)&(msg->Data);
 	char valid = 0;  // Används för att kolla att konfigurationen är av rätt typ
 	
-	char ID_Byte = data[0];
-	char sensorType = data[1];
-	char startIndex = data[2];
-	char endIndex = data[3];
-	char active = data[4];
-	char setAlarmDistance = data[5]*2;
+	char sensorType = *data;
+	char startIndex = *(data+1);
+	char endIndex = *(data+2);
+	char active = *(data+3);
+	char setAlarmDistance = *(data+4)*2;
 	
-	if(ID_Byte == MD407_ID){
-		
-		// Typen rörelsesensor
-		if(!sensorType){
-			for(int i = startIndex; i <= endIndex && i >= 0 && i < connectedCounter; i++){
-				
-				if(sensorType == (sensors[i].controlbits & bit1)){
-					if(active){
-					sensors[i].controlbits |= bit2;
-					sensors[i].motion.alarmDistance = setAlarmDistance;
-					}
-					else{
-						sensors[i].controlbits &= ~bit2;
-					}
+	
+	
+	// Typen rörelsesensor
+	if(!sensorType){
+		for(int i = startIndex; i <= endIndex && i >= 0 && i < connectedCounter; i++){
+			char index = connectedSensors[i];
+			if(sensorType == (sensors[index].controlbits & bit1)){
+				if(active){
+				sensors[index].controlbits |= bit2;
+				sensors[index].motion.alarmDistance = setAlarmDistance;
+				}
+				else{
+					sensors[index].controlbits &= ~bit2;
 				}
 			}
 		}
-		
-		// Typen vibrationssensor
-		else{
-			for(int i = startIndex; i <= endIndex; i++){
-				
-				if(sensorType == (sensors[i].controlbits & bit1) && sensors[i].controlbits & bit0){
-					if(active){
-					sensors[i].controlbits |= bit2;
-					}
-					else{
-						sensors[i].controlbits &= ~bit2;
-					}
+	}
+	
+	// Typen vibrationssensor
+	else{
+		for(int i = startIndex; i <= endIndex; i++){
+			char index = connectedSensors[i];
+			if(sensorType == (sensors[index].controlbits & bit1) && sensors[index].controlbits & bit0){
+				if(active){
+				sensors[index].controlbits |= bit2;
+				}
+				else{
+					sensors[index].controlbits &= ~bit2;
 				}
 			}
 		}
@@ -171,36 +172,10 @@ void alarm(Sensor* sensor) {
 	
 	sensor->controlbits |= bit6 | bit7; 			// Markera att larmet går
 	GPIO_SetBits(sensor->port, sensor->pinLamp); 	// Släck lampa
-	// Todo notifiera centralneheten via CAN
-	
+
 	CanTxMsg msg;
-	encode_larm_msg(&msg, MD407_ID, sensor->id);
-	
-	// Aktiverar handler för larmmeddelande-ACK.
-	CANFilter filter = empty_mask;
-	CANFilter mask = empty_mask;
-	Header header = empty_header;
-	
-	//Skriver mask
-	mask.IDE = 1;
-	mask.RTR = 1;
-	header.msgType = ~0;
-	header.ID = ~0;
-	header.toCentral = ~0;
-	HEADERtoUINT32(header, mask.ID);
+	encode_larm_msg(&msg, MD407_ID, i);
 
-	//Skriver filter
-	filter.IDE = 1;
-	filter.RTR = 1;
-	header.msgType = larm_msg_type;
-	header.ID = MD407_ID;
-	header.toCentral = 1;
-	HEADERtoUINT32(header, filter.ID);
-
-	if (CANhandlerListNotFull()){
-		CANaddFilterHandler(alarmAck_Handler, &filter, &mask);	
-	}
-	
 	CANsendMessage(&msg);
 }
 
