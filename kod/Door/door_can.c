@@ -40,40 +40,23 @@ void idAssign_Handler(CanRxMsg* msg){
 		if(rndid == id){
 			id = decode_ID(msg);
 			nocid = 0;
+            //Avaktiverar alla handlers, dvs bara idAssign_Handler
+            CANdisableAllFilterHandlers();
+            
             //Aktiverar samma sessionID som skickades i id-tilldelningen
-            activate_larmAck_handler(alarmAck_Handler, id);
-            receiveConfig(id, receiveConfig_handler);
             copySessionID(msg);
+
+            //Aktiverar handler för ack för larm
+            activate_larmAck_handler(alarmAck_Handler, id);
+            
+            //Aktiverar handler för konfigurationsmeddelnaden
+            activate_receiveConfig_handler(receiveConfig_handler, id);
 		}
 	}
 //funktion som förfrågar efter ett id 
 void getId (int nDoors){
-    CANFilter filter = empty_mask;
-    CANFilter mask = empty_mask;
-
-    //används för omvandling
-    Header header = empty_header;
-
-    //skriver mask
-    mask.IDE = 1;
-    mask.RTR = 1;
-    header.msgType = ~0;
-    header.ID = ~0;
-    header.toCentral = ~0;
-    HEADERtoUINT32(header, mask.ID);
-
-    //Skriver filter
-    filter.IDE = 1;
-    filter.RTR = 0;
-    header.msgType = assignID_msg_type;
-    header.ID = 0;
-    header.toCentral = 0;
-    HEADERtoUINT32(header, filter.ID);
-
-    if (CANhandlerListNotFull()){
-        CANaddFilterHandler(idAssign_Handler, &filter, &mask);
-    }
-
+    //Aktiverar handler för mottagen ID-tilldelning
+    activate_assignID_handler(idAssign_Handler);
 
     int timeStamp = msTicks + 30 * 10000; 
     if (RNG_GetFlagStatus(RNG_FLAG_DRDY) == SET && //Nytt meddelande finns

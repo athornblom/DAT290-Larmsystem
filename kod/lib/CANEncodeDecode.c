@@ -237,6 +237,37 @@ uint8_t decode_ID(CanRxMsg *msg){
     return 0xff;
 }
 
+//Aktiverar handler för mottagning av id-tilldelning
+//returnerar 1 om det lyckad 0 annars
+uint8_t activate_assignID_handler(void (*handler)(CanRxMsg *)){
+	CANFilter filter = empty_mask;
+	CANFilter mask = empty_mask;
+	Header header = empty_header;
+
+	//skriver mask
+	mask.IDE = 1;
+	mask.RTR = 1;
+	header.msgType = ~0;
+	header.ID = ~0;
+	header.toCentral = ~0;
+	HEADERtoUINT32(header, mask.ID);
+
+	//Skriver filter
+	filter.IDE = 1;
+	filter.RTR = 0;
+	header.msgType = assignID_msg_type;
+	header.ID = 0;
+	header.toCentral = 0;
+	HEADERtoUINT32(header, filter.ID);
+
+	if (CANhandlerListNotFull()){
+		CANaddFilterHandler(handler, &filter, &mask);
+        return 1;
+	}
+
+    return 0;
+}
+
 //Aktiverar handler för mottagning av larm-ack
 //ID är enehetens ID
 //returnerar 1 om det lyckad 0 annars
@@ -262,6 +293,42 @@ uint8_t activate_larmAck_handler(void (*handler)(CanRxMsg *), uint8_t ID){
 	HEADERtoUINT32(header, filter.ID);
 
 	if (CANhandlerListNotFull()){
-		CANaddFilterHandler(handler, &filter, &mask);	
+		CANaddFilterHandler(handler, &filter, &mask);
+        return 1;
 	}
+
+    return 0;
+}
+
+//Aktiverar handler för mottagning av konfiguration
+//ID är enehetens ID
+//returnerar 1 om det lyckad 0 annars
+uint8_t activate_receiveConfig_handler (void (*handler)(CanRxMsg*), uint8_t ID){
+    CANFilter filter = empty_mask;
+    CANFilter mask = empty_mask;
+
+    //används för omvandling
+    Header header = empty_header;
+
+    //skriver mask
+    mask.IDE = 1;
+    mask.RTR = 1;
+    header.msgType = ~0;
+    header.ID = ~0;
+    header.toCentral = ~0;
+    HEADERtoUINT32(header, mask.ID);
+
+    //Skriver filter
+    filter.IDE = 1;
+    filter.RTR = 0;
+    header.msgType = conf_msg_type;
+    header.ID = ID;
+    header.toCentral = 0;
+    HEADERtoUINT32(header, filter.ID);
+
+    if (CANhandlerListNotFull()){
+        CANaddFilterHandler(handler, &filter, &mask);
+        return 1;
+    }
+    return 0;
 }
