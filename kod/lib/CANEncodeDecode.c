@@ -47,7 +47,7 @@ uint8_t encode_motion_config(CanTxMsg *msg, uint8_t to_central, uint8_t sensor_t
     header.toCentral = to_central;
     HEADERtoUINT32(header, msg->ExtId);
     
-    msg->DLC = 5;
+    msg->DLC = motion_config_msg_length;
     msg->IDE = CAN_Id_Extended;
     msg->RTR = CAN_RTR_Data;
     
