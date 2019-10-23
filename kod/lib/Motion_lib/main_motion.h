@@ -84,8 +84,8 @@ GPIO_TypeDef* vibrationPorts[2];
 
 // Alla sensorer, denna initieras under init_Sensors.
 Sensor sensors[nMaxMotionSensors + nMaxVibrationSensors];	// Array för max antalet sensorer.
-char connectedSensors[nMaxMotionSensors + nMaxVibrationSensors];	// Ska innehålla id för de inkopplade sensorerna. Om ett element i arrayn är 100 
-																	// så indikerar det att det finns inga mer inkopplade sensorer.
+Sensor initMotionSensors[nMaxMotionSensors];	// Lista som används i början vid initiering av rörelsesensorerna.
+
 char connectedCounter;	// Räknare till connectedSensors, en global variabel för den används i 'init_MotionSensors' och 'init_VibrationSensors'.
 
 uint8_t nMotionSensors;		// Antalet rörelsesensorer kopplade till MD407-kortet.

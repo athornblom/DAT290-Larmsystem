@@ -42,12 +42,12 @@ void init_rng();
 
 
 // Larmar centralenheten.
-void alarm(int i);
+void alarm(Sensor* sensor);
 
 
 
 // Avlarmar en sensor
-void disarm(int i);
+void disarm(Sensor* sensor);
 
 
 #endif

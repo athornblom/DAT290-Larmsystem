@@ -19,7 +19,7 @@ void CANMsg_Handler() {
 void alarmAck_Handler(CanRxMsg* msg){
 	Header header;
 	UINT32toHEADER(msg->ExtId, header);
-	sensors[connectedSensors[header.msgNum]].controlbits &= ~bit7;
+	sensors[header.msgNum].controlbits &= ~bit7;
 }
 
 
@@ -82,14 +82,14 @@ void CANGetConfig() {
 		// Typen rörelsesensor
 		if(!sensorType){
 			for(int i = startIndex; i <= endIndex && i >= 0 && i < connectedCounter; i++){
-				char index = connectedSensors[i];
-				if(sensorType == (sensors[index].controlbits & bit1)){
+				
+				if(sensorType == (sensors[i].controlbits & bit1)){
 					if(active){
-					sensors[index].controlbits |= bit2;
-					sensors[index].motion.alarmDistance = setAlarmDistance;
+					sensors[i].controlbits |= bit2;
+					sensors[i].motion.alarmDistance = setAlarmDistance;
 					}
 					else{
-						sensors[index].controlbits &= ~bit2;
+						sensors[i].controlbits &= ~bit2;
 					}
 				}
 			}
@@ -98,13 +98,13 @@ void CANGetConfig() {
 		// Typen vibrationssensor
 		else{
 			for(int i = startIndex; i <= endIndex; i++){
-				char index = connectedSensors[i];
-				if(sensorType == (sensors[index].controlbits & bit1) && sensors[index].controlbits & bit0){
+				
+				if(sensorType == (sensors[i].controlbits & bit1) && sensors[i].controlbits & bit0){
 					if(active){
-					sensors[index].controlbits |= bit2;
+					sensors[i].controlbits |= bit2;
 					}
 					else{
-						sensors[index].controlbits &= ~bit2;
+						sensors[i].controlbits &= ~bit2;
 					}
 				}
 			}
@@ -167,15 +167,14 @@ void getId(){
 	}
 }
 
-void alarm(int i) {
-	Sensor* sensor = &(sensors[connectedSensors[i]]);
+void alarm(Sensor* sensor) {
 	
 	sensor->controlbits |= bit6 | bit7; 			// Markera att larmet går
 	GPIO_SetBits(sensor->port, sensor->pinLamp); 	// Släck lampa
 	// Todo notifiera centralneheten via CAN
 	
 	CanTxMsg msg;
-	encode_larm_msg(&msg, MD407_ID, i);
+	encode_larm_msg(&msg, MD407_ID, sensor->id);
 	
 	// Aktiverar handler för larmmeddelande-ACK.
 	CANFilter filter = empty_mask;
@@ -205,9 +204,7 @@ void alarm(int i) {
 	CANsendMessage(&msg);
 }
 
-void disarm(int i) {
-	Sensor* sensor = &(sensors[connectedSensors[i]]);
-	
+void disarm(Sensor* sensor) {
 	sensor->controlbits &= ~bit6; 					// Markera att larmet inte längre går
 	GPIO_ResetBits(sensor->port, sensor->pinLamp);	
 }
