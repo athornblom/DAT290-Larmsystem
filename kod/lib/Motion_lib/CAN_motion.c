@@ -67,7 +67,7 @@ void CANGetCalibration() {
  * Byte 5-7: Används ej.
  */
 void CANGetConfig_handler(CanRxMsg* msg) {
-	char *data = &(msg->Data);
+	char *data = (char*)&(msg->Data);
 	char valid = 0;  // Används för att kolla att konfigurationen är av rätt typ
 	
 	char sensorType = *data;
