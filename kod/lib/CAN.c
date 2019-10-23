@@ -1,4 +1,5 @@
 #include "CAN.h"
+#include "CANEncodeDecode.h"
 #include "misc.h"
 #include "stm32f4xx.h"
 #include "stm32f4xx_can.h"
@@ -335,4 +336,34 @@ uint8_t can_init() {
     noSessionId();
 
 	return can_init_status;
+}
+
+
+//TODO: Kalla den här funktionen när enheten är redo att ta emot konfigurationsmeddelanden
+void receiveConfig (uint16_t id, void (*handler)(CanRxMsg*)){
+    CANFilter filter = empty_mask;
+    CANFilter mask = empty_mask;
+
+    //används för omvandling
+    Header header = empty_header;
+
+    //skriver mask
+    mask.IDE = 1;
+    mask.RTR = 1;
+    header.msgType = ~0;
+    header.ID = ~0;
+    header.toCentral = ~0;
+    HEADERtoUINT32(header, mask.ID);
+
+    //Skriver filter
+    filter.IDE = 1;
+    filter.RTR = 0;
+    header.msgType = conf_msg_type;
+    header.ID = id;
+    header.toCentral = 0;
+    HEADERtoUINT32(header, filter.ID);
+
+    if (CANhandlerListNotFull()){
+        CANaddFilterHandler(handler, &filter, &mask);
+    }
 }
