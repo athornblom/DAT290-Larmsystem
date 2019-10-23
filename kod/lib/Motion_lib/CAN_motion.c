@@ -32,6 +32,9 @@ void idAssign_Handler(CanRxMsg* msg){
 		noID = 0;
         //Aktiverar samma sessionID som skickades i id-tilldelningen
         copySessionID(msg);
+
+        //Aktiverar handler för ack för larm
+        activate_larmAck_handler(alarmAck_Handler, MD407_ID);
 	}
 }
 
@@ -170,36 +173,10 @@ void alarm(int i) {
 	
 	sensor->controlbits |= bit6 | bit7; 			// Markera att larmet går
 	GPIO_SetBits(sensor->port, sensor->pinLamp); 	// Släck lampa
-	// Todo notifiera centralneheten via CAN
-	
+
 	CanTxMsg msg;
 	encode_larm_msg(&msg, MD407_ID, i);
-	
-	// Aktiverar handler för larmmeddelande-ACK.
-	CANFilter filter = empty_mask;
-	CANFilter mask = empty_mask;
-	Header header = empty_header;
-	
-	//Skriver mask
-	mask.IDE = 1;
-	mask.RTR = 1;
-	header.msgType = ~0;
-	header.ID = ~0;
-	header.toCentral = ~0;
-	HEADERtoUINT32(header, mask.ID);
 
-	//Skriver filter
-	filter.IDE = 1;
-	filter.RTR = 1;
-	header.msgType = larm_msg_type;
-	header.ID = MD407_ID;
-	header.toCentral = 1;
-	HEADERtoUINT32(header, filter.ID);
-
-	if (CANhandlerListNotFull()){
-		CANaddFilterHandler(alarmAck_Handler, &filter, &mask);	
-	}
-	
 	CANsendMessage(&msg);
 }
 
