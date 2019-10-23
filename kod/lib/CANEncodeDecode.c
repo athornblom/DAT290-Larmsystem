@@ -224,3 +224,32 @@ uint8_t decode_ID(CanRxMsg *msg){
     //inte hända om man använder funktionen rätt
     return 0xff;
 }
+
+//Aktiverar handler för mottagning av larm-ack
+//ID är enehetens ID
+//returnerar 1 om det lyckad 0 annars
+uint8_t activate_larmAck_handler(void (*handler)(CanRxMsg *), uint8_t ID){
+	CANFilter filter = empty_mask;
+	CANFilter mask = empty_mask;
+	Header header = empty_header;
+	
+	//Skriver mask
+	mask.IDE = 1;
+	mask.RTR = 1;
+	header.msgType = ~0;
+	header.ID = ~0;
+	header.toCentral = ~0;
+	HEADERtoUINT32(header, mask.ID);
+
+	//Skriver filter
+	filter.IDE = 1;
+	filter.RTR = 1;
+	header.msgType = larm_msg_type;
+	header.ID = ID;
+	header.toCentral = 1;
+	HEADERtoUINT32(header, filter.ID);
+
+	if (CANhandlerListNotFull()){
+		CANaddFilterHandler(handler, &filter, &mask);	
+	}
+}
