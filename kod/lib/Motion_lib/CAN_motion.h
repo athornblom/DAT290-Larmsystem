@@ -16,7 +16,7 @@ void CANMsg_Handler();
 
 
 
-// H
+// Hanterar larm-ACK.
 void alarmAck_Handler(CanRxMsg* msg);
 
 

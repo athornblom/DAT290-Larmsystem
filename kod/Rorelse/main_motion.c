@@ -295,7 +295,7 @@ char motionPolling(Sensor *sensor) {
 	
 	MotionSensor* mSensor = &(sensor->motion);
 
-	// Sensorn upptäcker att något är för nära, larma.
+	// Sensorn upptäcker att något är för nära eller att sensorn kopplats ut, fortsätt larma tills centralenheten skickat larm-ACK.
 	if((((mSensor->cm < mSensor->alarmDistance || mSensor->timeOut < microTicks) && !(sensor->controlbits & bit6)) || sensor->controlbits & bit7) && microTicks > sensor->alarmDelay){
 		sensor->alarmDelay = microTicks + 1000000;	// Skickar larm en gång i sekunden till det är kviterat.
 		alarm(sensor);	// Larmar centralenheten
@@ -328,6 +328,7 @@ void vibrationPolling(Sensor *sensor) {
 
 void main(void){
 	init_app();
+	
 	while(1){
 
 		// Polling

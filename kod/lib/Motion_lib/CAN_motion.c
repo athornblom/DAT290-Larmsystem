@@ -16,6 +16,7 @@ void CANMsg_Handler() {
 }
 
 
+// Hanterar larm-ACK.
 void alarmAck_Handler(CanRxMsg* msg){
 	Header header;
 	UINT32toHEADER(msg->ExtId, header);
@@ -84,14 +85,14 @@ void CANGetConfig_handler(CanRxMsg* msg) {
 	// Typen rörelsesensor
 	if(!sensorType){
 		for(int i = startIndex; i <= endIndex && i >= 0 && i < connectedCounter; i++){
-			char index = connectedSensors[i];
-			if(sensorType == (sensors[index].controlbits & bit1)){
+			
+			if(sensorType == (sensors[i].controlbits & bit1)){
 				if(active){
-				sensors[index].controlbits |= bit2;
-				sensors[index].motion.alarmDistance = setAlarmDistance;
+				sensors[i].controlbits |= bit2;
+				sensors[i].motion.alarmDistance = setAlarmDistance;
 				}
 				else{
-					sensors[index].controlbits &= ~bit2;
+					sensors[i].controlbits &= ~bit2;
 				}
 			}
 		}
@@ -100,13 +101,13 @@ void CANGetConfig_handler(CanRxMsg* msg) {
 	// Typen vibrationssensor
 	else{
 		for(int i = startIndex; i <= endIndex; i++){
-			char index = connectedSensors[i];
-			if(sensorType == (sensors[index].controlbits & bit1) && sensors[index].controlbits & bit0){
+			
+			if(sensorType == (sensors[i].controlbits & bit1) && sensors[i].controlbits & bit0){
 				if(active){
-				sensors[index].controlbits |= bit2;
+				sensors[i].controlbits |= bit2;
 				}
 				else{
-					sensors[index].controlbits &= ~bit2;
+					sensors[i].controlbits &= ~bit2;
 				}
 			}
 		}
@@ -171,10 +172,10 @@ void getId(){
 void alarm(Sensor* sensor) {
 	
 	sensor->controlbits |= bit6 | bit7; 			// Markera att larmet går
-	GPIO_SetBits(sensor->port, sensor->pinLamp); 	// Släck lampa
+	GPIO_SetBits(sensor->port, sensor->pinLamp); 	// Tänd lampa
 
 	CanTxMsg msg;
-	encode_larm_msg(&msg, MD407_ID, i);
+	encode_larm_msg(&msg, MD407_ID, sensor->id);
 
 	CANsendMessage(&msg);
 }
