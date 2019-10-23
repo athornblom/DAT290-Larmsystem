@@ -46,10 +46,8 @@ void CANSendMeasurement(Sensor motionSensor) {
 	
 	CanTxMsg msg;
 	encode_distance_value(&msg, id, distance);
-	uint32_t delay = 100000;
-	while (CANsendMessage(&msg) != CAN_TxStatus_NoMailBox) {
-		delayMicro(delay);
-	}
+	CANsendMessage(&msg);
+
 }
 
 void calibrationRecieve(char sensorId, float *multiple) {
@@ -96,15 +94,13 @@ void CANGetConfig_handler(CanRxMsg* msg) {
 	char active = *(data+3);
 	char setAlarmDistance = (*(data+4))*2;
 	
-	
-	
 	// Typen rörelsesensor
 	if(!sensorType){
 		for(int i = startIndex; i <= endIndex && i >= 0 && i < connectedCounter; i++){
 			if(sensorType == (sensors[i].controlbits & bit1)){
 				if(active){
-				sensors[i].controlbits |= bit2;
-				sensors[i].motion.alarmDistance = setAlarmDistance;
+					sensors[i].controlbits |= bit2;
+					sensors[i].motion.alarmDistance = setAlarmDistance;
 				}
 				else{
 					sensors[i].controlbits &= ~bit2;
@@ -118,7 +114,7 @@ void CANGetConfig_handler(CanRxMsg* msg) {
 		for(int i = startIndex; i <= endIndex; i++){
 			if(sensorType == (sensors[i].controlbits & bit1) && sensors[i].controlbits & bit0){
 				if(active){
-				sensors[i].controlbits |= bit2;
+					sensors[i].controlbits |= bit2;
 				}
 				else{
 					sensors[i].controlbits &= ~bit2;
@@ -126,6 +122,11 @@ void CANGetConfig_handler(CanRxMsg* msg) {
 			}
 		}
 	}
+	
+	CanRxMsg ackMsg;
+	//encode_ack_config(&ackMsg, msg);
+	//CANsendMessage(&ackMsg);
+	
 }
 
 
