@@ -39,9 +39,8 @@ GPIO_TypeDef* vibrationPorts[2] = {GPIOD, GPIOE};
 
 
 // Alla sensorer, denna initieras under init_Sensors.
-Sensor sensors[nMaxMotionSensors + nMaxVibrationSensors];	// Array för max antalet sensorer.
-char connectedSensors[nMaxMotionSensors + nMaxVibrationSensors];	// Ska innehålla id för de inkopplade sensorerna. Om ett element i arrayn är 100 
-																// så indikerar det att det finns inga mer inkopplade sensorer.
+Sensor sensors[nMaxMotionSensors + nMaxVibrationSensors];			// Array för max antalet sensorer.
+char connectedSensors[nMaxMotionSensors + nMaxVibrationSensors];	// Ska innehålla id för de inkopplade sensorerna.
 char connectedCounter = 0;	// Räknare till connectedSensors, en global variabel för den används i 'init_MotionSensors' och 'init_VibrationSensors'.
 
 uint8_t nMotionSensors = 0;		// Antalet rörelsesensorer kopplade till MD407-kortet.
@@ -129,13 +128,14 @@ void init_MotionSensors(){
 		for (int j=0; j*sizeof(GPIO_Pins[0]) < sizeof(GPIO_Pins);j+=3) {
 			if(!((i*5+j/3) == 15)){ // Hårdvaran begränsar oss till 15 rörelsesensorer, alltså kollar vi inte 16:e elementet(för det finns inte).
 			MotionSensor m =  {
-					.pinTrig = GPIO_Pins[j],
-					.pinEcho = GPIO_Pins[j+1],
-					.pulseTrig = 0,
-					.pulseEcho = 0,
+					.pinTrig	= GPIO_Pins[j],
+					.pinEcho	= GPIO_Pins[j+1],
+					.pulseTrig	= 0,
+					.pulseEcho	= 0,
 					.pulseDelay = 0,
-					.cm = 400,
-					.multiple = 1,
+					.timeOut	= microTicks + 60000000,	// Högt värde (microTicks + 60s) i initialisering för att inte larma i direkt när mainloopen körs.
+					.cm			= 400,
+					.multiple	= 1,
 					.alarmDistance = 20 // Ändra denna när centralenheten kan styra över rörelseenheten - Erik
 			};
 			
@@ -219,10 +219,10 @@ void init_VibrationSensor(){
 	}
 	
 	
-	// Ifall arrayen inte är fylld av id:n så läggs elementet '100' till för att signalera att det ej finns fler id:n.
+	/*// Ifall arrayen inte är fylld av id:n så läggs elementet '100' till för att signalera att det ej finns fler id:n.
 	if(connectedCounter < nMaxMotionSensors + nMaxVibrationSensors){
 		connectedSensors[connectedCounter] = 100;
-	}
+	}*/
 }
 
 void init_Sensors(){
@@ -240,7 +240,7 @@ void init_app(){
 	init_Sensors();
 	init_rng();
 	can_init();
-	getId();
+	//getId();
 }
 
 
@@ -267,8 +267,9 @@ int motionMeasure(Sensor *sensor) {
 
 	// Är echo hög för första gången?
 	if(!(sensor->controlbits & bit3) && GPIO_ReadInputDataBit(sensor->port, mSensor->pinEcho)){
-		mSensor->pulseEcho = microTicks; 						// Början av echopulsen.
-		sensor->controlbits |= bit3;  							// Ettställer kontrollbit 3.
+		mSensor->timeOut = microTicks + 500000;		// Ifall echo inte varit hög på 0.5s ska det larma.
+		mSensor->pulseEcho = microTicks; 			// Början av echopulsen.
+		sensor->controlbits |= bit3;  				// Ettställer kontrollbit 3.
 	}
 	
 	// Är echo låg för första gången?
@@ -302,16 +303,16 @@ char motionPolling(Sensor *sensor, int i) {
 	MotionSensor* mSensor = &(sensor->motion);
 
 	// Sensorn upptäcker att något är för nära, larma.
-	if((mSensor->cm < mSensor->alarmDistance || sensor->controlbits & bit7) && microTicks > sensor->alarmDelay){
+	if((mSensor->cm < mSensor->alarmDistance || mSensor->timeOut < microTicks/* || sensor->controlbits & bit7) && microTicks > sensor->alarmDelay*/)){
 		sensor->alarmDelay = microTicks + 1000000;	// Skickar larm en gång i sekunden till det är kviterat.
-		alarm(i);	// Larmar centralenheten
-		//GPIO_SetBits(sensor->port, sensor->pinLamp);	// Tänd lampa.
+		//alarm(i);	// Larmar centralenheten
+		GPIO_SetBits(sensor->port, sensor->pinLamp);	// Tänd lampa.
 
 	}
 
-	/*else{
+	else{
 		GPIO_ResetBits(sensor->port, sensor->pinLamp);	// Släck lampa.
-	}*/
+	}
 }
 
 
@@ -319,16 +320,16 @@ void vibrationPolling(Sensor *sensor, int i) {
 	VibrationSensor* vSensor = &(sensor->vibration);
 				
 	// Vibration detekterat, larma.
-	if((!GPIO_ReadInputDataBit(sensor->port, vSensor->pinDO) || sensor->controlbits & bit7) && microTicks > sensor->alarmDelay){
+	if((!GPIO_ReadInputDataBit(sensor->port, vSensor->pinDO)/* || sensor->controlbits & bit7) && microTicks > sensor->alarmDelay*/)){
 		sensor->alarmDelay = microTicks + 1000000;	// Skickar larm en gång i sekunden till det är kviterat.
-		alarm(i);	// Larmar centralenheten){
+		//alarm(i);	// Larmar centralenheten){
 		
-		//GPIO_SetBits(sensor->port, sensor->pinLamp);
+		GPIO_SetBits(sensor->port, sensor->pinLamp);
 	}
 
-	/*else{
+	else{
 		GPIO_ResetBits(sensor->port, sensor->pinLamp);
-	}*/
+	}
 }
 
 

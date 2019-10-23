@@ -1,7 +1,7 @@
 #include "CAN_motion.h"
 
 
-uint32_t id = 0;
+uint32_t MD407_ID = 0;
 char noID = 1;
 
 
@@ -27,8 +27,8 @@ void idAssign_Handler(CanRxMsg* msg){
 	uint32_t rndID = decode_tempID(msg);
 	DebugPrint("\nrndID:");
 	DebugPrintNumBase(rndID,16);
-	if(rndID == id){
-		id = decode_ID(msg);
+	if(rndID == MD407_ID){
+		MD407_ID = decode_ID(msg);
 		noID = 0;
         //Aktiverar samma sessionID som skickades i id-tilldelningen
         copySessionID(msg);
@@ -79,7 +79,7 @@ void CANGetConfig() {
 	char active = data[4];
 	char setAlarmDistance = data[5]*2;
 	
-	if(ID_Byte == id){
+	if(ID_Byte == MD407_ID){
 		
 		// Typen rörelsesensor
 		if(!sensorType){
@@ -154,10 +154,10 @@ void getId(){
 	if (RNG_GetFlagStatus(RNG_FLAG_DRDY) == SET &&		//Nytt meddelande finns
 		RNG_GetFlagStatus(RNG_FLAG_CECS) == RESET && 	//Inget klockfel
 		RNG_GetFlagStatus(RNG_FLAG_SECS) == RESET){ 	//Inget seedfel
-		id = RNG_GetRandomNumber();
+		MD407_ID = RNG_GetRandomNumber();
 		CanTxMsg idRequest;
 				
-		encode_motion_request_id(&idRequest, id, nMotionSensors, nVibrationSensors);
+		encode_motion_request_id(&idRequest, MD407_ID, nMotionSensors, nVibrationSensors);
 		DebugPrint("\nnMotionsensors:");
 		DebugPrintNum(nMotionSensors);
 		DebugPrint("\nnVibrationsensors:");
@@ -177,7 +177,7 @@ void alarm(int i) {
 	// Todo notifiera centralneheten via CAN
 	
 	CanTxMsg msg;
-	encode_larm_msg(&msg, id, i);
+	encode_larm_msg(&msg, MD407_ID, i);
 	
 	// Aktiverar handler för larmmeddelande-ACK.
 	CANFilter filter = empty_mask;
@@ -196,7 +196,7 @@ void alarm(int i) {
 	filter.IDE = 1;
 	filter.RTR = 1;
 	header.msgType = larm_msg_type;
-	header.ID = id;
+	header.ID = MD407_ID;
 	header.toCentral = 1;
 	HEADERtoUINT32(header, filter.ID);
 

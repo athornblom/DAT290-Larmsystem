@@ -7,7 +7,7 @@
 #include "main_motion.h"
 
 
-uint32_t id;
+uint32_t MD407_ID;
 char noID;
 
 
