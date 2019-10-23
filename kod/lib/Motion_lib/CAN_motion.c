@@ -41,10 +41,15 @@ void idAssign_Handler(CanRxMsg* msg){
 void CANSendMeasurement(Sensor motionSensor) {
 	
 	while (!motionMeasure(&motionSensor)) {};
-	char distance = motionSensor.motion.cm;
+	float distance = motionSensor.motion.cm;
 	char id = motionSensor.id;
 	
-	// Todo skicka can-meddelande av typen konfiguration
+	CanTxMsg msg;
+	encode_distance_value(&msg, id, distance);
+	uint32_t delay = 100000;
+	while (CANsendMessage(&msg) != CAN_TxStatus_NoMailBox) {
+		delayMicro(delay);
+	}
 }
 
 void calibrationRecieve(char sensorId, float *multiple) {
@@ -82,6 +87,7 @@ void CANGetConfig_handler(CanRxMsg* msg) {
 		char sensorId   = *data;
 		float *multiple = (float*)&msg->Data[1];
 		calibrationRecieve(sensorId, multiple);
+		return;
 	}
 	
 	char sensorType = *data;
@@ -95,14 +101,13 @@ void CANGetConfig_handler(CanRxMsg* msg) {
 	// Typen rörelsesensor
 	if(!sensorType){
 		for(int i = startIndex; i <= endIndex && i >= 0 && i < connectedCounter; i++){
-			char index = connectedSensors[i];
-			if(sensorType == (sensors[index].controlbits & bit1)){
+			if(sensorType == (sensors[i].controlbits & bit1)){
 				if(active){
-				sensors[index].controlbits |= bit2;
-				sensors[index].motion.alarmDistance = setAlarmDistance;
+				sensors[i].controlbits |= bit2;
+				sensors[i].motion.alarmDistance = setAlarmDistance;
 				}
 				else{
-					sensors[index].controlbits &= ~bit2;
+					sensors[i].controlbits &= ~bit2;
 				}
 			}
 		}
@@ -111,13 +116,12 @@ void CANGetConfig_handler(CanRxMsg* msg) {
 	// Typen vibrationssensor
 	else{
 		for(int i = startIndex; i <= endIndex; i++){
-			char index = connectedSensors[i];
-			if(sensorType == (sensors[index].controlbits & bit1) && sensors[index].controlbits & bit0){
+			if(sensorType == (sensors[i].controlbits & bit1) && sensors[i].controlbits & bit0){
 				if(active){
-				sensors[index].controlbits |= bit2;
+				sensors[i].controlbits |= bit2;
 				}
 				else{
-					sensors[index].controlbits &= ~bit2;
+					sensors[i].controlbits &= ~bit2;
 				}
 			}
 		}
@@ -185,7 +189,7 @@ void alarm(Sensor* sensor) {
 	GPIO_SetBits(sensor->port, sensor->pinLamp); 	// Släck lampa
 
 	CanTxMsg msg;
-	encode_larm_msg(&msg, MD407_ID, i);
+	encode_larm_msg(&msg, MD407_ID, sensor->id);
 
 	CANsendMessage(&msg);
 }
