@@ -196,7 +196,7 @@ void encode_larm_msg(CanTxMsg *msg, uint8_t uinitID, uint8_t id){
 //larm är en pekare till meddelandet som larmar
 void encode_larm_ack(CanTxMsg *msg, CanRxMsg *larm){
     msg->ExtId = larm->ExtId;
-    msg->DLC = 0;
+    msg->DLC = larm->DLC;
     msg->RTR = CAN_RTR_Remote;
     msg->IDE = CAN_Id_Extended;
 }
@@ -217,24 +217,15 @@ uint8_t decode_door_config_msg(CanRxMsg *msg, uint8_t *door_id_0, uint8_t *door_
 }
 
 //Returnerar tempID ur ett ID-tilldelings meddelande
-//Filtrering av header måste redan ha gjorts
+//Filtrering av header och datalängd måste redan ha gjorts
 uint32_t decode_tempID(CanRxMsg *msg){
-    if (msg->DLC == assignID_msg_length){
-        return (((uint32_t)msg->Data[0])) | (((uint32_t)msg->Data[1]) << 8) | (((uint32_t)msg->Data[2]) << 16) | (((uint32_t)msg->Data[3]) << 24);
-    }
-    return 0;
+    return (((uint32_t)msg->Data[0])) | (((uint32_t)msg->Data[1]) << 8) | (((uint32_t)msg->Data[2]) << 16) | (((uint32_t)msg->Data[3]) << 24);
 }
 
 //Returnerar ID ur ett ID-tilldelings meddelande
-//Filtrering av header och rätt tempID måste redan ha gjorts
+//Filtrering av header, datalängd och rätt tempID måste redan ha gjorts
 uint8_t decode_ID(CanRxMsg *msg){
-    if (msg->DLC == assignID_msg_length){
-        //returnerar IDt
-        return msg->Data[4];
-    }
-    //Filtrering ska redan ha gjorts och så detta ska
-    //inte hända om man använder funktionen rätt
-    return 0xff;
+    return msg->Data[4];
 }
 
 //Aktiverar handler för mottagning av id-tilldelning
@@ -247,6 +238,7 @@ uint8_t activate_assignID_handler(void (*handler)(CanRxMsg *)){
 	//skriver mask
 	mask.IDE = 1;
 	mask.RTR = 1;
+    mask.DLC = ~0;
 	header.msgType = ~0;
 	header.ID = ~0;
 	header.toCentral = ~0;
@@ -255,6 +247,7 @@ uint8_t activate_assignID_handler(void (*handler)(CanRxMsg *)){
 	//Skriver filter
 	filter.IDE = 1;
 	filter.RTR = 0;
+    filter.DLC = assignID_msg_length;
 	header.msgType = assignID_msg_type;
 	header.ID = 0;
 	header.toCentral = 0;
@@ -279,6 +272,7 @@ uint8_t activate_larmAck_handler(void (*handler)(CanRxMsg *), uint8_t ID){
 	//Skriver mask
 	mask.IDE = 1;
 	mask.RTR = 1;
+    mask.DLC = ~0;
 	header.msgType = ~0;
 	header.ID = ~0;
 	header.toCentral = ~0;
@@ -287,6 +281,7 @@ uint8_t activate_larmAck_handler(void (*handler)(CanRxMsg *), uint8_t ID){
 	//Skriver filter
 	filter.IDE = 1;
 	filter.RTR = 1;
+    filter.DLC = larm_msg_length;
 	header.msgType = larm_msg_type;
 	header.ID = ID;
 	header.toCentral = 1;

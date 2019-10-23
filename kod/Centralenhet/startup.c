@@ -85,8 +85,8 @@ void id_request_handler(CanRxMsg *rxMsgP){
     printRxMsg(rxMsgP, 16); //TODO Ta bort när vi inte behöver den längre
     CanRxMsg rxMsg = *rxMsgP;
     CanTxMsg txMsg;
-    /*
-    static uint8_t counter = 0;
+    
+    /*static uint8_t counter = 0;
     if (encode_assign_id(&txMsg, rxMsgP, counter++)){
         if (CANsendMessage(&txMsg) == CAN_TxStatus_NoMailBox){
                 USARTPrint("No mailbox empty\n");
@@ -207,6 +207,7 @@ uint8_t enterConfMode (void){
     //Skriver mask
     mask.IDE = 1;
     mask.RTR = 1;
+    mask.DLC = ~0;
 
     header.msgType = ~0;
     header.toCentral = ~0;
@@ -221,6 +222,7 @@ uint8_t enterConfMode (void){
     //Filter för ID-Begäran
     filter.IDE = 1;
     filter.RTR = 0;
+    filter.DLC = reqID_msg_length;
     header.msgType = reqID_msg_type;
     header.toCentral = 1;
     header.ID = 0;
@@ -268,6 +270,7 @@ uint8_t enterStdMode (void){
     //Skriver mask
     mask.IDE = 1;
     mask.RTR = 1;
+    mask.DLC = ~0;
     header.msgType = ~0;
     header.toCentral = ~0;
     header.ID = 0;
@@ -281,6 +284,7 @@ uint8_t enterStdMode (void){
     //Filter för Larm
     filter.IDE = 1;
     filter.RTR = 0;
+    filter.DLC = larm_msg_length;
     header.msgType = larm_msg_type;
     header.toCentral = 1;
     header.ID = 0;

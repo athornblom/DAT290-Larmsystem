@@ -179,7 +179,8 @@ void can_irq_handler(void){
             if (rxMsg.FMI < HANDLERLISTSIZE){
                 //Dubbelkollar så att filtrer är aktivt och att DLC matchar
                 if (handlerList[rxMsg.FMI].state == ENABLE &&
-                    (handlerList[rxMsg.FMI].mask.DLC & handlerList[rxMsg.FMI].filter.DLC) == rxMsg.DLC ){
+                    (handlerList[rxMsg.FMI].filter.DLC &handlerList[rxMsg.FMI].mask.DLC)
+                    == (rxMsg.DLC & handlerList[rxMsg.FMI].mask.DLC)){
                         //Anropar handler funktionen
                         handlerList[rxMsg.FMI].handler(&rxMsg);
                     }
