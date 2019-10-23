@@ -54,19 +54,17 @@ void CANGetCalibration() {
  * @brief Hanterar att ta emot konfigurationer för rörelsesenorer från centralenheten
  * 
  * 
- * Byte 0: ID till MD407-kortet.
+ * Byte 0: Typ av sensor, 0 = rörelse, 1 = vibration.
  * 
- * Byte 1: Typ av sensor, 0 = rörelse, 1 = vibration.
+ * Byte 1: Början av indexet till 'connectedSensors' som skall konfigureras.
  * 
- * Byte 2: Början av indexet till 'connectedSensors' som skall konfigureras.
+ * Byte 2: Slutet av indexet till 'connectedSensors' som skall konfigureras.
  * 
- * Byte 3: Slutet av indexet till 'connectedSensors' som skall konfigureras.
+ * Byte 3: Ska sensorerna vara aktiva eller ej? 0 = inaktiv, 1 = aktiv. Ifall Byte[3] = 0 kommer senare bytes ej kollas.
  * 
- * Byte 4: Ska sensorerna vara aktiva eller ej? 0 = inaktiv, 1 = aktiv. Ifall Byte[4] = 0 kommer senare bytes ej kollas.
+ * Byte 4 (Rörelse): Byte[4]*2 = 'alarmDistance' i cm, upp till 400 cm. Om Byte[4] >= 200 så kommer 'alarmDistance' alltid sättas till 400.
  * 
- * Byte 5 (Rörelse): Byte[5]*2 = 'alarmDistance' i cm, upp till 400 cm. Om Byte[5] >= 200 så kommer 'alarmDistance' alltid sättas till 400.
- * 
- * Byte 6&7: Används ej.
+ * Byte 5-7: Används ej.
  */
 void CANGetConfig() {
 	char data[8]; 	 // todo

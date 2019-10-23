@@ -38,6 +38,31 @@ uint8_t encode_door_time_config(CanTxMsg *msg, uint8_t to_central, uint8_t door_
     return 1;
 }
 
+uint8_t encode_motion_config(CanTxMsg *msg, uint8_t to_central, uint8_t sensor_type, uint8_t sensor_id_0, uint8_t sensor_id_1, uint8_t active, uint8_t distance){
+    uint8_t *data_pointer =  &(msg->Data);
+    
+    
+    Header header = empty_header;
+    header.msgType = conf_msg_type;
+    header.toCentral = to_central;
+    HEADERtoUINT32(header, msg->ExtId);
+    
+    msg->DLC = 5;
+    msg->IDE = CAN_Id_Extended;
+    msg->RTR = CAN_RTR_Data;
+    
+    
+    *data_pointer = sensor_type;
+    
+    *(data_pointer + 1) = sensor_id_0;
+    *(data_pointer + 2) = sensor_id_1;
+    
+    *(data_pointer + 3) = active;
+    
+    *(data_pointer + 4) = distance;
+}
+
+
 /*
  * CanTxMsg *msg: förslagsvis tomt meddeleande som görs till id-förfrågan
  * uint32_t temp_id: temporärt, förslagsvis slumpgenererat id
@@ -90,7 +115,7 @@ void encode_motion_request_id(CanTxMsg *msg, uint32_t tmpID, uint8_t nMotion, ui
 }
 
 //Encodar en id-tilldelning
-//msg är en pektare till meddelande som ska skickas
+//msg är en pekare till meddelande som ska skickas
 //request är en pekare till förfrågan
 //id är id man tilldelar enheten
 //Returnerar 1 om det lyckade 0 annars
