@@ -79,9 +79,18 @@ uint32_t decode_tempID(CanRxMsg *msg);
 //Filtrering av header och rätt tempID måste redan ha gjorts
 uint8_t decode_ID(CanRxMsg *msg);
 
+//Aktiverar handler för mottagning av id-tilldelning
+//returnerar 1 om det lyckad 0 annars
+uint8_t activate_assignID_handler(void (*handler)(CanRxMsg *));
+
 //Aktiverar handler för mottagning av larm-ack
 //ID är enehetens ID
 //returnerar 1 om det lyckad 0 annars
 uint8_t activate_larmAck_handler(void (*handler)(CanRxMsg *), uint8_t ID);
+
+//Aktiverar handler för mottagning av konfiguration
+//ID är enehetens ID
+//returnerar 1 om det lyckad 0 annars
+uint8_t activate_receiveConfig_handler (void (*handler)(CanRxMsg*), uint8_t ID);
 
 #endif
