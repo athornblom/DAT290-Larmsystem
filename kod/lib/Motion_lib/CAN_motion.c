@@ -88,7 +88,7 @@ void CANGetConfig_handler(CanRxMsg* msg) {
 	char startIndex = *(data+1);
 	char endIndex = *(data+2);
 	char active = *(data+3);
-	char setAlarmDistance = *(data+4)*2;
+	char setAlarmDistance = (*(data+4))*2;
 	
 	
 	
