@@ -83,26 +83,24 @@ uint8_t get_id_by_random_id(uint32_t random_id, uint8_t device_type){
 
 void id_request_handler(CanRxMsg *rxMsgP){
     printRxMsg(rxMsgP, 16);
-        CanRxMsg rxMsg = *rxMsgP;
-        CanTxMsg txMsg;
-        static uint8_t counter = 0;
-        if (encode_assign_id(&txMsg, rxMsgP, counter++)){
-            if (CANsendMessage(&txMsg) == CAN_TxStatus_NoMailBox){
-                    USARTPrint("No mailbox empty\n");
-            } else {
-                printTxMsg(&txMsg, 16);
-            }
-        } else {
-            USARTPrint("encodefel\n");
-        }
-}
-    /*TODO KOMPILERAR INTE
     CanRxMsg rxMsg = *rxMsgP;
     CanTxMsg txMsg;
+    static uint8_t counter = 0;
+    if (encode_assign_id(&txMsg, rxMsgP, counter++)){
+        if (CANsendMessage(&txMsg) == CAN_TxStatus_NoMailBox){
+                USARTPrint("No mailbox empty\n");
+        } else {
+            printTxMsg(&txMsg, 16);
+        }
+    } else {
+        USARTPrint("encodefel\n");
+    }
+
+    //TODO KOMPILERAR INTE
     
     
-    uint8_t device_type = rxmsg.data[1];
-    uint32_t random_id = rxmsg.id;
+    uint8_t device_type = rxMsg.Data[1];
+    uint32_t random_id = rxMsg.ExtId;
     uint8_t id = get_id_by_random_id(random_id, device_type);
     
     //Om random_id känns igen behöver vi bara skicka 
@@ -119,9 +117,9 @@ void id_request_handler(CanRxMsg *rxMsgP){
             USARTPrint("No mailbox empty\n");
         }
         //TODO att lägga till en enhet borde först ske vid mottagande av ack
-        //TODO ta bort delay såsmåningom
-        blockingDelayMs(300);
         else{
+            //TODO ta bort delay såsmåningom
+            blockingDelayMs(300);
             Door_device *dev = add_door_device(next_id);
             USARTPrint("Lagt till dorrenhet med id ");
             
@@ -131,7 +129,7 @@ void id_request_handler(CanRxMsg *rxMsgP){
 				next_id++;
 			}
 			else {
-				USARTPrint("Max antal periferienheter har nu lagts till. Om du lagger till fler kan det handa dumma saker.")
+				USARTPrint("Max antal periferienheter har nu lagts till. Om du lagger till fler kan det handa dumma saker.");
 			}
             
             dev->num_of_doors = rxMsg.Data[5];
@@ -161,7 +159,7 @@ void id_request_handler(CanRxMsg *rxMsgP){
     
 
 }
-*/
+
 
 //Förslag på struktur för larmhanterare
 void larmHandler(CanRxMsg *rxMsg){
