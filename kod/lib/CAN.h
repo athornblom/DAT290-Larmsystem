@@ -58,6 +58,9 @@ typedef struct {
     uint32_t IDE : 1;
 
     uint32_t ID : 29;
+
+    //Utökar filtret för med DLC, dvs längden på datafältet
+    uint8_t DLC;
 } CANFilter;
 
 //Skickar ett CAN-meddelande
