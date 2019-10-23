@@ -82,9 +82,10 @@ uint8_t get_id_by_random_id(uint32_t random_id, uint8_t device_type){
 
 
 void id_request_handler(CanRxMsg *rxMsgP){
-    printRxMsg(rxMsgP, 16);
+    printRxMsg(rxMsgP, 16); //TODO Ta bort när vi inte behöver den längre
     CanRxMsg rxMsg = *rxMsgP;
     CanTxMsg txMsg;
+    /*
     static uint8_t counter = 0;
     if (encode_assign_id(&txMsg, rxMsgP, counter++)){
         if (CANsendMessage(&txMsg) == CAN_TxStatus_NoMailBox){
@@ -94,9 +95,7 @@ void id_request_handler(CanRxMsg *rxMsgP){
         }
     } else {
         USARTPrint("encodefel\n");
-    }
-
-    //TODO KOMPILERAR INTE
+    }*/
     
     
     uint8_t device_type = rxMsg.Data[1];
@@ -104,20 +103,13 @@ void id_request_handler(CanRxMsg *rxMsgP){
     uint8_t id = get_id_by_random_id(random_id, device_type);
     
     //Om random_id känns igen behöver vi bara skicka samma id igen
-    if(!~id){
+    if(id == ~0){
         encode_assign_id(&txMsg, rxMsgP, id);
-        if (CANsendMessage(&txMsg) == CAN_TxStatus_NoMailBox){
-            USARTPrint("No mailbox empty\n");
-        }
-        
+        CANsendMessage(&txMsg);
     }
     else{
         encode_assign_id(&txMsg, rxMsgP, next_id);
-        if (CANsendMessage(&txMsg) == CAN_TxStatus_NoMailBox){
-            USARTPrint("No mailbox empty\n");
-        }
-        //TODO att lägga till en enhet borde först ske vid mottagande av ack
-        else{
+        if (CANsendMessage(&txMsg) != CAN_TxStatus_NoMailBox){
             //TODO ta bort delay såsmåningom
             blockingDelayMs(300);
             Door_device *dev = add_door_device(next_id);
@@ -253,7 +245,7 @@ uint8_t enterConfMode (void){
             return 0;
         }
     } else {
-        //För "inaktiv" sessionID avnänds 0.
+        //För "inaktiv" sessionID används 0.
         //I bakgrunden kommer sessionID fortfarande vara aktivt fast med endast nollor
         activateSessionId(0);
     }
@@ -420,6 +412,7 @@ void USARTCommand(void) {
     }
 }
 
+//Kollar om två dörrar är identiska bortsett från id
 uint8_t doors_equal(Door door_0, Door door_1){
     return door_0.time_0 == door_1.time_0 && door_0.time_1 == door_1.time_1 && door_0.locked == door_1.locked;
 }
