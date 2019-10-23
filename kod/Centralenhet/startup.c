@@ -103,7 +103,7 @@ void id_request_handler(CanRxMsg *rxMsgP){
     uint32_t random_id = rxMsg.ExtId;
     uint8_t id = get_id_by_random_id(random_id, device_type);
     
-    //Om random_id känns igen behöver vi bara skicka 
+    //Om random_id känns igen behöver vi bara skicka samma id igen
     if(!~id){
         encode_assign_id(&txMsg, rxMsgP, id);
         if (CANsendMessage(&txMsg) == CAN_TxStatus_NoMailBox){
