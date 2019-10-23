@@ -4,10 +4,10 @@
 #include "startup.h"
 //int is_door_armed(int controlbitts);
 void delay (int mili);
-void check_door_status (door *aDoors, int arrayLength);
-void door_uppdate_lamps (door *door);
-int central_larm(door *door);
-void startup_lights (door *aDoors, int aLength);
-void check_door_sound (door *aDoors, int arrayLength);
+void check_door_status ();
+void door_uppdate_lamps (char);
+int central_larm(char);
+void startup_lights ();
+void check_door_sound ();
 
 #endif

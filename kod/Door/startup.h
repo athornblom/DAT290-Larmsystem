@@ -18,5 +18,7 @@ volatile uint32_t msTicks; /* Variable to store millisecond ticks */
 uint32_t id;
 char nocid;
 volatile char annydoorLarm;
+door doors[32];
+int amountOfActiveDoors;
 #endif
 ////Dörren uppställd?/larmat centralt/Larmar
