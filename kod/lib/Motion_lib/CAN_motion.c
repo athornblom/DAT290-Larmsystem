@@ -66,46 +66,44 @@ void CANGetCalibration() {
  * 
  * Byte 5-7: Används ej.
  */
-void CANGetConfig() {
-	char data[8]; 	 // todo
+void CANGetConfig_handler(CanRxMsg* msg) {
+	char *data = &(msg->Data);
 	char valid = 0;  // Används för att kolla att konfigurationen är av rätt typ
 	
-	char ID_Byte = data[0];
-	char sensorType = data[1];
-	char startIndex = data[2];
-	char endIndex = data[3];
-	char active = data[4];
-	char setAlarmDistance = data[5]*2;
+	char sensorType = *data;
+	char startIndex = *(data+1);
+	char endIndex = *(data+2);
+	char active = *(data+3);
+	char setAlarmDistance = *(data+4)*2;
 	
-	if(ID_Byte == MD407_ID){
-		
-		// Typen rörelsesensor
-		if(!sensorType){
-			for(int i = startIndex; i <= endIndex && i >= 0 && i < connectedCounter; i++){
-				char index = connectedSensors[i];
-				if(sensorType == (sensors[index].controlbits & bit1)){
-					if(active){
-					sensors[index].controlbits |= bit2;
-					sensors[index].motion.alarmDistance = setAlarmDistance;
-					}
-					else{
-						sensors[index].controlbits &= ~bit2;
-					}
+	
+	
+	// Typen rörelsesensor
+	if(!sensorType){
+		for(int i = startIndex; i <= endIndex && i >= 0 && i < connectedCounter; i++){
+			char index = connectedSensors[i];
+			if(sensorType == (sensors[index].controlbits & bit1)){
+				if(active){
+				sensors[index].controlbits |= bit2;
+				sensors[index].motion.alarmDistance = setAlarmDistance;
+				}
+				else{
+					sensors[index].controlbits &= ~bit2;
 				}
 			}
 		}
-		
-		// Typen vibrationssensor
-		else{
-			for(int i = startIndex; i <= endIndex; i++){
-				char index = connectedSensors[i];
-				if(sensorType == (sensors[index].controlbits & bit1) && sensors[index].controlbits & bit0){
-					if(active){
-					sensors[index].controlbits |= bit2;
-					}
-					else{
-						sensors[index].controlbits &= ~bit2;
-					}
+	}
+	
+	// Typen vibrationssensor
+	else{
+		for(int i = startIndex; i <= endIndex; i++){
+			char index = connectedSensors[i];
+			if(sensorType == (sensors[index].controlbits & bit1) && sensors[index].controlbits & bit0){
+				if(active){
+				sensors[index].controlbits |= bit2;
+				}
+				else{
+					sensors[index].controlbits &= ~bit2;
 				}
 			}
 		}

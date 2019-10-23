@@ -1,4 +1,5 @@
 #include "CAN.h"
+#include "CANEncodeDecode.h"
 #include "misc.h"
 #include "stm32f4xx.h"
 #include "stm32f4xx_can.h"
