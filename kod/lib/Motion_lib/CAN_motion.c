@@ -35,28 +35,27 @@ void idAssign_Handler(CanRxMsg* msg){
 	}
 }
 
-
 void CANSendMeasurement(Sensor motionSensor) {
+	
 	while (!motionMeasure(&motionSensor)) {};
 	char distance = motionSensor.motion.cm;
 	char id = motionSensor.id;
+	
+	// Todo skicka can-meddelande av typen konfiguration
 }
 
-void CANGetCalibration() {
-	char data[8];
-	char id = data[0];
-	float multiple = data[1];
-	
-	sensors[id].motion.multiple = multiple;
+void calibrationRecieve(char sensorId, float *multiple) {
+	sensors[sensorId].motion.multiple = *multiple;
 }
+
 
 /**
  * @brief Hanterar att ta emot konfigurationer för rörelsesenorer från centralenheten
  * 
  * 
- * Byte 0: Typ av sensor, 0 = rörelse, 1 = vibration.
+ * Byte 0: Typ av sensor, 0 = rörelse, 1 = vibration. (Vid kalibrering = ID).
  * 
- * Byte 1: Början av indexet till 'connectedSensors' som skall konfigureras.
+ * Byte 1: Början av indexet till 'connectedSensors' som skall konfigureras. (Vid kalibrering: Byte 1-4: Float multipel).
  * 
  * Byte 2: Slutet av indexet till 'connectedSensors' som skall konfigureras.
  * 
@@ -64,11 +63,23 @@ void CANGetCalibration() {
  * 
  * Byte 4 (Rörelse): Byte[4]*2 = 'alarmDistance' i cm, upp till 400 cm. Om Byte[4] >= 200 så kommer 'alarmDistance' alltid sättas till 400.
  * 
- * Byte 5-7: Används ej.
+ * Byte 5-6: Används ej.
+ * 
+ * Byte 7: Är konfigurationen till kalibrering? 0 = Nej, 1 = Ja, begär mätning, 2 = Ja, skickar multipel
  */
 void CANGetConfig_handler(CanRxMsg* msg) {
 	char *data = (char*)&(msg->Data);
-	char valid = 0;  // Används för att kolla att konfigurationen är av rätt typ
+	char calibration = *(data+7);
+	if (calibration == 1) {
+		char sensorId = *data;
+		CANSendMeasurement(sensors[sensorId]);
+		return;
+	}
+	else if (calibration == 2) {
+		char sensorId   = *data;
+		float *multiple = (float*)&msg->Data[1];
+		calibrationRecieve(sensorId, multiple);
+	}
 	
 	char sensorType = *data;
 	char startIndex = *(data+1);
