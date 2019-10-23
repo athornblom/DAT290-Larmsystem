@@ -49,12 +49,14 @@ void active_doors_add_doors(){
 				doors[counter].controlbits = 0;
 				doors[counter].time_larm = 0;
 				doors[counter].time_central_larm = 0;
+				doors[counter].waitOutTime = 0;
 				doors[counter].GPIO_type = GPIO_Ports[j];
 				amountOfActiveDoors++;
 				counter++;
 			}
 		}
 	}
+	amountOfActiveDoors--;
 }
 
 
@@ -97,13 +99,13 @@ void main(void)
 	delay(2000); // väntar 2s för att säkerhetställa så att GPIO init har hunnit verkställas på kortet
 
 	//ökar ammountOFactiveDoors till så många stängda dörrar som är inkopplade
-	door active_doors[amountOfActiveDoors];  
+		
 	active_doors_add_doors(); // initierar standard värden och portar
-	
 	getId(amountOfActiveDoors); //Skickar till centralenheten hur många aktiva dörrar dörrenheten har och får ett id
 	startup_lights(); // Mest för cool het's faktorns skull ingen riktigt funktionallitet
+	if(amountOfActiveDoors == 12){
 	GPIO_SetBits(GPIOB, GPIO_Pin_2); // Lampa som lyser när systemet är färdig initierat.
-
+	}
 	while (1)
 	{
 		check_door_status(); // Uppdatterar kontrollbitarna för varje dörr.

@@ -6,6 +6,34 @@ void init_rng(void){
 	RCC_AHB2PeriphClockCmd(RCC_AHB2Periph_RNG, ENABLE);
     RNG_Cmd(ENABLE);
 }
+
+//handler för ack för larmmedelande
+void alarmAck_Handler(CanRxMsg* msg){
+	Header header;
+	UINT32toHEADER(msg->ExtId, header);
+	doors[header.msgNum].controlbits |= 2;
+}
+
+void receiveConfig_handler(CanRxMsg* msg){
+    uint8_t *door_id_0, *door_id_1, *locked;
+    uint16_t *time_0, *time_1;
+    
+    //Tolkar meddelandet och skriver värden till pekarna
+    decode_door_config_msg(msg, door_id_0, door_id_1, time_0, time_1, locked);
+    
+    for (int i = *door_id_0; i <= *door_id_1; i++)
+    {
+        doors[i].time_larm = *time_0;
+        doors[i].time_central_larm = *time_1;
+        if(*locked){
+            doors[i].controlbits |= 4;
+        }
+        else{
+            doors[i].controlbits &= ~4;
+        }
+    }
+}
+
 // funktion som genererar avbrott när centralenheten skicakr tillbaka ett id
 void idAssign_Handler(CanRxMsg* msg){
 		uint32_t rndid = decode_tempID(msg);
@@ -13,6 +41,8 @@ void idAssign_Handler(CanRxMsg* msg){
 			id = decode_ID(msg);
 			nocid = 0;
             //Aktiverar samma sessionID som skickades i id-tilldelningen
+            activate_larmAck_handler(alarmAck_Handler, id);
+            receiveConfig(id, receiveConfig_handler);
             copySessionID(msg);
 		}
 	}
@@ -56,7 +86,7 @@ void getId (int nDoors){
             while (msTicks < timeStamp && nocid)
             {
                 CANsendMessage(&idRequest);
-                delay(10000);
+                delay(1000);
             }
         }
 }
@@ -69,15 +99,6 @@ void sendAlarm (char Doorid){
 
 }
 
-/*receiveConfig_handler(CanRxMsg* msg){
-    uint8_t *door_id_0, *door_id_1, *locked;
-    uint16_t *time_0, *time_1;
-    
-    //Tolkar meddelandet och skriver värden till pekarna
-    decode_door_config_msg(msg, door_id_0, door_id_1, time_0, time_1, locked);
-    
-    
-    //TODO: Gör grejer med värdena som finns på pekarna
-}*/
 
-//TODO: Kalla den här funktionen när enheten är redo att ta emot konfigurationsmeddelanden
+
+

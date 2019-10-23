@@ -10,7 +10,8 @@ typedef struct _door
     int password;              //4 sifferig kod för att låsa upp dörrarna
     int GPIO_lamp;
     int GPIO_read;
-    int larmTick; // msTick == larmState ? Larm
+    uint32_t larmTick; // msTick == larmState ? Larm
+    char waitOutTime;
     GPIO_TypeDef * GPIO_type;
 } door;
 

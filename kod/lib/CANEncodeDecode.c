@@ -61,6 +61,25 @@ uint8_t encode_motion_config(CanTxMsg *msg, uint8_t to_central, uint8_t sensor_t
     
     *(data_pointer + 4) = distance;
 }
+uint8_t encode_distance_value(CanTxMsg *msg, uint8_t sensor_id, uint8_t distance){
+    uint8_t *data_pointer = (uint8_t*)&(msg->Data);
+    
+    
+    Header header = empty_header;
+    header.msgType = conf_msg_type;
+    header.toCentral = 1;
+    HEADERtoUINT32(header, msg->ExtId);
+    
+    msg->DLC = 2;
+    msg->IDE = CAN_Id_Extended;
+    msg->RTR = CAN_RTR_Data;
+    
+    
+    *data_pointer = sensor_id;
+    
+    *(data_pointer + 1) = distance;
+}
+
 
 
 /*
@@ -145,14 +164,7 @@ uint8_t encode_assign_id(CanTxMsg *msg, CanRxMsg *request, uint8_t id){
     return 0;
 }
 
-uint8_t encode_distance_config(CanTxMsg *msg, uint32_t dist){
-    uint8_t *data_pointer =  &(msg->Data[0]);
-    
-    msg->DLC = 4;
-    
-    //Avstånd skrivs in i bytearrayen för data
-    *data_pointer = dist;
-}
+
 
 //Encodar ett larmmeddelande
 //msg är en pekare till meddelandet som ska skickas

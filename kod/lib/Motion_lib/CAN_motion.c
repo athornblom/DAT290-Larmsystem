@@ -39,28 +39,30 @@ void idAssign_Handler(CanRxMsg* msg){
 	}
 }
 
-
 void CANSendMeasurement(Sensor motionSensor) {
+	
 	while (!motionMeasure(&motionSensor)) {};
-	char distance = motionSensor.motion.cm;
+	float distance = motionSensor.motion.cm;
 	char id = motionSensor.id;
+	
+	CanTxMsg msg;
+	encode_distance_value(&msg, id, distance);
+	CANsendMessage(&msg);
+
 }
 
-void CANGetCalibration() {
-	char data[8];
-	char id = data[0];
-	float multiple = data[1];
-	
-	sensors[id].motion.multiple = multiple;
+void calibrationRecieve(char sensorId, float *multiple) {
+	sensors[sensorId].motion.multiple = *multiple;
 }
+
 
 /**
  * @brief Hanterar att ta emot konfigurationer för rörelsesenorer från centralenheten
  * 
  * 
- * Byte 0: Typ av sensor, 0 = rörelse, 1 = vibration.
+ * Byte 0: Typ av sensor, 0 = rörelse, 1 = vibration. (Vid kalibrering = ID).
  * 
- * Byte 1: Början av indexet till 'connectedSensors' som skall konfigureras.
+ * Byte 1: Början av indexet till 'connectedSensors' som skall konfigureras. (Vid kalibrering: Byte 1-4: Float multipel).
  * 
  * Byte 2: Slutet av indexet till 'connectedSensors' som skall konfigureras.
  * 
@@ -68,29 +70,40 @@ void CANGetCalibration() {
  * 
  * Byte 4 (Rörelse): Byte[4]*2 = 'alarmDistance' i cm, upp till 400 cm. Om Byte[4] >= 200 så kommer 'alarmDistance' alltid sättas till 400.
  * 
- * Byte 5-7: Används ej.
+ * Byte 5-6: Används ej.
+ * 
+ * Byte 7: Är konfigurationen till kalibrering? 0 = Nej, 1 = Ja, begär mätning, 2 = Ja, skickar multipel
  */
 void CANGetConfig_handler(CanRxMsg* msg) {
 	char *data = (char*)&(msg->Data);
-	char valid = 0;  // Används för att kolla att konfigurationen är av rätt typ
+	char calibration = *(data+7);
+	if (calibration == 1) {
+		char sensorId = *data;
+		CANSendMeasurement(sensors[sensorId]);
+		return;
+	}
+	else if (calibration == 2) {
+		char sensorId   = *data;
+		float *multiple = (float*)&msg->Data[1];
+		calibrationRecieve(sensorId, multiple);
+		return;
+	}
 	
 	char sensorType = *data;
 	char startIndex = *(data+1);
 	char endIndex = *(data+2);
 	char active = *(data+3);
-	char setAlarmDistance = *(data+4)*2;
-	
-	
+	char setAlarmDistance = (*(data+4))*2;
 	
 	// Typen rörelsesensor
 	if(!sensorType){
 		for(int i = startIndex; i <= endIndex && i >= 0 && i < connectedCounter; i++){
-			
 			if(sensorType == (sensors[i].controlbits & bit1)){
 				if(active){
-				sensors[i].controlbits |= bit2;
-				sensors[i].motion.alarmDistance = setAlarmDistance;
+					sensors[i].controlbits |= bit2;
+					sensors[i].motion.alarmDistance = setAlarmDistance;
 				}
+
 				else{
 					sensors[i].controlbits &= ~bit2;
 				}
@@ -101,17 +114,22 @@ void CANGetConfig_handler(CanRxMsg* msg) {
 	// Typen vibrationssensor
 	else{
 		for(int i = startIndex; i <= endIndex; i++){
-			
 			if(sensorType == (sensors[i].controlbits & bit1) && sensors[i].controlbits & bit0){
 				if(active){
-				sensors[i].controlbits |= bit2;
+					sensors[i].controlbits |= bit2;
 				}
+
 				else{
 					sensors[i].controlbits &= ~bit2;
 				}
 			}
 		}
 	}
+	
+	CanRxMsg ackMsg;
+	//encode_ack_config(&ackMsg, msg);
+	//CANsendMessage(&ackMsg);
+	
 }
 
 
