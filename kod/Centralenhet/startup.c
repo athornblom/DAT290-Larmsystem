@@ -212,8 +212,8 @@ uint8_t enterConfMode (void){
     header.msgType = ~0;
     header.toCentral = ~0;
     header.ID = ~0;
-    //ignorera msgNum
-    header.msgNum = 0;
+    header.sessionID = ~0;
+    header.msgNum = ~0;
     HEADERtoUINT32(header, mask.ID);
 
     //Avaktiverar alla filter
@@ -226,6 +226,8 @@ uint8_t enterConfMode (void){
     header.msgType = reqID_msg_type;
     header.toCentral = 1;
     header.ID = 0;
+    header.sessionID = 0;
+    header.msgNum = 0;
     HEADERtoUINT32(header, filter.ID);
 
     //Aktiverar handler för ID-begäran
