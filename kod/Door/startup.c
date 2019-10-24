@@ -42,7 +42,10 @@ void active_doors_add_doors(){
 	{
 		for (int i = 0; i < sizeof(GPIO_Pins) / sizeof(uint16_t); i = i + 2)
 		{
-			if(!GPIO_ReadInputDataBit(GPIO_Ports[j], GPIO_Pins[i])){
+			if(GPIO_Ports[j] == GPIOC && GPIO_Pins[i] == GPIO_Pin_4){
+			 // detta är för att port c pinne 4 icke funkar för oss.
+			}
+			else if(!GPIO_ReadInputDataBit(GPIO_Ports[j], GPIO_Pins[i])){
 				doors[counter].id = counter;
 				doors[counter].GPIO_read = GPIO_Pins[i];
 				doors[counter].GPIO_lamp = GPIO_Pins[i+1];
@@ -51,12 +54,11 @@ void active_doors_add_doors(){
 				doors[counter].time_central_larm = 0;
 				doors[counter].waitOutTime = 0;
 				doors[counter].GPIO_type = GPIO_Ports[j];
-				amountOfActiveDoors++;
 				counter++;
+				amountOfActiveDoors++;
 			}
 		}
 	}
-	amountOfActiveDoors--;
 }
 
 

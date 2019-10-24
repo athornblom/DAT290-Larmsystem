@@ -17,7 +17,6 @@ void alarmAck_Handler(CanRxMsg* msg){
 void receiveConfig_handler(CanRxMsg* msg){
     uint8_t *door_id_0, *door_id_1, *locked;
     uint16_t *time_0, *time_1;
-    
     //Tolkar meddelandet och skriver värden till pekarna
     decode_door_config_msg(msg, door_id_0, door_id_1, time_0, time_1, locked);
     
@@ -32,6 +31,10 @@ void receiveConfig_handler(CanRxMsg* msg){
             doors[i].controlbits &= ~4;
         }
     }
+	//***********************************
+	// TODO Send ACK!!!!!!!!!!!!!!!!!!!! 
+	//***********************************
+	
 }
 
 // funktion som genererar avbrott när centralenheten skicakr tillbaka ett id
