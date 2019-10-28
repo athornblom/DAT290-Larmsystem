@@ -141,7 +141,26 @@ void id_request_handler(CanRxMsg *rxMsgP){
             }
             //Hantera rörelseenhet
             else{
+                Motion_device *dev = add_motion_device(next_id);
                 USARTPrint("Lagt till rorelseenhet med id ");
+                id = get_motion_device(next_id)->id;
+                dev->num_of_motion_sensors = rxMsg.Data[5];
+                dev->num_of_vib_sensors = rxMsg.Data[6];
+                
+                USARTPrintNum((uint32_t)id);
+                USARTPrint("\noch ");
+                USARTPrintNum((uint32_t)rxMsg.Data[5]);
+                USARTPrint(" rorelsesensorer och ");
+                USARTPrintNum((uint32_t)rxMsg.Data[6]);
+                USARTPrint(" vibrationssensorer\n");
+                
+/*                Door door;
+                for(uint8_t i = 0; i < dev->num_of_doors; i++){
+                    door = dev->doors[i];
+                    door.id = i;
+                    door.time_0 = default_time_0;
+                    door.time_1 = default_time_1;
+                }*/
             }
             
 			if (next_id < max_num_of_devs) {
