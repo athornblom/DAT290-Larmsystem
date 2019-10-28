@@ -98,12 +98,15 @@ void id_request_handler(CanRxMsg *rxMsgP){
     }*/
     
     
-    uint8_t device_type = rxMsg.Data[1];
+    uint8_t device_type = rxMsg.Data[4];
     uint32_t random_id = rxMsg.ExtId;
     uint8_t id = get_id_by_random_id(random_id, device_type);
     
     //Om random_id känns igen behöver vi bara skicka samma id igen
-    if(id == ~0){
+    if(id != 255){ //TODO: Lista ut varför ~0 inte funkar
+        USARTPrint("Skickar ID till ");
+        USARTPrintNum((uint32_t)id);
+        USARTPrint(" igen\n");
         encode_assign_id(&txMsg, rxMsgP, id);
         CANsendMessage(&txMsg);
     }
@@ -113,7 +116,12 @@ void id_request_handler(CanRxMsg *rxMsgP){
             //TODO ta bort delay såsmåningom
             blockingDelayMs(300);
             Door_device *dev = add_door_device(next_id);
-            USARTPrint("Lagt till dorrenhet med id ");
+            if(!device_type){
+                USARTPrint("Lagt till dorrenhet med id ");
+            }
+            else{
+                USARTPrint("Lagt till rorelseenhet med id ");
+            }
             
             id = get_door_device(next_id)->id;
             USARTPrintNum((uint32_t)id);
