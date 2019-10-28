@@ -4,7 +4,7 @@
 \usepackage[T1]{fontenc}
 
 %Lägger till Referenser i Innehållsförteckningen
-\usepackage[numbib]{tocbibind}
+\usepackage{tocbibind}
 \usepackage{float}
 \usepackage{parskip}
 \usepackage{todonotes}
@@ -165,7 +165,7 @@ Denna prioritering har använts för att ge brådskande meddelanden företräde 
 		ID-begäran		& Används för att begära ett ID. \\ \hline
 
 	\end{tabular}
-	\caption{Listar de meddelandetyper som används för datakommunikationen.}
+	\caption{Meddelandetyper som används för datakommunikationen.}
 	\label{tab:meddelandetyper}
 \end{table}
 
@@ -396,13 +396,13 @@ den ska.
 
 % Avslutningsvis så vill vi påminna om att projektets slutrapport, precis som projektplanen, ska vara projektintern, det väl säga att den ska beskriva det tekniska utvecklingsarbetet och bortse från att projektarbetet faktiskt organiserats inom ramen för en kurs.
 
-\section{Bilagor}
-    \subsection{Utförlig beskrivning av meddelandetyper kommunikationsprotokoll}
+\appendix
+    \section{Utförlig beskrivning av meddelandetyper kommunikationsprotokoll}
     \label{bilaga:protokoll}
         \input{../protokoll/protokollInput.tex}
         
 	\clearpage
-	\subsection{Tester}
+	\section{Tester}
     		\label{bilaga:tester}
      	\input{../tester/dorrenhet/portTest.tex}
          \input{../tester/system/IDochLarm.tex}
