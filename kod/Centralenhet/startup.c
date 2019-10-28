@@ -97,10 +97,13 @@ void id_request_handler(CanRxMsg *rxMsgP){
         USARTPrint("encodefel\n");
     }*/
     
-    
     uint8_t device_type = rxMsg.Data[4];
-    uint32_t random_id = rxMsg.ExtId;
-    uint8_t id = get_id_by_random_id(random_id, device_type);
+    
+    uint32_t temp_id = decode_tempID(rxMsgP);
+    USARTPrint("\n\nRandom ID: ");
+    USARTPrintNumBase(temp_id, 16);
+    USARTPrint("\n");
+    uint8_t id = get_id_by_random_id(temp_id, device_type);
     
     //Om random_id känns igen behöver vi bara skicka samma id igen
     if(id != 255){ //TODO: Lista ut varför ~0 inte funkar
@@ -115,16 +118,32 @@ void id_request_handler(CanRxMsg *rxMsgP){
         if (CANsendMessage(&txMsg) != CAN_TxStatus_NoMailBox){
             //TODO ta bort delay såsmåningom
             blockingDelayMs(300);
-            Door_device *dev = add_door_device(next_id);
+            
+            //Hantera dörrenhet
             if(!device_type){
+                Door_device *dev = add_door_device(next_id);
                 USARTPrint("Lagt till dorrenhet med id ");
+                id = get_door_device(next_id)->id;
+                dev->num_of_doors = rxMsg.Data[5];
+                
+                USARTPrintNum((uint32_t)id);
+                USARTPrint("\noch ");
+                USARTPrintNum((uint32_t)rxMsg.Data[5]);
+                USARTPrint(" dorrar.\n");
+                
+                Door door;
+                for(uint8_t i = 0; i < dev->num_of_doors; i++){
+                    door = dev->doors[i];
+                    door.id = i;
+                    door.time_0 = default_time_0;
+                    door.time_1 = default_time_1;
+                }
             }
+            //Hantera rörelseenhet
             else{
                 USARTPrint("Lagt till rorelseenhet med id ");
             }
             
-            id = get_door_device(next_id)->id;
-            USARTPrintNum((uint32_t)id);
 			if (next_id < max_num_of_devs) {
 				next_id++;
 			}
@@ -132,18 +151,8 @@ void id_request_handler(CanRxMsg *rxMsgP){
 				USARTPrint("Max antal periferienheter har nu lagts till. Om du lagger till fler kan det handa dumma saker.");
 			}
             
-            dev->num_of_doors = rxMsg.Data[5];
-            USARTPrint("\noch ");
-            USARTPrintNum((uint32_t)rxMsg.Data[5]);
-            USARTPrint(" dorrar.\n");
             
-            Door door;
-            for(uint8_t id = 0; id < dev->num_of_doors; id++){
-                door = dev->doors[id];
-                door.id = id;
-                door.time_0 = default_time_0;
-                door.time_1 = default_time_1;
-            }
+            
         }
         
         //send_door_configs(dev);
@@ -152,9 +161,9 @@ void id_request_handler(CanRxMsg *rxMsgP){
     USARTPrint("ExtId ");
     USARTPrintNum((uint32_t)rxMsg.ExtId);// & 0x7FF);
 
-    USARTPrint("\nData ");
+  /*  USARTPrint("\nData ");
     USARTPrintNum((uint32_t)rxMsg.Data);
-    USARTPrint("\n");
+    USARTPrint("\n");*/
     
     
 
