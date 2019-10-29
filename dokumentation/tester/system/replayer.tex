@@ -1,0 +1,69 @@
+\clearpage
+%Beskrivande titel av testet samt en unik label
+\subsection{Test av återspelningsenheten}
+\label{test:replayer}
+
+\setlength{\columnsep}{1cm}
+
+
+% Vid utförande av test fylls mallen nedan i, vilket resulterar i ett protokoll som sedan sparas som verifikation. Målet med dessa protokoll är att man utan sakkunskap ska kunna skapa sig en överblick av att systemet fungerar som det ska.
+
+
+\begin{multicols}{2}
+\subsubsection*{Test formulerat av}
+% Namn på den/de som formulerade testet.
+Filip
+
+\subsubsection*{Utfört av}
+% Namn på den/de som utförande testet.
+
+
+
+\end{multicols}
+\subsubsection*{Komponent}
+%Vilken del av systemet testas?
+Återspelningsenheten
+
+
+\subsubsection*{Testsyfte}
+%Vad ska testet visa? Är testet till följd av tidigare test?
+Säkerställa att återspelaren klarar av att spela in och återge en kort kommunikationssekvens.
+Testet avser både fördröjningar mellan meddelanden och meddelandenas korrekthet.
+
+
+\subsubsection*{Hjälpmedel}
+%Lista hjälpmedlen som användes i samband med testet.
+\begin{itemize}
+	\item Återspelare
+	\item Brusenhet
+\end{itemize}
+
+
+
+\subsubsection*{Utförande}
+%Hur ska testet utföras?
+Koppla ihop återspelaren med brusenheten på CAN-bussen och starta sedan båda enheterna.
+Se till att brusenheten ger utskrift för skickade meddelanden, se kommandolistan vid uppstart för att hitta rätt kommando.
+Starta nu inspelning på återspelningsenheten, konsultera åter igen kommandolistan.
+Nu ska en sekvens av meddelanden skickas på ett kontrollerat sätt på bussen.
+Använd funktionen för att skicka ett slumpartat meddelande från brusenheten.
+Skicka förslagsvis en kaskad av  ca 5 meddelanden följt av ett längre uppehåll på runt 10 sekunder, skicka slutligen ett par avslutande meddelanden.
+Därefter avslutas inspelningen på återspelaren.
+
+Kontrollera nu att brusenheten ger utskrift för mottagna meddelanden och starta därefter återspelningen på återspelningsenheten med cyklisk uppspelning.
+\todo[inline]{implementera inställning för att toggla mellan cyklisk och icke cyklisk}
+Låt meddelandesekvensen återspelas två gånger.
+Lägg ingen större vikt vid att kontrollera meddelandenas innheåll det kan göras efteråt, däremot borde fokus läggas på fördröjningarna.
+Avlsuta återspelningen och kontrollera meddelandenas korrekthet genom att bräddra tillbaka genom historiken.
+
+
+\subsubsection*{Resultat}
+%Vad är testresultatet? Hittades några buggar?
+
+
+
+\subsubsection*{Analys}
+%Vad innebär testets resultat? Behövs fler test av komponenten? Behöver andra komponenter testas ytterligare, och i så fall hur?
+
+
+
