@@ -5,7 +5,7 @@
 
 #ifndef BUFFERSIZE
 //Standard storlek på buffer
-#define BUFFERSIZE 300
+#define BUFFERSIZE 400
 #endif
 
 //Struktur för buffert
@@ -14,13 +14,13 @@ typedef struct {
     uint8_t buff[BUFFERSIZE];
 
     //Antal element i bufferten just nu
-    uint8_t count;
+    uint16_t count;
 
     //Index för nästa index för inmatning
-    uint8_t in;
+    uint16_t in;
 
     //Index för nästa index för utmatning
-    uint8_t out;
+    uint16_t out;
 } FIFO;
 
 //Nollställer bufferten

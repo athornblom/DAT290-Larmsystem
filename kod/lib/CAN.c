@@ -1,4 +1,5 @@
 #include "CAN.h"
+#include "CANEncodeDecode.h"
 #include "misc.h"
 #include "stm32f4xx.h"
 #include "stm32f4xx_can.h"
@@ -176,10 +177,14 @@ void can_irq_handler(void){
 
             //Anropar hanteringsfunktionen för meddelandet
             if (rxMsg.FMI < HANDLERLISTSIZE){
-                if (handlerList[rxMsg.FMI].state == ENABLE){
-                    handlerList[rxMsg.FMI].handler(&rxMsg);
+                //Dubbelkollar så att filtrer är aktivt och att DLC matchar
+                if (handlerList[rxMsg.FMI].state == ENABLE &&
+                    (handlerList[rxMsg.FMI].filter.DLC &handlerList[rxMsg.FMI].mask.DLC)
+                    == (rxMsg.DLC & handlerList[rxMsg.FMI].mask.DLC)){
+                        //Anropar handler funktionen
+                        handlerList[rxMsg.FMI].handler(&rxMsg);
+                    }
                 }
-            }
         }
     }
 }

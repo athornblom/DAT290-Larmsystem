@@ -1,6 +1,6 @@
 \clearpage
 %Beskrivande titel av testet samt en unik label
-\subsubsection{Test av ID-tilldelning och larm}
+\subsection{Test av ID-tilldelning och larm}
 \label{test:idLarm}
 
 \setlength{\columnsep}{1cm}
@@ -44,9 +44,9 @@ Kontrollera att dörrenheten blir tilldelad ett ID av centralenheten vid uppstar
 
 \subsubsection*{Utförande}
 %Hur ska testet utföras?
-Koppla upp en dörrbrytar på en port (A, C, D eller E). Därefter kopplas CAN-nätverket upp med lyssnare, centralenhet och dörrenhet. Starta sedan lyssnaren och centralenheten. Se till att centralenheten är i konfigurationsläge och starta därefter dörrenheten. Kontrollera nu att ID-tilldelningen sker genom att kolla på kommunikationen som lyssnare detekterar samt utskriften från centralenheten. 
+Koppla upp en dörrbrytare på en port (A, C, D eller E). Därefter kopplas CAN-nätverket upp med lyssnare, centralenhet och dörrenhet. Starta sedan lyssnaren och centralenheten. Se till att centralenheten är i konfigurationsläge och starta därefter dörrenheten. Kontrollera nu att ID-tilldelningen sker genom att kolla på kommunikationen som lyssnare detekterar samt utskriften från centralenheten. 
 
-Efter ID-tilldeningen är färdig sätts centralenheten i standarsläge genom att skriva komandot start i konsolen. Testa nu att centralenheten detekterar larm som skickas från dörrenheten då dörrbrytaren öppnas. Läs första byten av meddelandet, här skickas ID till dörrenheten och ska vid detta läge vara 0.
+Efter ID-tilldelningen är färdig sätts centralenheten i standarsläge genom att skriva kommandot start i konsolen. Testa nu att centralenheten detekterar larm som skickas från dörrenheten då dörrbrytaren öppnas. Läs första byten av meddelandet, här skickas ID till dörrenheten och ska vid detta läge vara 0.
 
 Starta om dörrenheten och utför samma test igen. Denna gång ska IDt vara 1.
 

@@ -4,10 +4,10 @@
 const int open = 1;
 const int cLarm = 2;
 const int dissarmedBit = 4;
-const int addaptS = 10;
+const int addaptS = 10000;
 // allmän dynamisk delay funktion.
 void delay (int mili){
-		int time = msTicks + mili * addaptS;
+		int time = msTicks + mili * addaptS /1000;
 		while(time > msTicks);
 	}
 
@@ -22,88 +22,81 @@ int is_door_armed(int controlbitts){
 }
 // Uppdaterar kontrollbitarna för varje dörr.
 
-void check_door_status (door *aDoors, int arrayLength){
-    for (int i = 0; i < arrayLength; i++)
+void check_door_status (void){
+    for (int i = 0; i < amountOfActiveDoors; i++)
     {
-        if (is_door_armed(aDoors->controlbits)) // ifall dörren är avlarmad uppdateras inte dens pinnar.
+        if (is_door_armed(doors[i].controlbits)) // ifall dörren är avlarmad uppdateras inte dens pinnar.
         {
-           if (!GPIO_ReadInputDataBit(aDoors->GPIO_type, aDoors->GPIO_read)){ //GPIO pinnen är noll ifall dörren är stängd därför !
-					aDoors->controlbits &= 0xFFFF - open - cLarm; //Nollställer kontrollbiten för larm ifall en dörr är öppen och spam kontrollbiten för central		
+           if (!GPIO_ReadInputDataBit(doors[i].GPIO_type, doors[i].GPIO_read)){ //GPIO pinnen är noll ifall dörren är stängd därför !
+					doors[i].controlbits &= 0xFFFF - open - cLarm; //Nollställer kontrollbiten för larm ifall en dörr är öppen och spam kontrollbiten för central	
+                    doors[i].waitOutTime = 0;	
 			}
 			else{
-                if (!aDoors->controlbits & open) // Kollar så att dörren inte har detekteras som öppen innan
+                if (!doors[i].controlbits & open) // Kollar så att dörren inte har detekteras som öppen innan
                 {
-                    aDoors->larmTick = msTicks;
+                    doors[i].larmTick = msTicks;
                 }
-                aDoors->controlbits |= open; //sätter dörrens kontrolbit för att den är öppen
+                doors[i].controlbits |= open; //sätter dörrens kontrolbit för att den är öppen
             }
-        }
-       aDoors++;   
+        } 
     }
     
 }
 // Funktion som tänder eller släcker den lokala larmnings lampan
-void door_uppdate_lamps (door *door){
-    uint32_t larmTime = door->larmTick + 1000 * 10 * addaptS *door->time_larm; // gångrar med 10 * 1000 eftersom att tiden anges i 10 s interval
-    if (door->controlbits & open && msTicks > larmTime) {
-            GPIO_SetBits(door->GPIO_type, door->GPIO_lamp); // tänder lampan ifall tiden för att dörren ska larma har gått
+void door_uppdate_lamps (char i){
+    uint32_t larmTime = doors[i].larmTick + 10 * addaptS *doors[i].time_larm; // gångrar med 10 * 1000 eftersom att tiden anges i 10 s interval
+    if (doors[i].controlbits & open && msTicks > larmTime) {
+            GPIO_SetBits(doors[i].GPIO_type, doors[i].GPIO_lamp); // tänder lampan ifall tiden för att dörren ska larma har gått
     }
     else{
-            GPIO_ResetBits(door->GPIO_type, door->GPIO_lamp);	// släcker lampan annars
+            GPIO_ResetBits(doors[i].GPIO_type, doors[i].GPIO_lamp);	// släcker lampan annars
         }
 }
 // Funktion som kollar ifall dörren har vart öppen tillräckligt länge för att den ska larma centralt.
-int central_larm(door *door){
-    uint32_t larmTime = door->larmTick + 1000 * 10 * addaptS*door->time_central_larm;// gångrar med 10 * 1000 eftersom att tiden anges i 10 s interval
-    if(door->controlbits&open && msTicks>larmTime && !(door->controlbits & cLarm)){
-    	door->controlbits |= cLarm;    // sätter kontrollbiten som säger att dörren har larmat centralt.
+int central_larm(char i){
+    uint32_t larmTime = doors[i].larmTick + 10 * addaptS*doors[i].time_central_larm + (addaptS * doors[i].waitOutTime);// gångrar med 10 * addaptS eftersom att tiden anges i 10 s interval
+    if(doors[i].controlbits&open && msTicks>larmTime && !(doors[i].controlbits & cLarm)){
+        doors[i].waitOutTime++;
+    	//doors[i].controlbits |= cLarm;    // sätter kontrollbiten som säger att dörren har larmat centralt.
         return 1;
     }else{
         return 0;
     }
 }
 
-void check_door_sound (door *aDoors, int arrayLength){
+void check_door_sound (){
     int checkV = 0;
-    for (int i = 0; i < arrayLength; i++){
-        uint32_t larmTime = aDoors->larmTick + 1000 * 10 * addaptS*aDoors->time_larm; // gångrar med 10 * 1000 eftersom att tiden anges i 10 s interval
-        if(aDoors->controlbits & open && msTicks > larmTime){
+    for (int i = 0; i < amountOfActiveDoors; i++){
+        uint32_t larmTime = doors[i].larmTick + 10 * addaptS*doors[i].time_larm; // gångrar med 10 * 1000 eftersom att tiden anges i 10 s interval
+        if(doors[i].controlbits & open && msTicks > larmTime){
         checkV = 1;
         break;
         }
-        aDoors++;
     }
     annydoorLarm = checkV;
 }
 // ================================== LIGHTS =========================================================
 //bara för cool-het's faktorn. 
-void startup_lights (door *aDoors, int aLength){
+void startup_lights (){
 	
-	for (int i = 0; i < aLength; i++) 
+	for (int i = 0; i < amountOfActiveDoors; i++) 
 	{
-		GPIO_SetBits(GPIOA, GPIO_Pin_5);
-		GPIO_SetBits(aDoors->GPIO_type, aDoors->GPIO_lamp);
+		GPIO_SetBits(doors[i].GPIO_type, doors[i].GPIO_lamp);
 		delay(100);	
-		GPIO_ResetBits(GPIOA, GPIO_Pin_5);
-        aDoors++;
-		
 	}
-	for (int i = aLength; i > 0 ; i--) 
+	for (int i = amountOfActiveDoors; i >= 0 ; i--) 
 	{
-		GPIO_ResetBits(aDoors->GPIO_type, aDoors->GPIO_lamp);
+		GPIO_ResetBits(doors[i].GPIO_type, doors[i].GPIO_lamp);
 		delay(100);
-        aDoors--;
 	}
 	delay(200);
-	for (int i = 0; i < aLength; i++) 
+	for (int i = 0; i < amountOfActiveDoors; i++) 
 	{
-		GPIO_SetBits(aDoors->GPIO_type, aDoors->GPIO_lamp);
-        aDoors++;
+		GPIO_SetBits(doors[i].GPIO_type, doors[i].GPIO_lamp);
 	}
 	delay(3000);
-	for (int i = 0; i < aLength; i++) 
+	for (int i = 0; i < amountOfActiveDoors; i++) 
 	{
-		GPIO_ResetBits(aDoors->GPIO_type, aDoors->GPIO_lamp);
-        aDoors--;
+		GPIO_ResetBits(doors[i].GPIO_type, doors[i].GPIO_lamp);
 	}
 }

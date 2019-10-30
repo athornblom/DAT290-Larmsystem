@@ -7,7 +7,7 @@
 #include "main_motion.h"
 
 
-uint32_t id;
+uint32_t MD407_ID;
 char noID;
 
 
@@ -16,7 +16,7 @@ void CANMsg_Handler();
 
 
 
-// H
+// Hanterar larm-ACK.
 void alarmAck_Handler(CanRxMsg* msg);
 
 
@@ -42,12 +42,12 @@ void init_rng();
 
 
 // Larmar centralenheten.
-void alarm(int i);
+void alarm(Sensor* sensor);
 
 
 
 // Avlarmar en sensor
-void disarm(int i);
+void disarm(Sensor* sensor);
 
 
 #endif

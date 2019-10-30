@@ -6,44 +6,60 @@ void init_rng(void){
 	RCC_AHB2PeriphClockCmd(RCC_AHB2Periph_RNG, ENABLE);
     RNG_Cmd(ENABLE);
 }
+
+//handler för ack för larmmedelande
+void alarmAck_Handler(CanRxMsg* msg){
+	Header header;
+	UINT32toHEADER(msg->ExtId, header);
+	doors[header.msgNum].controlbits |= 2;
+}
+
+void receiveConfig_handler(CanRxMsg* msg){
+    uint8_t *door_id_0, *door_id_1, *locked;
+    uint16_t *time_0, *time_1;
+    //Tolkar meddelandet och skriver värden till pekarna
+    decode_door_config_msg(msg, door_id_0, door_id_1, time_0, time_1, locked);
+    
+    for (int i = *door_id_0; i <= *door_id_1; i++)
+    {
+        doors[i].time_larm = *time_0;
+        doors[i].time_central_larm = *time_1;
+        if(*locked){
+            doors[i].controlbits |= 4;
+        }
+        else{
+            doors[i].controlbits &= ~4;
+        }
+    }
+	//***********************************
+	// TODO Send ACK!!!!!!!!!!!!!!!!!!!! 
+	//***********************************
+	
+}
+
 // funktion som genererar avbrott när centralenheten skicakr tillbaka ett id
 void idAssign_Handler(CanRxMsg* msg){
 		uint32_t rndid = decode_tempID(msg);
 		if(rndid == id){
 			id = decode_ID(msg);
 			nocid = 0;
+            //Avaktiverar alla handlers, dvs bara idAssign_Handler
+            CANdisableAllFilterHandlers();
+            
             //Aktiverar samma sessionID som skickades i id-tilldelningen
             copySessionID(msg);
+
+            //Aktiverar handler för ack för larm
+            activate_larmAck_handler(alarmAck_Handler, id);
+            
+            //Aktiverar handler för konfigurationsmeddelnaden
+            activate_receiveConfig_handler(receiveConfig_handler, id);
 		}
 	}
 //funktion som förfrågar efter ett id 
 void getId (int nDoors){
-    CANFilter filter = empty_mask;
-    CANFilter mask = empty_mask;
-
-    //används för omvandling
-    Header header = empty_header;
-
-    //skriver mask
-    mask.IDE = 1;
-    mask.RTR = 1;
-    header.msgType = ~0;
-    header.ID = ~0;
-    header.toCentral = ~0;
-    HEADERtoUINT32(header, mask.ID);
-
-    //Skriver filter
-    filter.IDE = 1;
-    filter.RTR = 0;
-    header.msgType = assignID_msg_type;
-    header.ID = 0;
-    header.toCentral = 0;
-    HEADERtoUINT32(header, filter.ID);
-
-    if (CANhandlerListNotFull()){
-        CANaddFilterHandler(idAssign_Handler, &filter, &mask);
-    }
-
+    //Aktiverar handler för mottagen ID-tilldelning
+    activate_assignID_handler(idAssign_Handler);
 
     int timeStamp = msTicks + 30 * 10000; 
     if (RNG_GetFlagStatus(RNG_FLAG_DRDY) == SET && //Nytt meddelande finns
@@ -56,7 +72,7 @@ void getId (int nDoors){
             while (msTicks < timeStamp && nocid)
             {
                 CANsendMessage(&idRequest);
-                delay(10000);
+                delay(1000);
             }
         }
 }
@@ -66,4 +82,9 @@ void sendAlarm (char Doorid){
     CanTxMsg AMsg;
     encode_larm_msg(&AMsg,(char) id,Doorid);	
     CANsendMessage(&AMsg);
+
 }
+
+
+
+

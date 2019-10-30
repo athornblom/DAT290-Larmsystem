@@ -4,5 +4,8 @@
         "stm32f4xx_rcc.h": "c",
         "stm32f4xx_rng.h": "c",
         "core_cm4.h": "c"
+    },
+    "files.exclude": {
+        "./toc": true
     }
 }

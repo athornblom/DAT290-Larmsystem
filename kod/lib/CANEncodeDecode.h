@@ -23,6 +23,7 @@
 #define reqID_msg_length 7
 #define assignID_msg_length 5
 #define larm_msg_length 1
+#define motion_config_msg_length 7
 
 uint8_t encode_door_time_config(CanTxMsg *msg, uint8_t to_central, uint8_t door_id_0, uint8_t door_id_1, uint16_t time_0, uint16_t time_1, uint8_t locked);
 
@@ -78,5 +79,19 @@ uint32_t decode_tempID(CanRxMsg *msg);
 //Returnerar ID ur ett ID-tilldelings meddelande
 //Filtrering av header och rätt tempID måste redan ha gjorts
 uint8_t decode_ID(CanRxMsg *msg);
+
+//Aktiverar handler för mottagning av id-tilldelning
+//returnerar 1 om det lyckad 0 annars
+uint8_t activate_assignID_handler(void (*handler)(CanRxMsg *));
+
+//Aktiverar handler för mottagning av larm-ack
+//ID är enehetens ID
+//returnerar 1 om det lyckad 0 annars
+uint8_t activate_larmAck_handler(void (*handler)(CanRxMsg *), uint8_t ID);
+
+//Aktiverar handler för mottagning av konfiguration
+//ID är enehetens ID
+//returnerar 1 om det lyckad 0 annars
+uint8_t activate_receiveConfig_handler (void (*handler)(CanRxMsg*), uint8_t ID);
 
 #endif

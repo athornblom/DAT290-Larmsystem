@@ -10,6 +10,10 @@
 
 uint8_t larmAck = 0;
 uint8_t counter = 0;
+uint8_t spammerActive = 0;
+uint16_t delay = 128;
+uint8_t listnerActive = 0;
+uint8_t outputPrint = 1;
 
 void startup(void) __attribute__((naked)) __attribute__((section (".start_section")) );
 
@@ -22,10 +26,26 @@ __asm volatile(
 	) ;
 }
 
-void help(uint16_t delay){
+void help(void){
     USARTPrintNumBase(delay,10);
-    USARTWaitPrint(" ms delay\nx for att toggla on/off\ns/f for att andra delay\np for att toggla tx print\nl for att toggla lyssnare\ne for att skicka ett rnd meddelande\n");
-    USARTWaitPrint("c for clear\n1 for larm\n3 for idbegaran\n? for att se denna hjalp\n\n");
+    USARTPrint("ms delay\n");
+    if (spammerActive){
+        USARTPrint("Spammer on\n");
+    } else {
+        USARTPrint("Spammer off\n");
+    }
+    if (listnerActive){
+        USARTPrint("Lyssnare on\n");
+    } else {
+        USARTPrint("Lyssnare off\n");
+    }
+    if (outputPrint){
+        USARTPrint("Tx print on\n");
+    } else {
+        USARTPrint("Tx print off\n");
+    }
+    USARTWaitPrint("x for att toggla on/off\ns/f for att andra delay\np for att toggla tx print\nl for att toggla lyssnare\ne for att skicka ett rnd meddelande\n");
+    USARTWaitPrint("c for clear\n3 for idbegaran\nh for header test\nb for meddelande med olika datalangd\n? for att se denna hjalp\n\n");
 }
 
 void msgPrint(CanRxMsg *msg){
@@ -76,38 +96,29 @@ void sendRnd(uint8_t print){
     }
 }
 
-//ack handler
-void handler_larmAck(CanRxMsg *msg){
-    larmAck = 1;
-}
-
 void main(void) {
+    uint8_t usartRead;
+    uint8_t listnerHandlerIndex;
+
     USARTConfig();
     can_init();
     
     //Initsierar random number generator
     RCC_AHB2PeriphClockCmd(RCC_AHB2Periph_RNG, ENABLE);
     RNG_Cmd(ENABLE);
-    
-    uint8_t usartRead;
-    uint8_t spammerActive = 0;
-    uint16_t delay = 128;
-    uint8_t listnerHandlerIndex;
-    uint8_t listnerActive = 0;
-    uint8_t outputPrint = 1;
-    
+
     USARTPrint("\n");
-    help(delay);
+    help();
     
     while (1) {
         if (USARTGet(&usartRead)){
             if (usartRead == 'x'){
                 if(spammerActive){
                     spammerActive = 0;
-                    USARTPrint("off\n");
+                    USARTPrint("Spammer off\n");
                 } else {
                     spammerActive = 1;
-                    USARTPrint("on\n");
+                    USARTPrint("Spammer on\n");
                 }
             }
             //Minskar spamhastigheten 's' som i slower
@@ -161,63 +172,89 @@ void main(void) {
             else if (usartRead == 'e'){
                 sendRnd(outputPrint);
             }
-            
-            //? för hjälp
-            else if (usartRead == '?'){
-                help(delay);
+
+            //b för meddelande med olika datalängd
+            else if (usartRead == 'b'){
+                static CanTxMsg msg;
+                static uint8_t counter = 0;
+                Header header = empty_header;
+                header.msgType = ~0;
+                header.toCentral = 1;
+                HEADERtoUINT32(header, msg.ExtId);
+                msg.DLC = counter++ % 9;
+                msg.IDE = CAN_Id_Extended;
+                msg.RTR = CAN_RTR_Data;
+                CANsendMessage(&msg);
+                if(outputPrint){
+                    USARTPrint("\n");
+                    printTxMsg(&msg, 16);
+                }
             }
-
-            //1 för larmmedelande
-            else if (usartRead == '1'){
-               CanTxMsg msg;
-               const uint8_t ID = 0;
-               encode_larm_msg(&msg, ID, counter);
-               larmAck = 0;
-
-               CANFilter filter = empty_mask;
-                CANFilter mask = empty_mask;
+            
+            //h för header till uint test
+            else if (usartRead == 'h'){
+                CanRxMsg msg;
+                msg.IDE =  CAN_Id_Extended;
+                uint32_t uint = 0;
                 Header header = empty_header;
                 
-                //Skriver mask
-                mask.IDE = 1;
-                mask.RTR = 1;
-                header.msgType = ~0;
-                header.ID = ~0;
-                header.toCentral = ~0;
+                USARTPrint("msgNum ");
                 header.msgNum = ~0;
-                HEADERtoUINT32(header, mask.ID);
+                HEADERtoUINT32(header, uint);
+                HEADERtoUINT32(header, msg.ExtId)
+                USARTPrintPtr((uint8_t *)&uint, sizeof(uint), 2);
+                printRxMsg(&msg, 2);
+                blockingDelayMs(100);
+                
+                USARTPrint("\nsessionID ");
+                header.msgNum = 0;
+                header.sessionID = ~0;
+                HEADERtoUINT32(header, uint);
+                HEADERtoUINT32(header, msg.ExtId)
+                USARTPrintPtr((uint8_t *)&uint, sizeof(uint), 2);
+                printRxMsg(&msg, 2);
+                blockingDelayMs(100);
+                
+                USARTPrint("\nID ");
+                header.sessionID = 0;
+                header.ID = ~0;
+                HEADERtoUINT32(header, uint);
+                HEADERtoUINT32(header, msg.ExtId)
+                USARTPrintPtr((uint8_t *)&uint, sizeof(uint), 2);
+                printRxMsg(&msg, 2);
+                blockingDelayMs(100);
+                
+                USARTPrint("\ntoCentral ");
+                header.ID = 0;
+                header.toCentral = ~0;
+                HEADERtoUINT32(header, uint);
+                HEADERtoUINT32(header, msg.ExtId)
+                USARTPrintPtr((uint8_t *)&uint, sizeof(uint), 2);
+                printRxMsg(&msg, 2);
+                blockingDelayMs(100);
+                
+                USARTPrint("\nmsgType ");
+                header.toCentral = 0;
+                header.msgType = ~0;
+                HEADERtoUINT32(header, uint);
+                HEADERtoUINT32(header, msg.ExtId)
+                USARTPrintPtr((uint8_t *)&uint, sizeof(uint), 2);
+                printRxMsg(&msg, 2);
+                blockingDelayMs(100);
+                
+                USARTPrint("\nunused ");
+                header.msgType = 0;
+                header._unused__ = ~0;
+                HEADERtoUINT32(header, uint);
+                HEADERtoUINT32(header, msg.ExtId)
+                USARTPrintPtr((uint8_t *)&uint, sizeof(uint), 2);
+                printRxMsg(&msg, 2);
+                blockingDelayMs(100);
+            }
 
-                //Skriver filter
-                filter.IDE = 1;
-                filter.RTR = 1;
-                header.msgType = larm_msg_type;
-                header.ID = ID;
-                header.toCentral = 1;
-                header.msgNum = counter;
-                HEADERtoUINT32(header, filter.ID);
-
-                if (CANhandlerListNotFull()){
-                    uint8_t handlerIndex = CANaddFilterHandler(handler_larmAck, &filter, &mask);
-                    uint8_t read = 0;
-                    while (!larmAck){
-                        if (CANsendMessage(&msg) != CAN_TxStatus_NoMailBox){
-                            if (outputPrint){
-                                USARTPrint("\n");
-                                printTxMsg(&msg, 16);
-                            }
-                        }
-                        //Avbryt med q
-                        if (USARTGet(&read)){
-                            if (read == 'q'){
-                                break;
-                            }
-                        }
-
-                        blockingDelayMs(1000);
-                    }
-                    CANdisableFilterHandler(handlerIndex);
-                    counter++;
-                }
+            //? för hjälp
+            else if (usartRead == '?'){
+                help();
             }
 
             //3 för id begäran

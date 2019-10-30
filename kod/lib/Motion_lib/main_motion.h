@@ -26,9 +26,9 @@
 
 // Struct för motionsensorer
 typedef struct MotionSensors {
-	uint16_t pinTrig, pinEcho;					// Pinnar för trig, echo t.ex GPIO_Pin_4, GPIO_Pin_5.
-	uint32_t pulseTrig, pulseEcho, pulseDelay;	// Längd på triggerpuls(10µs), tid tills pulsen kommer tillbaks och fördröjning mellan pulser.
-	float cm, alarmDistance, multiple;			// Avstånd till föremål och larmavstånd, multipel av avstånded för kalibrering.
+	uint16_t pinTrig, pinEcho;							// Pinnar för trig, echo t.ex GPIO_Pin_4, GPIO_Pin_5.
+	uint32_t pulseTrig, pulseEcho, pulseDelay, timeOut;	// Längd på triggerpuls(10µs), tid tills pulsen kommer tillbaks, fördröjning mellan pulser och timeOut ifall sensorn blir ifrånkopplad under drift.
+	float cm, alarmDistance, multiple;					// Avstånd till föremål och larmavstånd, multipel av avstånded för kalibrering.
 } MotionSensor;
 
 
@@ -53,7 +53,6 @@ typedef struct VibrationSensors{
  */
 typedef struct Sensors {
 	char 			id, controlbits;	// ID och 8 kontrollbitar
-	short 			password;			// 4 sifferig kod för att aktivera/avaktivera sensorn.
 	
 	GPIO_TypeDef*	port;				// Porten sensorn är kopplad till
 	uint16_t 		pinLamp;			// Pin för lysdiod för sensorn
@@ -84,8 +83,8 @@ GPIO_TypeDef* vibrationPorts[2];
 
 // Alla sensorer, denna initieras under init_Sensors.
 Sensor sensors[nMaxMotionSensors + nMaxVibrationSensors];	// Array för max antalet sensorer.
-char connectedSensors[nMaxMotionSensors + nMaxVibrationSensors];	// Ska innehålla id för de inkopplade sensorerna. Om ett element i arrayn är 100 
-																	// så indikerar det att det finns inga mer inkopplade sensorer.
+Sensor initMotionSensors[nMaxMotionSensors];	// Lista som används i början vid initiering av rörelsesensorerna.
+
 char connectedCounter;	// Räknare till connectedSensors, en global variabel för den används i 'init_MotionSensors' och 'init_VibrationSensors'.
 
 uint8_t nMotionSensors;		// Antalet rörelsesensorer kopplade till MD407-kortet.

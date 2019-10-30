@@ -4,9 +4,10 @@
 
 #define MAXCOMMANDLENGTH 10
 #define SESSIONIDACTIVE 1
+#define CONFMODE 0
+#define STDMODE 1
 
-
-
+uint8_t mode;
 uint8_t next_id = 0;
 uint16_t default_time_0 = 2;
 uint16_t default_time_1 = 3;
@@ -82,70 +83,96 @@ uint8_t get_id_by_random_id(uint32_t random_id, uint8_t device_type){
 
 
 void id_request_handler(CanRxMsg *rxMsgP){
-    printRxMsg(rxMsgP, 16);
-        CanRxMsg rxMsg = *rxMsgP;
-        CanTxMsg txMsg;
-        static uint8_t counter = 0;
-        if (encode_assign_id(&txMsg, rxMsgP, counter++)){
-            if (CANsendMessage(&txMsg) == CAN_TxStatus_NoMailBox){
-                    USARTPrint("No mailbox empty\n");
-            } else {
-                printTxMsg(&txMsg, 16);
-            }
-        } else {
-            USARTPrint("encodefel\n");
-        }
-}
-    /*TODO KOMPILERAR INTE
+    printRxMsg(rxMsgP, 16); //TODO Ta bort när vi inte behöver den längre
     CanRxMsg rxMsg = *rxMsgP;
     CanTxMsg txMsg;
     
-    
-    uint8_t device_type = rxmsg.data[1];
-    uint32_t random_id = rxmsg.id;
-    uint8_t id = get_id_by_random_id(random_id, device_type);
-    
-    //Om random_id känns igen behöver vi bara skicka 
-    if(!~id){
-        encode_assign_id(&txMsg, rxMsgP, id);
+    /*static uint8_t counter = 0;
+    if (encode_assign_id(&txMsg, rxMsgP, counter++)){
         if (CANsendMessage(&txMsg) == CAN_TxStatus_NoMailBox){
-            USARTPrint("No mailbox empty\n");
+                USARTPrint("No mailbox empty\n");
+        } else {
+            printTxMsg(&txMsg, 16);
         }
-        
+    } else {
+        USARTPrint("encodefel\n");
+    }*/
+    
+    uint8_t device_type = rxMsg.Data[4];
+    
+    uint32_t temp_id = decode_tempID(rxMsgP);
+    USARTPrint("\n\nRandom ID: ");
+    USARTPrintNumBase(temp_id, 16);
+    USARTPrint("\n");
+    uint8_t id = get_id_by_random_id(temp_id, device_type);
+    
+    //Om random_id känns igen behöver vi bara skicka samma id igen
+    if(id != 255){ //TODO: Lista ut varför ~0 inte funkar
+        USARTPrint("Skickar ID till ");
+        USARTPrintNum((uint32_t)id);
+        USARTPrint(" igen\n");
+        encode_assign_id(&txMsg, rxMsgP, id);
+        CANsendMessage(&txMsg);
     }
     else{
         encode_assign_id(&txMsg, rxMsgP, next_id);
-        if (CANsendMessage(&txMsg) == CAN_TxStatus_NoMailBox){
-            USARTPrint("No mailbox empty\n");
-        }
-        //TODO att lägga till en enhet borde först ske vid mottagande av ack
-        //TODO ta bort delay såsmåningom
-        blockingDelayMs(300);
-        else{
-            Door_device *dev = add_door_device(next_id);
-            USARTPrint("Lagt till dorrenhet med id ");
+        if (CANsendMessage(&txMsg) != CAN_TxStatus_NoMailBox){
+            //TODO ta bort delay såsmåningom
+            blockingDelayMs(300);
             
-            id = get_door_device(next_id)->id;
-            USARTPrintNum((uint32_t)id);
+            //Hantera dörrenhet
+            if(!device_type){
+                Door_device *dev = add_door_device(next_id);
+                USARTPrint("Lagt till dorrenhet med id ");
+                id = get_door_device(next_id)->id;
+                dev->num_of_doors = rxMsg.Data[5];
+                
+                USARTPrintNum((uint32_t)id);
+                USARTPrint("\noch ");
+                USARTPrintNum((uint32_t)rxMsg.Data[5]);
+                USARTPrint(" dorrar.\n");
+                
+                Door door;
+                for(uint8_t i = 0; i < dev->num_of_doors; i++){
+                    door = dev->doors[i];
+                    door.id = i;
+                    door.time_0 = default_time_0;
+                    door.time_1 = default_time_1;
+                }
+            }
+            //Hantera rörelseenhet
+            else{
+                Motion_device *dev = add_motion_device(next_id);
+                USARTPrint("Lagt till rorelseenhet med id ");
+                id = get_motion_device(next_id)->id;
+                dev->num_of_motion_sensors = rxMsg.Data[5];
+                dev->num_of_vib_sensors = rxMsg.Data[6];
+                
+                USARTPrintNum((uint32_t)id);
+                USARTPrint("\noch ");
+                USARTPrintNum((uint32_t)rxMsg.Data[5]);
+                USARTPrint(" rorelsesensorer och ");
+                USARTPrintNum((uint32_t)rxMsg.Data[6]);
+                USARTPrint(" vibrationssensorer\n");
+                
+/*                Door door;
+                for(uint8_t i = 0; i < dev->num_of_doors; i++){
+                    door = dev->doors[i];
+                    door.id = i;
+                    door.time_0 = default_time_0;
+                    door.time_1 = default_time_1;
+                }*/
+            }
+            
 			if (next_id < max_num_of_devs) {
 				next_id++;
 			}
 			else {
-				USARTPrint("Max antal periferienheter har nu lagts till. Om du lagger till fler kan det handa dumma saker.")
+				USARTPrint("Max antal periferienheter har nu lagts till. Om du lagger till fler kan det handa dumma saker.");
 			}
             
-            dev->num_of_doors = rxMsg.Data[5];
-            USARTPrint("\noch ");
-            USARTPrintNum((uint32_t)rxMsg.Data[5]);
-            USARTPrint(" dorrar.\n");
             
-            Door door;
-            for(uint8_t id = 0; id < dev->num_of_doors; id++){
-                door = dev->doors[id];
-                door.id = id;
-                door.time_0 = default_time_0;
-                door.time_1 = default_time_1;
-            }
+            
         }
         
         //send_door_configs(dev);
@@ -154,14 +181,14 @@ void id_request_handler(CanRxMsg *rxMsgP){
     USARTPrint("ExtId ");
     USARTPrintNum((uint32_t)rxMsg.ExtId);// & 0x7FF);
 
-    USARTPrint("\nData ");
+  /*  USARTPrint("\nData ");
     USARTPrintNum((uint32_t)rxMsg.Data);
-    USARTPrint("\n");
+    USARTPrint("\n");*/
     
     
 
 }
-*/
+
 
 //Förslag på struktur för larmhanterare
 void larmHandler(CanRxMsg *rxMsg){
@@ -207,6 +234,7 @@ uint8_t msgPrint(CanRxMsg *msg, uint8_t base){
 //Aktiverar ID-tilldelningshantering och initial konfiguration
 //returnerar 1 om det lyckades, 0 annars
 uint8_t enterConfMode (void){
+    mode = CONFMODE;
     USARTWaitPrint("Startar konfigurations-mode. Aktiverar foljande handlers:\n");
     CANFilter filter = empty_filter;
     CANFilter mask = empty_mask;
@@ -217,12 +245,13 @@ uint8_t enterConfMode (void){
     //Skriver mask
     mask.IDE = 1;
     mask.RTR = 1;
+    mask.DLC = ~0;
 
     header.msgType = ~0;
     header.toCentral = ~0;
     header.ID = ~0;
-    //ignorera msgNum
-    header.msgNum = 0;
+    header.sessionID = ~0;
+    header.msgNum = ~0;
     HEADERtoUINT32(header, mask.ID);
 
     //Avaktiverar alla filter
@@ -231,9 +260,12 @@ uint8_t enterConfMode (void){
     //Filter för ID-Begäran
     filter.IDE = 1;
     filter.RTR = 0;
+    filter.DLC = reqID_msg_length;
     header.msgType = reqID_msg_type;
     header.toCentral = 1;
     header.ID = 0;
+    header.sessionID = 0;
+    header.msgNum = 0;
     HEADERtoUINT32(header, filter.ID);
 
     //Aktiverar handler för ID-begäran
@@ -255,7 +287,7 @@ uint8_t enterConfMode (void){
             return 0;
         }
     } else {
-        //För "inaktiv" sessionID avnänds 0.
+        //För "inaktiv" sessionID används 0.
         //I bakgrunden kommer sessionID fortfarande vara aktivt fast med endast nollor
         activateSessionId(0);
     }
@@ -267,8 +299,15 @@ uint8_t enterConfMode (void){
 //Aktiverar larmhantering och automatisk konfigurationsöversändning
 //returnerar 1 om det lyckades, 0 annars
 uint8_t enterStdMode (void){
+    mode = STDMODE;
+    
+    //Starta systickgrejer för att skicka konfig med jämna mellanrum
+    SysTick->CTRL = 0;
+    SysTick->LOAD = 168000;
+    SysTick->CTRL = SysTick_CTRL_ENABLE_Msk | SysTick_CTRL_CLKSOURCE_Msk;
+    
     USARTPrint("Startar standard-mode. Aktiverar foljande handlers:\n");
-     uint8_t retIndex;
+    uint8_t retIndex;
     CANFilter filter;
     CANFilter mask;
 
@@ -278,6 +317,7 @@ uint8_t enterStdMode (void){
     //Skriver mask
     mask.IDE = 1;
     mask.RTR = 1;
+    mask.DLC = ~0;
     header.msgType = ~0;
     header.toCentral = ~0;
     header.ID = 0;
@@ -291,6 +331,7 @@ uint8_t enterStdMode (void){
     //Filter för Larm
     filter.IDE = 1;
     filter.RTR = 0;
+    filter.DLC = larm_msg_length;
     header.msgType = larm_msg_type;
     header.toCentral = 1;
     header.ID = 0;
@@ -422,6 +463,7 @@ void USARTCommand(void) {
     }
 }
 
+//Kollar om två dörrar är identiska bortsett från id
 uint8_t doors_equal(Door door_0, Door door_1){
     return door_0.time_0 == door_1.time_0 && door_0.time_1 == door_1.time_1 && door_0.locked == door_1.locked;
 }
@@ -440,8 +482,7 @@ uint8_t send_door_configs(Door_device *dev){
                 break;
             }
         }
-        //TODO KOMPILERAR INTE
-        //encode_door_config(msg, 0, id_first, id_last - 1, door_first.time_0, door_first.time_1, door_first.locked);
+        encode_door_config(msg, 0, id_first, id_last - 1, door_first.time_0, door_first.time_1, door_first.locked);
         blockingDelayMs(300); //För säkerhets skull TODO: Ta bort om möjligt
         if (CANsendMessage(&msg) == CAN_TxStatus_NoMailBox){
             //TODO: Hantera?
@@ -453,12 +494,70 @@ uint8_t send_door_configs(Door_device *dev){
     return 1;
 }
 
+//Kollar om två rörelsesensorer är identiska bortsett från id
+uint8_t dists_equal(Dist_sensor dist_0, Dist_sensor dist_1){
+    return dist_0.dist == dist_1.dist && dist_0.active == dist_1.active;
+}
+//Kollar om två vibrationsssensorer är identiska bortsett från id
+uint8_t vibs_equal(Vib_sensor vib_0, Vib_sensor vib_1){
+    return vib_0.active == vib_1.active;
+}
+uint8_t send_motion_configs(Motion_device *dev){
+    CanTxMsg msg;
+    Dist_sensor dist_first;
+    Dist_sensor dist_last;
+    uint8_t id_last;
+    //Följande loop samlar största möjliga intervall av rörelsesensorer med samma värden och skickar ett meddelande per intervall
+    for(uint8_t id_first = 0; id_first < dev->num_of_motion_sensors;){
+        dist_first = dev->dist_sensors[id_first];
+        for(id_last = id_first; id_last < dev->num_of_motion_sensors; ++id_last){
+            dist_last = dev->dist_sensors[id_last];
+            if(!dists_equal(dist_first, dist_last)){
+                break;
+            }
+        }
+        encode_motion_config(msg, 0, 0, 0, id_first, id_last - 1, dist_first.active, dist_first.dist);
+        blockingDelayMs(300); //För säkerhets skull TODO: Ta bort om möjligt
+        if (CANsendMessage(&msg) == CAN_TxStatus_NoMailBox){
+            //TODO: Hantera?
+            USARTPrint("No mailbox empty\n");
+            return 0;
+        }
+        id_first = id_last; //Vi behöver ju inte kolla de dörrar som är med i intervallet.
+    }
+    
+    
+    Vib_sensor vib_first;
+    Vib_sensor vib_last;
+    
+    //Följande loop samlar största möjliga intervall av vibrationssensorer med samma värden och skickar ett meddelande per intervall
+    for(uint8_t id_first = 0; id_first < dev->num_of_vib_sensors;){
+        vib_first = dev->vib_sensors[id_first];
+        for(id_last = id_first; id_last < dev->num_of_vib_sensors; ++id_last){
+            vib_last = dev->vib_sensors[id_last];
+            if(!vibs_equal(vib_first, vib_last)){
+                break;
+            }
+        }
+        encode_motion_config(msg, 0, 1, 0, id_first, id_last - 1, vib_first.active, 0);
+        blockingDelayMs(300); //För säkerhets skull TODO: Ta bort om möjligt
+        if (CANsendMessage(&msg) == CAN_TxStatus_NoMailBox){
+            //TODO: Hantera?
+            USARTPrint("No mailbox empty\n");
+            return 0;
+        }
+        id_first = id_last; //Vi behöver ju inte kolla de dörrar som är med i intervallet.
+    }
+    
+    return 1;
+}
+
 void main(void) {
     USARTConfig();
     can_init();
     keypadnit();
 
-    //Initsierar random number generator
+    //Initierar random number generator
     RCC_AHB2PeriphClockCmd(RCC_AHB2Periph_RNG, ENABLE);
     RNG_Cmd(ENABLE);
 
@@ -469,8 +568,32 @@ void main(void) {
     } else {
         USARTWaitPrint("Start av konfigurations-mode misslyckades\n");
     }
-
+    
+    uint16_t ms_counter;
     while (1) {
         USARTCommand();
+        if(mode == STDMODE){
+            //Om det har gått en till millisekund
+            if(SysTick->CTRL & SysTick_CTRL_COUNTFLAG_Msk){
+                SysTick->CTRL = 0;
+                SysTick->LOAD = 168000;
+                SysTick->CTRL = SysTick_CTRL_ENABLE_Msk | SysTick_CTRL_CLKSOURCE_Msk;
+                ms_counter++;
+                
+                //Om det har gått en till sekund
+                if(ms_counter == 1000){
+                    ms_counter = 0;
+                    
+                    for(uint8_t i = 0; i < next_id; i++){
+                        if(get_door_device(i)->type == 0){
+                            send_door_configs(get_door_device(i));
+                        }
+                        else{
+                            send_motion_configs(get_motion_device(i));
+                        }
+                    }
+                }
+            }
+        }
     }
 }
