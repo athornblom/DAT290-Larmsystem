@@ -4,9 +4,10 @@
 
 #define MAXCOMMANDLENGTH 10
 #define SESSIONIDACTIVE 1
+#define CONFMODE 0
+#define STDMODE 1
 
-
-
+uint8_t mode;
 uint8_t next_id = 0;
 uint16_t default_time_0 = 2;
 uint16_t default_time_1 = 3;
@@ -233,6 +234,7 @@ uint8_t msgPrint(CanRxMsg *msg, uint8_t base){
 //Aktiverar ID-tilldelningshantering och initial konfiguration
 //returnerar 1 om det lyckades, 0 annars
 uint8_t enterConfMode (void){
+    mode = CONFMODE;
     USARTWaitPrint("Startar konfigurations-mode. Aktiverar foljande handlers:\n");
     CANFilter filter = empty_filter;
     CANFilter mask = empty_mask;
@@ -297,8 +299,15 @@ uint8_t enterConfMode (void){
 //Aktiverar larmhantering och automatisk konfigurationsöversändning
 //returnerar 1 om det lyckades, 0 annars
 uint8_t enterStdMode (void){
+    mode = STDMODE;
+    
+    //Starta systickgrejer för att skicka konfig med jämna mellanrum
+    SysTick->CTRL = 0;
+    SysTick->LOAD = 168000;
+    SysTick->CTRL = SysTick_CTRL_ENABLE_Msk | SysTick_CTRL_CLKSOURCE_Msk;
+    
     USARTPrint("Startar standard-mode. Aktiverar foljande handlers:\n");
-     uint8_t retIndex;
+    uint8_t retIndex;
     CANFilter filter;
     CANFilter mask;
 
@@ -473,8 +482,7 @@ uint8_t send_door_configs(Door_device *dev){
                 break;
             }
         }
-        //TODO KOMPILERAR INTE
-        //encode_door_config(msg, 0, id_first, id_last - 1, door_first.time_0, door_first.time_1, door_first.locked);
+        encode_door_config(msg, 0, id_first, id_last - 1, door_first.time_0, door_first.time_1, door_first.locked);
         blockingDelayMs(300); //För säkerhets skull TODO: Ta bort om möjligt
         if (CANsendMessage(&msg) == CAN_TxStatus_NoMailBox){
             //TODO: Hantera?
@@ -486,12 +494,70 @@ uint8_t send_door_configs(Door_device *dev){
     return 1;
 }
 
+//Kollar om två rörelsesensorer är identiska bortsett från id
+uint8_t dists_equal(Dist_sensor dist_0, Dist_sensor dist_1){
+    return dist_0.dist == dist_1.dist && dist_0.active == dist_1.active;
+}
+//Kollar om två vibrationsssensorer är identiska bortsett från id
+uint8_t vibs_equal(Vib_sensor vib_0, Vib_sensor vib_1){
+    return vib_0.active == vib_1.active;
+}
+uint8_t send_motion_configs(Motion_device *dev){
+    CanTxMsg msg;
+    Dist_sensor dist_first;
+    Dist_sensor dist_last;
+    uint8_t id_last;
+    //Följande loop samlar största möjliga intervall av rörelsesensorer med samma värden och skickar ett meddelande per intervall
+    for(uint8_t id_first = 0; id_first < dev->num_of_motion_sensors;){
+        dist_first = dev->dist_sensors[id_first];
+        for(id_last = id_first; id_last < dev->num_of_motion_sensors; ++id_last){
+            dist_last = dev->dist_sensors[id_last];
+            if(!dists_equal(dist_first, dist_last)){
+                break;
+            }
+        }
+        encode_motion_config(msg, 0, 0, 0, id_first, id_last - 1, dist_first.active, dist_first.dist);
+        blockingDelayMs(300); //För säkerhets skull TODO: Ta bort om möjligt
+        if (CANsendMessage(&msg) == CAN_TxStatus_NoMailBox){
+            //TODO: Hantera?
+            USARTPrint("No mailbox empty\n");
+            return 0;
+        }
+        id_first = id_last; //Vi behöver ju inte kolla de dörrar som är med i intervallet.
+    }
+    
+    
+    Vib_sensor vib_first;
+    Vib_sensor vib_last;
+    
+    //Följande loop samlar största möjliga intervall av vibrationssensorer med samma värden och skickar ett meddelande per intervall
+    for(uint8_t id_first = 0; id_first < dev->num_of_vib_sensors;){
+        vib_first = dev->vib_sensors[id_first];
+        for(id_last = id_first; id_last < dev->num_of_vib_sensors; ++id_last){
+            vib_last = dev->vib_sensors[id_last];
+            if(!vibs_equal(vib_first, vib_last)){
+                break;
+            }
+        }
+        encode_motion_config(msg, 0, 1, 0, id_first, id_last - 1, vib_first.active, 0);
+        blockingDelayMs(300); //För säkerhets skull TODO: Ta bort om möjligt
+        if (CANsendMessage(&msg) == CAN_TxStatus_NoMailBox){
+            //TODO: Hantera?
+            USARTPrint("No mailbox empty\n");
+            return 0;
+        }
+        id_first = id_last; //Vi behöver ju inte kolla de dörrar som är med i intervallet.
+    }
+    
+    return 1;
+}
+
 void main(void) {
     USARTConfig();
     can_init();
     keypadnit();
 
-    //Initsierar random number generator
+    //Initierar random number generator
     RCC_AHB2PeriphClockCmd(RCC_AHB2Periph_RNG, ENABLE);
     RNG_Cmd(ENABLE);
 
@@ -502,8 +568,32 @@ void main(void) {
     } else {
         USARTWaitPrint("Start av konfigurations-mode misslyckades\n");
     }
-
+    
+    uint16_t ms_counter;
     while (1) {
         USARTCommand();
+        if(mode == STDMODE){
+            //Om det har gått en till millisekund
+            if(SysTick->CTRL & SysTick_CTRL_COUNTFLAG_Msk){
+                SysTick->CTRL = 0;
+                SysTick->LOAD = 168000;
+                SysTick->CTRL = SysTick_CTRL_ENABLE_Msk | SysTick_CTRL_CLKSOURCE_Msk;
+                ms_counter++;
+                
+                //Om det har gått en till sekund
+                if(ms_counter == 1000){
+                    ms_counter = 0;
+                    
+                    for(uint8_t i = 0; i < next_id; i++){
+                        if(get_door_device(i)->type == 0){
+                            send_door_configs(get_door_device(i));
+                        }
+                        else{
+                            send_motion_configs(get_motion_device(i));
+                        }
+                    }
+                }
+            }
+        }
     }
 }

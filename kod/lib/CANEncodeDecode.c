@@ -6,7 +6,7 @@
 #include "stm32f4xx_gpio.h"
 
 
-uint8_t encode_door_time_config(CanTxMsg *msg, uint8_t to_central, uint8_t door_id_0, uint8_t door_id_1, uint16_t time_0, uint16_t time_1, uint8_t locked){
+uint8_t encode_door_config(CanTxMsg *msg, uint8_t to_central, uint8_t door_id_0, uint8_t door_id_1, uint16_t time_0, uint16_t time_1, uint8_t locked){
     if(door_id_0 > door_id_1 || door_id_1 > 31){
         return 0;
     }
@@ -38,7 +38,7 @@ uint8_t encode_door_time_config(CanTxMsg *msg, uint8_t to_central, uint8_t door_
     return 1;
 }
 
-uint8_t encode_motion_config(CanTxMsg *msg, uint8_t to_central, uint8_t sensor_type, uint8_t sensor_id_0, uint8_t sensor_id_1, uint8_t active, uint8_t distance){
+uint8_t encode_motion_config(CanTxMsg *msg, uint8_t to_central, uint8_t sensor_type, uint8_t calibration, uint8_t sensor_id_0, uint8_t sensor_id_1, uint8_t active, uint16_t distance){
     uint8_t *data_pointer = (uint8_t*)&(msg->Data);
     
     
@@ -53,13 +53,14 @@ uint8_t encode_motion_config(CanTxMsg *msg, uint8_t to_central, uint8_t sensor_t
     
     
     *data_pointer = sensor_type;
+    *(data_pointer + 1) = calibration;
     
-    *(data_pointer + 1) = sensor_id_0;
-    *(data_pointer + 2) = sensor_id_1;
+    *(data_pointer + 2) = sensor_id_0;
+    *(data_pointer + 3) = sensor_id_1;
     
-    *(data_pointer + 3) = active;
+    *(data_pointer + 4) = active;
     
-    *(data_pointer + 4) = distance;
+    *(data_pointer + 5) = distance;
 }
 uint8_t encode_distance_value(CanTxMsg *msg, uint8_t sensor_id, uint8_t distance){
     uint8_t *data_pointer = (uint8_t*)&(msg->Data);
