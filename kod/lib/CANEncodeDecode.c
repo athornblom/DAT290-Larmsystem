@@ -30,7 +30,9 @@ uint8_t encode_door_config(CanTxMsg *msg, uint8_t to_central, uint8_t door_id_0,
     
     //De två tidsvärdena skrivs till bit 16-47
     *(data_pointer + 2) = time_0;
+    *(data_pointer + 3) = time_0 >> 8;
     *(data_pointer + 4) = time_1;
+    *(data_pointer + 5) = time_1 >> 8;
     
     //Låsflagga skrivs till bit 48-55
     *(data_pointer + 6) = locked;

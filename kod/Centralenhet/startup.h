@@ -48,6 +48,7 @@ typedef struct{
     uint8_t num_of_vib_sensors;
     Dist_sensor dist_sensors[32];
     Vib_sensor vib_sensors[32];
+	uint8_t num_of_unacked;
 } Motion_device;
 
 
