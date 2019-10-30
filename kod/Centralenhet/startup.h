@@ -30,11 +30,13 @@ typedef struct{
 
 typedef struct{
     uint8_t id;
-    uint8_t dist;
+    uint16_t dist;
+	uint8_t active;
 } Dist_sensor;
 
 typedef struct{
     uint8_t id;
+	uint8_t active;
 } Vib_sensor;
 
 typedef struct{

@@ -32,6 +32,7 @@ typedef struct {
 #define NOMODE 0
 #define RECORDMODE 1
 #define REPLAYMODE (1<<1)
+#define CYCLICREPLAY (1<<2)
 uint8_t currentMode = NOMODE;
 uint16_t savedMsgsIndex = 0;
 uint16_t replayIndex = 0;
@@ -104,8 +105,13 @@ void record(CanRxMsg *msg){
 void replay(void){    
     //Om vi kommit till sista sparade meddelandet startar vi om (loopar)
     if (replayIndex >= savedMsgsIndex){
-        replayIndex = 0;
-        replayStarted = msTicks;
+        if(currentMode & CYCLICREPLAY){
+            replayIndex = 0;
+            replayStarted = msTicks;
+        } else {
+            Command("exit replay");
+            return;
+        }
     }
 
     //Kollar vi om det är dax att spela upp nästa meddelande
@@ -177,7 +183,7 @@ void exitRecordMode (void){
 //Hjälputskrift
 void help(void){
     USARTWaitPrint("Kommandon:\nrecord for starta record-mode\nexit record for att avsluta record-mode\n");
-    USARTWaitPrint("replay for att starta replay\nexit replay for att avsluta replay\nclear for att avlsuta alla aktiva modes och ta bort inspelning\n");
+    USARTWaitPrint("replay for att starta replay\nexit replay for att avsluta replay\ncyclic for att toggla cyklisk aterspelning\nclear for att avlsuta alla aktiva modes och ta bort inspelning\n");
     USARTWaitPrint("info for info\n? for denna hjalp\n");
 }
 
@@ -236,19 +242,27 @@ uint8_t Command(uint8_t *command){
 
     else if (strEqual(command, "clear")){
         if (currentMode & RECORDMODE){
-            exitRecordMode();
-            currentMode &= ~RECORDMODE;
-            USARTWaitPrint("Avslutade record-mode\n");
+            Command("exit record");
         }
 
         if (currentMode & REPLAYMODE){
-            currentMode &= ~REPLAYMODE;
-            USARTWaitPrint("Avslutade replay-mode\n");
+            Command("exit replay");
         }
 
         USARTPrint("Tar bord sparade meddelanden\n");
         savedMsgsIndex = 0;
 
+        return 1;
+    }
+    
+    else if (strEqual(command, "cyclic")){
+        if (currentMode & CYCLICREPLAY){
+            USARTPrint("Cyklisk aterspelning off\n");
+            currentMode &= ~CYCLICREPLAY;
+        } else {
+            USARTPrint("Cyklisk aterspelning on\n");
+            currentMode |= CYCLICREPLAY;
+        }
         return 1;
     }
 
@@ -263,6 +277,11 @@ uint8_t Command(uint8_t *command){
             USARTWaitPrint("Replay-mode aktivt\n");
         } else {
             USARTWaitPrint("Replay-mode inte aktivt\n");
+        }
+        if (currentMode & CYCLICREPLAY){
+            USARTWaitPrint("Cyklisk replay aktivt\n");
+        } else {
+            USARTWaitPrint("Cyklisk replay inte aktivt\n");
         }
         
         USARTPrintNum(savedMsgsIndex);
