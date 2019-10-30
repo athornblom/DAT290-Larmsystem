@@ -1,7 +1,7 @@
 #include "CAN.h"
 #include "USART.h"
+#include "delay.h"
 #include "printMsg.h"
-#include "delay.c"
 #include "stringFunc.h"
 
 typedef struct {
@@ -37,7 +37,6 @@ uint8_t currentMode = NOMODE;
 uint16_t savedMsgsIndex = 0;
 uint16_t replayIndex = 0;
 MsgUnit savedMsgs[SAVEDMSGS];
-volatile uint32_t msTicks = 0;
 uint32_t recordStarted = 0;
 uint32_t replayStarted = 0;
 
@@ -53,19 +52,6 @@ __asm volatile(
 	" BL main\n"				/* call main */
 	"_exit: B .\n"				/* never return */
 	) ;
-}
-
-//SysTick interrupt Handler.
-void SysTick_Handler(void){
-	msTicks++;
-}
-
-void systick_Init(void){
-    msTicks = 0;
-	*((void (**)(void))0x2001C03C) = SysTick_Handler;
-	uint32_t returnCode;
-    //Genererar ett SysTick-avbrott varje ms.
-	returnCode = SysTick_Config(168000000 / 1000);
 }
 
 //Handler för mottagna meddelande som ska spelas in
