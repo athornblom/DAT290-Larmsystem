@@ -4,9 +4,10 @@
 
 #define MAXCOMMANDLENGTH 10
 #define SESSIONIDACTIVE 1
+#define CONFMODE 0
+#define STDMODE 1
 
-
-
+uint8_t mode;
 uint8_t next_id = 0;
 uint16_t default_time_0 = 2;
 uint16_t default_time_1 = 3;
@@ -233,6 +234,7 @@ uint8_t msgPrint(CanRxMsg *msg, uint8_t base){
 //Aktiverar ID-tilldelningshantering och initial konfiguration
 //returnerar 1 om det lyckades, 0 annars
 uint8_t enterConfMode (void){
+    mode = CONFMODE;
     USARTWaitPrint("Startar konfigurations-mode. Aktiverar foljande handlers:\n");
     CANFilter filter = empty_filter;
     CANFilter mask = empty_mask;
@@ -297,6 +299,13 @@ uint8_t enterConfMode (void){
 //Aktiverar larmhantering och automatisk konfigurationsöversändning
 //returnerar 1 om det lyckades, 0 annars
 uint8_t enterStdMode (void){
+    mode = STDMODE;
+    
+    //Starta systickgrejer för att skicka konfig med jämna mellanrum
+    SysTick->CTRL = 0;
+    SysTick->LOAD = 168000;
+    SysTick->CTRL = SysTick_CTRL_ENABLE_Msk | SysTick_CTRL_CLKSOURCE_Msk;
+    
     USARTPrint("Startar standard-mode. Aktiverar foljande handlers:\n");
     uint8_t retIndex;
     CANFilter filter;
@@ -473,7 +482,6 @@ uint8_t send_door_configs(Door_device *dev){
                 break;
             }
         }
-        //TODO KOMPILERAR INTE
         encode_door_config(msg, 0, id_first, id_last - 1, door_first.time_0, door_first.time_1, door_first.locked);
         blockingDelayMs(300); //För säkerhets skull TODO: Ta bort om möjligt
         if (CANsendMessage(&msg) == CAN_TxStatus_NoMailBox){
@@ -549,7 +557,7 @@ void main(void) {
     can_init();
     keypadnit();
 
-    //Initsierar random number generator
+    //Initierar random number generator
     RCC_AHB2PeriphClockCmd(RCC_AHB2Periph_RNG, ENABLE);
     RNG_Cmd(ENABLE);
 
@@ -560,8 +568,32 @@ void main(void) {
     } else {
         USARTWaitPrint("Start av konfigurations-mode misslyckades\n");
     }
-
+    
+    uint16_t ms_counter;
     while (1) {
         USARTCommand();
+        if(mode == STDMODE){
+            //Om det har gått en till millisekund
+            if(SysTick->CTRL & SysTick_CTRL_COUNTFLAG_Msk){
+                SysTick->CTRL = 0;
+                SysTick->LOAD = 168000;
+                SysTick->CTRL = SysTick_CTRL_ENABLE_Msk | SysTick_CTRL_CLKSOURCE_Msk;
+                ms_counter++;
+                
+                //Om det har gått en till sekund
+                if(ms_counter == 1000){
+                    ms_counter = 0;
+                    
+                    for(uint8_t i = 0; i < next_id; i++){
+                        if(get_door_device(i)->type == 0){
+                            send_door_configs(get_door_device(i));
+                        }
+                        else{
+                            send_motion_configs(get_motion_device(i));
+                        }
+                    }
+                }
+            }
+        }
     }
 }
