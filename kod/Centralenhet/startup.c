@@ -298,7 +298,7 @@ uint8_t enterConfMode (void){
 //returnerar 1 om det lyckades, 0 annars
 uint8_t enterStdMode (void){
     USARTPrint("Startar standard-mode. Aktiverar foljande handlers:\n");
-     uint8_t retIndex;
+    uint8_t retIndex;
     CANFilter filter;
     CANFilter mask;
 
@@ -474,7 +474,7 @@ uint8_t send_door_configs(Door_device *dev){
             }
         }
         //TODO KOMPILERAR INTE
-        //encode_door_config(msg, 0, id_first, id_last - 1, door_first.time_0, door_first.time_1, door_first.locked);
+        encode_door_config(msg, 0, id_first, id_last - 1, door_first.time_0, door_first.time_1, door_first.locked);
         blockingDelayMs(300); //För säkerhets skull TODO: Ta bort om möjligt
         if (CANsendMessage(&msg) == CAN_TxStatus_NoMailBox){
             //TODO: Hantera?
@@ -483,6 +483,64 @@ uint8_t send_door_configs(Door_device *dev){
         }
         id_first = id_last; //Vi behöver ju inte kolla de dörrar som är med i intervallet.
     }
+    return 1;
+}
+
+//Kollar om två rörelsesensorer är identiska bortsett från id
+uint8_t dists_equal(Dist_sensor dist_0, Dist_sensor dist_1){
+    return dist_0.dist == dist_1.dist && dist_0.active == dist_1.active;
+}
+//Kollar om två vibrationsssensorer är identiska bortsett från id
+uint8_t vibs_equal(Vib_sensor vib_0, Vib_sensor vib_1){
+    return vib_0.active == vib_1.active;
+}
+uint8_t send_motion_configs(Motion_device *dev){
+    CanTxMsg msg;
+    Dist_sensor dist_first;
+    Dist_sensor dist_last;
+    uint8_t id_last;
+    //Följande loop samlar största möjliga intervall av rörelsesensorer med samma värden och skickar ett meddelande per intervall
+    for(uint8_t id_first = 0; id_first < dev->num_of_motion_sensors;){
+        dist_first = dev->dist_sensors[id_first];
+        for(id_last = id_first; id_last < dev->num_of_motion_sensors; ++id_last){
+            dist_last = dev->dist_sensors[id_last];
+            if(!dists_equal(dist_first, dist_last)){
+                break;
+            }
+        }
+        encode_motion_config(msg, 0, 0, 0, id_first, id_last - 1, dist_first.active, dist_first.dist);
+        blockingDelayMs(300); //För säkerhets skull TODO: Ta bort om möjligt
+        if (CANsendMessage(&msg) == CAN_TxStatus_NoMailBox){
+            //TODO: Hantera?
+            USARTPrint("No mailbox empty\n");
+            return 0;
+        }
+        id_first = id_last; //Vi behöver ju inte kolla de dörrar som är med i intervallet.
+    }
+    
+    
+    Vib_sensor vib_first;
+    Vib_sensor vib_last;
+    
+    //Följande loop samlar största möjliga intervall av vibrationssensorer med samma värden och skickar ett meddelande per intervall
+    for(uint8_t id_first = 0; id_first < dev->num_of_vib_sensors;){
+        vib_first = dev->vib_sensors[id_first];
+        for(id_last = id_first; id_last < dev->num_of_vib_sensors; ++id_last){
+            vib_last = dev->vib_sensors[id_last];
+            if(!vibs_equal(vib_first, vib_last)){
+                break;
+            }
+        }
+        encode_motion_config(msg, 0, 1, 0, id_first, id_last - 1, vib_first.active, 0);
+        blockingDelayMs(300); //För säkerhets skull TODO: Ta bort om möjligt
+        if (CANsendMessage(&msg) == CAN_TxStatus_NoMailBox){
+            //TODO: Hantera?
+            USARTPrint("No mailbox empty\n");
+            return 0;
+        }
+        id_first = id_last; //Vi behöver ju inte kolla de dörrar som är med i intervallet.
+    }
+    
     return 1;
 }
 
