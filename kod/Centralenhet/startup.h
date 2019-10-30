@@ -26,6 +26,7 @@ typedef struct{
 	uint32_t random_id;
     uint8_t num_of_doors;
     Door doors[32];
+    uint8_t num_of_unacked;
 } Door_device;
 
 typedef struct{

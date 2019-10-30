@@ -136,8 +136,8 @@ void id_request_handler(CanRxMsg *rxMsgP){
                 for(uint8_t i = 0; i < dev->num_of_doors; i++){
                     door = dev->doors[i];
                     door.id = i;
-                    door.time_0 = default_time_0;
-                    door.time_1 = default_time_1;
+                    door.time_0 = 1;//default_time_0;
+                    door.time_1 = 1;//default_time_1;
                 }
             }
             //Hantera rörelseenhet
@@ -482,7 +482,7 @@ uint8_t send_door_configs(Door_device *dev){
                 break;
             }
         }
-        encode_door_config(msg, 0, id_first, id_last - 1, door_first.time_0, door_first.time_1, door_first.locked);
+        encode_door_config(&msg, 0, id_first, id_last - 1, door_first.time_0, door_first.time_1, door_first.locked);
         blockingDelayMs(300); //För säkerhets skull TODO: Ta bort om möjligt
         if (CANsendMessage(&msg) == CAN_TxStatus_NoMailBox){
             //TODO: Hantera?
@@ -498,7 +498,7 @@ uint8_t send_door_configs(Door_device *dev){
 uint8_t dists_equal(Dist_sensor dist_0, Dist_sensor dist_1){
     return dist_0.dist == dist_1.dist && dist_0.active == dist_1.active;
 }
-//Kollar om två vibrationsssensorer är identiska bortsett från id
+//Kollar om två vibrationssensorer är identiska bortsett från id
 uint8_t vibs_equal(Vib_sensor vib_0, Vib_sensor vib_1){
     return vib_0.active == vib_1.active;
 }
@@ -583,12 +583,14 @@ void main(void) {
                 //Om det har gått en till sekund
                 if(ms_counter == 1000){
                     ms_counter = 0;
-                    
+                    USARTPrint("Konfig");
                     for(uint8_t i = 0; i < next_id; i++){
                         if(get_door_device(i)->type == 0){
+                            USARTPrint("Dorr");
                             send_door_configs(get_door_device(i));
                         }
                         else{
+                            USARTPrint("Rorelse");
                             send_motion_configs(get_motion_device(i));
                         }
                     }
