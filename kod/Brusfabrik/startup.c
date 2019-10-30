@@ -102,6 +102,7 @@ void main(void) {
 
     USARTConfig();
     can_init();
+    systick_Init();
     
     //Initsierar random number generator
     RCC_AHB2PeriphClockCmd(RCC_AHB2Periph_RNG, ENABLE);
@@ -267,7 +268,7 @@ void main(void) {
                  RNG_GetFlagStatus(RNG_FLAG_SECS) == RESET){ //Inget seedfel
                         rand = RNG_GetRandomNumber();
                  }
-               encode_door_request_id(&msg, rand, 0x69);
+               encode_door_request_id(&msg, rand, 10);
                if (CANsendMessage(&msg) != CAN_TxStatus_NoMailBox){
                     if (outputPrint){
                         USARTPrint("\n");

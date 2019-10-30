@@ -301,11 +301,6 @@ uint8_t enterConfMode (void){
 uint8_t enterStdMode (void){
     mode = STDMODE;
     
-    //Starta systickgrejer för att skicka konfig med jämna mellanrum
-    SysTick->CTRL = 0;
-    SysTick->LOAD = 168000;
-    SysTick->CTRL = SysTick_CTRL_ENABLE_Msk | SysTick_CTRL_CLKSOURCE_Msk;
-    
     USARTPrint("Startar standard-mode. Aktiverar foljande handlers:\n");
     uint8_t retIndex;
     CANFilter filter;
@@ -555,6 +550,7 @@ uint8_t send_motion_configs(Motion_device *dev){
 void main(void) {
     USARTConfig();
     can_init();
+    systick_Init();
     keypadnit();
 
     //Initierar random number generator
@@ -569,33 +565,23 @@ void main(void) {
         USARTWaitPrint("Start av konfigurations-mode misslyckades\n");
     }
     
-    uint16_t ms_counter;
+    uint16_t ms_counter = msTicks + 1000;
     while (1) {
         USARTCommand();
-        if(mode == STDMODE){
-            //Om det har gått en till millisekund
-            if(SysTick->CTRL & SysTick_CTRL_COUNTFLAG_Msk){
-                SysTick->CTRL = 0;
-                SysTick->LOAD = 168000;
-                SysTick->CTRL = SysTick_CTRL_ENABLE_Msk | SysTick_CTRL_CLKSOURCE_Msk;
-                ms_counter++;
-                
-                //Om det har gått en till sekund
-                if(ms_counter == 1000){
-                    ms_counter = 0;
-                    USARTPrint("Konfig");
-                    for(uint8_t i = 0; i < next_id; i++){
-                        if(get_door_device(i)->type == 0){
-                            USARTPrint("Dorr");
-                            send_door_configs(get_door_device(i));
-                        }
-                        else{
-                            USARTPrint("Rorelse");
-                            send_motion_configs(get_motion_device(i));
-                        }
-                    }
+        
+        //Om vi är i STDMODE och det har gått en till millisekund
+        if((mode == STDMODE) && (ms_counter <= msTicks)){
+            for(uint8_t i = 0; i < next_id; i++){
+                USARTPrint("Konfig");
+                if (get_door_device(i)->type == 0){
+                    send_door_configs(get_door_device(i));
+                    USARTPrint("Dorr");
+                } else {
+                    send_motion_configs(get_motion_device(i));
+                    USARTPrint("Rorelse");
                 }
             }
+            ms_counter = msTicks + 1000;
         }
     }
 }

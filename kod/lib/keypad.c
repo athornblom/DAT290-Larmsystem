@@ -63,7 +63,7 @@ void setEXTI0(FunctionalState state){
 //Avbrottsrutin för keypad
 void keyPad_IRQ(void){
     //Delay för att utvänta kontaktstuds
-    blockingDelayus(1000);
+    blockingDelayMs(10);
 
     //Avaktiverar EXTI0 för att undvika rekursion
     setEXTI0(DISABLE);
@@ -101,6 +101,9 @@ void keyPad_IRQ(void){
 
 //Initierar keypad för port PE8-15 med avbrott från gul banankontakt kopplad till PE0
 void keypadnit(){
+    //Initierar systick
+    systick_Init();
+
     //Tnitsierar buffer
     keyBuffer = &realKeyBuffer;
     bufferInit(keyBuffer);
