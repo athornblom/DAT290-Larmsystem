@@ -40,6 +40,7 @@ Door_device *add_door_device(uint8_t id){
     Door_device dev;
     dev.id = id;
     dev.type = 0;
+    dev.num_of_unacked = 0;
     door_devs[id] = dev; //Lägger dev i array av faktiska strukturinstanser för att undvika att den skrivs över
     devices[id] = (void*)(&door_devs[id]);
     return &door_devs[id];
@@ -210,6 +211,18 @@ void larmHandler(CanRxMsg *rxMsg){
     encode_larm_ack(&msg, rxMsg);
     CANsendMessage(&msg);
 }
+
+void config_ack_handler(CanRxMsg *msg){
+    Header header = empty_header;
+    UINT32toHEADER(rxMsg->ExtId, header);
+    uint8_t id = header.ID;
+    uint8_t dev_type = msg->Data[0];
+    
+    /*if(dev_type == door_unit){
+        
+    }*/
+}
+
 
 uint8_t msgPrint(CanRxMsg *msg, uint8_t base){
     USARTPrint("New msg:\n");
@@ -491,6 +504,7 @@ uint8_t send_door_configs(Door_device *dev){
         }
         id_first = id_last; //Vi behöver ju inte kolla de dörrar som är med i intervallet.
     }
+    dev->num_of_unacked++;
     return 1;
 }
 
