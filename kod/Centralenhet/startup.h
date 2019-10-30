@@ -13,6 +13,11 @@
 
 #define max_num_of_devs 32
 
+//Defines för returnvärden för uint8_t Command(uint8_t *command);
+#define RERUN 2
+#define OK 1
+#define NOCMD 0
+
 typedef struct{
     uint8_t id;
     uint8_t time_0;

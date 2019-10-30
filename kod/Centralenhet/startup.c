@@ -283,25 +283,6 @@ uint8_t enable_config_ack_handler(){
 }
 
 
-uint8_t msgPrint(CanRxMsg *msg, uint8_t base){
-    USARTPrint("New msg:\n");
-
-    //Skriver ut ID
-    if (msg->IDE == CAN_Id_Standard) {
-        USARTPrint("STD ID: \n");
-        USARTPrintNumBase(msg->StdId, base);
-    } else {
-        USARTPrint("Ext ID: \n");
-        USARTPrintNumBase(msg->ExtId, base);
-    }
-
-    USARTPrint("\nData: \n");
-    for (uint8_t i = 0; i < msg->DLC; i++){
-        USARTPrintNumBase(msg->Data[i],base);
-    }
-    USARTPrint("\n\n");
-}
-
 //Aktiverar centralenhetens konfigurationsläge
 //Aktiverar ID-tilldelningshantering och initial konfiguration
 //returnerar 1 om det lyckades, 0 annars
@@ -418,68 +399,97 @@ uint8_t enterStdMode (void){
 }
 
 //Kör kommandot som finns i strängen command
-//Returnerar 1 om det fanns ett kommando att köra. 0 annars.
+//Retrunrerar RERUN (2) om commandot måste köras igen, OK (1) om det fanns ett enkelt kommando att köra. NOCMD (0) annars.
 uint8_t Command(uint8_t *command){
     //Ett tomt komando är ett gilltigt kommando.
     //Detta för att man ska kunna få en ny rad utan ogilltigt kommando utskrift
     if (command[0] == 0){
-        return 1;
+        return OK;
     }
-
-    if (strEqual(command, "start")){
-        if (enterStdMode()){
-            USARTWaitPrint("Start av standard-mode lyckades\n");
-        } else {
-            USARTWaitPrint("Start av standard-mode misslyckades\n");
+    
+    if (strEqual(command, "help")){
+        if (mode == CONFMODE){
+            USARTPrint("Help config-mode:\n");
+            USARTPrint("start for att overga till standard-mode\n");
+            USARTPrint("list for att lista enheter\n");
+        } else if (mode == STDMODE){
+            USARTPrint("Help standard-mode:\n");
+            USARTPrint("avlarma for att avlarma en larmade sensor\n");
+            USARTPrint("list for att lista enheter\n");
         }
-        return 1;
+        return OK;
     }
 
-    if (strStartsWith(command, "avlarma")) {
-        //TODO läs vad som ska avlarmas
-
-        //Lösenord som sträng sista 0an för att terminera
-        #define passwordLength 4
-        uint8_t readKey;
-        uint8_t password[passwordLength + 1] = {1,2,3,4,0};
-        uint8_t entered[passwordLength]; 
-        USARTPrint("Skriv losenord: ");
-        clearKeypadQue();
-        for (uint8_t i = 0; i < passwordLength; i++){
-            while(!readKeypad(&readKey));
-            entered[i] = readKey;
-            USARTPrintNumBase(readKey, 16);
+    else if (strEqual(command, "start")){
+        if (mode == CONFMODE){
+            if (enterStdMode()){
+                USARTWaitPrint("Start av standard-mode lyckades\n");
+            } else {
+                USARTWaitPrint("Start av standard-mode misslyckades\n");
+            }
+            return OK;
         }
+        return NOCMD;
+    }
+    
+    else if (strStartsWith(command, "list")) {
+        //TODO lista enheter
+        USARTPrint("Enheter:\n");
+        return OK;
+    }
 
-        //Efter som enterd inte har terminering kollar vi om entered börjar med password
-        if (strStartsWith(entered, password)){
-            //Inloggning lyckades
-            USARTPrint(" ratt!\n");
-        } else {
-            //Inloggning misslyckades
-            USARTPrint(" fel\n");
+    //Detta kommando behöver itereras flera gånger för att hämta input och lö
+    else if (strStartsWith(command, "avlarma")) {
+        if (mode == STDMODE){
+            //Lösenordssträngen sista 0an för att terminera
+            #define PASSWORDLENGTH 4
+            uint8_t password[PASSWORDLENGTH + 1] = {1,2,3,4,0};
+            //Håller koll på om det är första iterationen av kommandot
+            static uint8_t firstIter = 1;
+            //Håller kåll på vilket index som är nästa i lösenordssträngen
+            static uint8_t currentCharIndex = 0;
+            //Håller koll på lösenordet som har matats in
+            static uint8_t entered[PASSWORDLENGTH]; 
+            
+            //Första iterationern
+            if (firstIter){
+                currentCharIndex = 0;                
+                USARTPrint("Skriv losenord: ");
+                clearKeypadQue();
+                firstIter = 0;
+            }
+            
+            //Läser från keypad
+            uint8_t readKey;
+            if(readKeypad(&readKey)){
+                entered[currentCharIndex++] = readKey;
+                USARTPrintNumBase(readKey, 16);
+            }
+
+            //Har ett helt lösenord matats in?
+            if (currentCharIndex == PASSWORDLENGTH){
+                //Nästa gång börjar vi om på nytt
+                firstIter = 1;
+                //Efter som enterd inte har terminering kollar vi om entered börjar med password
+                if (strStartsWith(entered, password)){
+                    //Inloggning lyckades
+                    USARTPrint(" ratt!\n");
+                } else {
+                    //Inloggning misslyckades
+                    USARTPrint(" fel\n");
+                }
+
+                return OK;
+            }
+            
+            return RERUN;
         }
-
-        return 1;
+        
+        //Vi är inte i stanard läge så kommandot är ogiltigt
+        return NOCMD;
     }
 
-    if (strEqual(command, "test")) {
-        USARTPrint("Hanterar test\n");
-        return 1;
-    }
-
-    if (strStartsWith(command, "spam")){
-        if (command[4] != ' ' || command[4] == 0){
-            USARTWaitPrint("Anvand>> spam string\n");
-
-        } else {
-            while (USARTPrint(&command[5]));
-            USARTWaitPrint("\n");
-        }
-        return 1;
-    }
-
-    return 0;
+    return NOCMD;
 }
 
 //Hanterar länken mellan USART och commando. Dvs kör de kommandon som skrivs från USART
@@ -487,10 +497,19 @@ void USARTCommand(void) {
     //Lista för nuvarande kommando + 1 för att ha plats för terminering
     static uint8_t currentCommand[MAXCOMMANDLENGTH + 1];
     static uint8_t index = 0;
-    static uint8_t newCommand = 1;
+    static uint8_t newCommandIndicator = 1;
+    static uint8_t rerunLastCommand = 0;
+    
+    if (rerunLastCommand){
+        if (Command(currentCommand) != RERUN){
+            rerunLastCommand = 0;
+            newCommandIndicator = 1;
+        }
+        return;
+    }
 
-    if (newCommand) {
-        newCommand = 0;
+    if (newCommandIndicator) {
+        newCommandIndicator = 0;
         USARTWaitPrint(">>");
     }
 
@@ -502,11 +521,25 @@ void USARTCommand(void) {
             //Terminering
             currentCommand[index] = 0;
             index = 0;
-            newCommand = 1;
-            if (!Command(currentCommand)){
-                USARTWaitPrint("Kommandot:");
-                USARTWaitPrint(currentCommand);
-                USARTWaitPrint(" hittades inte\n");
+            uint8_t retVal = Command(currentCommand);
+            switch (retVal) {
+                //Om samma kommando måste köras igen
+                case RERUN:
+                    rerunLastCommand = 1;
+                    break;
+                    
+                //Om kommandot är klart
+                case OK:
+                    newCommandIndicator = 1;
+                    break;
+                    
+                //Om kommandot inte fanns
+                case NOCMD:
+                    USARTWaitPrint("Kommandot:");
+                    USARTWaitPrint(currentCommand);
+                    USARTWaitPrint(" hittades inte\n");
+                    newCommandIndicator = 1;
+                    break;
             }
 
         } else {
@@ -514,7 +547,7 @@ void USARTCommand(void) {
             if (index >= MAXCOMMANDLENGTH){
                 USARTPrint("\nFor langt kommando\n");
                 index = 0;
-                newCommand = 1;
+                newCommandIndicator = 1;
             } else {
                 //Skriver ut tecknet
                 uint8_t oneChar[2] = {uint8Read, 0};
@@ -640,7 +673,7 @@ void main(void) {
     } else {
         USARTWaitPrint("Start av konfigurations-mode misslyckades\n");
     }
-    
+
     uint16_t ms_counter = msTicks + 1000;
     while (1) {
         USARTCommand();
