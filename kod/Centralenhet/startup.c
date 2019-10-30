@@ -46,6 +46,18 @@ Door_device *add_door_device(uint8_t id){
     return &door_devs[id];
 }
 
+void print_door(Door door){
+    USARTPrint("Dorr\n   id: ");
+    USARTPrintNum(door.id);
+    USARTPrint("\n   time_0: ");
+    USARTPrintNum(door.time_0);
+    USARTPrint("\n   time_1: ");
+    USARTPrintNum(door.time_1);
+    USARTPrint("\n   locked: ");
+    USARTPrintNum(door.locked);
+    USARTPrint("\n\n");
+}
+
 Motion_device *get_motion_device(uint8_t id){
     return (Motion_device*) (devices[id]);
 }
@@ -102,6 +114,7 @@ void id_request_handler(CanRxMsg *rxMsgP){
     uint8_t device_type = rxMsg.Data[4];
     
     uint32_t temp_id = decode_tempID(rxMsgP);
+    
     USARTPrint("\n\nRandom ID: ");
     USARTPrintNumBase(temp_id, 16);
     USARTPrint("\n");
@@ -119,7 +132,7 @@ void id_request_handler(CanRxMsg *rxMsgP){
         encode_assign_id(&txMsg, rxMsgP, next_id);
         if (CANsendMessage(&txMsg) != CAN_TxStatus_NoMailBox){
             //TODO ta bort delay såsmåningom
-            blockingDelayMs(300);
+            //blockingDelayMs(300);
             
             //Hantera dörrenhet
             if(!device_type){
@@ -133,12 +146,13 @@ void id_request_handler(CanRxMsg *rxMsgP){
                 USARTPrintNum((uint32_t)rxMsg.Data[5]);
                 USARTPrint(" dorrar.\n");
                 
-                Door door;
+                
                 for(uint8_t i = 0; i < dev->num_of_doors; i++){
-                    door = dev->doors[i];
-                    door.id = i;
-                    door.time_0 = 1;//default_time_0;
-                    door.time_1 = 1;//default_time_1;
+                    Door *door = &(dev->doors[i]);
+                    door->id = i;
+                    door->time_0 = 1;//default_time_0;
+                    door->time_1 = 1;//default_time_1;
+                    door->locked = 1;
                 }
             }
             //Hantera rörelseenhet
@@ -156,13 +170,18 @@ void id_request_handler(CanRxMsg *rxMsgP){
                 USARTPrintNum((uint32_t)rxMsg.Data[6]);
                 USARTPrint(" vibrationssensorer\n");
                 
-/*                Door door;
-                for(uint8_t i = 0; i < dev->num_of_doors; i++){
-                    door = dev->doors[i];
-                    door.id = i;
-                    door.time_0 = default_time_0;
-                    door.time_1 = default_time_1;
-                }*/
+                
+                for(uint8_t i = 0; i < dev->num_of_motion_sensors; i++){
+                    Dist_sensor *dist = &(dev->dist_sensors[i]);
+                    dist->id = i;
+                    dist->dist = 5;//TODO: Riktigt defaultvärde
+                    dist->active = 1;
+                }
+                for(uint8_t i = 0; i < dev->num_of_vib_sensors; i++){
+                    Vib_sensor *vib = &(dev->vib_sensors[i]);
+                    vib->id = i;
+                    vib->active = 1;
+                }
             }
             
 			if (next_id < max_num_of_devs) {
@@ -214,13 +233,53 @@ void larmHandler(CanRxMsg *rxMsg){
 
 void config_ack_handler(CanRxMsg *msg){
     Header header = empty_header;
-    UINT32toHEADER(rxMsg->ExtId, header);
+    UINT32toHEADER(msg->ExtId, header);
     uint8_t id = header.ID;
     uint8_t dev_type = msg->Data[0];
     
-    /*if(dev_type == door_unit){
-        
-    }*/
+    if(dev_type == door_unit){
+        Door_device *dev = get_door_device(id);
+        dev->num_of_unacked = 0;
+    }
+}
+
+uint8_t enable_config_ack_handler(){
+    uint8_t retIndex;
+    CANFilter filter;
+    CANFilter mask;
+
+    //För omvandling
+    Header header;
+
+    //Skriver mask
+    mask.IDE = 1;
+    mask.RTR = 1;
+    mask.DLC = ~0;
+    header.msgType = ~0;
+    header.toCentral = ~0;
+    header.ID = 0;
+    //ignorera msgNum
+    header.msgNum = 0;
+    HEADERtoUINT32(header, mask.ID);
+
+    //Filter för Larm
+    filter.IDE = 1;
+    filter.RTR = 0;
+    filter.DLC = 1;
+    header.msgType = larm_msg_type;
+    header.toCentral = 1;
+    header.ID = 0;
+    HEADERtoUINT32(header, filter.ID);
+
+    //Aktiverar handler för larm
+    if (CANhandlerListNotFull()){
+        USARTPrint("Larm handler med handler index: ");
+        retIndex = CANaddFilterHandler(larmHandler, &filter, &mask);
+        USARTPrintNum(retIndex);
+        USARTPrint("\n");
+    } else {
+        return 0;
+    }
 }
 
 
@@ -359,7 +418,7 @@ uint8_t enterStdMode (void){
 }
 
 //Kör kommandot som finns i strängen command
-//Retrunrerar 1 det fanns ett kommando att köra. 0 annars.
+//Returnerar 1 om det fanns ett kommando att köra. 0 annars.
 uint8_t Command(uint8_t *command){
     //Ett tomt komando är ett gilltigt kommando.
     //Detta för att man ska kunna få en ny rad utan ogilltigt kommando utskrift
@@ -491,7 +550,10 @@ uint8_t send_door_configs(Door_device *dev){
             }
         }
         encode_door_config(&msg, 0, id_first, id_last - 1, door_first.time_0, door_first.time_1, door_first.locked);
-        blockingDelayMs(300); //För säkerhets skull TODO: Ta bort om möjligt
+        
+        //blockingDelayMs(300); //För säkerhets skull TODO: Ta bort om möjligt
+        USARTPrint("Skickar till\n");
+        print_door(door_first);
         if (CANsendMessage(&msg) == CAN_TxStatus_NoMailBox){
             //TODO: Hantera?
             USARTPrint("No mailbox empty\n");
@@ -526,7 +588,7 @@ uint8_t send_motion_configs(Motion_device *dev){
             }
         }
         encode_motion_config(msg, 0, 0, 0, id_first, id_last - 1, dist_first.active, dist_first.dist);
-        blockingDelayMs(300); //För säkerhets skull TODO: Ta bort om möjligt
+        //blockingDelayMs(300); //För säkerhets skull TODO: Ta bort om möjligt
         if (CANsendMessage(&msg) == CAN_TxStatus_NoMailBox){
             //TODO: Hantera?
             USARTPrint("No mailbox empty\n");
@@ -549,7 +611,7 @@ uint8_t send_motion_configs(Motion_device *dev){
             }
         }
         encode_motion_config(msg, 0, 1, 0, id_first, id_last - 1, vib_first.active, 0);
-        blockingDelayMs(300); //För säkerhets skull TODO: Ta bort om möjligt
+        //blockingDelayMs(300); //För säkerhets skull TODO: Ta bort om möjligt
         if (CANsendMessage(&msg) == CAN_TxStatus_NoMailBox){
             //TODO: Hantera?
             USARTPrint("No mailbox empty\n");
@@ -589,10 +651,10 @@ void main(void) {
                 USARTPrint("Konfig");
                 if (get_door_device(i)->type == 0){
                     send_door_configs(get_door_device(i));
-                    USARTPrint("Dorr");
+                    USARTPrint(" - Dorr\n");
                 } else {
                     send_motion_configs(get_motion_device(i));
-                    USARTPrint("Rorelse");
+                    USARTPrint(" - Rorelse\n");
                 }
             }
             ms_counter = msTicks + 1000;
