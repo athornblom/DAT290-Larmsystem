@@ -634,23 +634,52 @@ void main(void) {
         USARTWaitPrint("Start av konfigurations-mode misslyckades\n");
     }
 
-    uint16_t ms_counter = msTicks + 1000;
+    uint16_t msDelay = 0;
+	uint16_t i = 0;
+	uint8_t keep_id = 0;
+	uint16_t first_id = 0;
+	uint16_t first_vib_id = 0;
+	uint16_t cont_id = 0;
+	uint16_t cont_vib_id = 0;
+
     while (1) {
         USARTCommand();
         
-        //Om vi är i STDMODE och det har gått en till sekund
-        if((mode == STDMODE) && (ms_counter <= msTicks)){
-            for(uint8_t i = 0; i < next_id; i++){
-                USARTPrint("Konfig");
-                if (get_door_device(i)->type == 0){
-                    send_door_configs(get_door_device(i));
-                    USARTPrint(" - Dorr\n");
-                } else {
-                    send_motion_configs(get_motion_device(i));
-                    USARTPrint(" - Rorelse\n");
-                }
-            }
-            ms_counter = msTicks + 1000;
+	    //Om vi är i STDMODE och 1 sekund har gått sen alla enheter fick konfigurationer
+        if(mode == STDMODE && msDelay < msTicks){
+			USARTPrint("Konfig");
+			
+			keep_id = 0;
+
+			if (devices[i].type == door_unit){
+				if (!send_door_configs(i, first_id, &cont_id)) {
+					 keep_id = 1;
+				USARTPrint(" - Dorr\n");
+			} 
+			
+			else if (devices[i].type == motion_unit)
+			{
+				if (!send_motion_configs(i, first_id, &cont_id, first_vib_id, &cont_vib_id)) {
+					keep_id = 1;
+				}
+				USARTPrint(" - Rorelse\n");
+			}
+            
+			if (!keep_id) {
+				i++;
+				first_id = 0;
+				first_vib_id = 0;
+			}
+			else {
+				first_id = cont_id;
+				first_vib_id = cont_vib_id;
+			}
+			
+			if (i >= next_id) {
+				i = 0;
+			}
+			msDelay = msTicks + 1000; // todo Ändra till + 10
         }
     }
+}
 }
