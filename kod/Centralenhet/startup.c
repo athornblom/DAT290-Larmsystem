@@ -38,8 +38,8 @@ Door_device *add_door_device(uint8_t id, CanRxMsg *msg){
     for(uint8_t i = 0; i < door_devs[id].num_of_doors; i++){
         Door *door = &(door_devs[id].doors[i]);
         door->id = i;
-        door->time_0 = default_time_0;
-        door->time_1 = default_time_1;
+        door->time_local_larm = default_time_local_larm;
+        door->time_central_larm = default_time_central_larm;
         door->locked = LOCKED;
     }
 
@@ -49,10 +49,10 @@ Door_device *add_door_device(uint8_t id, CanRxMsg *msg){
 void print_door(Door door){
     USARTPrint("Dorr\n   id: ");
     USARTPrintNum(door.id);
-    USARTPrint("\n   time_0: ");
-    USARTPrintNum(door.time_0);
-    USARTPrint("\n   time_1: ");
-    USARTPrintNum(door.time_1);
+    USARTPrint("\n   time_local_larm: ");
+    USARTPrintNum(door.time_local_larm);
+    USARTPrint("\n   time_central_larm: ");
+    USARTPrintNum(door.time_central_larm);
     USARTPrint("\n   locked: ");
     USARTPrintNum(door.locked);
     USARTPrint("\n\n");
@@ -107,11 +107,12 @@ void id_request_handler(CanRxMsg *rxMsgP){
     CanRxMsg rxMsg = *rxMsgP;
     CanTxMsg txMsg;
     
-    uint8_t device_type = rxMsg.Data[4];
-    
+    uint8_t device_type = decode_deviceType(rxMsgP);
     uint32_t temp_id = decode_tempID(rxMsgP);
     
-    USARTPrint("\n\nRandom ID: ");
+    USARTPrint("\ndevicetype: ");
+    USARTPrintNumBase(device_type, 16);
+    USARTPrint("\nRandom ID: ");
     USARTPrintNumBase(temp_id, 16);
     USARTPrint("\n");
     uint8_t id;
@@ -130,20 +131,20 @@ void id_request_handler(CanRxMsg *rxMsgP){
             if(device_type == door_unit){
                 add_door_device(next_id, rxMsgP);
                 USARTPrint("Lagt till dorrenhet med id ");
-                USARTPrintNum(id);
+                USARTPrintNum(next_id);
                 USARTPrint("\noch ");
-                USARTPrintNum(door_devs[id].num_of_doors);
+                USARTPrintNum(door_devs[next_id].num_of_doors);
                 USARTPrint(" dorrar.\n");
             }
             //Hantera rörelseenhet
-            else if (device_type == door_unit){
+            else if (device_type == motion_unit){
                 add_motion_device(next_id, rxMsgP);
                 USARTPrint("Lagt till rorelseenhet med id ");
-                USARTPrintNum((uint32_t)id);
+                USARTPrintNum((uint32_t)next_id);
                 USARTPrint("\noch ");
-                USARTPrintNum(motion_devs[id].num_of_motion_sensors);
+                USARTPrintNum(motion_devs[next_id].num_of_motion_sensors);
                 USARTPrint(" rorelsesensorer och ");
-                USARTPrintNum(motion_devs[id].num_of_vib_sensors);
+                USARTPrintNum(motion_devs[next_id].num_of_vib_sensors);
                 USARTPrint(" vibrationssensorer\n");
             }
             
@@ -153,23 +154,8 @@ void id_request_handler(CanRxMsg *rxMsgP){
 			else {
 				USARTPrint("Max antal periferienheter har nu lagts till. Om du lagger till fler kan det handa dumma saker.");
 			}
-            
-            
-            
         }
-        
-        //send_door_configs(dev);
     }
-    
-    USARTPrint("ExtId ");
-    USARTPrintNum((uint32_t)rxMsg.ExtId);// & 0x7FF);
-
-  /*  USARTPrint("\nData ");
-    USARTPrintNum((uint32_t)rxMsg.Data);
-    USARTPrint("\n");*/
-    
-    
-
 }
 
 
@@ -527,33 +513,33 @@ void USARTCommand(void) {
 
 //Kollar om två dörrar är identiska bortsett från id
 uint8_t doors_equal(Door door_0, Door door_1){
-    return door_0.time_0 == door_1.time_0 && door_0.time_1 == door_1.time_1 && door_0.locked == door_1.locked;
+    return door_0.time_local_larm == door_1.time_local_larm && door_0.time_central_larm == door_1.time_central_larm && door_0.locked == door_1.locked;
 }
 
-uint8_t send_door_configs(uint8_t id){
+//Skickar konfigurationsmeddelanden för dörrenhet med id startande från sensor first_door_ID
+//Om vi fyllt buffern så returneras index för sensorn som inte skickades
+uint8_t send_door_configs(uint8_t id, uint8_t first_door_ID, uint8_t *return_door_ID){
     CanTxMsg msg;
-    Door door_first;
-    Door door_last;
-    uint8_t id_last;
+    uint8_t last_door_ID;
     //Följande loop samlar största möjliga intervall av dörrar med samma värden och skickar ett meddelande per intervall
-    for(uint8_t id_first = 0; id_first < dev->num_of_doors;){
-        door_first = dev->doors[id_first];
-        for(id_last = id_first; id_last < dev->num_of_doors; ++id_last){
-            door_last = dev->doors[id_last];
-            if(!doors_equal(door_first, door_last)){
+    for(; first_door_ID < door_devs[id].num_of_doors; first_door_ID = last_door_ID){
+        Door first_door = door_devs[id].doors[first_door_ID];
+        for(last_door_ID = first_door_ID; last_door_ID < door_devs[id].num_of_doors; last_door_ID++){
+            Door last_door = door_devs[id].doors[last_door_ID];
+            if(!doors_equal(first_door, last_door)){
                 break;
             }
         }
-        encode_door_config(&msg, dev->id, id_first, id_last - 1, door_first.time_0, door_first.time_1, door_first.locked);
+
+        encode_door_config(&msg, id, first_door_ID, last_door_ID - 1, first_door.time_local_larm, first_door.time_central_larm, first_door.locked);
         //print_door(door_first);
         if (CANsendMessage(&msg) == CAN_TxStatus_NoMailBox){
-            //TODO: Hantera?
             USARTPrint("No mailbox 1\n");
+            *return_door_ID = first_door_ID;
             return 0;
         }
-        id_first = id_last; //Vi behöver ju inte kolla de dörrar som är med i intervallet.
     }
-    dev->num_of_unacked++;
+    devices[id].num_of_unacked++;
     return 1;
 }
 
@@ -566,52 +552,49 @@ uint8_t vibs_equal(Vib_sensor vib_0, Vib_sensor vib_1){
     return vib_0.active == vib_1.active;
 }
 
-uint8_t send_motion_configs(Motion_device *dev){
+//Skickar konfigurationsmeddelanden för rörelseenhet med id för rörelsesensor startande från sensor first_motion_ID
+//och id för vibrationssensor startande från sensor first_vib_ID
+//Om vi fyllt buffern så returneras index för sensorn som inte skickades ni pekarna return_motion_ID och return_vib_ID
+uint8_t send_motion_configs(uint8_t id, uint8_t first_motion_ID, uint8_t *return_motion_ID, uint8_t first_vib_ID, uint8_t *return_vib_ID){
     CanTxMsg msg;
-    Dist_sensor dist_first;
-    Dist_sensor dist_last;
-    uint8_t id_last;
+    uint8_t last_motion_ID;
     //Följande loop samlar största möjliga intervall av rörelsesensorer med samma värden och skickar ett meddelande per intervall
-    for(uint8_t id_first = 0; id_first < dev->num_of_motion_sensors;){
-        dist_first = dev->dist_sensors[id_first];
-        for(id_last = id_first; id_last < dev->num_of_motion_sensors; ++id_last){
-            dist_last = dev->dist_sensors[id_last];
-            if(!dists_equal(dist_first, dist_last)){
+    for(; first_motion_ID < motion_devs[id].num_of_motion_sensors; first_motion_ID = last_motion_ID){
+        Dist_sensor first_dist = motion_devs[id].dist_sensors[first_motion_ID];
+        for(last_motion_ID = first_motion_ID; last_motion_ID < motion_devs[id].num_of_motion_sensors; last_motion_ID++){
+            Dist_sensor last_dist = motion_devs[id].dist_sensors[last_motion_ID];
+            if(!dists_equal(first_dist, last_dist)){
                 break;
             }
         }
-        encode_motion_config(&msg, dev->id, motion_sensor, 0, id_first, id_last - 1, dist_first.active, dist_first.dist);
+        
+        encode_motion_config(&msg, id, motion_sensor, 0, first_motion_ID, last_motion_ID - 1, first_dist.active, first_dist.dist);
         //blockingDelayMs(300); //För säkerhets skull TODO: Ta bort om möjligt
         if (CANsendMessage(&msg) == CAN_TxStatus_NoMailBox){
-            //TODO: Hantera?
             USARTPrint("No mailbox 2\n");
+            *return_motion_ID = first_motion_ID;
             return 0;
         }
-        id_first = id_last; //Vi behöver ju inte kolla de dörrar som är med i intervallet.
     }
-    
-    
-    Vib_sensor vib_first;
-    Vib_sensor vib_last;
-    
+
+    uint8_t last_vib_ID;
     //Följande loop samlar största möjliga intervall av vibrationssensorer med samma värden och skickar ett meddelande per intervall
-    for(uint8_t id_first = 0; id_first < dev->num_of_vib_sensors;){
-        vib_first = dev->vib_sensors[id_first];
-        for(id_last = id_first; id_last < dev->num_of_vib_sensors; ++id_last){
-            vib_last = dev->vib_sensors[id_last];
-            if(!vibs_equal(vib_first, vib_last)){
+    for(; first_vib_ID < motion_devs[id].num_of_vib_sensors; first_vib_ID = last_vib_ID){
+        Vib_sensor first_vib = motion_devs[id].vib_sensors[first_vib_ID];
+        for(last_vib_ID = first_vib_ID; last_vib_ID < motion_devs[id].num_of_vib_sensors; last_vib_ID++){
+            Vib_sensor last_vib = motion_devs[id].vib_sensors[last_vib_ID];
+            if(!vibs_equal(first_vib, last_vib)){
                 break;
             }
         }
-        encode_motion_config(&msg, dev->id, vibration_sensor, 0, id_first, id_last - 1, vib_first.active, 0);
+        encode_motion_config(&msg, id, vibration_sensor, 0, first_vib_ID, last_vib_ID - 1, first_vib.active, 0);
         //blockingDelayMs(300); //För säkerhets skull TODO: Ta bort om möjligt
         if (CANsendMessage(&msg) == CAN_TxStatus_NoMailBox){
             //TODO: Hantera?
             USARTPrint("No mailbox 3\n");
             return 0;
         }
-        id_first = id_last; //Vi behöver ju inte kolla de dörrar som är med i intervallet.
-    }
+}
     
     return 1;
 }
@@ -634,13 +617,13 @@ void main(void) {
         USARTWaitPrint("Start av konfigurations-mode misslyckades\n");
     }
 
-    uint16_t msDelay = 0;
-	uint16_t i = 0;
+    uint32_t msDelay = 0;
+	uint8_t i = 0;
 	uint8_t keep_id = 0;
-	uint16_t first_id = 0;
-	uint16_t first_vib_id = 0;
-	uint16_t cont_id = 0;
-	uint16_t cont_vib_id = 0;
+	uint8_t first_id = 0;
+	uint8_t first_vib_id = 0;
+	uint8_t cont_id = 0;
+	uint8_t cont_vib_id = 0;
 
     while (1) {
         USARTCommand();

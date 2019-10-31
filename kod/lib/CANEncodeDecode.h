@@ -88,6 +88,9 @@ uint8_t decode_ID(CanRxMsg *msg);
 //Returnerar antalet dörrar i en idbegäran
 uint8_t decode_doorNum(CanRxMsg *msg);
 
+//Returnerar enhetstypen i en idbegäran
+uint8_t decode_deviceType(CanRxMsg *msg);
+
 //Returnerar antalet rörelsesensorer i en idbegäran
 uint8_t decode_motionSensNum(CanRxMsg *msg);
 

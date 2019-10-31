@@ -18,8 +18,8 @@
 #define max_num_vib_sensors 25
 
 //Standardvärden för inställningar för enheter
-#define default_time_0 1
-#define default_time_1 2
+#define default_time_local_larm 1
+#define default_time_central_larm 2
 #define default_dist 20
 
 //konstanter för aktiv och låsta enhter
@@ -36,8 +36,8 @@
 
 typedef struct{
     uint8_t id;
-    uint8_t time_0;
-    uint8_t time_1;
+    uint8_t time_local_larm;
+    uint8_t time_central_larm;
     uint8_t locked;
 } Door;
 
@@ -107,4 +107,17 @@ void USARTCommand(void);
 
 uint8_t doors_equal(Door door_0, Door door_1);
 
-uint8_t send_door_configs(Door_device *dev);
+//Skickar konfigurationsmeddelanden för dörrenhet med id startande från sensor first_door_ID
+//Om vi fyllt buffern så returneras index för sensorn som inte skickades
+uint8_t send_door_configs(uint8_t id, uint8_t first_door_ID, uint8_t *return_door_ID);
+
+//Kollar om två rörelsesensorer är identiska bortsett från id
+uint8_t dists_equal(Dist_sensor dist_0, Dist_sensor dist_1);
+
+//Kollar om två vibrationssensorer är identiska bortsett från id
+uint8_t vibs_equal(Vib_sensor vib_0, Vib_sensor vib_1);
+
+//Skickar konfigurationsmeddelanden för rörelseenhet med id för rörelsesensor startande från sensor first_motion_ID
+//och id för vibrationssensor startande från sensor first_vib_ID
+//Om vi fyllt buffern så returneras index för sensorn som inte skickades ni pekarna return_motion_ID och return_vib_ID
+uint8_t send_motion_configs(uint8_t id, uint8_t first_motion_ID, uint8_t *return_motion_ID, uint8_t first_vib_ID, uint8_t *return_vib_ID);
