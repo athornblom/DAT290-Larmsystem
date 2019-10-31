@@ -88,8 +88,6 @@ uint8_t nMotionSensors;		// Antalet rörelsesensorer kopplade till MD407-kortet.
 uint8_t nVibrationSensors;	// Antalet vibrationssensorer kopplade till MD407-kortet.
 
 
-volatile uint32_t microTicks; // Variabel för mikrosekunder.
-
 uint16_t GPIO_Pins[16];	// Array för alla pins.
 
 //===================================================================================================================

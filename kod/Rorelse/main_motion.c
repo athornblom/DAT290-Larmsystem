@@ -40,7 +40,7 @@ GPIO_TypeDef* vibrationPorts[2] = {GPIOD, GPIOE};	// Portarna som används för 
 Sensor sensors[nMaxMotionSensors + nMaxVibrationSensors];	// Array för max antalet sensorer.
 Sensor initMotionSensors[nMaxMotionSensors];	// Lista som används i början vid initiering av rörelsesensorerna.
 
-char connectedCounter = 0;	// Räknare till connectedSensors, en global variabel för den används i 'init_MotionSensors' och 'init_VibrationSensors'.
+char connectedCounter = 0;	// Antalet inkopplade sensorer.
 
 uint8_t nMotionSensors = 0;		// Antalet rörelsesensorer kopplade till MD407-kortet.
 uint8_t nVibrationSensors = 0;	// Antalet vibrationssensorer kopplade till MD407-kortet.
@@ -105,7 +105,7 @@ void init_GPIO_Ports(){
 	for (int i=0; i*sizeof(vibrationPorts[0]) < sizeof(vibrationPorts); i++) {
 		// Konfigurerar inportar vibrationssensor
 		GPIO_StructInit(&init);
-		init.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_2 | GPIO_Pin_4 | GPIO_Pin_6 | GPIO_Pin_8 | GPIO_Pin_10 | GPIO_Pin_12 | GPIO_Pin_14; // DO pinnar
+		init.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_2 | GPIO_Pin_4 | GPIO_Pin_6 | GPIO_Pin_8 | GPIO_Pin_10 | GPIO_Pin_12 | GPIO_Pin_14; // Digital-Output pinnar
 		init.GPIO_Mode = GPIO_Mode_IN;
 		init.GPIO_PuPd = GPIO_PuPd_DOWN;
 		init.GPIO_Speed = GPIO_Fast_Speed;	// 50 Mhz
@@ -120,7 +120,16 @@ void init_GPIO_Ports(){
 		GPIO_Init(vibrationPorts[i], &init);
 	}
 }
-	
+
+
+
+/**
+ * @brief Initierar alla rörelsesensorerna. 
+ * 
+ * @note Först läggs det till sensorer i listan 'initMotionSensors' 
+ * 		 som används för att kolla ifall det sitter en rörelse sensor på de desigerade pinnarna.
+ * 		 Därefter läggs de upptäckta sensorerna in i listan 'sensors'.
+ */
 void init_MotionSensors(){
 
 	// Iterera genom portarna
@@ -175,7 +184,7 @@ void init_MotionSensors(){
 				}
 				if(GPIO_ReadInputDataBit(initMotionSensors[i].port, mSensor->pinEcho) && !(initMotionSensors[i].controlbits & bit0)){ // Är echo hög och bitarna har inte redan satts?
 					initMotionSensors[i].controlbits |= bit0;	// Ettställer kontrollbit 0.
-					initMotionSensors[i].controlbits |= bit2;	// Ettställer kontrollbit 2. Ta bort när centralenheten kan kommunicera med oss. - Erik
+					
 					// Lägger till inkopplade rörelsesensorers i 'sensors'.
 					sensors[connectedCounter] = initMotionSensors[i];
 					sensors[connectedCounter].id = connectedCounter;
@@ -187,12 +196,18 @@ void init_MotionSensors(){
 	}	
 }
 
+
+
+
+/**
+ * @brief Initierar alla vibrationssensorer.
+ */
 void init_VibrationSensor(){
 	// Iterera genom portarna
 	for (int i=0; i*sizeof(vibrationPorts[0]) < sizeof(vibrationPorts); i++) {
 		// Iterera genom pinnarna
 		for (int j=0; j*sizeof(GPIO_Pins[0]) < sizeof(GPIO_Pins); j += 2) {
-			// Är sensorn aktiv?
+			// Är det en sensor inkopplad?
 			if (GPIO_ReadInputDataBit(vibrationPorts[i], GPIO_Pins[j])) {
 				
 				VibrationSensor v = {
@@ -220,6 +235,8 @@ void init_VibrationSensor(){
 	}
 }
 
+
+
 void init_Sensors(){
 	init_MotionSensors();
 	init_VibrationSensor();
@@ -239,9 +256,10 @@ void init_app(){
 }
 
 
+
 /**
- * @brief Pollingfunktion för att pinga & mäta distans
- * @param sensor: rörelsesensor
+ * @brief Pollingfunktion för att pinga & mäta distans.
+ * @param Rörelsesensor.
  */
 void motionMeasure(Sensor *sensor) {
 	MotionSensor* mSensor = &(sensor->motion);
@@ -276,10 +294,11 @@ void motionMeasure(Sensor *sensor) {
 
 
 /**
- * @brief sköter alla pollingfunktioner för rörelsensorer
+ * @brief Sköter alla pollingfunktioner för rörelsensorer.
+ * @param Rörelsesensor.
  */
 void motionPolling(Sensor *sensor) {
-	if (sensor->controlbits & bit1) {  // Ogiltig sensortyp
+	if (sensor->controlbits & bit1) {  // Ogiltig sensortyp.
 		return; 
 	}
 	
@@ -301,6 +320,7 @@ void motionPolling(Sensor *sensor) {
 
 /**
  * @brief sköter alla pollingfunktioner för vibartoinssensorer.
+ * @param Vibrationssensor
  */
 void vibrationPolling(Sensor *sensor) {
 	if (!(sensor->controlbits & bit1)) {  // Ogiltig sensortyp
