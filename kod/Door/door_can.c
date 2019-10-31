@@ -31,9 +31,9 @@ void receiveConfig_handler(CanRxMsg* msg){
             doors[i].controlbits |= 4;
         }
     }
-	//***********************************
-	// TODO Send ACK!!!!!!!!!!!!!!!!!!!! 
-	//***********************************
+	CanTxMsg ackMsg;
+	encode_ack_msg(&ackMsg, msg);
+	CANsendMessage(&ackMsg);
 	
 }
 

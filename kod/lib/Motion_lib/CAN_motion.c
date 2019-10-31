@@ -140,9 +140,9 @@ void CANGetConfig_handler(CanRxMsg* msg) {
 		}
 	}
 
-	CanRxMsg ackMsg;
-	//encode_ack_config(&ackMsg, msg);
-	//CANsendMessage(&ackMsg);
+	CanTxMsg ackMsg;
+	encode_ack_msg(&ackMsg, msg);
+	CANsendMessage(&ackMsg);
 
 }
 

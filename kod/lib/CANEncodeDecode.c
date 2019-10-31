@@ -197,13 +197,13 @@ void encode_larm_msg(CanTxMsg *msg, uint8_t uinitID, uint8_t id){
 }
 
 //Encodar ackmeddelande
-//msg är en pekare till meddelandet som ska skickas
-//larm är en pekare till meddelandet som larmar
-void encode_larm_ack(CanTxMsg *msg, CanRxMsg *larm){
-    msg->ExtId = larm->ExtId;
-    msg->DLC = larm->DLC;
-    msg->RTR = CAN_RTR_Remote;
-    msg->IDE = CAN_Id_Extended;
+//ackMsg är en pekare till meddelandet som ska skickas
+//recievedMsg är en pekare till meddelandet som ska ackas
+void encode_ack_msg(CanTxMsg *ackMsg, CanRxMsg *recievedMsg){
+    ackMsg->ExtId = recievedMsg->ExtId;
+    ackMsg->DLC = recievedMsg->DLC;
+    ackMsg->RTR = CAN_RTR_Remote;
+    ackMsg->IDE = CAN_Id_Extended;
 }
 
 uint8_t decode_door_config_msg(CanRxMsg *msg, uint8_t *door_id_0, uint8_t *door_id_1, uint16_t *time_0, uint16_t *time_1, uint8_t *locked) {
@@ -218,7 +218,7 @@ uint8_t decode_door_config_msg(CanRxMsg *msg, uint8_t *door_id_0, uint8_t *door_
     return 1;
 }
 
-//Returnerar tempID ur ett ID-tilldelnings-meddelande
+//Returnerar tempID ur ett ID-tilldelnings-meddelande eller id-begäran
 //Filtrering av header och datalängd måste redan ha gjorts
 uint32_t decode_tempID(CanRxMsg *msg){
     return (((uint32_t)msg->Data[0])) | (((uint32_t)msg->Data[1]) << 8) | (((uint32_t)msg->Data[2]) << 16) | (((uint32_t)msg->Data[3]) << 24);
@@ -228,6 +228,26 @@ uint32_t decode_tempID(CanRxMsg *msg){
 //Filtrering av header, datalängd och rätt tempID måste redan ha gjorts
 uint8_t decode_ID(CanRxMsg *msg){
     return msg->Data[4];
+}
+
+//Returnerar antalet dörrar i en idbegäran
+uint8_t decode_doorNum(CanRxMsg *msg){
+    return msg->Data[5];
+}
+
+//Returnerar enhetstypen i en idbegäran
+uint8_t decode_deviceType(CanRxMsg *msg){
+    return msg->Data[4];
+}
+
+//Returnerar antalet rörelsesensorer i en idbegäran
+uint8_t decode_motionSensNum(CanRxMsg *msg){
+    return msg->Data[5];
+}
+
+//Returnerar antalet vibrationssensorer i en idbegäran
+uint8_t decode_vibSensNum(CanRxMsg *msg){
+    return msg->Data[6];
 }
 
 //Aktiverar handler för mottagning av id-tilldelning
