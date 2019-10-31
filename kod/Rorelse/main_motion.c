@@ -216,7 +216,7 @@ void init_VibrationSensor(){
 				
 				Sensor s = {
 					.id 			= connectedCounter,
-					.controlbits 	= bit0 | bit1 | bit2,
+					.controlbits 	= bit0 | bit1,
 					/* Bit 0 = 1, Sensor inkopplad
 					 * Bit 1 = 1, Sensorn är av typen vibration
 					 * Bit 2 = 1, Sensorn är aktiv (Ändra när centralenheten kan konfigurerar sensorerna)*/

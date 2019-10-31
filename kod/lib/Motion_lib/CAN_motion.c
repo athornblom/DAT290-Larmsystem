@@ -41,7 +41,7 @@ void idAssign_Handler(CanRxMsg* msg){
         activate_larmAck_handler(alarmAck_Handler, MD407_ID);
 
         //Aktiverar handler för konfigurationsmeddelnaden
-        activate_receiveConfig_handler(CANGetConfig_handler, MD407_ID);
+        activate_receive_motion_config_handler(CANGetConfig_handler, MD407_ID);
 	}
 }
 
