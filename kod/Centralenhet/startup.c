@@ -3,7 +3,7 @@
 
 
 #define MAXCOMMANDLENGTH 10
-#define SESSIONIDACTIVE 1
+#define SESSIONIDACTIVE 0
 #define CONFMODE 0
 #define STDMODE 1
 
@@ -174,7 +174,7 @@ void id_request_handler(CanRxMsg *rxMsgP){
                 for(uint8_t i = 0; i < dev->num_of_motion_sensors; i++){
                     Dist_sensor *dist = &(dev->dist_sensors[i]);
                     dist->id = i;
-                    dist->dist = 5;//TODO: Riktigt defaultvärde
+                    dist->dist = 20;//TODO: Riktigt defaultvärde
                     dist->active = 1;
                 }
                 for(uint8_t i = 0; i < dev->num_of_vib_sensors; i++){
@@ -582,14 +582,11 @@ uint8_t send_door_configs(Door_device *dev){
                 break;
             }
         }
-        encode_door_config(&msg, 0, id_first, id_last - 1, door_first.time_0, door_first.time_1, door_first.locked);
-        
-        //blockingDelayMs(300); //För säkerhets skull TODO: Ta bort om möjligt
-        USARTPrint("Skickar till\n");
-        print_door(door_first);
+        encode_door_config(&msg, dev->id, id_first, id_last - 1, door_first.time_0, door_first.time_1, door_first.locked);
+        //print_door(door_first);
         if (CANsendMessage(&msg) == CAN_TxStatus_NoMailBox){
             //TODO: Hantera?
-            USARTPrint("No mailbox empty\n");
+            USARTPrint("No mailbox 1\n");
             return 0;
         }
         id_first = id_last; //Vi behöver ju inte kolla de dörrar som är med i intervallet.
@@ -620,11 +617,11 @@ uint8_t send_motion_configs(Motion_device *dev){
                 break;
             }
         }
-        encode_motion_config(msg, 0, 0, 0, id_first, id_last - 1, dist_first.active, dist_first.dist);
+        encode_motion_config(&msg, dev->id, motion_sensor, 0, id_first, id_last - 1, dist_first.active, dist_first.dist);
         //blockingDelayMs(300); //För säkerhets skull TODO: Ta bort om möjligt
         if (CANsendMessage(&msg) == CAN_TxStatus_NoMailBox){
             //TODO: Hantera?
-            USARTPrint("No mailbox empty\n");
+            USARTPrint("No mailbox 2\n");
             return 0;
         }
         id_first = id_last; //Vi behöver ju inte kolla de dörrar som är med i intervallet.
@@ -643,11 +640,11 @@ uint8_t send_motion_configs(Motion_device *dev){
                 break;
             }
         }
-        encode_motion_config(msg, 0, 1, 0, id_first, id_last - 1, vib_first.active, 0);
+        encode_motion_config(&msg, dev->id, vibration_sensor, 0, id_first, id_last - 1, vib_first.active, 0);
         //blockingDelayMs(300); //För säkerhets skull TODO: Ta bort om möjligt
         if (CANsendMessage(&msg) == CAN_TxStatus_NoMailBox){
             //TODO: Hantera?
-            USARTPrint("No mailbox empty\n");
+            USARTPrint("No mailbox 3\n");
             return 0;
         }
         id_first = id_last; //Vi behöver ju inte kolla de dörrar som är med i intervallet.

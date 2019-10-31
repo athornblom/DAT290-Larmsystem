@@ -6,7 +6,7 @@
 #include "stm32f4xx_gpio.h"
 
 
-uint8_t encode_door_config(CanTxMsg *msg, uint8_t to_central, uint8_t door_id_0, uint8_t door_id_1, uint16_t time_0, uint16_t time_1, uint8_t locked){
+uint8_t encode_door_config(CanTxMsg *msg, uint8_t id, uint8_t door_id_0, uint8_t door_id_1, uint16_t time_0, uint16_t time_1, uint8_t locked){
     if(door_id_0 > door_id_1 || door_id_1 > 31){
         return 0;
     }
@@ -15,11 +15,12 @@ uint8_t encode_door_config(CanTxMsg *msg, uint8_t to_central, uint8_t door_id_0,
     
     
     Header header = empty_header;
-    header.msgType = 2;
-    header.toCentral = to_central;
+    header.msgType = conf_msg_type;
+    header.toCentral = 0;
+    header.ID = id;
     HEADERtoUINT32(header, msg->ExtId);
     
-    msg->DLC = 7;
+    msg->DLC = door_config_msg_length;
     msg->IDE = CAN_Id_Extended;
     msg->RTR = CAN_RTR_Data;
     
@@ -40,13 +41,11 @@ uint8_t encode_door_config(CanTxMsg *msg, uint8_t to_central, uint8_t door_id_0,
     return 1;
 }
 
-uint8_t encode_motion_config(CanTxMsg *msg, uint8_t to_central, uint8_t sensor_type, uint8_t calibration, uint8_t sensor_id_0, uint8_t sensor_id_1, uint8_t active, uint16_t distance){
-    uint8_t *data_pointer = (uint8_t*)&(msg->Data);
-    
-    
+uint8_t encode_motion_config(CanTxMsg *msg, uint8_t id, uint8_t sensor_type, uint8_t calibration, uint8_t sensor_id_0, uint8_t sensor_id_1, uint8_t active, uint16_t distance){
     Header header = empty_header;
     header.msgType = conf_msg_type;
-    header.toCentral = to_central;
+    header.toCentral = 0;
+    header.ID = id;
     HEADERtoUINT32(header, msg->ExtId);
     
     msg->DLC = motion_config_msg_length;
@@ -54,16 +53,20 @@ uint8_t encode_motion_config(CanTxMsg *msg, uint8_t to_central, uint8_t sensor_t
     msg->RTR = CAN_RTR_Data;
     
     
-    *data_pointer = sensor_type;
-    *(data_pointer + 1) = calibration;
+    msg->Data[0] = sensor_type;
+    msg->Data[1] = calibration;
     
-    *(data_pointer + 2) = sensor_id_0;
-    *(data_pointer + 3) = sensor_id_1;
+    msg->Data[2] = sensor_id_0;
+    msg->Data[3] = sensor_id_1;
     
-    *(data_pointer + 4) = active;
+    msg->Data[4] = active;
     
-    *(data_pointer + 5) = distance;
+    msg->Data[5] = distance;
+    msg->Data[6] = distance << 8;
+    
+    msg->Data[7] = 0;
 }
+
 uint8_t encode_distance_value(CanTxMsg *msg, uint8_t sensor_id, uint8_t distance){
     uint8_t *data_pointer = (uint8_t*)&(msg->Data);
     
@@ -82,7 +85,6 @@ uint8_t encode_distance_value(CanTxMsg *msg, uint8_t sensor_id, uint8_t distance
     
     *(data_pointer + 1) = distance;
 }
-
 
 
 /*
@@ -298,10 +300,45 @@ uint8_t activate_larmAck_handler(void (*handler)(CanRxMsg *), uint8_t ID){
     return 0;
 }
 
-//Aktiverar handler för mottagning av konfiguration
+//Aktiverar handler för mottagning av konfiguration dörrenhet
 //ID är enehetens ID
 //returnerar 1 om det lyckad 0 annars
-uint8_t activate_receiveConfig_handler (void (*handler)(CanRxMsg*), uint8_t ID){
+uint8_t activate_receive_door_config_handler (void (*handler)(CanRxMsg*), uint8_t ID){
+    CANFilter filter = empty_mask;
+    CANFilter mask = empty_mask;
+
+    //används för omvandling
+    Header header = empty_header;
+
+    //skriver mask
+    mask.IDE = 1;
+    mask.RTR = 1;
+    mask.DLC = ~0;
+    header.msgType = ~0;
+    header.ID = ~0;
+    header.toCentral = ~0;
+    HEADERtoUINT32(header, mask.ID);
+
+    //Skriver filter
+    filter.IDE = 1;
+    filter.RTR = 0;
+    filter.DLC = door_config_msg_length;
+    header.msgType = conf_msg_type;
+    header.ID = ID;
+    header.toCentral = 0;
+    HEADERtoUINT32(header, filter.ID);
+
+    if (CANhandlerListNotFull()){
+        CANaddFilterHandler(handler, &filter, &mask);
+        return 1;
+    }
+    return 0;
+}
+
+//Aktiverar handler för mottagning av konfiguration för rörelseenhet
+//ID är enehetens ID
+//returnerar 1 om det lyckad 0 annars
+uint8_t activate_receive_motion_config_handler (void (*handler)(CanRxMsg*), uint8_t ID){
     CANFilter filter = empty_mask;
     CANFilter mask = empty_mask;
 

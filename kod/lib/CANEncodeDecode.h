@@ -24,6 +24,7 @@
 #define assignID_msg_length 5
 #define larm_msg_length 1
 #define motion_config_msg_length 8
+#define door_config_msg_length 7
 
 uint8_t encode_door_time_config(CanTxMsg *msg, uint8_t to_central, uint8_t door_id_0, uint8_t door_id_1, uint16_t time_0, uint16_t time_1, uint8_t locked);
 
@@ -54,6 +55,10 @@ void encode_motion_request_id(CanTxMsg *msg, uint32_t tmpID, uint8_t nMotion, ui
 uint8_t encode_assign_id(CanTxMsg *msg, CanRxMsg *request, uint8_t id);
 
 uint8_t encode_distance_config(CanTxMsg *msg, uint32_t dist);
+
+uint8_t encode_motion_config(CanTxMsg *msg, uint8_t id, uint8_t sensor_type, uint8_t calibration, uint8_t sensor_id_0, uint8_t sensor_id_1, uint8_t active, uint16_t distance);
+
+uint8_t encode_door_config(CanTxMsg *msg, uint8_t id, uint8_t door_id_0, uint8_t door_id_1, uint16_t time_0, uint16_t time_1, uint8_t locked);
 
 //Encodar ett larmmeddelande
 //msg är en pekare till meddelandet som ska skickas
@@ -89,9 +94,14 @@ uint8_t activate_assignID_handler(void (*handler)(CanRxMsg *));
 //returnerar 1 om det lyckad 0 annars
 uint8_t activate_larmAck_handler(void (*handler)(CanRxMsg *), uint8_t ID);
 
-//Aktiverar handler för mottagning av konfiguration
+//Aktiverar handler för mottagning av konfiguration dörrenhet
 //ID är enehetens ID
 //returnerar 1 om det lyckad 0 annars
-uint8_t activate_receiveConfig_handler (void (*handler)(CanRxMsg*), uint8_t ID);
+uint8_t activate_receive_door_config_handler (void (*handler)(CanRxMsg*), uint8_t ID);
+
+//Aktiverar handler för mottagning av konfiguration för rörelseenhet
+//ID är enehetens ID
+//returnerar 1 om det lyckad 0 annars
+uint8_t activate_receive_motion_config_handler (void (*handler)(CanRxMsg*), uint8_t ID);
 
 #endif

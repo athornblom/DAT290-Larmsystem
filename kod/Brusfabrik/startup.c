@@ -45,7 +45,7 @@ void help(void){
         USARTPrint("Tx print off\n");
     }
     USARTWaitPrint("x for att toggla on/off\ns/f for att andra delay\np for att toggla tx print\nl for att toggla lyssnare\ne for att skicka ett rnd meddelande\n");
-    USARTWaitPrint("c for clear\n3 for idbegaran\nh for header test\nb for meddelande med olika datalangd\n? for att se denna hjalp\n\n");
+    USARTWaitPrint("c for clear\n1 och 2 conf meddelande test\n3 for idbegaran dorr\n4 idbegaran rorelse\nh for header test\nb for meddelande med olika datalangd\n? for att se denna hjalp\n\n");
 }
 
 void msgPrint(CanRxMsg *msg){
@@ -257,6 +257,64 @@ void main(void) {
             else if (usartRead == '?'){
                 help();
             }
+            
+            //1 för test conf meddelande
+            else if (usartRead == '1'){
+               CanTxMsg msg;
+               Header header = empty_header;
+               header.ID = 0;
+               header.msgType = conf_msg_type;
+               header.toCentral = 0;
+               HEADERtoUINT32(header, msg.ExtId);
+               msg.DLC = motion_config_msg_length;
+                msg.IDE = CAN_Id_Extended;
+                msg.RTR = CAN_RTR_Data;
+                
+                msg.Data[0] = 0;
+                msg.Data[1] = 0;
+                msg.Data[2] = 0;
+                msg.Data[3] = 0;
+                msg.Data[4] = 1;
+                msg.Data[5] = 100;
+                msg.Data[6] = 0;
+                msg.Data[7] = 0;
+
+               if (CANsendMessage(&msg) != CAN_TxStatus_NoMailBox){
+                    if (outputPrint){
+                        USARTPrint("\n");
+                        printTxMsg(&msg, 16);
+                    }
+                }
+            }
+            
+             //2 för test conf meddelande
+            else if (usartRead == '2'){
+               CanTxMsg msg;
+               Header header = empty_header;
+               header.ID = 0;
+               header.msgType = conf_msg_type;
+               header.toCentral = 0;
+               HEADERtoUINT32(header, msg.ExtId);
+               msg.DLC = motion_config_msg_length;
+                msg.IDE = CAN_Id_Extended;
+                msg.RTR = CAN_RTR_Data;
+                
+                msg.Data[0] = 0;
+                msg.Data[1] = 0;
+                msg.Data[2] = 0;
+                msg.Data[3] = 0;
+                msg.Data[4] = 1;
+                msg.Data[5] = 100;
+                msg.Data[6] = 0;
+                msg.Data[7] = 1;
+
+               if (CANsendMessage(&msg) != CAN_TxStatus_NoMailBox){
+                    if (outputPrint){
+                        USARTPrint("\n");
+                        printTxMsg(&msg, 16);
+                    }
+                }
+            }
 
             //3 för id begäran
             else if (usartRead == '3'){
@@ -269,6 +327,25 @@ void main(void) {
                         rand = RNG_GetRandomNumber();
                  }
                encode_door_request_id(&msg, rand, 10);
+               if (CANsendMessage(&msg) != CAN_TxStatus_NoMailBox){
+                    if (outputPrint){
+                        USARTPrint("\n");
+                        printTxMsg(&msg, 16);
+                    }
+                }
+            }
+            
+            //4 för id begäran rörelse
+            else if (usartRead == '4'){
+               CanTxMsg msg;
+               static uint8_t counter;
+               static uint32_t rand;
+                if (RNG_GetFlagStatus(RNG_FLAG_DRDY) == SET && //Nytt meddelande finns
+                 RNG_GetFlagStatus(RNG_FLAG_CECS) == RESET && //Inget klockfel
+                 RNG_GetFlagStatus(RNG_FLAG_SECS) == RESET){ //Inget seedfel
+                        rand = RNG_GetRandomNumber();
+                 }
+               encode_motion_request_id(&msg, rand, 10, 4);
                if (CANsendMessage(&msg) != CAN_TxStatus_NoMailBox){
                     if (outputPrint){
                         USARTPrint("\n");
