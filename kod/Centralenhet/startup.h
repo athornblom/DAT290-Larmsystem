@@ -84,6 +84,11 @@ Motion_device *add_motion_device(uint8_t id, CanRxMsg *msg);
 //Denna funktion ska alltid användas för att lägga till en ny rörelseenhet
 Motion_device *add_motion_device(uint8_t id, CanRxMsg *msg);
 
+//Hittar idt till enheten med random_id och device_type
+//idDest är en pekare dit idt som hittas sparas
+//Returnerar 1 om den hittades 0 annars
+uint8_t get_id_by_random_id(uint8_t *idDest, uint32_t random_id, uint8_t device_type);
+
 void id_request_handler(CanRxMsg *rxMsgP);
 
 void larmHandler(CanRxMsg *rxMsg);

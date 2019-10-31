@@ -26,12 +26,6 @@ __asm volatile(
 	) ;
 }
 
-
-
-Door_device *get_door_device(uint8_t id){
-    return &door_devs[id];
-}
-
 //Denna funktion ska alltid användas för att lägga till en ny dörrenhet
 Door_device *add_door_device(uint8_t id, CanRxMsg *msg){
     devices[id].id = id;
@@ -64,10 +58,6 @@ void print_door(Door door){
     USARTPrint("\n\n");
 }
 
-Motion_device *get_motion_device(uint8_t id){
-    return &motion_devs[id];
-}
-
 //Denna funktion ska alltid användas för att lägga till en ny rörelseenhet
 Motion_device *add_motion_device(uint8_t id, CanRxMsg *msg){
     devices[id].id = id;
@@ -98,34 +88,24 @@ Motion_device *add_motion_device(uint8_t id, CanRxMsg *msg){
     return &motion_devs[id];
 }
 
-
-uint8_t get_id_by_random_id(uint32_t random_id, uint8_t device_type){
+//Hittar idt till enheten med random_id och device_type
+//idDest är en pekare dit idt som hittas sparas
+//Returnerar 1 om den hittades 0 annars
+uint8_t get_id_by_random_id(uint8_t *idDest, uint32_t random_id, uint8_t device_type){
     for(uint8_t i = 0; i < next_id; i++){
-        if(devices[i].type == type && devices[i].random_id  == random_id){
-            return i;
+        if(devices[i].type == device_type && devices[i].random_id  == random_id){
+            *idDest = i;
+            return 1;
         }
     }
     
-    //Returnerar ~0 för att ange att ingen enhet hittades. ~0 förutsätts vara ett ogiltigt id
-    return ~0;
+    return 0;
 }
-
 
 void id_request_handler(CanRxMsg *rxMsgP){
     printRxMsg(rxMsgP, 16); //TODO Ta bort när vi inte behöver den längre
     CanRxMsg rxMsg = *rxMsgP;
     CanTxMsg txMsg;
-    
-    /*static uint8_t counter = 0;
-    if (encode_assign_id(&txMsg, rxMsgP, counter++)){
-        if (CANsendMessage(&txMsg) == CAN_TxStatus_NoMailBox){
-                USARTPrint("No mailbox empty\n");
-        } else {
-            printTxMsg(&txMsg, 16);
-        }
-    } else {
-        USARTPrint("encodefel\n");
-    }*/
     
     uint8_t device_type = rxMsg.Data[4];
     
@@ -134,44 +114,36 @@ void id_request_handler(CanRxMsg *rxMsgP){
     USARTPrint("\n\nRandom ID: ");
     USARTPrintNumBase(temp_id, 16);
     USARTPrint("\n");
-    uint8_t id = get_id_by_random_id(temp_id, device_type);
+    uint8_t id;
     
     //Om random_id känns igen behöver vi bara skicka samma id igen
-    if(id != 255){ //TODO: Lista ut varför ~0 inte funkar
+    if(get_id_by_random_id(&id, temp_id, device_type)){
         USARTPrint("Skickar ID till ");
         USARTPrintNum((uint32_t)id);
         USARTPrint(" igen\n");
         encode_assign_id(&txMsg, rxMsgP, id);
         CANsendMessage(&txMsg);
-    }
-    else{
+    } else {
         encode_assign_id(&txMsg, rxMsgP, next_id);
         if (CANsendMessage(&txMsg) != CAN_TxStatus_NoMailBox){
-            //TODO ta bort delay såsmåningom
-            //blockingDelayMs(300);
-            
             //Hantera dörrenhet
             if(device_type == door_unit){
-                Door_device *dev = add_door_device(next_id, rxMsgP);
+                add_door_device(next_id, rxMsgP);
                 USARTPrint("Lagt till dorrenhet med id ");
-                id = get_door_device(next_id)->id;
-                
-                USARTPrintNum((uint32_t)id);
+                USARTPrintNum(id);
                 USARTPrint("\noch ");
-                USARTPrintNum((uint32_t)rxMsg.Data[5]);
+                USARTPrintNum(door_devs[id].num_of_doors);
                 USARTPrint(" dorrar.\n");
             }
             //Hantera rörelseenhet
-            else{
-                Motion_device *dev = add_motion_device(next_id);
+            else if (device_type == door_unit){
+                add_motion_device(next_id, rxMsgP);
                 USARTPrint("Lagt till rorelseenhet med id ");
-                id = get_motion_device(next_id)->id;
-                
                 USARTPrintNum((uint32_t)id);
                 USARTPrint("\noch ");
-                USARTPrintNum((uint32_t)rxMsg.Data[5]);
+                USARTPrintNum(motion_devs[id].num_of_motion_sensors);
                 USARTPrint(" rorelsesensorer och ");
-                USARTPrintNum((uint32_t)rxMsg.Data[6]);
+                USARTPrintNum(motion_devs[id].num_of_vib_sensors);
                 USARTPrint(" vibrationssensorer\n");
             }
             
@@ -558,7 +530,7 @@ uint8_t doors_equal(Door door_0, Door door_1){
     return door_0.time_0 == door_1.time_0 && door_0.time_1 == door_1.time_1 && door_0.locked == door_1.locked;
 }
 
-uint8_t send_door_configs(Door_device *dev){
+uint8_t send_door_configs(uint8_t id){
     CanTxMsg msg;
     Door door_first;
     Door door_last;
