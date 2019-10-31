@@ -55,7 +55,8 @@ void door_uppdate_lamps (char i){
 // Funktion som kollar ifall dörren har vart öppen tillräckligt länge för att den ska larma centralt.
 int central_larm(char i){
     uint32_t larmTime = doors[i].larmTick + 10 * addaptS*doors[i].time_central_larm + (addaptS * doors[i].waitOutTime);// gångrar med 10 * addaptS eftersom att tiden anges i 10 s interval
-    if(doors[i].controlbits&open && msTicks>larmTime && !(doors[i].controlbits & cLarm)){
+    if(doors[i].controlbits&open && msTicks>larmTime 
+	&& !(doors[i].controlbits & cLarm) && !nocid){
         doors[i].waitOutTime++;
     	//doors[i].controlbits |= cLarm;    // sätter kontrollbiten som säger att dörren har larmat centralt.
         return 1;

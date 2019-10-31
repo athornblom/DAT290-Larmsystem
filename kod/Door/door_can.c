@@ -15,7 +15,6 @@ void alarmAck_Handler(CanRxMsg* msg){
 }
 
 void receiveConfig_handler(CanRxMsg* msg){
-	GPIO_SetBits(GPIOB, GPIO_Pin_2);
     uint8_t door_id_0, door_id_1, locked;
     uint16_t time_0, time_1;
     //Tolkar meddelandet och skriver värden till pekarna
@@ -57,16 +56,17 @@ void idAssign_Handler(CanRxMsg* msg){
 		}
 	}
 //funktion som förfrågar efter ett id 
+CanTxMsg idRequest;
 void getId (int nDoors){
     //Aktiverar handler för mottagen ID-tilldelning
     activate_assignID_handler(idAssign_Handler);
 
-    int timeStamp = msTicks + 60 * 10000; 
+    int timeStamp = msTicks + 20 * 10000; 
     if (RNG_GetFlagStatus(RNG_FLAG_DRDY) == SET && //Nytt meddelande finns
         RNG_GetFlagStatus(RNG_FLAG_CECS) == RESET && //Inget klockfel
         RNG_GetFlagStatus(RNG_FLAG_SECS) == RESET){ //Inget seedfel
             id = RNG_GetRandomNumber();
-            CanTxMsg idRequest;
+ 
             
             encode_door_request_id(&idRequest,id,nDoors);
             while (msTicks < timeStamp && nocid)
@@ -75,6 +75,9 @@ void getId (int nDoors){
                 delay(1000);
             }
         }
+}
+void tryGetId (void){
+	CANsendMessage(&idRequest);
 }
 
 //funktion för att skicka larm till centralenheten.
