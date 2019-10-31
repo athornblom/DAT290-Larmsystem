@@ -151,7 +151,7 @@ void init_MotionSensors(){
 			};
 			
 			Sensor s = {
-					.id 		= 0,
+					.id 		= 0,		// Sätts senare
 					.port 		= motionPorts[i],
 					.pinLamp 	= GPIO_Pins[j+2],
 					.alarmDelay	= 0,
@@ -350,7 +350,9 @@ void vibrationPolling(Sensor *sensor) {
 	VibrationSensor* vSensor = &(sensor->vibration);
 				
 	// Sensorn upptäcker att något är för nära eller att sensorn kopplats ut, fortsätt larma tills centralenheten skickat larm-ACK.
-	if(((!GPIO_ReadInputDataBit(sensor->port, vSensor->pinDO) && !(sensor->controlbits & bit6)) || sensor->controlbits & bit7) && microTicks > sensor->alarmDelay){
+	if(((!GPIO_ReadInputDataBit(sensor->port, vSensor->pinDO) && !(sensor->controlbits & bit6)) || sensor->controlbits & bit7) 
+		&& microTicks > sensor->alarmDelay)
+	{
 		sensor->alarmDelay = microTicks + 1000000;	// Skickar larm en gång i sekunden till det är kviterat.
 		alarm(sensor);	// Larmar centralenheten
 		
@@ -369,15 +371,18 @@ void main(void){
 		// Polling
 		// Itererar över alla inkopplade sensorer.
 		for(int i = 0; i < connectedCounter; i++){
-
-			// Är sensorn aktiverad och av typen motion? (controlbit 2 && !1)
-			if(sensors[i].controlbits & bit2 && !(sensors[i].controlbits & bit1)){
-				motionPolling(&sensors[i]);
-			}
 			
-			// Är sensorn aktiverad och av typen vibration? (controlbit 1 && 2)
-			else if(sensors[i].controlbits & (bit1 | bit2)) {
-				vibrationPolling(&sensors[i]);
+			// Är sensorn aktiv?
+			if (sensors[i].controlbits & bit2) {
+				// Är sensorn av typen motion? (controlbit 2 && !1)
+				if(!(sensors[i].controlbits & bit1)){
+					motionPolling(&sensors[i]);
+				}
+				
+				// Är sensorn av typen vibration? (controlbit 1 && 2)
+				else if(sensors[i].controlbits & bit1) {
+					vibrationPolling(&sensors[i]);
+				}
 			}
 		}
 	}
