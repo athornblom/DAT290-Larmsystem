@@ -230,6 +230,21 @@ uint8_t decode_ID(CanRxMsg *msg){
     return msg->Data[4];
 }
 
+//Returnerar antalet dörrar i en idbegäran
+uint8_t decode_doorNum(CanRxMsg *msg){
+    return msg->Data[5];
+}
+
+//Returnerar antalet rörelsesensorer i en idbegäran
+uint8_t decode_motionSensNum(CanRxMsg *msg){
+    return msg->Data[5];
+}
+
+//Returnerar antalet vibrationssensorer i en idbegäran
+uint8_t decode_vibSensNum(CanRxMsg *msg){
+    return msg->Data[6];
+}
+
 //Aktiverar handler för mottagning av id-tilldelning
 //returnerar 1 om det lyckad 0 annars
 uint8_t activate_assignID_handler(void (*handler)(CanRxMsg *)){

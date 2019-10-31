@@ -11,7 +11,23 @@
 #include "delay.h"
 #include "stringFunc.h"
 
+//Maxnummer för enheter och givare
 #define max_num_of_devs 32
+#define max_num_door_sensors 32
+#define max_num_motion_sensors 25
+#define max_num_vib_sensors 25
+
+//Standardvärden för inställningar för enheter
+#define default_time_0 1
+#define default_time_1 2
+#define default_dist 20
+
+//konstanter för aktiv och låsta enhter
+#define ACTIVE 1
+#define INACTIVE 0
+#define LOCKED 1
+#define UNLOCKED 0
+
 
 //Defines för returnvärden för uint8_t Command(uint8_t *command);
 #define RERUN 2
@@ -26,12 +42,8 @@ typedef struct{
 } Door;
 
 typedef struct{
-    uint8_t type;
-    uint8_t id;
-	uint32_t random_id;
     uint8_t num_of_doors;
-    Door doors[32];
-    uint8_t num_of_unacked;
+    Door doors[max_num_door_sensors];
 } Door_device;
 
 typedef struct{
@@ -46,25 +58,31 @@ typedef struct{
 } Vib_sensor;
 
 typedef struct{
+    uint8_t num_of_motion_sensors;
+    uint8_t num_of_vib_sensors;
+    Dist_sensor dist_sensors[max_num_motion_sensors];
+    Vib_sensor vib_sensors[max_num_vib_sensors];
+} Motion_device;
+
+typedef struct {
     uint8_t type;
     uint8_t id;
 	uint32_t random_id;
-    uint8_t num_of_motion_sensors;
-    uint8_t num_of_vib_sensors;
-    Dist_sensor dist_sensors[32];
-    Vib_sensor vib_sensors[32];
-	uint8_t num_of_unacked;
-} Motion_device;
+    uint8_t num_of_unacked;
+} Device;
 
 
 
 Door_device *get_door_device(uint8_t id);
 
-Door_device *add_door_device(uint8_t id);
+//Denna funktion ska alltid användas för att lägga till en ny dörrenhet
+Door_device *add_door_device(uint8_t id, CanRxMsg *msg);
 
-Motion_device *get_motion_device(uint8_t id);
+//Denna funktion ska alltid användas för att lägga till en ny rörelseenhet
+Motion_device *add_motion_device(uint8_t id, CanRxMsg *msg);
 
-Motion_device *add_motion_device(uint8_t id);
+//Denna funktion ska alltid användas för att lägga till en ny rörelseenhet
+Motion_device *add_motion_device(uint8_t id, CanRxMsg *msg);
 
 void id_request_handler(CanRxMsg *rxMsgP);
 

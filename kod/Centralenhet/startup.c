@@ -9,10 +9,8 @@
 
 uint8_t mode;
 uint8_t next_id = 0;
-uint16_t default_time_0 = 1;
-uint16_t default_time_1 = 1;
 
-void *devices[max_num_of_devs];
+Device devices[max_num_of_devs];
 Door_device door_devs[max_num_of_devs];
 Motion_device motion_devs[max_num_of_devs];
 
@@ -31,18 +29,27 @@ __asm volatile(
 
 
 Door_device *get_door_device(uint8_t id){
-    return (Door_device*) (devices[id]);
+    return &door_devs[id];
     //return &door_devs[id];
 }
 
 //Denna funktion ska alltid användas för att lägga till en ny dörrenhet
-Door_device *add_door_device(uint8_t id){
-    Door_device dev;
-    dev.id = id;
-    dev.type = 0;
-    dev.num_of_unacked = 0;
-    door_devs[id] = dev; //Lägger dev i array av faktiska strukturinstanser för att undvika att den skrivs över
-    devices[id] = (void*)(&door_devs[id]);
+Door_device *add_door_device(uint8_t id, CanRxMsg *msg){
+    devices[id].id = id;
+    devices[id].type = door_unit;
+    devices[id].random_id = decode_tempID(msg);
+    devices[id].num_of_unacked = 0;
+
+    door_devs[id].num_of_doors = decode_doorNum(msg);
+    
+    for(uint8_t i = 0; i < door_devs[id].num_of_doors; i++){
+        Door *door = &(door_devs[id].doors[i]);
+        door->id = i;
+        door->time_0 = default_time_0;
+        door->time_1 = default_time_1;
+        door->locked = LOCKED;
+    }
+
     return &door_devs[id];
 }
 
@@ -59,36 +66,46 @@ void print_door(Door door){
 }
 
 Motion_device *get_motion_device(uint8_t id){
-    return (Motion_device*) (devices[id]);
+    return &motion_devs[id];
 }
 
 //Denna funktion ska alltid användas för att lägga till en ny rörelseenhet
-Motion_device *add_motion_device(uint8_t id){
-    Motion_device dev;
-    dev.id = id;
-    dev.type = 1;
-    motion_devs[id] = dev; //Lägger dev i array av faktiska strukturinstanser för att undvika att den skrivs över
-    devices[id] = (void*)(&motion_devs[id]);
+Motion_device *add_motion_device(uint8_t id, CanRxMsg *msg){
+    devices[id].id = id;
+    devices[id].type = motion_unit;
+    devices[id].random_id = decode_tempID(msg);
+    devices[id].num_of_unacked = 0;
+
+    uint8_t motionSensors = decode_motionSensNum(msg);
+    uint8_t vibSensors = decode_vibSensNum(msg);
+    motion_devs[id].num_of_motion_sensors = motionSensors;
+    motion_devs[id].num_of_vib_sensors = vibSensors;
+    
+    //Initierar rörelsesensorer
+    for(uint8_t i = 0; i < motionSensors; i++){
+        Dist_sensor *dist = &(motion_devs[id].dist_sensors[i]);
+        dist->id = i;
+        dist->dist = default_dist;
+        dist->active = ACTIVE;
+    }
+    
+    //Initierar vibrationssensorer
+    for(uint8_t i = 0; i < vibSensors; i++){
+        Vib_sensor *vib = &(motion_devs[id].vib_sensors[i]);
+        vib->id = i;
+        vib->active = ACTIVE;
+    }
+
     return &motion_devs[id];
 }
 
 
 uint8_t get_id_by_random_id(uint32_t random_id, uint8_t device_type){
-    if(!device_type){ //Om det är en dörrenhet
-        for(uint8_t i = 0; i < next_id; i++){
-            if(get_door_device(i)->random_id == random_id){
-                return i;
-            }
+    for(uint8_t i = 0; i < next_id; i++){
+        if(devices[i].type == type && devices[i].random_id  == random_id){
+            return i;
         }
     }
-	//Motsvarande för rörelseenhet
-	else {
-		for(uint8_t i = 0; i < next_id; i++){
-            if(get_motion_device(i)->random_id == random_id){
-                return i;
-            }
-        }
-	}
     
     //Returnerar ~0 för att ange att ingen enhet hittades. ~0 förutsätts vara ett ogiltigt id
     return ~0;
@@ -135,33 +152,21 @@ void id_request_handler(CanRxMsg *rxMsgP){
             //blockingDelayMs(300);
             
             //Hantera dörrenhet
-            if(!device_type){
-                Door_device *dev = add_door_device(next_id);
+            if(device_type == door_unit){
+                Door_device *dev = add_door_device(next_id, rxMsgP);
                 USARTPrint("Lagt till dorrenhet med id ");
                 id = get_door_device(next_id)->id;
-                dev->num_of_doors = rxMsg.Data[5];
                 
                 USARTPrintNum((uint32_t)id);
                 USARTPrint("\noch ");
                 USARTPrintNum((uint32_t)rxMsg.Data[5]);
                 USARTPrint(" dorrar.\n");
-                
-                
-                for(uint8_t i = 0; i < dev->num_of_doors; i++){
-                    Door *door = &(dev->doors[i]);
-                    door->id = i;
-                    door->time_0 = default_time_0;
-                    door->time_1 = default_time_1;
-                    door->locked = 1;
-                }
             }
             //Hantera rörelseenhet
             else{
                 Motion_device *dev = add_motion_device(next_id);
                 USARTPrint("Lagt till rorelseenhet med id ");
                 id = get_motion_device(next_id)->id;
-                dev->num_of_motion_sensors = rxMsg.Data[5];
-                dev->num_of_vib_sensors = rxMsg.Data[6];
                 
                 USARTPrintNum((uint32_t)id);
                 USARTPrint("\noch ");
@@ -169,19 +174,6 @@ void id_request_handler(CanRxMsg *rxMsgP){
                 USARTPrint(" rorelsesensorer och ");
                 USARTPrintNum((uint32_t)rxMsg.Data[6]);
                 USARTPrint(" vibrationssensorer\n");
-                
-                
-                for(uint8_t i = 0; i < dev->num_of_motion_sensors; i++){
-                    Dist_sensor *dist = &(dev->dist_sensors[i]);
-                    dist->id = i;
-                    dist->dist = 20;//TODO: Riktigt defaultvärde
-                    dist->active = 1;
-                }
-                for(uint8_t i = 0; i < dev->num_of_vib_sensors; i++){
-                    Vib_sensor *vib = &(dev->vib_sensors[i]);
-                    vib->id = i;
-                    vib->active = 1;
-                }
             }
             
 			if (next_id < max_num_of_devs) {
@@ -603,6 +595,7 @@ uint8_t dists_equal(Dist_sensor dist_0, Dist_sensor dist_1){
 uint8_t vibs_equal(Vib_sensor vib_0, Vib_sensor vib_1){
     return vib_0.active == vib_1.active;
 }
+
 uint8_t send_motion_configs(Motion_device *dev){
     CanTxMsg msg;
     Dist_sensor dist_first;
@@ -675,7 +668,7 @@ void main(void) {
     while (1) {
         USARTCommand();
         
-        //Om vi är i STDMODE och det har gått en till millisekund
+        //Om vi är i STDMODE och det har gått en till sekund
         if((mode == STDMODE) && (ms_counter <= msTicks)){
             for(uint8_t i = 0; i < next_id; i++){
                 USARTPrint("Konfig");

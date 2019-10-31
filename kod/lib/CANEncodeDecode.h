@@ -85,6 +85,15 @@ uint32_t decode_tempID(CanRxMsg *msg);
 //Filtrering av header och rätt tempID måste redan ha gjorts
 uint8_t decode_ID(CanRxMsg *msg);
 
+//Returnerar antalet dörrar i en idbegäran
+uint8_t decode_doorNum(CanRxMsg *msg);
+
+//Returnerar antalet rörelsesensorer i en idbegäran
+uint8_t decode_motionSensNum(CanRxMsg *msg);
+
+//Returnerar antalet vibrationssensorer i en idbegäran
+uint8_t decode_vibSensNum(CanRxMsg *msg);
+
 //Aktiverar handler för mottagning av id-tilldelning
 //returnerar 1 om det lyckad 0 annars
 uint8_t activate_assignID_handler(void (*handler)(CanRxMsg *));
