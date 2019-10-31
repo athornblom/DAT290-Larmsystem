@@ -105,9 +105,7 @@ void main(void)
 	active_doors_add_doors(); // initierar standard värden och portar
 	getId(amountOfActiveDoors); //Skickar till centralenheten hur många aktiva dörrar dörrenheten har och får ett id
 	startup_lights(); // Mest för cool het's faktorns skull ingen riktigt funktionallitet
-	if(amountOfActiveDoors == 12){
-	GPIO_SetBits(GPIOB, GPIO_Pin_2); // Lampa som lyser när systemet är färdig initierat.
-	}
+	//GPIO_SetBits(GPIOB, GPIO_Pin_2); // Lampa som lyser när systemet är färdig initierat.
 	while (1)
 	{
 		check_door_status(); // Uppdatterar kontrollbitarna för varje dörr.
