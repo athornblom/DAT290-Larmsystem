@@ -3,18 +3,22 @@
 
 
 
-volatile uint32_t microTicks = 0;		 // Variabel för microsekunder.
+volatile uint32_t microTicks = 0;		 // Variabel för mikrosekunder.
 
 
 
-// SysTick avbrottshanterare.
+/**
+ * @brief SysTick avbrottshanterare.
+ */
 void SysTick_Handler(void)  {
 	microTicks++;
 }
 
 
 
-// Initieringsfunktion för timer.
+/**
+ * @brief Initieringsfunktion för timer.
+ */
 void init_Timer(){
 	//Systick
 	*((void (**)(void) ) 0x2001C03C ) = SysTick_Handler;
@@ -24,7 +28,9 @@ void init_Timer(){
 
 
 
-// Fördröjningsfunktion där inputen är fördröjningen i mikrosekunder.
+/**
+ * @brief Fördröjningsfunktion där inputen är fördröjningen i mikrosekunder.
+ */
 void delayMicro (uint32_t micro){
 		uint32_t wait = microTicks + micro;
 		while(wait > microTicks);
