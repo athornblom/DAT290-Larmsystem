@@ -207,17 +207,14 @@ void encode_larm_ack(CanTxMsg *msg, CanRxMsg *larm){
 }
 
 uint8_t decode_door_config_msg(CanRxMsg *msg, uint8_t *door_id_0, uint8_t *door_id_1, uint16_t *time_0, uint16_t *time_1, uint8_t *locked) {
-    uint8_t *data_pointer = (uint8_t*)&(msg->Data);
+    *door_id_0 = msg->Data[0];
+    *door_id_1 = msg->Data[1];
     
-    door_id_0 = data_pointer;
-    door_id_1 = data_pointer + 1;
+    *time_0 = msg->Data[2] | (msg->Data[3] << 8);
+    *time_1 = msg->Data[4] | (msg->Data[5] << 8);
     
-    time_0 = (uint16_t*)data_pointer + 2;
-    time_1 = (uint16_t*)data_pointer + 4;
-    
-    locked = data_pointer + 6;
-    
-    
+    *locked = msg->Data[6];
+
     return 1;
 }
 

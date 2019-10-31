@@ -9,8 +9,8 @@
 
 uint8_t mode;
 uint8_t next_id = 0;
-uint16_t default_time_0 = 2;
-uint16_t default_time_1 = 3;
+uint16_t default_time_0 = 1;
+uint16_t default_time_1 = 1;
 
 void *devices[max_num_of_devs];
 Door_device door_devs[max_num_of_devs];
@@ -150,8 +150,8 @@ void id_request_handler(CanRxMsg *rxMsgP){
                 for(uint8_t i = 0; i < dev->num_of_doors; i++){
                     Door *door = &(dev->doors[i]);
                     door->id = i;
-                    door->time_0 = 1;//default_time_0;
-                    door->time_1 = 1;//default_time_1;
+                    door->time_0 = default_time_0;
+                    door->time_1 = default_time_1;
                     door->locked = 1;
                 }
             }
