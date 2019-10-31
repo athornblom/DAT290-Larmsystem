@@ -11,10 +11,6 @@ uint32_t MD407_ID;
 char noID;
 
 
-// CAN-meddelande hanterare.
-void CANMsg_Handler();
-
-
 
 // Hanterar larm-ACK.
 void alarmAck_Handler(CanRxMsg* msg);

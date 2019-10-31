@@ -4,18 +4,6 @@
 uint32_t MD407_ID = 0;
 char noID = 1;
 
-
-/**
- * @brief Hanterar CAN meddelanden
- * 
- * 
- */
-void CANMsg_Handler() {
-	// switch
-	
-}
-
-
 // Hanterar larm-ACK.
 void alarmAck_Handler(CanRxMsg* msg){
 	Header header;
@@ -69,8 +57,6 @@ void CANGetConfig_handler(CanRxMsg* msg) {
 	char endIndex = *(data+3);
 	char active = *(data+4);
 	char disarmFlag = *(data+7);
-	msg->Data[5] = 0;
-	msg->Data[6] = 1; // todo: testa
 	
 	uint16_t* setAlarmDistance = (uint16_t*)&msg->Data[5];
 	if(*setAlarmDistance > 400){
@@ -161,6 +147,8 @@ void idAssign_Handler(CanRxMsg* msg){
 	if(rndID == MD407_ID){
 		MD407_ID = decode_ID(msg);
 		noID = 0;
+		DebugPrint("\nKort ID: ");
+		DebugPrintNum(MD407_ID);
         
         //Avaktiverar alla handlers, dvs bara idAssign_Handler
         CANdisableAllFilterHandlers();
