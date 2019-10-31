@@ -20,6 +20,8 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="../lib/delay.h"/>
+    <File Name="../lib/delay.c"/>
     <File Name="../lib/printMsg.h"/>
     <File Name="../lib/printMsg.c"/>
     <File Name="../lib/STM32F4_lib/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_can.h"/>

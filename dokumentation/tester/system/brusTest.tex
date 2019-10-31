@@ -1,0 +1,62 @@
+\clearpage
+%Beskrivande titel av testet samt en unik label
+\subsection{Test av systemet med brus}
+\label{test:brusTest}
+
+\setlength{\columnsep}{1cm}
+
+
+% Vid utförande av test fylls mallen nedan i, vilket resulterar i ett protokoll som sedan sparas som verifikation. Målet med dessa protokoll är att man utan sakkunskap ska kunna skapa sig en överblick av att systemet fungerar som det ska.
+
+
+\begin{multicols}{2}
+\subsubsection*{Test formulerat av}
+% Namn på den/de som formulerade testet.
+Filip
+
+\subsubsection*{Utfört av}
+% Namn på den/de som utförande testet.
+
+
+
+\end{multicols}
+\subsubsection*{Komponent}
+%Vilken del av systemet testas?
+Hela systemet dvs centralenhet, rörelseenhet och dörrenhet.
+
+
+\subsubsection*{Testsyfte}
+%Vad ska testet visa? Är testet till följd av tidigare test?
+Kontrollera att systemet fungerar även om CAN-bussen är tungt belastad av brus.
+
+
+\subsubsection*{Hjälpmedel}
+%Lista hjälpmedlen som användes i samband med testet.
+\begin{itemize}
+	\item Centralenhet
+	\item Rörelseenhet
+	\item Dörrenhet
+	\item Brusenhet
+\end{itemize}
+
+
+
+\subsubsection*{Utförande}
+%Hur ska testet utföras?
+Testet utförs först med rörelseenheten och därefter görs samma test en gång till för dörrenheten.
+
+Koppla upp centralenhet, periferienheten och brusenheten på ett CAN-nätverk. Starta brusenheten och dess brusgenerering med en hög fördröjning på 64 millisekunder. Starta nu periferienheten samt centralenheten och starta systemet som det vanligtvis görs. Efter initiering kontrolleras så att larm fungerar. Fungerar detta kan intensiteten på bruset ökas genom att minska fördröjningen. Upprepa därefter samma procedur som tidigare tills det slutar att fungera eller om maximal intensitet uppnåtts.
+
+Efter att dörrenheten har testats utförs samma test för rörelseenheten.
+
+
+\subsubsection*{Resultat}
+%Vad är testresultatet? Hittades några buggar?
+
+
+
+\subsubsection*{Analys}
+%Vad innebär testets resultat? Behövs fler test av komponenten? Behöver andra komponenter testas ytterligare, och i så fall hur?
+
+
+

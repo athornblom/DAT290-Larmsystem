@@ -13,6 +13,11 @@
 
 #define max_num_of_devs 32
 
+//Defines för returnvärden för uint8_t Command(uint8_t *command);
+#define RERUN 2
+#define OK 1
+#define NOCMD 0
+
 typedef struct{
     uint8_t id;
     uint8_t time_0;
@@ -26,6 +31,7 @@ typedef struct{
 	uint32_t random_id;
     uint8_t num_of_doors;
     Door doors[32];
+    uint8_t num_of_unacked;
 } Door_device;
 
 typedef struct{
@@ -47,6 +53,7 @@ typedef struct{
     uint8_t num_of_vib_sensors;
     Dist_sensor dist_sensors[32];
     Vib_sensor vib_sensors[32];
+	uint8_t num_of_unacked;
 } Motion_device;
 
 

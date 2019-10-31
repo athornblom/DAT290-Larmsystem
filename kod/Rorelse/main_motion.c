@@ -127,7 +127,8 @@ void init_MotionSensors(){
 	for (int i=0; i*sizeof(motionPorts[0]) < sizeof(motionPorts); i++) {
 		// Iterera genom pinnarna
 		for (int j=0; j*sizeof(GPIO_Pins[0]) < sizeof(GPIO_Pins);j+=3) {
-			if(!((i*5+j/3) == 15)){ // Hårdvaran begränsar oss till 15 rörelsesensorer, alltså kollar vi inte 16:e elementet(för det finns inte).
+			if(!((i*5+j/3) == nMaxMotionSensors)){ // Nollindexerat och därför hade 'initMotionSensors[nMaxMotionSensors]' varit out of bounds.
+			
 			MotionSensor m =  {
 					.pinTrig	= GPIO_Pins[j],
 					.pinEcho	= GPIO_Pins[j+1],
@@ -159,19 +160,20 @@ void init_MotionSensors(){
 
 	while(microTicks < timeOut){
 		for(int i = 0; i < nMaxMotionSensors; i++){
-			MotionSensor* sensor = &(initMotionSensors[i].motion);
-			if (validPin(initMotionSensors[i].port, sensor->pinEcho)){				
-				if(lows[i] < 2 && microTicks > sensor->pulseTrig){ // Första låga
-					GPIO_ResetBits(initMotionSensors[i].port, sensor->pinTrig);	// Avaktivera triggerpuls
+			MotionSensor* mSensor = &(initMotionSensors[i].motion);
+			
+			if (validPin(initMotionSensors[i].port, mSensor->pinEcho)){				
+				if(lows[i] < 2 && microTicks > mSensor->pulseTrig){ // Första låga
+					GPIO_ResetBits(initMotionSensors[i].port, mSensor->pinTrig);	// Avaktivera triggerpuls
 					lows[i]++;
 				}
-				if(microTicks >= sensor->pulseDelay){
-					GPIO_SetBits(initMotionSensors[i].port, sensor->pinTrig);	// Aktivera triggerpuls
-					sensor->pulseTrig = microTicks + 10; // Triggpuls 10µs
-					sensor->pulseDelay = microTicks + 1000000; // Triggpuls 1s
+				if(microTicks >= mSensor->pulseDelay){
+					GPIO_SetBits(initMotionSensors[i].port, mSensor->pinTrig);	// Aktivera triggerpuls
+					mSensor->pulseTrig = microTicks + 10; // Triggpuls 10µs
+					mSensor->pulseDelay = microTicks + 1000000; // Triggpuls 1s
 					
 				}
-				if(GPIO_ReadInputDataBit(initMotionSensors[i].port, sensor->pinEcho) && !(initMotionSensors[i].controlbits & bit0)){ // Är echo hög och bitarna har inte redan satts?
+				if(GPIO_ReadInputDataBit(initMotionSensors[i].port, mSensor->pinEcho) && !(initMotionSensors[i].controlbits & bit0)){ // Är echo hög och bitarna har inte redan satts?
 					initMotionSensors[i].controlbits |= bit0;	// Ettställer kontrollbit 0.
 					initMotionSensors[i].controlbits |= bit2;	// Ettställer kontrollbit 2. Ta bort när centralenheten kan kommunicera med oss. - Erik
 					// Lägger till inkopplade rörelsesensorers i 'sensors'.

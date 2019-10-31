@@ -24,61 +24,53 @@ void alarmAck_Handler(CanRxMsg* msg){
 }
 
 
-void CANSendMeasurement(Sensor motionSensor) {
-	
-	while (!motionMeasure(&motionSensor)) {};
-	float distance = motionSensor.motion.cm;
-	char id = motionSensor.id;
-	
-	CanTxMsg msg;
-	encode_distance_value(&msg, id, distance);
-	CANsendMessage(&msg);
-
-}
-
-void calibrationRecieve(char sensorId, float *multiple) {
-	sensors[sensorId].motion.multiple = *multiple;
-}
-
-
 /**
  * @brief Hanterar att ta emot konfigurationer för rörelsesenorer från centralenheten
  * 
  * 
  * Byte 0: Typ av sensor, 0 = rörelse, 1 = vibration. (Vid kalibrering = ID).
  * 
- * Byte 1: Början av indexet till 'connectedSensors' som skall konfigureras. (Vid kalibrering: Byte 1-4: Float multipel).
+ * Byte 1: Är konfigurationen för kalibrering av rörelsesensor? 0 = Nej, 1 = Ja.
  * 
- * Byte 2: Slutet av indexet till 'connectedSensors' som skall konfigureras.
+ * Ej kalibrering:
  * 
- * Byte 3: Ska sensorerna vara aktiva eller ej? 0 = inaktiv, 1 = aktiv. Ifall Byte[3] = 0 kommer senare bytes ej kollas.
+ * 		Byte 2: Början av indexet till 'sensors' som skall konfigureras.
  * 
- * Byte 4 (Rörelse): Byte[4]*2 = 'alarmDistance' i cm, upp till 400 cm. Om Byte[4] >= 200 så kommer 'alarmDistance' alltid sättas till 400.
+ *		Byte 3: Slutet av indexet till 'sensors' som skall konfigureras.
  * 
- * Byte 5-6: Används ej.
+ * 		Byte 4: Ska sensorerna vara aktiva eller ej? 0 = inaktiv, 1 = aktiv. Ifall Byte[4] = 0 kommer senare bytes ej kollas.
  * 
- * Byte 7: Är konfigurationen till kalibrering? 0 = Nej, 1 = Ja, begär mätning, 2 = Ja, skickar multipel
+ * 		Byte 5+6 (Rörelse): 'alarmDistance' i cm, upp till 400 cm. Om Byte[5] >= 200 så kommer 'alarmDistance' alltid sättas till 400.
+ * 
+ * Kalibrering:
+ * 		Byte 2: Indexet till 'sensors' som skall kalibreras.
+ * 
+ * 		Byte 5+6: Uppmätta värdet från centralenheten.
+ * 
+ * Byte 7: Används ej.
  */
 void CANGetConfig_handler(CanRxMsg* msg) {
 	char *data = (char*)&(msg->Data);
-	char calibration = *(data+7);
-	if (calibration == 1) {
-		char sensorId = *data;
-		CANSendMeasurement(sensors[sensorId]);
-		return;
-	}
-	else if (calibration == 2) {
-		char sensorId   = *data;
-		float *multiple = (float*)&msg->Data[1];
-		calibrationRecieve(sensorId, multiple);
-		return;
-	}
-	
 	char sensorType = *data;
-	char startIndex = *(data+1);
-	char endIndex = *(data+2);
-	char active = *(data+3);
-	char setAlarmDistance = (*(data+4))*2;
+	char calibration = *(data+1);
+	char startIndex = *(data+2);
+	
+	if (calibration && sensorType) {
+		float measuredDistance = *(data+5);
+		MotionSensor* mSensor = &(sensors[startIndex].motion);
+		
+		mSensor->multiple = measuredDistance/mSensor->cm;
+		
+		return;
+	}
+
+	
+	char endIndex = *(data+3);
+	char active = *(data+4);
+	float setAlarmDistance = *(data+5);
+	if(setAlarmDistance > 400){
+		setAlarmDistance = 400;
+	}
 	
 	// Typen rörelsesensor
 	if(!sensorType){

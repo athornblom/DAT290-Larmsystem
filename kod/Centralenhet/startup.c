@@ -4,9 +4,10 @@
 
 #define MAXCOMMANDLENGTH 10
 #define SESSIONIDACTIVE 1
+#define CONFMODE 0
+#define STDMODE 1
 
-
-
+uint8_t mode;
 uint8_t next_id = 0;
 uint16_t default_time_0 = 2;
 uint16_t default_time_1 = 3;
@@ -39,9 +40,22 @@ Door_device *add_door_device(uint8_t id){
     Door_device dev;
     dev.id = id;
     dev.type = 0;
+    dev.num_of_unacked = 0;
     door_devs[id] = dev; //Lägger dev i array av faktiska strukturinstanser för att undvika att den skrivs över
     devices[id] = (void*)(&door_devs[id]);
     return &door_devs[id];
+}
+
+void print_door(Door door){
+    USARTPrint("Dorr\n   id: ");
+    USARTPrintNum(door.id);
+    USARTPrint("\n   time_0: ");
+    USARTPrintNum(door.time_0);
+    USARTPrint("\n   time_1: ");
+    USARTPrintNum(door.time_1);
+    USARTPrint("\n   locked: ");
+    USARTPrintNum(door.locked);
+    USARTPrint("\n\n");
 }
 
 Motion_device *get_motion_device(uint8_t id){
@@ -100,6 +114,7 @@ void id_request_handler(CanRxMsg *rxMsgP){
     uint8_t device_type = rxMsg.Data[4];
     
     uint32_t temp_id = decode_tempID(rxMsgP);
+    
     USARTPrint("\n\nRandom ID: ");
     USARTPrintNumBase(temp_id, 16);
     USARTPrint("\n");
@@ -117,7 +132,7 @@ void id_request_handler(CanRxMsg *rxMsgP){
         encode_assign_id(&txMsg, rxMsgP, next_id);
         if (CANsendMessage(&txMsg) != CAN_TxStatus_NoMailBox){
             //TODO ta bort delay såsmåningom
-            blockingDelayMs(300);
+            //blockingDelayMs(300);
             
             //Hantera dörrenhet
             if(!device_type){
@@ -131,12 +146,13 @@ void id_request_handler(CanRxMsg *rxMsgP){
                 USARTPrintNum((uint32_t)rxMsg.Data[5]);
                 USARTPrint(" dorrar.\n");
                 
-                Door door;
+                
                 for(uint8_t i = 0; i < dev->num_of_doors; i++){
-                    door = dev->doors[i];
-                    door.id = i;
-                    door.time_0 = default_time_0;
-                    door.time_1 = default_time_1;
+                    Door *door = &(dev->doors[i]);
+                    door->id = i;
+                    door->time_0 = 1;//default_time_0;
+                    door->time_1 = 1;//default_time_1;
+                    door->locked = 1;
                 }
             }
             //Hantera rörelseenhet
@@ -154,13 +170,18 @@ void id_request_handler(CanRxMsg *rxMsgP){
                 USARTPrintNum((uint32_t)rxMsg.Data[6]);
                 USARTPrint(" vibrationssensorer\n");
                 
-/*                Door door;
-                for(uint8_t i = 0; i < dev->num_of_doors; i++){
-                    door = dev->doors[i];
-                    door.id = i;
-                    door.time_0 = default_time_0;
-                    door.time_1 = default_time_1;
-                }*/
+                
+                for(uint8_t i = 0; i < dev->num_of_motion_sensors; i++){
+                    Dist_sensor *dist = &(dev->dist_sensors[i]);
+                    dist->id = i;
+                    dist->dist = 5;//TODO: Riktigt defaultvärde
+                    dist->active = 1;
+                }
+                for(uint8_t i = 0; i < dev->num_of_vib_sensors; i++){
+                    Vib_sensor *vib = &(dev->vib_sensors[i]);
+                    vib->id = i;
+                    vib->active = 1;
+                }
             }
             
 			if (next_id < max_num_of_devs) {
@@ -210,29 +231,63 @@ void larmHandler(CanRxMsg *rxMsg){
     CANsendMessage(&msg);
 }
 
-uint8_t msgPrint(CanRxMsg *msg, uint8_t base){
-    USARTPrint("New msg:\n");
-
-    //Skriver ut ID
-    if (msg->IDE == CAN_Id_Standard) {
-        USARTPrint("STD ID: \n");
-        USARTPrintNumBase(msg->StdId, base);
-    } else {
-        USARTPrint("Ext ID: \n");
-        USARTPrintNumBase(msg->ExtId, base);
+void config_ack_handler(CanRxMsg *msg){
+    Header header = empty_header;
+    UINT32toHEADER(msg->ExtId, header);
+    uint8_t id = header.ID;
+    uint8_t dev_type = msg->Data[0];
+    
+    if(dev_type == door_unit){
+        Door_device *dev = get_door_device(id);
+        dev->num_of_unacked = 0;
     }
-
-    USARTPrint("\nData: \n");
-    for (uint8_t i = 0; i < msg->DLC; i++){
-        USARTPrintNumBase(msg->Data[i],base);
-    }
-    USARTPrint("\n\n");
 }
+
+uint8_t enable_config_ack_handler(){
+    uint8_t retIndex;
+    CANFilter filter;
+    CANFilter mask;
+
+    //För omvandling
+    Header header;
+
+    //Skriver mask
+    mask.IDE = 1;
+    mask.RTR = 1;
+    mask.DLC = ~0;
+    header.msgType = ~0;
+    header.toCentral = ~0;
+    header.ID = 0;
+    //ignorera msgNum
+    header.msgNum = 0;
+    HEADERtoUINT32(header, mask.ID);
+
+    //Filter för Larm
+    filter.IDE = 1;
+    filter.RTR = 0;
+    filter.DLC = 1;
+    header.msgType = larm_msg_type;
+    header.toCentral = 1;
+    header.ID = 0;
+    HEADERtoUINT32(header, filter.ID);
+
+    //Aktiverar handler för larm
+    if (CANhandlerListNotFull()){
+        USARTPrint("Larm handler med handler index: ");
+        retIndex = CANaddFilterHandler(larmHandler, &filter, &mask);
+        USARTPrintNum(retIndex);
+        USARTPrint("\n");
+    } else {
+        return 0;
+    }
+}
+
 
 //Aktiverar centralenhetens konfigurationsläge
 //Aktiverar ID-tilldelningshantering och initial konfiguration
 //returnerar 1 om det lyckades, 0 annars
 uint8_t enterConfMode (void){
+    mode = CONFMODE;
     USARTWaitPrint("Startar konfigurations-mode. Aktiverar foljande handlers:\n");
     CANFilter filter = empty_filter;
     CANFilter mask = empty_mask;
@@ -297,6 +352,8 @@ uint8_t enterConfMode (void){
 //Aktiverar larmhantering och automatisk konfigurationsöversändning
 //returnerar 1 om det lyckades, 0 annars
 uint8_t enterStdMode (void){
+    mode = STDMODE;
+    
     USARTPrint("Startar standard-mode. Aktiverar foljande handlers:\n");
     uint8_t retIndex;
     CANFilter filter;
@@ -342,68 +399,97 @@ uint8_t enterStdMode (void){
 }
 
 //Kör kommandot som finns i strängen command
-//Retrunrerar 1 det fanns ett kommando att köra. 0 annars.
+//Retrunrerar RERUN (2) om commandot måste köras igen, OK (1) om det fanns ett enkelt kommando att köra. NOCMD (0) annars.
 uint8_t Command(uint8_t *command){
     //Ett tomt komando är ett gilltigt kommando.
     //Detta för att man ska kunna få en ny rad utan ogilltigt kommando utskrift
     if (command[0] == 0){
-        return 1;
+        return OK;
     }
-
-    if (strEqual(command, "start")){
-        if (enterStdMode()){
-            USARTWaitPrint("Start av standard-mode lyckades\n");
-        } else {
-            USARTWaitPrint("Start av standard-mode misslyckades\n");
+    
+    if (strEqual(command, "help")){
+        if (mode == CONFMODE){
+            USARTPrint("Help config-mode:\n");
+            USARTPrint("start for att overga till standard-mode\n");
+            USARTPrint("list for att lista enheter\n");
+        } else if (mode == STDMODE){
+            USARTPrint("Help standard-mode:\n");
+            USARTPrint("avlarma for att avlarma en larmade sensor\n");
+            USARTPrint("list for att lista enheter\n");
         }
-        return 1;
+        return OK;
     }
 
-    if (strStartsWith(command, "avlarma")) {
-        //TODO läs vad som ska avlarmas
-
-        //Lösenord som sträng sista 0an för att terminera
-        #define passwordLength 4
-        uint8_t readKey;
-        uint8_t password[passwordLength + 1] = {1,2,3,4,0};
-        uint8_t entered[passwordLength]; 
-        USARTPrint("Skriv losenord: ");
-        clearKeypadQue();
-        for (uint8_t i = 0; i < passwordLength; i++){
-            while(!readKeypad(&readKey));
-            entered[i] = readKey;
-            USARTPrintNumBase(readKey, 16);
+    else if (strEqual(command, "start")){
+        if (mode == CONFMODE){
+            if (enterStdMode()){
+                USARTWaitPrint("Start av standard-mode lyckades\n");
+            } else {
+                USARTWaitPrint("Start av standard-mode misslyckades\n");
+            }
+            return OK;
         }
+        return NOCMD;
+    }
+    
+    else if (strStartsWith(command, "list")) {
+        //TODO lista enheter
+        USARTPrint("Enheter:\n");
+        return OK;
+    }
 
-        //Efter som enterd inte har terminering kollar vi om entered börjar med password
-        if (strStartsWith(entered, password)){
-            //Inloggning lyckades
-            USARTPrint(" ratt!\n");
-        } else {
-            //Inloggning misslyckades
-            USARTPrint(" fel\n");
+    //Detta kommando behöver itereras flera gånger för att hämta input och lö
+    else if (strStartsWith(command, "avlarma")) {
+        if (mode == STDMODE){
+            //Lösenordssträngen sista 0an för att terminera
+            #define PASSWORDLENGTH 4
+            uint8_t password[PASSWORDLENGTH + 1] = {1,2,3,4,0};
+            //Håller koll på om det är första iterationen av kommandot
+            static uint8_t firstIter = 1;
+            //Håller kåll på vilket index som är nästa i lösenordssträngen
+            static uint8_t currentCharIndex = 0;
+            //Håller koll på lösenordet som har matats in
+            static uint8_t entered[PASSWORDLENGTH]; 
+            
+            //Första iterationern
+            if (firstIter){
+                currentCharIndex = 0;                
+                USARTPrint("Skriv losenord: ");
+                clearKeypadQue();
+                firstIter = 0;
+            }
+            
+            //Läser från keypad
+            uint8_t readKey;
+            if(readKeypad(&readKey)){
+                entered[currentCharIndex++] = readKey;
+                USARTPrintNumBase(readKey, 16);
+            }
+
+            //Har ett helt lösenord matats in?
+            if (currentCharIndex == PASSWORDLENGTH){
+                //Nästa gång börjar vi om på nytt
+                firstIter = 1;
+                //Efter som enterd inte har terminering kollar vi om entered börjar med password
+                if (strStartsWith(entered, password)){
+                    //Inloggning lyckades
+                    USARTPrint(" ratt!\n");
+                } else {
+                    //Inloggning misslyckades
+                    USARTPrint(" fel\n");
+                }
+
+                return OK;
+            }
+            
+            return RERUN;
         }
-
-        return 1;
+        
+        //Vi är inte i stanard läge så kommandot är ogiltigt
+        return NOCMD;
     }
 
-    if (strEqual(command, "test")) {
-        USARTPrint("Hanterar test\n");
-        return 1;
-    }
-
-    if (strStartsWith(command, "spam")){
-        if (command[4] != ' ' || command[4] == 0){
-            USARTWaitPrint("Anvand>> spam string\n");
-
-        } else {
-            while (USARTPrint(&command[5]));
-            USARTWaitPrint("\n");
-        }
-        return 1;
-    }
-
-    return 0;
+    return NOCMD;
 }
 
 //Hanterar länken mellan USART och commando. Dvs kör de kommandon som skrivs från USART
@@ -411,10 +497,19 @@ void USARTCommand(void) {
     //Lista för nuvarande kommando + 1 för att ha plats för terminering
     static uint8_t currentCommand[MAXCOMMANDLENGTH + 1];
     static uint8_t index = 0;
-    static uint8_t newCommand = 1;
+    static uint8_t newCommandIndicator = 1;
+    static uint8_t rerunLastCommand = 0;
+    
+    if (rerunLastCommand){
+        if (Command(currentCommand) != RERUN){
+            rerunLastCommand = 0;
+            newCommandIndicator = 1;
+        }
+        return;
+    }
 
-    if (newCommand) {
-        newCommand = 0;
+    if (newCommandIndicator) {
+        newCommandIndicator = 0;
         USARTWaitPrint(">>");
     }
 
@@ -426,11 +521,25 @@ void USARTCommand(void) {
             //Terminering
             currentCommand[index] = 0;
             index = 0;
-            newCommand = 1;
-            if (!Command(currentCommand)){
-                USARTWaitPrint("Kommandot:");
-                USARTWaitPrint(currentCommand);
-                USARTWaitPrint(" hittades inte\n");
+            uint8_t retVal = Command(currentCommand);
+            switch (retVal) {
+                //Om samma kommando måste köras igen
+                case RERUN:
+                    rerunLastCommand = 1;
+                    break;
+                    
+                //Om kommandot är klart
+                case OK:
+                    newCommandIndicator = 1;
+                    break;
+                    
+                //Om kommandot inte fanns
+                case NOCMD:
+                    USARTWaitPrint("Kommandot:");
+                    USARTWaitPrint(currentCommand);
+                    USARTWaitPrint(" hittades inte\n");
+                    newCommandIndicator = 1;
+                    break;
             }
 
         } else {
@@ -438,7 +547,7 @@ void USARTCommand(void) {
             if (index >= MAXCOMMANDLENGTH){
                 USARTPrint("\nFor langt kommando\n");
                 index = 0;
-                newCommand = 1;
+                newCommandIndicator = 1;
             } else {
                 //Skriver ut tecknet
                 uint8_t oneChar[2] = {uint8Read, 0};
@@ -473,9 +582,11 @@ uint8_t send_door_configs(Door_device *dev){
                 break;
             }
         }
-        //TODO KOMPILERAR INTE
-        encode_door_config(msg, 0, id_first, id_last - 1, door_first.time_0, door_first.time_1, door_first.locked);
-        blockingDelayMs(300); //För säkerhets skull TODO: Ta bort om möjligt
+        encode_door_config(&msg, 0, id_first, id_last - 1, door_first.time_0, door_first.time_1, door_first.locked);
+        
+        //blockingDelayMs(300); //För säkerhets skull TODO: Ta bort om möjligt
+        USARTPrint("Skickar till\n");
+        print_door(door_first);
         if (CANsendMessage(&msg) == CAN_TxStatus_NoMailBox){
             //TODO: Hantera?
             USARTPrint("No mailbox empty\n");
@@ -483,6 +594,7 @@ uint8_t send_door_configs(Door_device *dev){
         }
         id_first = id_last; //Vi behöver ju inte kolla de dörrar som är med i intervallet.
     }
+    dev->num_of_unacked++;
     return 1;
 }
 
@@ -490,7 +602,7 @@ uint8_t send_door_configs(Door_device *dev){
 uint8_t dists_equal(Dist_sensor dist_0, Dist_sensor dist_1){
     return dist_0.dist == dist_1.dist && dist_0.active == dist_1.active;
 }
-//Kollar om två vibrationsssensorer är identiska bortsett från id
+//Kollar om två vibrationssensorer är identiska bortsett från id
 uint8_t vibs_equal(Vib_sensor vib_0, Vib_sensor vib_1){
     return vib_0.active == vib_1.active;
 }
@@ -509,7 +621,7 @@ uint8_t send_motion_configs(Motion_device *dev){
             }
         }
         encode_motion_config(msg, 0, 0, 0, id_first, id_last - 1, dist_first.active, dist_first.dist);
-        blockingDelayMs(300); //För säkerhets skull TODO: Ta bort om möjligt
+        //blockingDelayMs(300); //För säkerhets skull TODO: Ta bort om möjligt
         if (CANsendMessage(&msg) == CAN_TxStatus_NoMailBox){
             //TODO: Hantera?
             USARTPrint("No mailbox empty\n");
@@ -532,7 +644,7 @@ uint8_t send_motion_configs(Motion_device *dev){
             }
         }
         encode_motion_config(msg, 0, 1, 0, id_first, id_last - 1, vib_first.active, 0);
-        blockingDelayMs(300); //För säkerhets skull TODO: Ta bort om möjligt
+        //blockingDelayMs(300); //För säkerhets skull TODO: Ta bort om möjligt
         if (CANsendMessage(&msg) == CAN_TxStatus_NoMailBox){
             //TODO: Hantera?
             USARTPrint("No mailbox empty\n");
@@ -547,9 +659,10 @@ uint8_t send_motion_configs(Motion_device *dev){
 void main(void) {
     USARTConfig();
     can_init();
+    systick_Init();
     keypadnit();
 
-    //Initsierar random number generator
+    //Initierar random number generator
     RCC_AHB2PeriphClockCmd(RCC_AHB2Periph_RNG, ENABLE);
     RNG_Cmd(ENABLE);
 
@@ -561,7 +674,23 @@ void main(void) {
         USARTWaitPrint("Start av konfigurations-mode misslyckades\n");
     }
 
+    uint16_t ms_counter = msTicks + 1000;
     while (1) {
         USARTCommand();
+        
+        //Om vi är i STDMODE och det har gått en till millisekund
+        if((mode == STDMODE) && (ms_counter <= msTicks)){
+            for(uint8_t i = 0; i < next_id; i++){
+                USARTPrint("Konfig");
+                if (get_door_device(i)->type == 0){
+                    send_door_configs(get_door_device(i));
+                    USARTPrint(" - Dorr\n");
+                } else {
+                    send_motion_configs(get_motion_device(i));
+                    USARTPrint(" - Rorelse\n");
+                }
+            }
+            ms_counter = msTicks + 1000;
+        }
     }
 }

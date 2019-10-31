@@ -53,7 +53,6 @@ typedef struct VibrationSensors{
  */
 typedef struct Sensors {
 	char 			id, controlbits;	// ID och 8 kontrollbitar
-	short 			password;			// 4 sifferig kod för att aktivera/avaktivera sensorn.
 	
 	GPIO_TypeDef*	port;				// Porten sensorn är kopplad till
 	uint16_t 		pinLamp;			// Pin för lysdiod för sensorn

@@ -45,7 +45,7 @@ void help(void){
         USARTPrint("Tx print off\n");
     }
     USARTWaitPrint("x for att toggla on/off\ns/f for att andra delay\np for att toggla tx print\nl for att toggla lyssnare\ne for att skicka ett rnd meddelande\n");
-    USARTWaitPrint("c for clear\n1 for larm\n3 for idbegaran\nh for header test\nb for meddelande med olika datalangd\n? for att se denna hjalp\n\n");
+    USARTWaitPrint("c for clear\n3 for idbegaran\nh for header test\nb for meddelande med olika datalangd\n? for att se denna hjalp\n\n");
 }
 
 void msgPrint(CanRxMsg *msg){
@@ -96,17 +96,13 @@ void sendRnd(uint8_t print){
     }
 }
 
-//ack handler
-void handler_larmAck(CanRxMsg *msg){
-    larmAck = 1;
-}
-
 void main(void) {
     uint8_t usartRead;
     uint8_t listnerHandlerIndex;
 
     USARTConfig();
     can_init();
+    systick_Init();
     
     //Initsierar random number generator
     RCC_AHB2PeriphClockCmd(RCC_AHB2Periph_RNG, ENABLE);
@@ -262,60 +258,6 @@ void main(void) {
                 help();
             }
 
-            //1 för larmmedelande
-            else if (usartRead == '1'){
-               CanTxMsg msg;
-               const uint8_t ID = 0;
-               encode_larm_msg(&msg, ID, counter);
-               larmAck = 0;
-
-               CANFilter filter = empty_mask;
-                CANFilter mask = empty_mask;
-                Header header = empty_header;
-                
-                //Skriver mask
-                mask.IDE = 1;
-                mask.RTR = 1;
-                header.msgType = ~0;
-                header.ID = ~0;
-                header.toCentral = ~0;
-                header.msgNum = ~0;
-                HEADERtoUINT32(header, mask.ID);
-
-                //Skriver filter
-                filter.IDE = 1;
-                filter.RTR = 1;
-                header.msgType = larm_msg_type;
-                header.ID = ID;
-                header.toCentral = 1;
-                header.msgNum = counter;
-                HEADERtoUINT32(header, filter.ID);
-
-                if (CANhandlerListNotFull()){
-                    uint8_t handlerIndex = CANaddFilterHandler(handler_larmAck, &filter, &mask);
-                    uint8_t read = 0;
-                    while (!larmAck){
-                        if (CANsendMessage(&msg) != CAN_TxStatus_NoMailBox){
-                            if (outputPrint){
-                                USARTPrint("\n");
-                                printTxMsg(&msg, 16);
-                            }
-                        }
-                        
-                        //Avbryt med q
-                        if (USARTGet(&read)){
-                            if (read == 'q'){
-                                break;
-                            }
-                        }
-
-                        blockingDelayMs(1000);
-                    }
-                    CANdisableFilterHandler(handlerIndex);
-                    counter++;
-                }
-            }
-
             //3 för id begäran
             else if (usartRead == '3'){
                CanTxMsg msg;
@@ -326,7 +268,7 @@ void main(void) {
                  RNG_GetFlagStatus(RNG_FLAG_SECS) == RESET){ //Inget seedfel
                         rand = RNG_GetRandomNumber();
                  }
-               encode_door_request_id(&msg, rand, 0x69);
+               encode_door_request_id(&msg, rand, 10);
                if (CANsendMessage(&msg) != CAN_TxStatus_NoMailBox){
                     if (outputPrint){
                         USARTPrint("\n");

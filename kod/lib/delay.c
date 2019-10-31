@@ -1,15 +1,24 @@
 #include "delay.h"
 
-void blockingDelayus(uint16_t delay){
-    SysTick->CTRL = 0;
-    SysTick->LOAD = 168 * delay;
-    SysTick->CTRL = SysTick_CTRL_ENABLE_Msk | SysTick_CTRL_CLKSOURCE_Msk;
-    while (!(SysTick->CTRL & SysTick_CTRL_COUNTFLAG_Msk));
-    SysTick->CTRL = 0;
+// Variabel för microsekunder.
+volatile uint32_t msTicks = 0;
+
+//SysTick interrupt Handler.
+void SysTick_Handler(void){
+	msTicks++;
 }
 
-void blockingDelayMs(uint16_t delay){
-    for(; delay; delay--){
-        blockingDelayus(1000);
-    }
+void systick_Init(void){
+    msTicks = 0;
+	*((void (**)(void))0x2001C03C) = SysTick_Handler;
+    //Genererar ett SysTick-avbrott varje ms.
+	SysTick_Config(168000000 / 1000);
+    NVIC_SetPriority(SysTick_IRQn, 0);
+}
+
+//Blockerande fördröjning delay anger antaler millisekunder
+void blockingDelayMs(uint32_t delay){
+    //Kommer ge fel då det blir overflow
+    uint32_t start = msTicks + delay;
+    while (start > msTicks);
 }

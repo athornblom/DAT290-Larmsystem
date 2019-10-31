@@ -12,12 +12,11 @@
 \usepackage{hyperref}
 \usepackage{multicol}
 
-\title{Larmsystem baserat på MD407-mikrodatorer\\
-\large Grupp 13}
+\title{Larmsystem baserat på MD407-mikrodatorer}
 
-\author{Gustav Fåhraeus, Erik Nilsson, Filip Borg, Adam Thörnblom\\
-Josef Karlsson, Ben Wooldridge}
-\date{Läsperiod 1, HT-2019}
+\author{\large Grupp 13\\Filip Borg, Gustav Fåhraeus, Josef Karlsson,\\
+Erik Nilsson, Adam Thörnblom, Ben Wooldridge}
+\date{Läsperiod 1, HT-2019\\DAT290 Datatekniskt projekt\\Datateknik}
 
 % I utvärderingen granskas hur väl studenterna i sina rapporter har lyckats visa att de genom de teknikutvärderingar, konstruktionsval, tester och analys som de har gjort har förstått de problem de har ställts inför, samt hur de på basis av denna förståelse och utifrån rådande förutsättningar har lyckats agera för att lösa dessa problem.
 
@@ -53,8 +52,15 @@ Josef Karlsson, Ben Wooldridge}
 \newpage
 
 \section{Inledning}
-Rapporten beskriver utvecklingen av ett modulärt larmsystem som i grunden
- \newline består av ARM-baserade MD407-enkortsdatorer.
+Rapporten beskriver utvecklingen av ett modulärt larmsystem som i grunden består av ARM-baserade MD407-enkortsdatorer.
+
+
+I en undersökning\cite{brott-foretagarna} utförd av Sveriges största företagsorganisaton, \textit{Företagarna}, anger var tredje företag (n=983) att de blivit utsatta för minst ett brott någon gång under de senaste fem åren. Pontus Lindström, ansvarig för brott- och trygghetsfrågor hos Företagarna säger:
+\begin{quote}
+\textit{- Undersökningen bekräftar den bild vi har. Många företagare vittnar om en ökad utsatthet och om att otryggheten ökat.}
+\end{quote}
+
+Av de företagen som blivit utsatta för minst ett brott anger 25\% av företagen att de inte anmält brottet till polisen. 36\% anger att de anmält något brott de utsatt för, men inte alla. Den låga anmälningsgraden tyder på att företagen inte tycker att anmälningarna ger någonting.  Företagen anger att de känner sig tvungna att satsa stora summor på larmsystem, vilket finansiellt inte alltid är en lätt investering att göra, speciellt inte för små företagare utan kapital.
 
 \subsection{Syfte} % Svarar på frågan "Varför"?
 Larmsystemets syfte är att vara ett finansiellt dynamiskt alternativ för företag 
@@ -62,7 +68,7 @@ och organisationer som har behov av anpassad larmning beroende på rådande beho
  Vilket uppnås genom att erbjuda mindre delsystem som kan kopplas ihop till ett 
  större centraliserat system.
 
-Systemet ökar översikten och säkerheten av användarens lokaler genom \newline att 
+Systemet ökar översikten och säkerheten av användarens lokaler genom att 
 implementera konfigurerbar larmning av dörrar, samt rörelse- och vibrationsdetektering.
 
 \subsection{Mål} % Svarar på frågan "Vad"?
@@ -470,6 +476,7 @@ den ska.
      	\input{../tester/dorrenhet/portTest.tex}
          \input{../tester/system/IDochLarm.tex}
          \input{../tester/dorrenhet/lokalDriftTest.tex}
+         \input{../tester/system/brusTest.tex}
          \input{../tester/system/replayer.tex}
          \input{../tester/system/sessionIDtest.tex}
 \end{document}
