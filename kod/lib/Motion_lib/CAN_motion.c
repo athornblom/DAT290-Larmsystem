@@ -40,26 +40,27 @@ void alarmAck_Handler(CanRxMsg* msg){
  * 
  * 		Byte 4: Ska sensorerna vara aktiva eller ej? 0 = inaktiv, 1 = aktiv. Ifall Byte[4] = 0 kommer senare bytes ej kollas.
  * 
- * 		Byte 5+6 (Rörelse): 'alarmDistance' i cm, upp till 400 cm. Om Byte[5] >= 200 så kommer 'alarmDistance' alltid sättas till 400.
+ * 		Byte 5+6 (Rörelse): 'alarmDistance' i cm, upp till 400 cm. Om Byte[5] >= 400 så kommer 'serAlarmDistance' alltid sättas till 400. 0 = ändra inte värdet.
  * 
+ * 		Byte 7: 0 = gör inget, 1 = avlarma
  * Kalibrering:
  * 		Byte 2: Indexet till 'sensors' som skall kalibreras.
  * 
  * 		Byte 5+6: Uppmätta värdet från centralenheten.
- * 
- * Byte 7: Används ej.
  */
 void CANGetConfig_handler(CanRxMsg* msg) {
+	DebugPrint("\nconf hand\n");
+	DebugPrintRxMsg(msg, 16);
 	char *data = (char*)&(msg->Data);
 	char sensorType = *data;
 	char calibration = *(data+1);
 	char startIndex = *(data+2);
 	
 	if (calibration && sensorType) {
-		float measuredDistance = *(data+5);
+		uint16_t* measuredDistance = (uint16_t*)&msg->Data[5];
 		MotionSensor* mSensor = &(sensors[startIndex].motion);
 		
-		mSensor->multiple = measuredDistance/mSensor->cm;
+		mSensor->multiple = (*measuredDistance)/mSensor->cm;
 		
 		return;
 	}
@@ -67,10 +68,15 @@ void CANGetConfig_handler(CanRxMsg* msg) {
 	
 	char endIndex = *(data+3);
 	char active = *(data+4);
-	float setAlarmDistance = *(data+5);
-	if(setAlarmDistance > 400){
-		setAlarmDistance = 400;
+	char disarmFlag = *(data+7);
+	msg->Data[5] = 0;
+	msg->Data[6] = 1; // todo: testa
+	
+	uint16_t* setAlarmDistance = (uint16_t*)&msg->Data[5];
+	if(*setAlarmDistance > 400){
+		*setAlarmDistance = 400;
 	}
+	
 	
 	// Typen rörelsesensor
 	if(!sensorType){
@@ -78,7 +84,14 @@ void CANGetConfig_handler(CanRxMsg* msg) {
 			if(sensorType == (sensors[i].controlbits & bit1)){
 				if(active){
 					sensors[i].controlbits |= bit2;
-					sensors[i].motion.alarmDistance = setAlarmDistance;
+					if(*setAlarmDistance){
+						sensors[i].motion.alarmDistance = *setAlarmDistance;
+					}
+			
+					if(disarmFlag){
+						disarm(&(sensors[i]));
+					}
+					
 				}
 
 				else{

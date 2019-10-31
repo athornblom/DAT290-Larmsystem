@@ -20,6 +20,7 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="../lib/printMsg.c"/>
     <File Name="../lib/Motion_lib/SysTick_motion.h"/>
     <File Name="../lib/Motion_lib/SysTick_motion.c"/>
     <File Name="../lib/Motion_lib/main_motion.h"/>
