@@ -197,13 +197,13 @@ void encode_larm_msg(CanTxMsg *msg, uint8_t uinitID, uint8_t id){
 }
 
 //Encodar ackmeddelande
-//msg är en pekare till meddelandet som ska skickas
-//larm är en pekare till meddelandet som larmar
-void encode_larm_ack(CanTxMsg *msg, CanRxMsg *larm){
-    msg->ExtId = larm->ExtId;
-    msg->DLC = larm->DLC;
-    msg->RTR = CAN_RTR_Remote;
-    msg->IDE = CAN_Id_Extended;
+//ackMsg är en pekare till meddelandet som ska skickas
+//recievedMsg är en pekare till meddelandet som ska ackas
+void encode_ack_msg(CanTxMsg *ackMsg, CanRxMsg *recievedMsg){
+    ackMsg->ExtId = recievedMsg->ExtId;
+    ackMsg->DLC = recievedMsg->DLC;
+    ackMsg->RTR = CAN_RTR_Remote;
+    ackMsg->IDE = CAN_Id_Extended;
 }
 
 uint8_t decode_door_config_msg(CanRxMsg *msg, uint8_t *door_id_0, uint8_t *door_id_1, uint16_t *time_0, uint16_t *time_1, uint8_t *locked) {

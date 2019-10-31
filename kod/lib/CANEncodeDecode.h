@@ -71,9 +71,9 @@ uint8_t encode_door_config(CanTxMsg *msg, uint8_t id, uint8_t door_id_0, uint8_t
 void encode_larm_msg(CanTxMsg *msg, uint8_t uinitID, uint8_t id);
 
 //Encodar ackmeddelande
-//msg är en pekare till meddelandet som ska skickas
-//larm är en pekare till meddelandet som larmar
-void encode_larm_ack(CanTxMsg *msg, CanRxMsg *larm);
+//ackMsg är en pekare till meddelandet som ska skickas
+//recievedMsg är en pekare till meddelandet som ska ackas
+void encode_ack_msg(CanTxMsg *ackMsg, CanRxMsg *recievedMsg);
 
 uint8_t decode_door_config_msg(CanRxMsg *msg, uint8_t *door_id_0, uint8_t *door_id_1, uint16_t *time_0, uint16_t *time_1, uint8_t *locked);
 
