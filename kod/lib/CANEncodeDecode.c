@@ -311,6 +311,7 @@ uint8_t activate_receiveConfig_handler (void (*handler)(CanRxMsg*), uint8_t ID){
     //skriver mask
     mask.IDE = 1;
     mask.RTR = 1;
+    mask.DLC = ~0;
     header.msgType = ~0;
     header.ID = ~0;
     header.toCentral = ~0;
@@ -319,6 +320,7 @@ uint8_t activate_receiveConfig_handler (void (*handler)(CanRxMsg*), uint8_t ID){
     //Skriver filter
     filter.IDE = 1;
     filter.RTR = 0;
+    filter.DLC = motion_config_msg_length;
     header.msgType = conf_msg_type;
     header.ID = ID;
     header.toCentral = 0;

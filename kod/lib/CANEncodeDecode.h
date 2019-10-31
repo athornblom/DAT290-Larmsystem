@@ -23,7 +23,7 @@
 #define reqID_msg_length 7
 #define assignID_msg_length 5
 #define larm_msg_length 1
-#define motion_config_msg_length 7
+#define motion_config_msg_length 8
 
 uint8_t encode_door_time_config(CanTxMsg *msg, uint8_t to_central, uint8_t door_id_0, uint8_t door_id_1, uint16_t time_0, uint16_t time_1, uint8_t locked);
 

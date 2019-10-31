@@ -39,6 +39,17 @@ Erik Nilsson, Adam Thörnblom, Ben Wooldridge}
 
 \pagenumbering{arabic}
 
+\section*{Beteckningar}
+\begin{itemize}
+    \item \textbf{MD407} – En ARM-baserad
+    laborationsdator för utbildning
+    \item \textbf{ARM} - En processor arkitektur
+    \item \textbf{CAN} - Controller Area Network
+    \item \textbf{GPIO} - General-purpose input/output
+    \item \textbf{USART} - Universal asynchronous receiver-transmitter
+    \item \textbf{LED} - Light-emitting diode
+\end{itemize}
+\newpage
 
 \section{Inledning}
 Rapporten beskriver utvecklingen av ett modulärt larmsystem som i grunden består av ARM-baserade MD407-enkortsdatorer.
@@ -288,6 +299,11 @@ Systemet kontrollerar nu fortlöpande alla dörrar enligt flödesdiagrammet i fi
 \includegraphics[scale=0.5]{figurer/Flow-Chart.png}
 \caption{Flödesschema över dörrenhetens funktionalitet som visar vilka beslut systemet tar beroende på externa och interna händelser.}
 \end{figure}
+Polling kan gå snabbare än avbrott. Vid avbrottshantering måste man göra ett
+ kontextbyte, vilket normalt
+sett kräver att man sparar de flesta eller alla register, vilket blir cirka
+ 80-100 instruktioner. Polling behöver
+inga kontextbyten. 
 
 Dörrenhetens flöde bygger på polling. Samtliga dörrar har i sina datarepresentationer ett antal
  kontrollbitar. I flödesschemat i figur 3 är dessa kontrollbitar representerade som 'beslut' som
