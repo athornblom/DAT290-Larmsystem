@@ -30,7 +30,6 @@ __asm volatile(
 
 Door_device *get_door_device(uint8_t id){
     return &door_devs[id];
-    //return &door_devs[id];
 }
 
 //Denna funktion ska alltid användas för att lägga till en ny dörrenhet
@@ -219,7 +218,7 @@ void larmHandler(CanRxMsg *rxMsg){
     //TODO kolla vilken typ av enhet det är osv
     //Skicka ack för dörr
     CanTxMsg msg;
-    encode_larm_ack(&msg, rxMsg);
+    encode_ack_msg(&msg, rxMsg);
     CANsendMessage(&msg);
 }
 
@@ -227,12 +226,11 @@ void config_ack_handler(CanRxMsg *msg){
     Header header = empty_header;
     UINT32toHEADER(msg->ExtId, header);
     uint8_t id = header.ID;
-    uint8_t dev_type = msg->Data[0];
-    
-    if(dev_type == door_unit){
-        Door_device *dev = get_door_device(id);
-        dev->num_of_unacked = 0;
-    }
+    Device*  dev = &devices[id];
+	// Id måste vara mindre än mängden enheter
+    if (id < next_id) {
+		dev->num_of_unacked--;		
+	}
 }
 
 uint8_t enable_config_ack_handler(){
