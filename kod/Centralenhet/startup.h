@@ -126,7 +126,6 @@ uint8_t dists_equal(Dist_sensor dist_0, Dist_sensor dist_1);
 //Kollar om två vibrationssensorer är identiska bortsett från id
 uint8_t vibs_equal(Vib_sensor vib_0, Vib_sensor vib_1);
 
-//Skickar konfigurationsmeddelanden för rörelseenhet med id för rörelsesensor startande från sensor first_motion_ID
-//och id för vibrationssensor startande från sensor first_vib_ID
-//Om vi fyllt buffern så returneras index för sensorn som inte skickades ni pekarna return_motion_ID och return_vib_ID
-uint8_t send_motion_configs(uint8_t id, uint8_t first_motion_ID, uint8_t *return_motion_ID, uint8_t first_vib_ID, uint8_t *return_vib_ID);
+//Skickar konfigurationsmeddelanden för rörelseenhet med id för sesensor startande från sensor first_ID
+//Om vi fyllt buffern för CAN så returneras index för sensorn som inte skickades ni pekarna return_ID
+uint8_t send_motion_configs(uint8_t id, uint8_t first_ID, uint8_t *return_ID);

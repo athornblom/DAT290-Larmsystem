@@ -704,53 +704,47 @@ uint8_t vibs_equal(Vib_sensor vib_0, Vib_sensor vib_1){
     return vib_0.active == vib_1.active;
 }
 
-//Skickar konfigurationsmeddelanden för rörelseenhet med id för rörelsesensor startande från sensor first_motion_ID
-//och id för vibrationssensor startande från sensor first_vib_ID
-//Om vi fyllt buffern så returneras index för sensorn som inte skickades ni pekarna return_motion_ID och return_vib_ID
-uint8_t send_motion_configs(uint8_t id, uint8_t first_motion_ID, uint8_t *return_motion_ID, uint8_t first_vib_ID, uint8_t *return_vib_ID){
+//Skickar konfigurationsmeddelanden för rörelseenhet med id för sesensor startande från sensor first_ID
+//Om vi fyllt buffern för CAN så returneras index för sensorn som inte skickades ni pekarna return_ID
+uint8_t send_motion_configs(uint8_t id, uint8_t first_ID, uint8_t *return_ID){
     CanTxMsg msg;
-    uint8_t last_motion_ID;
-    Dist_sensor first_dist;
-    Dist_sensor last_dist;
+    uint8_t last_ID = first_ID;
     //Följande loop samlar största möjliga intervall av rörelsesensorer med samma värden och skickar ett meddelande per intervall
-    for(; first_motion_ID < motion_devs[id].num_of_motion_sensors; first_motion_ID = last_motion_ID){
-        first_dist = motion_devs[id].dist_sensors[first_motion_ID];
-        for(last_motion_ID = first_motion_ID; last_motion_ID < motion_devs[id].num_of_motion_sensors; last_motion_ID++){
-            last_dist = motion_devs[id].dist_sensors[last_motion_ID];
+    for(; first_ID < motion_devs[id].num_of_motion_sensors; first_ID = last_ID){
+        Dist_sensor first_dist = motion_devs[id].dist_sensors[first_ID];
+        for(; last_ID < motion_devs[id].num_of_motion_sensors; last_ID++){
+            Dist_sensor last_dist = motion_devs[id].dist_sensors[last_ID];
             if(!dists_equal(first_dist, last_dist)){
                 break;
             }
         }
         
-        encode_motion_config(&msg, id, motion_sensor, 0, first_dist.id, last_dist.id - 1, first_dist.active, first_dist.dist, first_dist.disArm);
+        encode_motion_config(&msg, id, motion_sensor, 0, first_ID, last_ID - 1, first_dist.active, first_dist.dist, first_dist.disArm);
         //blockingDelayMs(300); //För säkerhets skull TODO: Ta bort om möjligt
         if (CANsendMessage(&msg) == CAN_TxStatus_NoMailBox){
             //USARTPrint("No mailbox 2\n");
-            *return_motion_ID = first_motion_ID;
+            *return_ID = first_ID;
             return 0;
         }
     }
-
-    uint8_t last_vib_ID;
-    Vib_sensor first_vib;
-    Vib_sensor last_vib;
+    
     //Följande loop samlar största möjliga intervall av vibrationssensorer med samma värden och skickar ett meddelande per intervall
-    for(; first_vib_ID < motion_devs[id].num_of_vib_sensors; first_vib_ID = last_vib_ID){
-        first_vib = motion_devs[id].vib_sensors[first_vib_ID];
-        for(last_vib_ID = first_vib_ID; last_vib_ID < motion_devs[id].num_of_vib_sensors; last_vib_ID++){
-            last_vib = motion_devs[id].vib_sensors[last_vib_ID];
+    for(; first_ID < motion_devs[id].num_of_vib_sensors; first_ID = last_ID){
+        Vib_sensor first_vib = motion_devs[id].vib_sensors[first_ID];
+        for(; last_ID < motion_devs[id].num_of_vib_sensors; last_ID++){
+            Vib_sensor last_vib = motion_devs[id].vib_sensors[last_ID];
             if(!vibs_equal(first_vib, last_vib)){
                 break;
             }
         }
-        encode_motion_config(&msg, id, vibration_sensor, 0, first_vib.id, last_vib.id - 1, first_vib.active, 0, first_vib.disArm);
+        encode_motion_config(&msg, id, vibration_sensor, 0, first_ID, last_ID - 1, first_vib.active, 0, first_vib.disArm);
         //blockingDelayMs(300); //För säkerhets skull TODO: Ta bort om möjligt
         if (CANsendMessage(&msg) == CAN_TxStatus_NoMailBox){
             //USARTPrint("No mailbox 3\n");
-            *return_vib_ID = first_vib_ID;
+            *return_ID = first_ID;
             return 0;
         }
-}
+    }
     
     return 1;
 }
@@ -777,14 +771,12 @@ void main(void) {
 	uint8_t i = 0;
 	uint8_t keep_id = 0;
 	uint8_t first_id = 0;
-	uint8_t first_vib_id = 0;
 	uint8_t cont_id = 0;
-	uint8_t cont_vib_id = 0;
 
     while (1) {
         USARTCommand();
         
-	    //Om vi är i STDMODE och 1 sekund har gått sen alla enheter fick konfigurationer
+	    //Om vi är i STDMODE och det är dax att skicka nya konfigurationer, dessutom har vi någon enhet
         if(mode == STDMODE && msDelay < msTicks && next_id != 0 ){
 			
 			keep_id = 0;
@@ -796,7 +788,7 @@ void main(void) {
 			} 
 			
 			else if (devices[i].type == motion_unit) {
-				if (!send_motion_configs(i, first_id, &cont_id, first_vib_id, &cont_vib_id)) {
+				if (!send_motion_configs(i, first_id, &cont_id)) {
 					keep_id = 1;
 				}
 			}
@@ -804,11 +796,9 @@ void main(void) {
 			if (!keep_id) {
 				i++;
 				first_id = 0;
-				first_vib_id = 0;
 			}
 			else {
 				first_id = cont_id;
-				first_vib_id = cont_vib_id;
 			}
 			
 			if (i >= next_id) {
