@@ -92,4 +92,11 @@ uint16_t GPIO_Pins[16];	// Array för alla pins.
 
 //===================================================================================================================
 
+/**
+ * @brief Pollingfunktion för att pinga & mäta distans.
+ * @param Rörelsesensor.
+ */
+char motionMeasure(Sensor *sensor);
+
+
 #endif

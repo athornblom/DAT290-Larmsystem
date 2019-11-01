@@ -24,7 +24,7 @@ volatile char annydoorLarm = 0; //kontrollbit ifall någon dörr larmar
 door doors[32];
 int amountOfActiveDoors = 0;
 int maxDoors = 32;
-
+uint32_t timeOutId = 0;
 // Två listor som behövs för att dörrenheten ska kunna detektera dörrar vid uppstart.
 uint16_t GPIO_Pins[] = {
 	GPIO_Pin_0, GPIO_Pin_1, GPIO_Pin_2, GPIO_Pin_3, GPIO_Pin_4, GPIO_Pin_5,
@@ -50,8 +50,8 @@ void active_doors_add_doors(){
 				doors[counter].GPIO_read = GPIO_Pins[i];
 				doors[counter].GPIO_lamp = GPIO_Pins[i+1];
 				doors[counter].controlbits = 0;
-				doors[counter].time_larm = 0;
-				doors[counter].time_central_larm = 0;
+				doors[counter].time_larm = 1;
+				doors[counter].time_central_larm = 2;
 				doors[counter].waitOutTime = 0;
 				doors[counter].GPIO_type = GPIO_Ports[j];
 				counter++;
@@ -105,9 +105,7 @@ void main(void)
 	active_doors_add_doors(); // initierar standard värden och portar
 	getId(amountOfActiveDoors); //Skickar till centralenheten hur många aktiva dörrar dörrenheten har och får ett id
 	startup_lights(); // Mest för cool het's faktorns skull ingen riktigt funktionallitet
-	if(amountOfActiveDoors == 12){
 	GPIO_SetBits(GPIOB, GPIO_Pin_2); // Lampa som lyser när systemet är färdig initierat.
-	}
 	while (1)
 	{
 		check_door_status(); // Uppdatterar kontrollbitarna för varje dörr.
@@ -120,6 +118,10 @@ void main(void)
 					sendAlarm(i);
 				}
 			}
+		if(nocid && msTicks > timeOutId){
+			timeOutId = msTicks + 100000; // ifall dörreneheten inte fått ett id så testar den att kolla ifall det finns en centralenhet var 10:e sekund
+			tryGetId();
+		}
 	}
 }
 	

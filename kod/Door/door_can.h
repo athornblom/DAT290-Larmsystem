@@ -10,5 +10,6 @@
 void init_rng(void);
 void getId (int nDoors);
 void sendAlarm (char Doorid);
+void tryGetId (void);
 
 #endif

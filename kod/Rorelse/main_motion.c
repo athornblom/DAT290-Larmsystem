@@ -144,7 +144,7 @@ void init_MotionSensors(){
 					.pulseTrig	= 0,
 					.pulseEcho	= 0,
 					.pulseDelay = 0,
-					.timeOut	= microTicks + 60000000,	// Högt värde (microTicks + 60s) i initialisering för att inte larma i direkt när mainloopen körs.
+					.timeOut	= 0,
 					.cm			= 400,
 					.multiple	= 1,
 					.alarmDistance = 0		// Värdet ska sättas av centralenheten
@@ -171,18 +171,10 @@ void init_MotionSensors(){
 		for(int i = 0; i < nMaxMotionSensors; i++){
 			MotionSensor* mSensor = &(initMotionSensors[i].motion);
 			
-			if (validPin(initMotionSensors[i].port, mSensor->pinEcho)){				
-				if(lows[i] < 2 && microTicks > mSensor->pulseTrig){ // Första låga
-					GPIO_ResetBits(initMotionSensors[i].port, mSensor->pinTrig);	// Avaktivera triggerpuls
-					lows[i]++;
-				}
-				if(microTicks >= mSensor->pulseDelay){
-					GPIO_SetBits(initMotionSensors[i].port, mSensor->pinTrig);	// Aktivera triggerpuls
-					mSensor->pulseTrig = microTicks + 10; // Triggpuls 10µs
-					mSensor->pulseDelay = microTicks + 1000000; // Triggpuls 1s
-					
-				}
-				if(GPIO_ReadInputDataBit(initMotionSensors[i].port, mSensor->pinEcho) && !(initMotionSensors[i].controlbits & bit0)){ // Är echo hög och bitarna har inte redan satts?
+			// Kollar vi en giltlig pin och ännu inte funnit en sensor?
+			if (validPin(initMotionSensors[i].port, mSensor->pinEcho) && !(sensors[i].controlbits & bit0)){
+				// Hittar vi en inkopplad sensor?
+				if(motionMeasure(&initMotionSensors[i])){
 					initMotionSensors[i].controlbits |= bit0;	// Ettställer kontrollbit 0.
 					
 					// Lägger till inkopplade rörelsesensorers i 'sensors'.
@@ -261,34 +253,40 @@ void init_app(){
  * @brief Pollingfunktion för att pinga & mäta distans.
  * @param Rörelsesensor.
  */
-void motionMeasure(Sensor *sensor) {
+char motionMeasure(Sensor *sensor) {
 	MotionSensor* mSensor = &(sensor->motion);
 	
 	// Är triggpulsen klar?
 	if(microTicks >= mSensor->pulseTrig){ 					
-		GPIO_ResetBits(sensor->port, mSensor->pinTrig);		// Avaktivera triggerpuls
+		GPIO_ResetBits(sensor->port, mSensor->pinTrig);		// Avaktivera triggerpuls.
 	}
 	
 	// Är triggfördröjningen klar?
 	if(microTicks >= mSensor->pulseDelay){  					
-		GPIO_SetBits(sensor->port, mSensor->pinTrig);		// Aktivera triggerpuls
-		mSensor->pulseTrig  = microTicks + 10; 				// Triggpuls 10µs
-		mSensor->pulseDelay = microTicks + 60000;			// Fördröjning mellan triggerpulserna, 60ms
+		GPIO_SetBits(sensor->port, mSensor->pinTrig);		// Aktivera triggerpuls.
+		mSensor->pulseTrig  = microTicks + 10; 				// Triggpuls 10µs.
+		mSensor->pulseDelay = microTicks + 60000;			// Fördröjning mellan triggerpulserna, 60ms.
 	}
 	
 
 	// Är echo hög för första gången?
 	if(!(sensor->controlbits & bit3) && GPIO_ReadInputDataBit(sensor->port, mSensor->pinEcho)){
+		// Kollar vi efter sensorer till 'init_MotionSensors'?
+		if(!(sensor->controlbits & bit0)){
+			return 1;
+		}
 		mSensor->timeOut = microTicks + 500000;		// Ifall echo inte varit hög på 0.5s ska det larma.
 		mSensor->pulseEcho = microTicks; 			// Början av echopulsen.
-		sensor->controlbits |= bit3;  				// Ettställer kontrollbit 3.
+		sensor->controlbits |= bit3;  				// Högkant på echopulsen.
 	}
 	
 	// Är echo låg för första gången?
 	else if (sensor->controlbits & bit3 && !GPIO_ReadInputDataBit(sensor->port, mSensor->pinEcho)) {	
 		mSensor->cm = mSensor->multiple*(microTicks - mSensor->pulseEcho)/58; 	// Tid tills echo kommer tillbaks.
-		sensor->controlbits &= ~bit3;							// Nollställer kontrollbit 3.
+		sensor->controlbits &= ~bit3;	// Lågkant på echopulsen.
 	}
+	
+	return 0;
 	
 }
 
@@ -360,7 +358,7 @@ void main(void){
 				}
 				
 				// Är sensorn av typen vibration? (controlbit 1 && 2)
-				else if(sensors[i].controlbits & bit1) {
+				else {
 					vibrationPolling(&sensors[i]);
 				}
 			}
