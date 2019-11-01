@@ -56,7 +56,7 @@ uint8_t encode_assign_id(CanTxMsg *msg, CanRxMsg *request, uint8_t id);
 
 uint8_t encode_distance_config(CanTxMsg *msg, uint32_t dist);
 
-uint8_t encode_motion_config(CanTxMsg *msg, uint8_t id, uint8_t sensor_type, uint8_t calibration, uint8_t sensor_id_0, uint8_t sensor_id_1, uint8_t active, uint16_t distance);
+uint8_t encode_motion_config(CanTxMsg *msg, uint8_t id, uint8_t sensor_type, uint8_t calibration, uint8_t sensor_id_0, uint8_t sensor_id_1, uint8_t active, uint16_t distance, uint8_t disArm);
 
 uint8_t encode_door_config(CanTxMsg *msg, uint8_t id, uint8_t door_id_0, uint8_t door_id_1, uint16_t time_0, uint16_t time_1, uint8_t locked);
 

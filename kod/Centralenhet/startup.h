@@ -28,6 +28,13 @@
 #define LOCKED 1
 #define UNLOCKED 0
 
+//innan enheten klassas som förlorad på nätverket
+#define OFFNETWORK 10
+
+//För larm on/om rörelseenhet
+#define LARMON 0
+#define LARMOFF 1
+
 
 //Defines för returnvärden för uint8_t Command(uint8_t *command);
 #define RERUN 2
@@ -50,11 +57,13 @@ typedef struct{
     uint8_t id;
     uint16_t dist;
 	uint8_t active;
+    uint8_t disArm;
 } Dist_sensor;
 
 typedef struct{
     uint8_t id;
 	uint8_t active;
+    uint8_t disArm;
 } Vib_sensor;
 
 typedef struct{

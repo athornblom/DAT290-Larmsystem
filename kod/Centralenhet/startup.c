@@ -2,7 +2,7 @@
 #include "startup.h"
 
 
-#define MAXCOMMANDLENGTH 10
+#define MAXCOMMANDLENGTH 15
 #define SESSIONIDACTIVE 0
 #define CONFMODE 0
 #define STDMODE 1
@@ -71,18 +71,21 @@ Motion_device *add_motion_device(uint8_t id, CanRxMsg *msg){
     motion_devs[id].num_of_vib_sensors = vibSensors;
     
     //Initierar rörelsesensorer
-    for(uint8_t i = 0; i < motionSensors; i++){
+    uint8_t i = 0;
+    for(; i < motionSensors; i++){
         Dist_sensor *dist = &(motion_devs[id].dist_sensors[i]);
         dist->id = i;
         dist->dist = default_dist;
         dist->active = ACTIVE;
+        dist->disArm = LARMON;
     }
     
     //Initierar vibrationssensorer
-    for(uint8_t i = 0; i < vibSensors; i++){
+    for(; i - motionSensors < vibSensors; i++){
         Vib_sensor *vib = &(motion_devs[id].vib_sensors[i]);
         vib->id = i;
         vib->active = ACTIVE;
+        vib->disArm = LARMOFF;
     }
 
     return &motion_devs[id];
@@ -103,20 +106,14 @@ uint8_t get_id_by_random_id(uint8_t *idDest, uint32_t random_id, uint8_t device_
 }
 
 void id_request_handler(CanRxMsg *rxMsgP){
-    printRxMsg(rxMsgP, 16); //TODO Ta bort när vi inte behöver den längre
+    //printRxMsg(rxMsgP, 16); //TODO Ta bort när vi inte behöver den längre
     CanRxMsg rxMsg = *rxMsgP;
     CanTxMsg txMsg;
     
     uint8_t device_type = decode_deviceType(rxMsgP);
     uint32_t temp_id = decode_tempID(rxMsgP);
     
-    USARTPrint("\ndevicetype: ");
-    USARTPrintNumBase(device_type, 16);
-    USARTPrint("\nRandom ID: ");
-    USARTPrintNumBase(temp_id, 16);
-    USARTPrint("\n");
     uint8_t id;
-    
     //Om random_id känns igen behöver vi bara skicka samma id igen
     if(get_id_by_random_id(&id, temp_id, device_type)){
         USARTPrint("Skickar ID till ");
@@ -187,49 +184,9 @@ void config_ack_handler(CanRxMsg *msg){
     Device*  dev = &devices[id];
 	// Id måste vara mindre än mängden enheter
     if (id < next_id) {
-		dev->num_of_unacked--;		
+		dev->num_of_unacked = 0;
 	}
 }
-
-uint8_t enable_config_ack_handler(){
-    uint8_t retIndex;
-    CANFilter filter;
-    CANFilter mask;
-
-    //För omvandling
-    Header header;
-
-    //Skriver mask
-    mask.IDE = 1;
-    mask.RTR = 1;
-    mask.DLC = ~0;
-    header.msgType = ~0;
-    header.toCentral = ~0;
-    header.ID = 0;
-    //ignorera msgNum
-    header.msgNum = 0;
-    HEADERtoUINT32(header, mask.ID);
-
-    //Filter för Larm
-    filter.IDE = 1;
-    filter.RTR = 0;
-    filter.DLC = 1;
-    header.msgType = larm_msg_type;
-    header.toCentral = 1;
-    header.ID = 0;
-    HEADERtoUINT32(header, filter.ID);
-
-    //Aktiverar handler för larm
-    if (CANhandlerListNotFull()){
-        USARTPrint("Larm handler med handler index: ");
-        retIndex = CANaddFilterHandler(larmHandler, &filter, &mask);
-        USARTPrintNum(retIndex);
-        USARTPrint("\n");
-    } else {
-        return 0;
-    }
-}
-
 
 //Aktiverar centralenhetens konfigurationsläge
 //Aktiverar ID-tilldelningshantering och initial konfiguration
@@ -342,6 +299,37 @@ uint8_t enterStdMode (void){
     } else {
         return 0;
     }
+    
+    //Skriver mask
+    mask.IDE = 1;
+    mask.RTR = 1;
+    //Olika längd för DLC
+    mask.DLC = 0;
+    header.msgType = ~0;
+    header.toCentral = ~0;
+    header.ID = 0;
+    header.msgNum = ~0;
+    HEADERtoUINT32(header, mask.ID);
+    
+    //Filter för konfig ack
+    filter.IDE = 1;
+    filter.RTR = 1;
+    filter.DLC = 0;
+    header.msgType = conf_msg_type;
+    header.toCentral = 0;
+    header.ID = 0;
+    header.msgNum = 0;
+    HEADERtoUINT32(header, filter.ID);
+
+    //Aktiverar handler för larm
+    if (CANhandlerListNotFull()){
+        USARTPrint("Konf ack handler med handler index: ");
+        retIndex = CANaddFilterHandler(config_ack_handler, &filter, &mask);
+        USARTPrintNum(retIndex);
+        USARTPrint("\n");
+    } else {
+        return 0;
+    }
 
     return 1;
 }
@@ -388,49 +376,208 @@ uint8_t Command(uint8_t *command){
 
     //Detta kommando behöver itereras flera gånger för att hämta input och lö
     else if (strStartsWith(command, "avlarma")) {
-        if (mode == STDMODE){
-            //Lösenordssträngen sista 0an för att terminera
-            #define PASSWORDLENGTH 4
-            uint8_t password[PASSWORDLENGTH + 1] = {1,2,3,4,0};
-            //Håller koll på om det är första iterationen av kommandot
-            static uint8_t firstIter = 1;
-            //Håller kåll på vilket index som är nästa i lösenordssträngen
-            static uint8_t currentCharIndex = 0;
-            //Håller koll på lösenordet som har matats in
-            static uint8_t entered[PASSWORDLENGTH]; 
-            
-            //Första iterationern
-            if (firstIter){
-                currentCharIndex = 0;                
-                USARTPrint("Skriv losenord: ");
-                clearKeypadQue();
-                firstIter = 0;
-            }
-            
-            //Läser från keypad
-            uint8_t readKey;
-            if(readKeypad(&readKey)){
-                entered[currentCharIndex++] = readKey;
-                USARTPrintNumBase(readKey, 16);
-            }
+        //Lösenordssträngen sista 0an för att terminera
+        #define PASSWORDLENGTH 4
+        uint8_t password[PASSWORDLENGTH + 1] = {1,2,3,0xa,0};
+        //Håller koll på om det är första iterationen av kommandot
+        static uint8_t firstIter = 1;
+        //Håller kåll på vilket index som är nästa i lösenordssträngen
+        static uint8_t currentCharIndex = 0;
+        //Håller koll på lösenordet som har matats in
+        static uint8_t entered[PASSWORDLENGTH]; 
+        
+        //Första iterationern
+        if (firstIter){
+            currentCharIndex = 0;                
+            USARTPrint("Skriv losenord: ");
+            clearKeypadQue();
+            firstIter = 0;
+        }
+        
+        //Läser från keypad
+        uint8_t readKey;
+        if(readKeypad(&readKey)){
+            entered[currentCharIndex++] = readKey;
+            USARTPrintNumBase(readKey, 16);
+        }
 
-            //Har ett helt lösenord matats in?
-            if (currentCharIndex == PASSWORDLENGTH){
-                //Nästa gång börjar vi om på nytt
-                firstIter = 1;
-                //Efter som enterd inte har terminering kollar vi om entered börjar med password
-                if (strStartsWith(entered, password)){
-                    //Inloggning lyckades
-                    USARTPrint(" ratt!\n");
+        //Har ett helt lösenord matats in?
+        if (currentCharIndex == PASSWORDLENGTH){
+            //Nästa gång börjar vi om på nytt
+            firstIter = 1;
+            //Efter som enterd inte har terminering kollar vi om entered börjar med password
+            if (strStartsWith(entered, password)){
+                USARTPrint(" ratt!\n");
+                //Inloggning lyckades
+                //SORRY endast enheter med id 0-9 och sensorer 0-9 TODO
+                uint8_t uinitID = command[8] - '0';
+                uint8_t sensorID = command[10] - '0';
+                if (0 <= uinitID && uinitID <= 9 && 0 <= sensorID  && sensorID <= 9 &&
+                    uinitID < next_id){
+                        if (devices[uinitID].type == door_unit){
+                            USARTPrint("\nAlvarmar sensor ");
+                            USARTPrintNum(sensorID);
+                            USARTPrint(" pa dorrenhet med ID ");
+                            USARTPrintNum(uinitID);
+                            door_devs[uinitID].doors[sensorID].locked = UNLOCKED;
+                            USARTPrint("\n");
+                        } else if (devices[uinitID].type == motion_unit){
+                            USARTPrint("\nAlvarmar sensor ");
+                            USARTPrintNum(sensorID);
+                            USARTPrint(" pa rorelseenhet med ID ");
+                            USARTPrintNum(uinitID);
+                            if(sensorID < motion_devs[uinitID].num_of_motion_sensors){
+                                motion_devs[uinitID].dist_sensors[sensorID].disArm = LARMOFF;
+                            } else {
+                                motion_devs[uinitID].vib_sensors[sensorID - motion_devs[uinitID].num_of_motion_sensors].disArm = LARMOFF;
+                            }
+                            USARTPrint("\n");
+                        } else {
+                            USARTPrint("\nmisslyckadess\n");
+                        }
                 } else {
-                    //Inloggning misslyckades
-                    USARTPrint(" fel\n");
+                    USARTPrint("\nmisslyckades\n");
                 }
+            } else {
+                //Inloggning misslyckades
+                USARTPrint(" fel\n");
+            }
 
-                return OK;
+            return OK;
+        }
+        
+        return RERUN;
+    }
+        
+    //Detta kommando behöver itereras flera gånger för att hämta input och lö
+    else if (strStartsWith(command, "larma")) {
+        //Lösenordssträngen sista 0an för att terminera
+        #define PASSWORDLENGTH 4
+        uint8_t password[PASSWORDLENGTH + 1] = {1,2,3,0xa,0};
+        //Håller koll på om det är första iterationen av kommandot
+        static uint8_t firstIter = 1;
+        //Håller kåll på vilket index som är nästa i lösenordssträngen
+        static uint8_t currentCharIndex = 0;
+        //Håller koll på lösenordet som har matats in
+        static uint8_t entered[PASSWORDLENGTH]; 
+        
+        //Första iterationern
+        if (firstIter){
+            currentCharIndex = 0;                
+            USARTPrint("Skriv losenord: ");
+            clearKeypadQue();
+            firstIter = 0;
+        }
+        
+        //Läser från keypad
+        uint8_t readKey;
+        if(readKeypad(&readKey)){
+            entered[currentCharIndex++] = readKey;
+            USARTPrintNumBase(readKey, 16);
+        }
+
+        //Har ett helt lösenord matats in?
+        if (currentCharIndex == PASSWORDLENGTH){
+            //Nästa gång börjar vi om på nytt
+            firstIter = 1;
+            //Efter som enterd inte har terminering kollar vi om entered börjar med password
+            if (strStartsWith(entered, password)){
+                USARTPrint(" ratt!\n");
+                //Inloggning lyckades
+                //SORRY endast enheter med id 0-9 och sensorer 0-9 TODO
+                uint8_t uinitID = command[6] - '0';
+                uint8_t sensorID = command[8] - '0';
+                if (0 <= uinitID && uinitID <= 9 && 0 <= sensorID  && sensorID <= 9 &&
+                    uinitID < next_id && devices[uinitID].type == door_unit){
+                        if (devices[uinitID].type == door_unit){
+                            USARTPrint("\nLarmar sensor ");
+                            USARTPrintNum(sensorID);
+                            USARTPrint(" pa dorrenhet med ID ");
+                            USARTPrintNum(uinitID);
+                            door_devs[uinitID].doors[sensorID].locked = LOCKED;
+                            USARTPrint("\n");
+                        } else if (devices[uinitID].type == motion_unit){
+                            USARTPrint("\nLarmar sensor ");
+                            USARTPrintNum(sensorID);
+                            USARTPrint(" pa rorelseenhet med ID ");
+                            USARTPrintNum(uinitID);
+                            if(sensorID < motion_devs[uinitID].num_of_motion_sensors){
+                                motion_devs[uinitID].dist_sensors[sensorID].disArm = LARMON;
+                            } else {
+                                motion_devs[uinitID].vib_sensors[sensorID - motion_devs[uinitID].num_of_motion_sensors].disArm = LARMON;
+                            }
+                            USARTPrint("\n");
+                        }
+                } else {
+                    USARTPrint("\nmisslyckades\n");
+                }
+            } else {
+                //Inloggning misslyckades
+                USARTPrint(" fel\n");
+            }
+
+            return OK;
+        }
+        
+        return RERUN;
+    }
+
+    
+    //Detta kommando behöver itereras flera gånger för att hämta input osv
+    else if (strStartsWith(command, "dor")) {
+        if (mode == CONFMODE){
+            //SORRY endast enheter med id 0-9 och sensorer 0-9 TODO
+            uint8_t uinitID = command[4] - '0';
+            uint8_t sensorID = command[6] - '0';
+            uint8_t localTime = command[8] - '0';
+            uint8_t centralTime = command[10] - '0';
+            if (0 <= uinitID && uinitID <= 9 && 0 <= sensorID  && sensorID <= 9 &&
+                0 <= localTime && localTime <= 9 && 0 <= centralTime  && centralTime <= 9 &&
+                uinitID < next_id && devices[uinitID].type == door_unit){
+                    USARTPrint("\nKonfigurerar dorr ");
+                    USARTPrintNum(sensorID);
+                    USARTPrint(" pa enhet med ID ");
+                    USARTPrintNum(uinitID);
+                    USARTPrint("\nmed local t ");
+                    USARTPrintNum(localTime);
+                    USARTPrint(" och central t ");
+                    USARTPrintNum(centralTime);
+                    USARTPrint("\n");
+                    door_devs[uinitID].doors[sensorID].time_local_larm = localTime;
+                    door_devs[uinitID].doors[sensorID].time_central_larm = centralTime;
+            } else {
+                USARTPrint("\nmisslyckades\n");
             }
             
-            return RERUN;
+            return OK;
+        }
+        
+        //Vi är inte i konfig läge så kommandot är ogiltigt
+        return NOCMD;
+    }
+    
+    //Detta kommando behöver itereras flera gånger för att hämta input osv
+    else if (strStartsWith(command, "ror")) {
+        if (mode == CONFMODE){
+            //SORRY endast enheter med id 0-9 och sensorer 0-9 TODO
+            uint8_t uinitID = command[4] - '0';
+            uint8_t sensorID = command[6] - '0';
+            uint8_t dist = command[8] - '0';
+            if (0 <= uinitID && uinitID <= 9 && 0 <= sensorID  && sensorID <= 9 &&
+                0 <= dist && dist <= 9 && uinitID < next_id && devices[uinitID].type == motion_unit){
+                    USARTPrint("\nKonfigurerar rorelse ");
+                    USARTPrintNum(sensorID);
+                    USARTPrint(" pa enhet med ID ");
+                    USARTPrintNum(uinitID);
+                    USARTPrint("\nmed dist ");
+                    USARTPrintNum(dist * 10);
+                    USARTPrint(" cm\n");
+                    motion_devs[uinitID].dist_sensors[sensorID].dist = dist * 10;
+            } else {
+                USARTPrint("\nmisslyckades\n");
+            }
+            
+            return OK;
         }
         
         //Vi är inte i stanard läge så kommandot är ogiltigt
@@ -534,12 +681,17 @@ uint8_t send_door_configs(uint8_t id, uint8_t first_door_ID, uint8_t *return_doo
         encode_door_config(&msg, id, first_door_ID, last_door_ID - 1, first_door.time_local_larm, first_door.time_central_larm, first_door.locked);
         //print_door(door_first);
         if (CANsendMessage(&msg) == CAN_TxStatus_NoMailBox){
-            USARTPrint("No mailbox 1\n");
+            //USARTPrint("No mailbox 1\n");
             *return_door_ID = first_door_ID;
             return 0;
         }
     }
     devices[id].num_of_unacked++;
+    if(devices[id].num_of_unacked >= OFFNETWORK){
+        USARTPrint("Enhet med id ");
+        USARTPrintNum(id);
+        USARTPrint(" har lamnat natverket\n");
+    }
     return 1;
 }
 
@@ -558,40 +710,44 @@ uint8_t vibs_equal(Vib_sensor vib_0, Vib_sensor vib_1){
 uint8_t send_motion_configs(uint8_t id, uint8_t first_motion_ID, uint8_t *return_motion_ID, uint8_t first_vib_ID, uint8_t *return_vib_ID){
     CanTxMsg msg;
     uint8_t last_motion_ID;
+    Dist_sensor first_dist;
+    Dist_sensor last_dist;
     //Följande loop samlar största möjliga intervall av rörelsesensorer med samma värden och skickar ett meddelande per intervall
     for(; first_motion_ID < motion_devs[id].num_of_motion_sensors; first_motion_ID = last_motion_ID){
-        Dist_sensor first_dist = motion_devs[id].dist_sensors[first_motion_ID];
+        first_dist = motion_devs[id].dist_sensors[first_motion_ID];
         for(last_motion_ID = first_motion_ID; last_motion_ID < motion_devs[id].num_of_motion_sensors; last_motion_ID++){
-            Dist_sensor last_dist = motion_devs[id].dist_sensors[last_motion_ID];
+            last_dist = motion_devs[id].dist_sensors[last_motion_ID];
             if(!dists_equal(first_dist, last_dist)){
                 break;
             }
         }
         
-        encode_motion_config(&msg, id, motion_sensor, 0, first_motion_ID, last_motion_ID - 1, first_dist.active, first_dist.dist);
+        encode_motion_config(&msg, id, motion_sensor, 0, first_dist.id, last_dist.id - 1, first_dist.active, first_dist.dist, first_dist.disArm);
         //blockingDelayMs(300); //För säkerhets skull TODO: Ta bort om möjligt
         if (CANsendMessage(&msg) == CAN_TxStatus_NoMailBox){
-            USARTPrint("No mailbox 2\n");
+            //USARTPrint("No mailbox 2\n");
             *return_motion_ID = first_motion_ID;
             return 0;
         }
     }
 
     uint8_t last_vib_ID;
+    Vib_sensor first_vib;
+    Vib_sensor last_vib;
     //Följande loop samlar största möjliga intervall av vibrationssensorer med samma värden och skickar ett meddelande per intervall
     for(; first_vib_ID < motion_devs[id].num_of_vib_sensors; first_vib_ID = last_vib_ID){
-        Vib_sensor first_vib = motion_devs[id].vib_sensors[first_vib_ID];
+        first_vib = motion_devs[id].vib_sensors[first_vib_ID];
         for(last_vib_ID = first_vib_ID; last_vib_ID < motion_devs[id].num_of_vib_sensors; last_vib_ID++){
-            Vib_sensor last_vib = motion_devs[id].vib_sensors[last_vib_ID];
+            last_vib = motion_devs[id].vib_sensors[last_vib_ID];
             if(!vibs_equal(first_vib, last_vib)){
                 break;
             }
         }
-        encode_motion_config(&msg, id, vibration_sensor, 0, first_vib_ID, last_vib_ID - 1, first_vib.active, 0);
+        encode_motion_config(&msg, id, vibration_sensor, 0, first_vib.id, last_vib.id - 1, first_vib.active, 0, first_vib.disArm);
         //blockingDelayMs(300); //För säkerhets skull TODO: Ta bort om möjligt
         if (CANsendMessage(&msg) == CAN_TxStatus_NoMailBox){
-            //TODO: Hantera?
-            USARTPrint("No mailbox 3\n");
+            //USARTPrint("No mailbox 3\n");
+            *return_vib_ID = first_vib_ID;
             return 0;
         }
 }
@@ -629,23 +785,20 @@ void main(void) {
         USARTCommand();
         
 	    //Om vi är i STDMODE och 1 sekund har gått sen alla enheter fick konfigurationer
-        if(mode == STDMODE && msDelay < msTicks){
-			USARTPrint("Konfig");
+        if(mode == STDMODE && msDelay < msTicks && next_id != 0 ){
 			
 			keep_id = 0;
 
 			if (devices[i].type == door_unit){
 				if (!send_door_configs(i, first_id, &cont_id)) {
 					 keep_id = 1;
-				USARTPrint(" - Dorr\n");
+                }
 			} 
 			
-			else if (devices[i].type == motion_unit)
-			{
+			else if (devices[i].type == motion_unit) {
 				if (!send_motion_configs(i, first_id, &cont_id, first_vib_id, &cont_vib_id)) {
 					keep_id = 1;
 				}
-				USARTPrint(" - Rorelse\n");
 			}
             
 			if (!keep_id) {
@@ -665,4 +818,4 @@ void main(void) {
         }
     }
 }
-}
+

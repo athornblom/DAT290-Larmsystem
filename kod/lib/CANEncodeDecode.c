@@ -41,7 +41,7 @@ uint8_t encode_door_config(CanTxMsg *msg, uint8_t id, uint8_t door_id_0, uint8_t
     return 1;
 }
 
-uint8_t encode_motion_config(CanTxMsg *msg, uint8_t id, uint8_t sensor_type, uint8_t calibration, uint8_t sensor_id_0, uint8_t sensor_id_1, uint8_t active, uint16_t distance){
+uint8_t encode_motion_config(CanTxMsg *msg, uint8_t id, uint8_t sensor_type, uint8_t calibration, uint8_t sensor_id_0, uint8_t sensor_id_1, uint8_t active, uint16_t distance, uint8_t disArm){
     Header header = empty_header;
     header.msgType = conf_msg_type;
     header.toCentral = 0;
