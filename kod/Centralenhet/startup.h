@@ -27,6 +27,8 @@
 #define INACTIVE 0
 #define LOCKED 1
 #define UNLOCKED 0
+#define CALEBRATING 1
+#define NOCALEBRATING 0
 
 //innan enheten klassas som förlorad på nätverket
 #define OFFNETWORK 10
@@ -58,6 +60,7 @@ typedef struct{
     uint16_t dist;
 	uint8_t active;
     uint8_t disArm;
+    uint8_t calib;
 } Dist_sensor;
 
 typedef struct{

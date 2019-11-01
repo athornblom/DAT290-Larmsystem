@@ -78,6 +78,7 @@ Motion_device *add_motion_device(uint8_t id, CanRxMsg *msg){
         dist->dist = default_dist;
         dist->active = ACTIVE;
         dist->disArm = LARMON;
+        dist->calib = NOCALEBRATING;
     }
     
     //Initierar vibrationssensorer
@@ -579,11 +580,40 @@ uint8_t Command(uint8_t *command){
             
             return OK;
         }
+        //Vi är inte i conf läge så kommandot är ogiltigt
+        return NOCMD;
+    }
+        
+    //Detta kommando behöver itereras flera gånger för att hämta input osv
+    else if (strStartsWith(command, "cal")) {
+        if (mode == CONFMODE){
+            //SORRY endast enheter med id 0-9 och sensorer 0-9 TODO
+            uint8_t uinitID = command[4] - '0';
+            uint8_t sensorID = command[6] - '0';
+            uint8_t dist = command[8] - '0';
+            if (0 <= uinitID && uinitID <= 9 && 0 <= sensorID  && sensorID <= 9 &&
+                0 <= dist && dist <= 9 && uinitID < next_id && devices[uinitID].type == motion_sensor && sensorID < motion_devs[uinitID].num_of_motion_sensors){
+                    USARTPrint("\nCalibrerar rorelsesensor ");
+                    USARTPrintNum(sensorID);
+                    USARTPrint(" pa enhet med ID ");
+                    USARTPrintNum(uinitID);
+                    USARTPrint("\nmed dist ");
+                    USARTPrintNum(dist * 10);
+                    USARTPrint(" cm\n");
+                    motion_devs[uinitID].dist_sensors[sensorID].calib = CALEBRATING;
+                    motion_devs[uinitID].dist_sensors[sensorID].dist = dist * 10;
+            } else {
+                USARTPrint("\nmisslyckades\n");
+            }
+            
+            return OK;
+        }
         
         //Vi är inte i stanard läge så kommandot är ogiltigt
         return NOCMD;
     }
-
+    
+   
     return NOCMD;
 }
 
@@ -697,7 +727,7 @@ uint8_t send_door_configs(uint8_t id, uint8_t first_door_ID, uint8_t *return_doo
 
 //Kollar om två rörelsesensorer är identiska bortsett från id
 uint8_t dists_equal(Dist_sensor dist_0, Dist_sensor dist_1){
-    return dist_0.dist == dist_1.dist && dist_0.active == dist_1.active;
+    return dist_0.dist == dist_1.dist && dist_0.active == dist_1.active && dist_0.calib == dist_1.calib;
 }
 //Kollar om två vibrationssensorer är identiska bortsett från id
 uint8_t vibs_equal(Vib_sensor vib_0, Vib_sensor vib_1){
@@ -709,6 +739,9 @@ uint8_t vibs_equal(Vib_sensor vib_0, Vib_sensor vib_1){
 uint8_t send_motion_configs(uint8_t id, uint8_t first_ID, uint8_t *return_ID){
     CanTxMsg msg;
     uint8_t last_ID = first_ID;
+    USARTPrintNum(first_ID);
+    USARTPrint("\n");
+    USARTPrintNum(last_ID);
     //Följande loop samlar största möjliga intervall av rörelsesensorer med samma värden och skickar ett meddelande per intervall
     for(; first_ID < motion_devs[id].num_of_motion_sensors; first_ID = last_ID){
         Dist_sensor first_dist = motion_devs[id].dist_sensors[first_ID];
@@ -719,8 +752,10 @@ uint8_t send_motion_configs(uint8_t id, uint8_t first_ID, uint8_t *return_ID){
             }
         }
         
-        encode_motion_config(&msg, id, motion_sensor, 0, first_ID, last_ID - 1, first_dist.active, first_dist.dist, first_dist.disArm);
+        encode_motion_config(&msg, id, motion_sensor, first_dist.calib, first_ID, last_ID - 1, first_dist.active, first_dist.dist, first_dist.disArm);
         //blockingDelayMs(300); //För säkerhets skull TODO: Ta bort om möjligt
+        USARTPrint("test 1:\n");
+        printTxMsg(&msg, 16);
         if (CANsendMessage(&msg) == CAN_TxStatus_NoMailBox){
             //USARTPrint("No mailbox 2\n");
             *return_ID = first_ID;
@@ -729,7 +764,7 @@ uint8_t send_motion_configs(uint8_t id, uint8_t first_ID, uint8_t *return_ID){
     }
     
     //Följande loop samlar största möjliga intervall av vibrationssensorer med samma värden och skickar ett meddelande per intervall
-    for(; first_ID < motion_devs[id].num_of_vib_sensors; first_ID = last_ID){
+    for(; first_ID - motion_devs[id].num_of_motion_sensors < motion_devs[id].num_of_vib_sensors; first_ID = last_ID){
         Vib_sensor first_vib = motion_devs[id].vib_sensors[first_ID];
         for(; last_ID < motion_devs[id].num_of_vib_sensors; last_ID++){
             Vib_sensor last_vib = motion_devs[id].vib_sensors[last_ID];
@@ -737,8 +772,12 @@ uint8_t send_motion_configs(uint8_t id, uint8_t first_ID, uint8_t *return_ID){
                 break;
             }
         }
+        USARTPrintNum(first_ID);
+        USARTPrint("test \n");
         encode_motion_config(&msg, id, vibration_sensor, 0, first_ID, last_ID - 1, first_vib.active, 0, first_vib.disArm);
         //blockingDelayMs(300); //För säkerhets skull TODO: Ta bort om möjligt
+        USARTPrint("test 2:\n");
+        printTxMsg(&msg, 16);
         if (CANsendMessage(&msg) == CAN_TxStatus_NoMailBox){
             //USARTPrint("No mailbox 3\n");
             *return_ID = first_ID;

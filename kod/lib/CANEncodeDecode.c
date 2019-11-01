@@ -86,7 +86,6 @@ uint8_t encode_distance_value(CanTxMsg *msg, uint8_t sensor_id, uint8_t distance
     *(data_pointer + 1) = distance;
 }
 
-
 /*
  * CanTxMsg *msg: förslagsvis tomt meddeleande som görs till id-förfrågan
  * uint32_t temp_id: temporärt, förslagsvis slumpgenererat id
