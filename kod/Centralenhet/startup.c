@@ -551,6 +551,29 @@ uint8_t send_door_configs(Door_device *dev){
         }
         encode_door_config(&msg, 0, id_first, id_last - 1, door_first.time_0, door_first.time_1, door_first.locked);
         
+
+        CanRxMsg rxMsg;
+        rxMsg.Data[0] = msg.Data[0];
+        rxMsg.Data[1] = msg.Data[1];
+        rxMsg.Data[2] = msg.Data[2];
+        rxMsg.Data[3] = msg.Data[3];
+        rxMsg.Data[4] = msg.Data[4];
+        rxMsg.Data[5] = msg.Data[5];
+        rxMsg.Data[6] = msg.Data[6];
+        
+        
+        uint8_t *door_id_0, *door_id_1, *locked;
+        uint16_t *time_0, *time_1;
+        //Tolkar meddelandet och skriver värden till pekarna
+        decode_door_config_msg(&msg, door_id_0, door_id_1, time_0, time_1, locked);
+        USARTPrint("time_0: ");
+        USARTPrintNum(time_0);
+        USARTPrint("\ntime_1: ");
+        USARTPrintNum(time_1);
+        USARTPrint("\n");
+        
+        
+        
         //blockingDelayMs(300); //För säkerhets skull TODO: Ta bort om möjligt
         USARTPrint("Skickar till\n");
         print_door(door_first);

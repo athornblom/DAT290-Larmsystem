@@ -29,10 +29,10 @@ uint8_t encode_door_config(CanTxMsg *msg, uint8_t to_central, uint8_t door_id_0,
     
     
     //De två tidsvärdena skrivs till bit 16-47
-    *(data_pointer + 2) = time_0;
-    *(data_pointer + 3) = time_0 >> 8;
-    *(data_pointer + 4) = time_1;
-    *(data_pointer + 5) = time_1 >> 8;
+    *(data_pointer + 2) = time_0 >> 8;
+    *(data_pointer + 3) = time_0;
+    *(data_pointer + 4) = time_1 >> 8;
+    *(data_pointer + 5) = time_1;
     
     //Låsflagga skrivs till bit 48-55
     *(data_pointer + 6) = locked;
@@ -136,11 +136,11 @@ void encode_motion_request_id(CanTxMsg *msg, uint32_t tmpID, uint8_t nMotion, ui
     encode_request_id(msg, tmpID, motion_unit, nMotion, nVib);
 }
 
-//Encodar en id-tilldelning
-//msg är en pekare till meddelande som ska skickas
-//request är en pekare till förfrågan
-//id är id man tilldelar enheten
-//Returnerar 1 om det lyckade 0 annars
+/*Encodar en id-tilldelning
+msg är en pekare till meddelande som ska skickas
+request är en pekare till förfrågan
+id är id man tilldelar enheten
+Returnerar 1 om det lyckade 0 annars*/
 uint8_t encode_assign_id(CanTxMsg *msg, CanRxMsg *request, uint8_t id){
     //Kollar så längden av request stämmer för idReq
     if (request->DLC == reqID_msg_length){
@@ -169,14 +169,14 @@ uint8_t encode_assign_id(CanTxMsg *msg, CanRxMsg *request, uint8_t id){
 
 
 
-//Encodar ett larmmeddelande
-//msg är en pekare till meddelandet som ska skickas
-//unitID är enhetens egna ID
-//id är idt till sensorn som larmar 
-//För rörelseenheten ligger ID för rörelse och vibrationssensorer efter varandra.
-//första röresesensorerna har ID 0 sista ID är antalet rörelsesensorer -1
-//Första vibrationssensorn har ID antal rörelsesensorer och sista antalt rörelsesensorer +
-//antalet vibrationssensorer - 1
+/*Encodar ett larmmeddelande
+msg är en pekare till meddelandet som ska skickas
+unitID är enhetens egna ID
+id är idt till sensorn som larmar 
+För rörelseenheten ligger ID för rörelse och vibrationssensorer efter varandra.
+första röresesensorerna har ID 0 sista ID är antalet rörelsesensorer -1
+Första vibrationssensorn har ID antal rörelsesensorer och sista antalt rörelsesensorer +
+antalet vibrationssensorer - 1*/
 void encode_larm_msg(CanTxMsg *msg, uint8_t uinitID, uint8_t id){
     Header header = empty_header;
     header.msgType = larm_msg_type;
@@ -194,9 +194,9 @@ void encode_larm_msg(CanTxMsg *msg, uint8_t uinitID, uint8_t id){
     msg->Data[0] = id;
 }
 
-//Encodar ackmeddelande
-//msg är en pekare till meddelandet som ska skickas
-//larm är en pekare till meddelandet som larmar
+/*Encodar ackmeddelande
+msg är en pekare till meddelandet som ska skickas
+larm är en pekare till meddelandet som larmar*/
 void encode_larm_ack(CanTxMsg *msg, CanRxMsg *larm){
     msg->ExtId = larm->ExtId;
     msg->DLC = larm->DLC;
