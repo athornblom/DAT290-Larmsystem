@@ -28,6 +28,8 @@ void receiveConfig_handler(CanRxMsg* msg){
         }
         else{
             doors[i].controlbits |= 4;
+			doors[i].controlbits &= ~3;
+			doors[i].waitOutTime = 0;	
         }
     }
 	CanTxMsg ackMsg;
