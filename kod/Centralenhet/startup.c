@@ -699,16 +699,17 @@ uint8_t send_door_configs(uint8_t id, uint8_t first_door_ID, uint8_t *return_doo
     CanTxMsg msg;
     uint8_t last_door_ID;
     //Följande loop samlar största möjliga intervall av dörrar med samma värden och skickar ett meddelande per intervall
-    for(; first_door_ID < door_devs[id].num_of_doors; first_door_ID = last_door_ID){
+    for(; first_door_ID < door_devs[id].num_of_doors; first_door_ID = last_door_ID + 1){
         Door first_door = door_devs[id].doors[first_door_ID];
         for(last_door_ID = first_door_ID; last_door_ID < door_devs[id].num_of_doors; last_door_ID++){
             Door last_door = door_devs[id].doors[last_door_ID];
             if(!doors_equal(first_door, last_door)){
+				last_door_ID--;
                 break;
             }
         }
 
-        encode_door_config(&msg, id, first_door_ID, last_door_ID - 1, first_door.time_local_larm, first_door.time_central_larm, first_door.locked);
+        encode_door_config(&msg, id, first_door_ID, last_door_ID, first_door.time_local_larm, first_door.time_central_larm, first_door.locked);
         //print_door(door_first);
         if (CANsendMessage(&msg) == CAN_TxStatus_NoMailBox){
             //USARTPrint("No mailbox 1\n");
@@ -743,16 +744,17 @@ uint8_t send_motion_configs(uint8_t id, uint8_t first_ID, uint8_t *return_ID){
     USARTPrint("\n");
     USARTPrintNum(last_ID);
     //Följande loop samlar största möjliga intervall av rörelsesensorer med samma värden och skickar ett meddelande per intervall
-    for(; first_ID < motion_devs[id].num_of_motion_sensors; first_ID = last_ID){
+    for(; first_ID < motion_devs[id].num_of_motion_sensors; first_ID = last_ID + 1){
         Dist_sensor first_dist = motion_devs[id].dist_sensors[first_ID];
         for(; last_ID < motion_devs[id].num_of_motion_sensors; last_ID++){
             Dist_sensor last_dist = motion_devs[id].dist_sensors[last_ID];
             if(!dists_equal(first_dist, last_dist)){
+				last_ID--;
                 break;
             }
         }
         
-        encode_motion_config(&msg, id, motion_sensor, first_dist.calib, first_ID, last_ID - 1, first_dist.active, first_dist.dist, first_dist.disArm);
+        encode_motion_config(&msg, id, motion_sensor, first_dist.calib, first_ID, last_ID, first_dist.active, first_dist.dist, first_dist.disArm);
         //blockingDelayMs(300); //För säkerhets skull TODO: Ta bort om möjligt
         USARTPrint("test 1:\n");
         printTxMsg(&msg, 16);
@@ -764,17 +766,18 @@ uint8_t send_motion_configs(uint8_t id, uint8_t first_ID, uint8_t *return_ID){
     }
     
     //Följande loop samlar största möjliga intervall av vibrationssensorer med samma värden och skickar ett meddelande per intervall
-    for(; first_ID - motion_devs[id].num_of_motion_sensors < motion_devs[id].num_of_vib_sensors; first_ID = last_ID){
+    for(; first_ID - motion_devs[id].num_of_motion_sensors < motion_devs[id].num_of_vib_sensors; first_ID = last_ID + 1){
         Vib_sensor first_vib = motion_devs[id].vib_sensors[first_ID];
         for(; last_ID < motion_devs[id].num_of_vib_sensors; last_ID++){
             Vib_sensor last_vib = motion_devs[id].vib_sensors[last_ID];
             if(!vibs_equal(first_vib, last_vib)){
-                break;
+                last_ID--;
+				break;
             }
         }
         USARTPrintNum(first_ID);
         USARTPrint("test \n");
-        encode_motion_config(&msg, id, vibration_sensor, 0, first_ID, last_ID - 1, first_vib.active, 0, first_vib.disArm);
+        encode_motion_config(&msg, id, vibration_sensor, 0, first_ID, last_ID, first_vib.active, 0, first_vib.disArm);
         //blockingDelayMs(300); //För säkerhets skull TODO: Ta bort om möjligt
         USARTPrint("test 2:\n");
         printTxMsg(&msg, 16);
