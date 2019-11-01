@@ -332,7 +332,7 @@ Denna periferienhet använder avståndsmätarer av modellen HC-SR04 till rörels
  och vibrationssensorer av modellen SW-18010P, som styrs av ett MD407-mikrodator.
 
 Rörelseenheten använder mikrodatorns alla fem GPIO-portar, port A, B, C, D och E.
-Portarna är uppdelade mellan rörelse- och vibrationssensorerna, port A, B och C till rörelsesensorerna,
+Portarna är uppdelade mellan port A, B och C till rörelsesensorerna,
 och port D och E till vibrationssensorerna.
 
 Vid uppstart initieras först portarna och pinnarna på mikrodatorn så att de kan addresseras
@@ -341,7 +341,7 @@ Fortsättningsvis detekterar systemet hur många rörelse- och vibrationssensore
 pinnar de är kopplade. För att vibrationssensorerna skall detekteras får de ej utsättas för vibrationer under uppstart.
 
 Efter detekteringen skapas datarepresentationer med förinställda värden för de
-sensorer som systemet hittade. Efter att samtliga datarepresentationer är skapade skickas
+sensorer som systemet hittat. Efter att samtliga datarepresentationer är skapade skickas
 en lista av de inkopplade sensorerna till centralenheten som bestämmer vilka sensorer som ska vara aktiva
 samt sätter larmavståndet för rörelsesensorerna.
 
@@ -355,10 +355,10 @@ Trig- och echo-pinnen från HC-SR04 samt en LED-lampan kopplas resepktive till  
 
 Sensorn aktiveras genom att MD407-mikrodatorn skickar en hög puls till sensorn i minst 10 mikrosekunder,
  varpå sensorn skickar ut ultraljudsvågor och sänder en hög puls till MD407-mikrodatorn fram tills
-  ultraljudsvågorna har återvänt , där avståndet till närmaste föremål beräknas genom att mäta längden på pulsen.
-HC-SR04 kan mäta avstånd upp till 400cm och larmavståndet är justerbart från centralenheten.
+  ultraljudsvågorna har återvänt. Avståndet till närmaste föremål beräknas genom att mäta längden på pulsen.
+HC-SR04 kan mäta avstånd upp till 400 cm och larmavståndet är justerbart från centralenheten.
 
-\textbf{Vibrationssensorn}: Sensorn sänder ständigt en hög puls till MD407-mikrodatorn utom när den
+\textbf{Vibrationssensorn}: Sensorn sänder kontinuerligt en hög puls till MD407-mikrodatorn utom när den
 känner av vibrationer, då den istället sänder en låg puls.
 Sensorns känslighet justeras fysiskt genom en komparator på sensorn.
 
