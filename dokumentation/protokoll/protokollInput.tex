@@ -1,6 +1,6 @@
 Den inbyggda prioriteringen av meddelanden har noga avvägts vid tilldelning av de 29 bitar som finns tillgängliga i ID-fältet.
 Detta fält avgör nämligen meddelandets prioritet på bussen.
-De 29 bitarna har fördelats enligt tabell \ref{tab:idbitar}. Meddelandetypen anges i de tre första bitarna då den är mest relevant för att avgöra meddelandets prioritet. Detta innebär t.ex. att ett larmmeddelande alltid har högre prioritet än alla andra typer oavsett enhetens ID och andra parametrar i fältet.
+De 29 bitarna har fördelats enligt tabell \ref{tab:idbitar}. Meddelandetypen anges i de tre första bitarna då den är mest relevant för att avgöra meddelandets prioritet. Detta innebär t.ex. att ett larmmeddelande alltid har högre prioritet än alla andra typer oavsett enhetens ID och andra parametrar i fältet. Nedan följer en beskrivning av de meddelanden som används i protokollet.
 
 \begin{table}[H]
 	\centering
@@ -19,14 +19,12 @@ De 29 bitarna har fördelats enligt tabell \ref{tab:idbitar}. Meddelandetypen an
 \end{table}
 
 
-Datafältets maximala längd är 8 bytes. Det bildar tillsammans med ID-fältet unika meddelanden. De meddelanden som används beskrivs nedan.\\
-
 \textbf{Ack}
 \begin{itemize}
     \item Skickas som remote-meddelande
     \item Skickas i båda riktningar
 \end{itemize}
-Detta meddelande skickas som bekräftelse för ett mottaget meddelandet. Larmmedelanden och konfigurationsmeddelanden (se nedan) är de enda meddelandetyper som bekräftas med ack. Meddelandet har samma header det mottagna meddelandet men är av remote typ. Meddelandet inehåller inget datafält så för att urskillja vilket meddelande som beräftas används de 8 bitarna för sekvensnummer (se tabell \ref{tab:idbitar}). \\
+Detta meddelande skickas som bekräftelse för ett mottaget meddelandet. Larmmedelanden och konfigurationsmeddelanden (se nedan) är de enda meddelandetyper som bekräftas med ack. Meddelandet har samma header som det mottagna meddelandet men är av remote typ. Meddelandet innehåller inget datafält så för att urskillja vilket meddelande som beräftas används de 8 bitarna för sekvensnummer i headern (se tabell \ref{tab:idbitar}). \\
 
 
 \textbf{Skicka larm}
@@ -36,16 +34,16 @@ Detta meddelande skickas som bekräftelse för ett mottaget meddelandet. Larmmed
 \end{itemize}
 Talar om för centralenheten om någon dörr eller sensor larmar. Detta meddelande skickas endast av periferienheterna. I datafältet skickas ID:t för sensorn som larmar. Samma ID skickas även som sekvensnummret för meddelandet.\\
 
-
-\textbf{Konfiguration}
+ \textbf{Konfiguration}
 \begin{itemize}
     \item Meddelandetyp 1
     \item Skickas från centralenheten till preferienhet
 \end{itemize}
 Detta meddelande används för att skicka konfigurationer till periferienheterna.
 Centralenheten skickar konfiguration till periferienheten kontinuerligt under drift för att försäkra sig om att periferienheten har rätt konfiguration. Detta fungerar även som ping, då ett bestämt antal uteblivna ack tolkas som att enheten inte längre finns på nätverket.
-I så fall uppmärksammar centralenheten detta.
-Första databyten anger enhetstyp enligt tabell \ref{tab:enhetstyper}.\\
+I så fall uppmärksammar centralenheten detta. Konfigurationsmeddelanden ser olika ut för de olika enheterna.
+
+För dörrenheten anges intervallet av dörrsensorer som konfigureras i de två första databytarna. Därefter följer fyra bytar för timrar, först för lokalt larm sedan för centralt. Båda anger fördröjningen som en multipel av 10 sekunder. I den sjunde och sista byten skickas 0 om dörren är uppställd och 1 om den ska vara låst.
 
 
 \textbf{Tilldelning av ID}

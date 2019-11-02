@@ -6,6 +6,7 @@
 %Lägger till Referenser i Innehållsförteckningen
 \usepackage{tocbibind}
 \usepackage{float}
+\usepackage{amsmath}
 \usepackage{parskip}
 \usepackage{todonotes}
 \usepackage{url}
@@ -226,7 +227,7 @@ avaktiverad störfunktion.
 \subsubsection{Centralenheten}
 %\label{subsec:centralenhet}
 Centralenheten styr och har uppsikt över övriga enheter.
- Inställningar görs via USART, varpå de vidarebefordras till rätt periferienhet via CAN.
+ Inställningar görs via USART med kommanodon enligt Appendix \ref{kommandon}, varpå de vidarebefordras till rätt periferienhet via CAN.
 
 Centralenheten har följande två lägen:
 
@@ -468,6 +469,29 @@ den ska.
     \section{Utförlig beskrivning av meddelandetyper kommunikationsprotokoll}
     \label{bilaga:protokoll}
         \input{../protokoll/protokollInput.tex}
+
+    \section{Kommandolista för centralenheten}
+    \label{kommandon}
+        För att styra centralenheten används ett antal kommandon som är breskrivna nedan. Då centralenheten har två separata lägen
+
+    
+    \textbf{help}\\
+    Används för att se de tillgängliga kommandona för det aktiva läget (standard eller konfiguration).
+
+    \textbf{start}\\
+    Startar standardläge.
+
+    \textbf{dor v x y z}\\
+    Där \textbf{v, x, y} och \textbf{z} är tal mellan 0 och 9. konfigurerar dörr \textbf{x} på enhet med ID \textbf{v} med timer för lokalt larm på  \(\textbf{y} * 10\) sekunder samt en fördröjning till centraltlarm på \(\textbf{z} * 10\) sekunder.
+
+    \textbf{ror x y z}\\
+    Där \textbf{x, y} och \textbf{z} är tal mellan 0 och 9. Konfigurerar rörelsesensor \textbf{y} på enhet med ID \textbf{x} för att larma då den detekterar ett föremål på ett avstånd mindre än \(\textbf{z} * 10\) centimeter.
+
+    \textbf{avlarma y z} \\
+    Avlarmar sensor \textbf{z} på enhet med ID \textbf{y}.
+
+    \textbf{larma y z} \\
+    Larmar sensor \textbf{z} på enhet med ID \textbf{y}. Alla sensorer är larmade som standard så detta kommando körs om man vill återaktivera larm efter att det avaktiverats.
 
 	\clearpage
 	\section{Tester}
