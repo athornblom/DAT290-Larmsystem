@@ -28,7 +28,7 @@ void check_door_status (void){
         if (is_door_armed(doors[i].controlbits)) // ifall dörren är avlarmad uppdateras inte dens pinnar.
         {
            if (!GPIO_ReadInputDataBit(doors[i].GPIO_type, doors[i].GPIO_read)){ //GPIO pinnen är noll ifall dörren är stängd därför !
-					doors[i].controlbits &= 0xFFFF - open - cLarm; //Nollställer kontrollbiten för larm ifall en dörr är öppen och spam kontrollbiten för central	
+					doors[i].controlbits &= ~open+cLarm; //Nollställer kontrollbiten för larm ifall en dörr är öppen och spam kontrollbiten för central	
                     doors[i].waitOutTime = 0;	
 			}
 			else{
