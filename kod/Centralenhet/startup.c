@@ -54,12 +54,43 @@ void print_door(Door door){
     
     
     if(door.locked){
-        USARTPrint("s\n   Last");
+        USARTPrint("s\n   Last\n");
     }
     else{
-        USARTPrint("s\n   Olast");
+        USARTPrint("s\n   Olast\n");
     }
-    USARTPrint("\n");
+}
+
+void print_motion_sensor(Dist_sensor sensor){
+    USARTPrint("\n   Avstand : ");
+    USARTPrintNum((uint32_t)sensor.dist);
+    if(sensor.active){
+        USARTPrint("cm\n   Aktiv");
+    }
+    else{
+        USARTPrint("cm\n   Inaktiv");
+    }
+    if(sensor.disArm){
+        USARTPrint("\n   Avlarmad\n");
+    }
+    else{
+        USARTPrint("\n   Larmad\n");
+    }
+}
+
+void print_vib_sensor(Vib_sensor sensor){
+    if(sensor.active){
+        USARTPrint("\n   Aktiv");
+    }
+    else{
+        USARTPrint("\n   Inaktiv");
+    }
+    if(sensor.disArm){
+        USARTPrint("\n   Avlarmad\n");
+    }
+    else{
+        USARTPrint("\n   Larmad\n");
+    }
 }
 
 void print_device(uint8_t id){
@@ -73,16 +104,36 @@ void print_device(uint8_t id){
         USARTPrintNum((uint32_t)num_of_doors);
         USARTPrint("\n");
         for(uint8_t i = 0; i < num_of_doors; i++){
-            blockingDelayMs(10);
+            blockingDelayMs(25);
             USARTPrint("Dorr ");
             USARTPrintNum((uint32_t)i);
             print_door(door_dev.doors[i]);
         }
     }
     else{
-        USARTPrint("\nRorelseenhet ")
-        USARTPrintNum(id);
-        USARTPrint("\n")
+        Motion_device motion_dev = motion_devs[id];
+        uint8_t num_of_motion = motion_dev.num_of_motion_sensors;
+        uint8_t num_of_vibs = motion_dev.num_of_vib_sensors;
+        USARTPrint("\nRorelseenhet ");
+        USARTPrintNum((uint32_t)id);
+        USARTPrint("\nAntal rorelsesensorer: ");
+        USARTPrintNum((uint32_t)num_of_motion);
+        USARTPrint("\n");
+        for(uint8_t i = 0; i < num_of_motion; i++){
+            blockingDelayMs(25);
+            USARTPrint("Rorelsesensor ");
+            USARTPrintNum((uint32_t)i);
+            print_motion_sensor(motion_dev.dist_sensors[i]);
+        }
+        USARTPrint("\nAntal vibrationssensorer: ");
+        USARTPrintNum((uint32_t)num_of_vibs);
+        USARTPrint("\n");
+        for(uint8_t i = 0; i < num_of_vibs; i++){
+            blockingDelayMs(25);
+            USARTPrint("Vibrationssensor ");
+            USARTPrintNum((uint32_t)i);
+            print_vib_sensor(motion_dev.vib_sensors[i]);
+        }
     }
 }
 
@@ -407,7 +458,7 @@ uint8_t Command(uint8_t *command){
         for(uint8_t i = 0; i < next_id; i++){
             USARTPrint("\n");
             print_device(i);
-            blockingDelayMs(10);
+            blockingDelayMs(50);
         }
         return OK;
     }
