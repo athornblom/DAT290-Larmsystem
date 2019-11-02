@@ -195,9 +195,9 @@ void encode_larm_msg(CanTxMsg *msg, uint8_t uinitID, uint8_t id){
     msg->Data[0] = id;
 }
 
-//Encodar ackmeddelande
-//ackMsg är en pekare till meddelandet som ska skickas
-//recievedMsg är en pekare till meddelandet som ska ackas
+/*Encodar ackmeddelande
+ackMsg är en pekare till meddelandet som ska skickas
+recievedMsg är en pekare till meddelandet som ska ackas*/
 void encode_ack_msg(CanTxMsg *ackMsg, CanRxMsg *recievedMsg){
     ackMsg->ExtId = recievedMsg->ExtId;
     ackMsg->DLC = recievedMsg->DLC;
