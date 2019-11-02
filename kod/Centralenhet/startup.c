@@ -109,7 +109,6 @@ uint8_t get_id_by_random_id(uint8_t *idDest, uint32_t random_id, uint8_t device_
  * Om enheten redan finns i listan skickas samma id igen
  * Annars får enheten ett id och läggs till listan */
 void id_request_handler(CanRxMsg *rxMsgP){
-    //printRxMsg(rxMsgP, 16); //TODO Ta bort när vi inte behöver den längre
     CanRxMsg rxMsg = *rxMsgP;
     CanTxMsg txMsg;
     
@@ -532,7 +531,7 @@ uint8_t Command(uint8_t *command){
     else if (strStartsWith(command, "dor")) {
         if (mode == CONFMODE){
             //SORRY endast enheter med id 0-9 och sensorer 0-9 TODO
-            uint8_t deviceID = command[4] - '0'; //TODO: Varför heter den uinitID? Menar du unit? Device är nog ett bättre ord i så fall /Josef
+            uint8_t deviceID = command[4] - '0';
             uint8_t sensorID = command[6] - '0';
             uint8_t localTime = command[8] - '0';
             uint8_t centralTime = command[10] - '0';
@@ -757,7 +756,6 @@ uint8_t send_motion_configs(uint8_t id, uint8_t first_ID, uint8_t *return_ID){
         }
         
         encode_motion_config(&msg, id, motion_sensor, first_dist.calib, first_ID, last_ID - 1, first_dist.active, first_dist.dist, first_dist.disArm);
-        //blockingDelayMs(300); //För säkerhets skull TODO: Ta bort om möjligt
         USARTPrint("test 1:\n");
         printTxMsg(&msg, 16);
         if (CANsendMessage(&msg) == CAN_TxStatus_NoMailBox){
@@ -779,7 +777,6 @@ uint8_t send_motion_configs(uint8_t id, uint8_t first_ID, uint8_t *return_ID){
         USARTPrintNum(first_ID);
         USARTPrint("test \n");
         encode_motion_config(&msg, id, vibration_sensor, 0, first_ID, last_ID - 1, first_vib.active, 0, first_vib.disArm);
-        //blockingDelayMs(300); //För säkerhets skull TODO: Ta bort om möjligt
         USARTPrint("test 2:\n");
         printTxMsg(&msg, 16);
         if (CANsendMessage(&msg) == CAN_TxStatus_NoMailBox){
@@ -847,7 +844,7 @@ void main(void) {
 			if (i >= next_id) {
 				i = 0;
 			}
-			msDelay = msTicks + 1000; // todo Ändra till + 10
+			msDelay = msTicks + 1000;
         }
     }
 }
