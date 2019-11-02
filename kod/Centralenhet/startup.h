@@ -33,7 +33,7 @@
 //innan enheten klassas som förlorad på nätverket
 #define OFFNETWORK 10
 
-//För larm on/om rörelseenhet
+//För larm on/off rörelseenhet
 #define LARMON 0
 #define LARMOFF 1
 

@@ -47,15 +47,43 @@ Door_device *add_door_device(uint8_t id, CanRxMsg *msg){
 }
 
 void print_door(Door door){
-    USARTPrint("Dorr\n   id: ");
-    USARTPrintNum(door.id);
-    USARTPrint("\n   time_local_larm: ");
-    USARTPrintNum(door.time_local_larm);
-    USARTPrint("\n   time_central_larm: ");
-    USARTPrintNum(door.time_central_larm);
-    USARTPrint("\n   locked: ");
-    USARTPrintNum(door.locked);
-    USARTPrint("\n\n");
+    USARTPrint("\n   Lokalt larm: ");
+    USARTPrintNum(((uint32_t)door.time_local_larm) * 10);
+    USARTPrint("s\n   Centralt larm: ");
+    USARTPrintNum(((uint32_t)door.time_central_larm) * 10);
+    
+    
+    if(door.locked){
+        USARTPrint("s\n   Last");
+    }
+    else{
+        USARTPrint("s\n   Olast");
+    }
+    USARTPrint("\n");
+}
+
+void print_device(uint8_t id){
+    Device dev = devices[id];
+    if(dev.type == door_unit){
+        Door_device door_dev = door_devs[id];
+        uint8_t num_of_doors = door_dev.num_of_doors;
+        USARTPrint("\nDorrenhet ");
+        USARTPrintNum((uint32_t)id);
+        USARTPrint("\nAntal dorrar: ");
+        USARTPrintNum((uint32_t)num_of_doors);
+        USARTPrint("\n");
+        for(uint8_t i = 0; i < num_of_doors; i++){
+            blockingDelayMs(10);
+            USARTPrint("Dorr ");
+            USARTPrintNum((uint32_t)i);
+            print_door(door_dev.doors[i]);
+        }
+    }
+    else{
+        USARTPrint("\nRorelseenhet ")
+        USARTPrintNum(id);
+        USARTPrint("\n")
+    }
 }
 
 //Denna funktion ska alltid användas för att lägga till en ny rörelseenhet
@@ -94,7 +122,7 @@ Motion_device *add_motion_device(uint8_t id, CanRxMsg *msg){
 
 /* Hittar id:t till enheten med random_id och device_type
  * idDest är en pekare dit id:t som hittas sparas
- * Returnerar 1 om den hittades, annars 0 */
+ * Returnerar 1 om det hittas, annars 0 */
 uint8_t get_id_by_random_id(uint8_t *idDest, uint32_t random_id, uint8_t device_type){
     for(uint8_t i = 0; i < next_id; i++){
         if(devices[i].type == device_type && devices[i].random_id  == random_id){
@@ -375,7 +403,12 @@ uint8_t Command(uint8_t *command){
     
     else if (strStartsWith(command, "list")) {
         //TODO lista enheter
-        USARTPrint("Enheter:\n");
+        USARTPrint("Enheter:");
+        for(uint8_t i = 0; i < next_id; i++){
+            USARTPrint("\n");
+            print_device(i);
+            blockingDelayMs(10);
+        }
         return OK;
     }
 
@@ -386,7 +419,7 @@ uint8_t Command(uint8_t *command){
         uint8_t password[PASSWORDLENGTH + 1] = {1,2,3,0xa,0};
         //Håller koll på om det är första iterationen av kommandot
         static uint8_t firstIter = 1;
-        //Håller kåll på vilket index som är nästa i lösenordssträngen
+        //Håller koll på vilket index som är nästa i lösenordssträngen
         static uint8_t currentCharIndex = 0;
         //Håller koll på lösenordet som har matats in
         static uint8_t entered[PASSWORDLENGTH]; 
