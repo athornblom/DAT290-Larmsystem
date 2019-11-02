@@ -83,7 +83,7 @@ uint8_t encode_motion_config(CanTxMsg *msg, uint8_t id, uint8_t sensor_type, uin
     msg->Data[5] = distance;
     msg->Data[6] = distance << 8;
     
-    msg->Data[7] = 0;
+    msg->Data[7] = disArm;
 }
 
 // Kodar meddelande för att skicka uppmätt avstånd från rörelseenhet till centralenhet
