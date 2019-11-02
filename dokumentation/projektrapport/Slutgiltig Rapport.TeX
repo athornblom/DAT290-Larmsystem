@@ -6,6 +6,7 @@
 %Lägger till Referenser i Innehållsförteckningen
 \usepackage{tocbibind}
 \usepackage{float}
+\usepackage{amsmath}
 \usepackage{parskip}
 \usepackage{todonotes}
 \usepackage{url}
@@ -101,16 +102,15 @@ kan det endast ackkrediteras och nollställas via centralenheten.
 
 \subsection{Arbetsmetod} % svarar på frågan "hur har vi gått tillväga i det tekniska utvecklingsarbetet"?
 \subsubsection{Undergrupper}
-För att förhindra stockning i projektet delades projektgruppen in i tre grupper om två personer vardera,
+För att jämna ut arbetsbelastningen delades projektgruppen in i tre grupper om två personer vardera,
 en för varje periferienhet.
 
-\textbf{Centralenheten}: Gruppen består av Josef och Filip. Gruppens uppgift var att kunna styra
+\textbf{Centralenheten}: Gruppens uppgift var att kunna styra
 periferienheterna från centralenheten samt implementera CAN och USART.
 
-\textbf{Dörrenheten}: Gruppen består av Adam och Gustav. Dörrenheten ansvarar för att alla dörrar
-skall vara uppkopplade och larmade.
+\textbf{Dörrenheten}: Dörrenheten ansvarar för att alla dörrar skall vara uppkopplade och larmade.
 
-\textbf{Rörelseenheten}: Gruppen består av Erik och Ben. Rörelseenheten utvecklar mjukvaran till
+\textbf{Rörelseenheten}: Rörelseenheten utvecklar mjukvaran till
 rörelse- och vibrationssensorerna för larmning av t.ex. fönster och värdefulla föremål.
 
 \subsubsection{Möten och arbetstid}
@@ -227,7 +227,7 @@ avaktiverad störfunktion.
 \subsubsection{Centralenheten}
 %\label{subsec:centralenhet}
 Centralenheten styr och har uppsikt över övriga enheter.
- Inställningar görs via USART, varpå de vidarebefordras till rätt periferienhet via CAN.
+ Inställningar görs via USART med kommanodon enligt Appendix \ref{kommandon}, varpå de vidarebefordras till rätt periferienhet via CAN.
 
 Centralenheten har följande två lägen:
 
@@ -333,7 +333,7 @@ Denna periferienhet använder avståndsmätarer av modellen HC-SR04 till rörels
  och vibrationssensorer av modellen SW-18010P, som styrs av ett MD407-mikrodator.
 
 Rörelseenheten använder mikrodatorns alla fem GPIO-portar, port A, B, C, D och E.
-Portarna är uppdelade mellan rörelse- och vibrationssensorerna, port A, B och C till rörelsesensorerna,
+Portarna är uppdelade mellan port A, B och C till rörelsesensorerna,
 och port D och E till vibrationssensorerna.
 
 Vid uppstart initieras först portarna och pinnarna på mikrodatorn så att de kan addresseras
@@ -342,7 +342,7 @@ Fortsättningsvis detekterar systemet hur många rörelse- och vibrationssensore
 pinnar de är kopplade. För att vibrationssensorerna skall detekteras får de ej utsättas för vibrationer under uppstart.
 
 Efter detekteringen skapas datarepresentationer med förinställda värden för de
-sensorer som systemet hittade. Efter att samtliga datarepresentationer är skapade skickas
+sensorer som systemet hittat. Efter att samtliga datarepresentationer är skapade skickas
 en lista av de inkopplade sensorerna till centralenheten som bestämmer vilka sensorer som ska vara aktiva
 samt sätter larmavståndet för rörelsesensorerna.
 
@@ -356,10 +356,10 @@ Trig- och echo-pinnen från HC-SR04 samt en LED-lampan kopplas resepktive till  
 
 Sensorn aktiveras genom att MD407-mikrodatorn skickar en hög puls till sensorn i minst 10 mikrosekunder,
  varpå sensorn skickar ut ultraljudsvågor och sänder en hög puls till MD407-mikrodatorn fram tills
-  ultraljudsvågorna har återvänt , där avståndet till närmaste föremål beräknas genom att mäta längden på pulsen.
-HC-SR04 kan mäta avstånd upp till 400cm och larmavståndet är justerbart från centralenheten.
+  ultraljudsvågorna har återvänt. Avståndet till närmaste föremål beräknas genom att mäta längden på pulsen.
+HC-SR04 kan mäta avstånd upp till 400 cm och larmavståndet är justerbart från centralenheten.
 
-\textbf{Vibrationssensorn}: Sensorn sänder ständigt en hög puls till MD407-mikrodatorn utom när den
+\textbf{Vibrationssensorn}: Sensorn sänder kontinuerligt en hög puls till MD407-mikrodatorn utom när den
 känner av vibrationer, då den istället sänder en låg puls.
 Sensorns känslighet justeras fysiskt genom en komparator på sensorn.
 
@@ -469,6 +469,29 @@ den ska.
     \section{Utförlig beskrivning av meddelandetyper kommunikationsprotokoll}
     \label{bilaga:protokoll}
         \input{../protokoll/protokollInput.tex}
+
+    \section{Kommandolista för centralenheten}
+    \label{kommandon}
+        För att styra centralenheten används ett antal kommandon som är breskrivna nedan. Då centralenheten har två separata lägen
+
+    
+    \textbf{help}\\
+    Används för att se de tillgängliga kommandona för det aktiva läget (standard eller konfiguration).
+
+    \textbf{start}\\
+    Startar standardläge.
+
+    \textbf{dor v x y z}\\
+    Där \textbf{v, x, y} och \textbf{z} är tal mellan 0 och 9. konfigurerar dörr \textbf{x} på enhet med ID \textbf{v} med timer för lokalt larm på  \(\textbf{y} * 10\) sekunder samt en fördröjning till centraltlarm på \(\textbf{z} * 10\) sekunder.
+
+    \textbf{ror x y z}\\
+    Där \textbf{x, y} och \textbf{z} är tal mellan 0 och 9. Konfigurerar rörelsesensor \textbf{y} på enhet med ID \textbf{x} för att larma då den detekterar ett föremål på ett avstånd mindre än \(\textbf{z} * 10\) centimeter.
+
+    \textbf{avlarma y z} \\
+    Avlarmar sensor \textbf{z} på enhet med ID \textbf{y}.
+
+    \textbf{larma y z} \\
+    Larmar sensor \textbf{z} på enhet med ID \textbf{y}. Alla sensorer är larmade som standard så detta kommando körs om man vill återaktivera larm efter att det avaktiverats.
 
 	\clearpage
 	\section{Tester}
