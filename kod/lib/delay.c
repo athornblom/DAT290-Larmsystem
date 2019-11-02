@@ -13,6 +13,7 @@ void systick_Init(void){
 	*((void (**)(void))0x2001C03C) = SysTick_Handler;
     //Genererar ett SysTick-avbrott varje ms.
 	SysTick_Config(168000000 / 1000);
+    NVIC_SetPriority(SysTick_IRQn, 0);
 }
 
 //Blockerande fördröjning delay anger antaler millisekunder

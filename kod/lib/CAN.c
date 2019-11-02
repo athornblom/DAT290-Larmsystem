@@ -302,9 +302,10 @@ uint8_t can_init() {
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_Init(GPIOB, &GPIO_InitStructure);
 	
+    NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
 	NVIC_InitStructure.NVIC_IRQChannel = CAN1_RX0_IRQn;
-	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = __CAN_IRQ_PRIORITY;
-	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x2;
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 2;
+	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 2;
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
 	NVIC_Init(&NVIC_InitStructure);
 
@@ -333,7 +334,7 @@ uint8_t can_init() {
 	*((void (**)(void) ) CAN1_IRQ_VECTOR ) = can_irq_handler;
 	// We need the following function because it's not equivalent to what NVIC_Init does with respect
 	// to IRQ priority. Which seems bananas to me...
-    NVIC_SetPriority( CAN1_RX0_IRQn, __CAN_IRQ_PRIORITY);
+    //NVIC_SetPriority( CAN1_RX0_IRQn, __CAN_IRQ_PRIORITY); Prioriteten sätts högre upp
 	CAN_ITConfig(CAN1, CAN_IT_FMP0, ENABLE);
 
     //Avaktiverar Session ID

@@ -15,25 +15,26 @@ void alarmAck_Handler(CanRxMsg* msg){
 }
 
 void receiveConfig_handler(CanRxMsg* msg){
-    uint8_t *door_id_0, *door_id_1, *locked;
-    uint16_t *time_0, *time_1;
+    uint8_t door_id_0, door_id_1, locked;
+    uint16_t time_0, time_1;
     //Tolkar meddelandet och skriver värden till pekarna
-    decode_door_config_msg(msg, door_id_0, door_id_1, time_0, time_1, locked);
-    
-    for (int i = *door_id_0; i <= *door_id_1; i++)
+    decode_door_config_msg(msg, &door_id_0, &door_id_1, &time_0, &time_1, &locked);
+    for (int i = door_id_0; i <= door_id_1; i++)
     {
-        doors[i].time_larm = *time_0;
-        doors[i].time_central_larm = *time_1;
-        if(*locked){
-            doors[i].controlbits |= 4;
-        }
-        else{
+        doors[i].time_larm = time_0;
+        doors[i].time_central_larm = time_1;
+        if(locked){
             doors[i].controlbits &= ~4;
         }
+        else{
+            doors[i].controlbits |= 4;
+			doors[i].controlbits &= ~3;
+			doors[i].waitOutTime = 0;	
+        }
     }
-	//***********************************
-	// TODO Send ACK!!!!!!!!!!!!!!!!!!!! 
-	//***********************************
+	CanTxMsg ackMsg;
+	encode_ack_msg(&ackMsg, msg);
+	CANsendMessage(&ackMsg);
 	
 }
 
@@ -53,20 +54,21 @@ void idAssign_Handler(CanRxMsg* msg){
             activate_larmAck_handler(alarmAck_Handler, id);
             
             //Aktiverar handler för konfigurationsmeddelnaden
-            activate_receiveConfig_handler(receiveConfig_handler, id);
+            activate_receive_door_config_handler(receiveConfig_handler, id);
 		}
 	}
 //funktion som förfrågar efter ett id 
+CanTxMsg idRequest;
 void getId (int nDoors){
     //Aktiverar handler för mottagen ID-tilldelning
     activate_assignID_handler(idAssign_Handler);
 
-    int timeStamp = msTicks + 30 * 10000; 
+    int timeStamp = msTicks + 20 * 10000; 
     if (RNG_GetFlagStatus(RNG_FLAG_DRDY) == SET && //Nytt meddelande finns
         RNG_GetFlagStatus(RNG_FLAG_CECS) == RESET && //Inget klockfel
         RNG_GetFlagStatus(RNG_FLAG_SECS) == RESET){ //Inget seedfel
             id = RNG_GetRandomNumber();
-            CanTxMsg idRequest;
+ 
             
             encode_door_request_id(&idRequest,id,nDoors);
             while (msTicks < timeStamp && nocid)
@@ -75,6 +77,9 @@ void getId (int nDoors){
                 delay(1000);
             }
         }
+}
+void tryGetId (void){
+	CANsendMessage(&idRequest);
 }
 
 //funktion för att skicka larm till centralenheten.

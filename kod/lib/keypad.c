@@ -63,7 +63,7 @@ void setEXTI0(FunctionalState state){
 //Avbrottsrutin för keypad
 void keyPad_IRQ(void){
     //Delay för att utvänta kontaktstuds
-    blockingDelayMs(10);
+    blockingDelayMs(1);
 
     //Avaktiverar EXTI0 för att undvika rekursion
     setEXTI0(DISABLE);
@@ -136,8 +136,8 @@ void keypadnit(){
     NVIC_InitTypeDef NVIC_InitStructure;
     NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
     NVIC_InitStructure.NVIC_IRQChannel = EXTI0_IRQn;
-    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
-    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 3;
+    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 3;
     NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
     NVIC_Init(&NVIC_InitStructure);
 

@@ -64,10 +64,7 @@ typedef struct Sensors {
 } Sensor;
 
 
-// =============================== Globala Variabler =========================================================
-// Array med bit0-bit7.
-char bits[8];
-
+// =============================== Globala Variabler ================================================================
 
 GPIO_TypeDef* ports[5];
 
@@ -85,16 +82,21 @@ GPIO_TypeDef* vibrationPorts[2];
 Sensor sensors[nMaxMotionSensors + nMaxVibrationSensors];	// Array för max antalet sensorer.
 Sensor initMotionSensors[nMaxMotionSensors];	// Lista som används i början vid initiering av rörelsesensorerna.
 
-char connectedCounter;	// Räknare till connectedSensors, en global variabel för den används i 'init_MotionSensors' och 'init_VibrationSensors'.
+char connectedCounter;	// Antalet inkopplade sensorer.
 
 uint8_t nMotionSensors;		// Antalet rörelsesensorer kopplade till MD407-kortet.
 uint8_t nVibrationSensors;	// Antalet vibrationssensorer kopplade till MD407-kortet.
 
 
-volatile uint32_t microTicks;		 // Variabel för microsekunder.
+uint16_t GPIO_Pins[16];	// Array för alla pins.
 
-uint16_t GPIO_Pins[16];
+//===================================================================================================================
 
-int motionMeasure(Sensor* sensor);
+/**
+ * @brief Pollingfunktion för att pinga & mäta distans.
+ * @param Rörelsesensor.
+ */
+char motionMeasure(Sensor *sensor);
+
 
 #endif

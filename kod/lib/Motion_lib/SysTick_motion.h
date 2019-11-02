@@ -7,17 +7,23 @@ volatile uint32_t microTicks;	// Variabel för microsekunder.
 
 
 
-// SysTick avbrottshanterare.
+/**
+ * @brief SysTick avbrottshanterare.
+ */
 void SysTick_Handler(void);
 
 
 
-// Initieringsfunktion för timer.
+/**
+ * @brief Initieringsfunktion för timer.
+ */
 void init_Timer();
 
 
 
-// Fördröjningsfunktion där inputen är fördröjningen i mikrosekunder.
+/**
+ * @brief Fördröjningsfunktion där inputen är fördröjningen i mikrosekunder.
+ */
 void delayMicro (uint32_t micro);
 
 
