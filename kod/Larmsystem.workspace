@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Workspace Name="Larmsystem" Database="" Version="10.0.0">
-  <Project Name="Centralenhet" Path="Centralenhet/Centralenhet.project" Active="No"/>
+  <Project Name="Centralenhet" Path="Centralenhet/Centralenhet.project" Active="Yes"/>
   <Project Name="Rorelse" Path="Rorelse/Rorelse.project" Active="No"/>
-  <Project Name="Door" Path="Door/Door.project" Active="Yes"/>
+  <Project Name="Door" Path="Door/Door.project" Active="No"/>
   <Project Name="Periferienhet" Path="Periferienhet/Periferienhet.project" Active="No"/>
   <Project Name="Brusfabrik" Path="Brusfabrik/Brusfabrik.project" Active="No"/>
   <Project Name="Lyssnare" Path="Lyssnare/Lyssnare.project" Active="No"/>

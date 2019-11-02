@@ -92,9 +92,9 @@ Motion_device *add_motion_device(uint8_t id, CanRxMsg *msg){
     return &motion_devs[id];
 }
 
-/*Hittar id:t till enheten med random_id och device_type
-idDest är en pekare dit id:t som hittas sparas
-Returnerar 1 om den hittades 0 annars*/
+/* Hittar id:t till enheten med random_id och device_type
+ * idDest är en pekare dit id:t som hittas sparas
+ * Returnerar 1 om den hittades, annars 0 */
 uint8_t get_id_by_random_id(uint8_t *idDest, uint32_t random_id, uint8_t device_type){
     for(uint8_t i = 0; i < next_id; i++){
         if(devices[i].type == device_type && devices[i].random_id  == random_id){
@@ -105,6 +105,9 @@ uint8_t get_id_by_random_id(uint8_t *idDest, uint32_t random_id, uint8_t device_
     return 0;
 }
 
+/* Hanterar id-begäran från periferienhet
+ * Om enheten redan finns i listan skickas samma id igen
+ * Annars får enheten ett id och läggs till listan */
 void id_request_handler(CanRxMsg *rxMsgP){
     //printRxMsg(rxMsgP, 16); //TODO Ta bort när vi inte behöver den längre
     CanRxMsg rxMsg = *rxMsgP;
@@ -156,7 +159,7 @@ void id_request_handler(CanRxMsg *rxMsgP){
 }
 
 
-//Förslag på struktur för larmhanterare
+//Hanterar larmmeddelanden
 void larmHandler(CanRxMsg *rxMsg){
     Header header = empty_header;
     UINT32toHEADER(rxMsg->ExtId, header);
@@ -177,20 +180,22 @@ void larmHandler(CanRxMsg *rxMsg){
     CANsendMessage(&msg);
 }
 
+/* Hanterar konfigurations-ack
+ * Antalet oackade meddelanden för periferienheten inkrementeras */
 void config_ack_handler(CanRxMsg *msg){
     Header header = empty_header;
     UINT32toHEADER(msg->ExtId, header);
     uint8_t id = header.ID;
     Device*  dev = &devices[id];
-	// Id måste vara mindre än mängden enheter
+	// Id måste vara mindre än antalet enheter
     if (id < next_id) {
 		dev->num_of_unacked = 0;
 	}
 }
 
-//Aktiverar centralenhetens konfigurationsläge
-//Aktiverar ID-tilldelningshantering och initial konfiguration
-//returnerar 1 om det lyckades, 0 annars
+/* Aktiverar centralenhetens konfigurationsläge
+ * Aktiverar ID-tilldelningshantering och initial konfiguration
+ * Returnerar 1 om det lyckades, 0 annars */
 uint8_t enterConfMode (void){
     mode = CONFMODE;
     USARTWaitPrint("Startar konfigurations-mode. Aktiverar foljande handlers:\n");
@@ -253,9 +258,9 @@ uint8_t enterConfMode (void){
     return 1;
 }
 
-//Aktiverar centralenhetens standardläge
-//Aktiverar larmhantering och automatisk konfigurationsöversändning
-//returnerar 1 om det lyckades, 0 annars
+/* Aktiverar centralenhetens standardläge
+ * Aktiverar larmhantering och automatisk konfigurationsöversändning
+ * Returnerar 1 om det lyckades, 0 annars */
 uint8_t enterStdMode (void){
     mode = STDMODE;
     
@@ -334,8 +339,8 @@ uint8_t enterStdMode (void){
     return 1;
 }
 
-//Kör kommandot som finns i strängen command
-//Retrunrerar RERUN (2) om commandot måste köras igen, OK (1) om det fanns ett enkelt kommando att köra. NOCMD (0) annars.
+/* Kör kommandot som finns i strängen command
+ * Returnerar RERUN (2) om commandot måste köras igen, OK (1) om det fanns ett enkelt kommando att köra. NOCMD (0) annars */
 uint8_t Command(uint8_t *command){
     //Ett tomt komando är ett gilltigt kommando.
     //Detta för att man ska kunna få en ny rad utan ogilltigt kommando utskrift
@@ -616,7 +621,7 @@ uint8_t Command(uint8_t *command){
     return NOCMD;
 }
 
-//Hanterar länken mellan USART och commando. Dvs kör de kommandon som skrivs från USART
+//Hanterar länken mellan USART och kommando, dvs kör de kommandon som skrivs från USART
 void USARTCommand(void) {
     //Lista för nuvarande kommando + 1 för att ha plats för terminering
     static uint8_t currentCommand[MAXCOMMANDLENGTH + 1];
@@ -687,13 +692,13 @@ void USARTCommand(void) {
     }
 }
 
-//Kollar om två dörrar är identiska bortsett från id
+//Kollar om två dörrar är identiska bortsett från id 
 uint8_t doors_equal(Door door_0, Door door_1){
     return door_0.time_local_larm == door_1.time_local_larm && door_0.time_central_larm == door_1.time_central_larm && door_0.locked == door_1.locked;
 }
 
-//Skickar konfigurationsmeddelanden för dörrenhet med id startande från sensor first_door_ID
-//Om vi fyllt buffern så returneras index för sensorn som inte skickades
+/* Skickar konfigurationsmeddelanden för dörrenhet med id startande från sensor first_door_ID
+ * Om bufferten blir full så returneras id:t för dörren som inte skickades */
 uint8_t send_door_configs(uint8_t id, uint8_t first_door_ID, uint8_t *return_door_ID){
     CanTxMsg msg;
     uint8_t last_door_ID;
@@ -733,8 +738,8 @@ uint8_t vibs_equal(Vib_sensor vib_0, Vib_sensor vib_1){
     return vib_0.active == vib_1.active;
 }
 
-//Skickar konfigurationsmeddelanden för rörelseenhet med id för sesensor startande från sensor first_ID
-//Om vi fyllt buffern för CAN så returneras index för sensorn som inte skickades ni pekarna return_ID
+/* Skickar konfigurationsmeddelanden för rörelseenhet med id för sensor startande från first_ID
+ * Om bufferten blir full så returneras id:t för sensorn som inte skickades */
 uint8_t send_motion_configs(uint8_t id, uint8_t first_ID, uint8_t *return_ID){
     CanTxMsg msg;
     uint8_t last_ID = first_ID;
@@ -814,7 +819,7 @@ void main(void) {
     while (1) {
         USARTCommand();
         
-	    //Om vi är i STDMODE och det är dax att skicka nya konfigurationer, dessutom har vi någon enhet
+	    //Om vi är i STDMODE och det är dags att skicka nya konfigurationer, dessutom har vi någon enhet
         if(mode == STDMODE && msDelay < msTicks && next_id != 0 ){
 			
 			keep_id = 0;
