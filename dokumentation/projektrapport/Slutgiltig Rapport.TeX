@@ -98,17 +98,6 @@ kan det endast ackkrediteras och nollställas via centralenheten.
 \subsection{Arbetsmetod} % svarar på frågan "hur har vi gått tillväga i det tekniska utvecklingsarbetet"?
 I det här avsnittet beskrivs det hur arbetet i gruppen delades upp, och hur gruppen har hanterat
 filhantering, möten och arbetstid.
-\subsubsection{Undergrupper}
-För att jämna ut arbetsbelastningen delades projektgruppen in i tre grupper om två personer vardera,
-en för varje enhetstyp.
-
-\textbf{Centralenheten}: Gruppens uppgift var att kunna styra
-periferienheterna från centralenheten samt implementera CAN och USART.
-
-\textbf{Dörrenheten}: Dörrenheten ansvarar för att alla dörrar skall vara uppkopplade och larmade.
-
-\textbf{Rörelseenheten}: Rörelseenheten utvecklar mjukvaran till
-rörelse- och vibrationssensorerna för larmning av t.ex. fönster och värdefulla föremål.
 
 \subsubsection{Möten och arbetstid}
 Projektgruppen har haft ett möte varje vecka, där gruppen har gått igenom vad som gjorts
@@ -319,13 +308,14 @@ och dörrar kan inte konfigureras utöver standard värdena som är förinställ
 
 
 \subsubsection{Rörelseenheten}
-Denna periferienhet använder avståndsmätare av modellen HC-SR04 till rörelsesensorer,
- och vibrationssensorer av modellen SW-18010P, som styrs av ett MD407-mikrodator.
+Denna periferienhet använder avståndsmätare av modellen HC-SR04\cite{HC-SR04} till rörelsesensorer,
+ och vibrationssensorer av modellen SW-18010P\cite{SW-18010P}, som styrs av ett MD407-enkortsdator.
 
-Rörelseenheten använder mikrodatorns alla fem GPIO-portar, port A, B, C, D och E.
-Portarna är uppdelade mellan port A, B och C till rörelsesensorerna,
-och port D och E till vibrationssensorerna. Dock har GPIO-port A och B har vissa designerade pinnar 
-till USART och CAN, därför går det ej att koppla sensorer till dessa (se tabell \ref{tab:Ogiltliga pinnar}).
+Rörelseenheten använder fyra av enkortsdators fem GPIO-portar, port A, C, D och E. 
+Port B har många designerade pinnar till CAN med mera och är därför utesluten som 
+sensorport. Portarna är uppdelade mellan port A och C till rörelsesensorerna,
+och port D och E till vibrationssensorerna. Dock har GPIO-port A har vissa designerade pinnar 
+till bland annat USART , därför går det ej att koppla sensorer till dessa (se tabell \ref{tab:Ogiltliga pinnar}).
 
 \begin{table}[htbp]
 	\centering
@@ -334,10 +324,6 @@ till USART och CAN, därför går det ej att koppla sensorer till dessa (se tabe
 		GPIOA & 1 \\ \hline
 		GPIOA & 10 \\ \hline
 		GPIOA & 13 \\ \hline
-		GPIOB & 1 \\ \hline
-		GPIOB & 4 \\ \hline 
-		GPIOB & 7 \\ \hline
-		GPIOB & 10 \\ \hline
 	\end{tabular}
 	\caption{GPIO-pinnar på port A och B som ej går att koppla sensorer till.}
 	\label{tab:Ogiltliga pinnar}
@@ -373,8 +359,8 @@ En rörelsesensor tar upp 3 pinnar och får därmed plats med 5 rörelsesensorer
 Trig- och echo-pinnen från HC-SR04 samt en LED-lampan kopplas resepktive till  pin-n, -(n+1) och -(n+2).
 
 
-Sensorn aktiveras genom att MD407-mikrodatorn skickar en hög puls till sensorn i minst 10 mikrosekunder, 
-varpå sensorn skickar ut ultraljudsvågor och sänder en hög puls till MD407-mikrodatorn fram tills 
+Sensorn aktiveras genom att MD407-enkortsdatorn skickar en hög puls till sensorn i minst 10 mikrosekunder, 
+varpå sensorn skickar ut ultraljudsvågor och sänder en hög puls till MD407-enkortsdatorn fram tills 
 ultraljudsvågorna har återvänt. Avståndet till närmaste föremål beräknas genom att mäta längden på pulsen.
 HC-SR04 kan mäta avstånd upp till 400 cm och det centrala samt lokala larmavståndet är justerbart från centralenheten.
 
@@ -388,7 +374,7 @@ det lokala larmavståndet.
 En vibrationssensor tar upp 2 pinnar och får därmed plats med 8 vibrationssensorer per port. 
 En pinne för digital-ouput från SW-18010P och en LED-lampa kopplas till pin-n respektive pin-(n+1).
 
-Sensorn sänder kontinuerligt en hög puls till MD407-mikrodatorn utom när den
+Sensorn sänder kontinuerligt en hög puls till MD407-enkortsdatorn utom när den
 känner av vibrationer, då den istället sänder en låg puls. Sensorns känslighet justeras fysiskt genom en komparator på sensorn. 
 Vibrationssensorn har endast central larm som skickas via CAN.
 
@@ -396,6 +382,20 @@ Vibrationssensorn har endast central larm som skickas via CAN.
 % Användarhandledning?
 
 \section{Metoder}
+
+\subsubsection{Undergrupper}
+För att jämna ut arbetsbelastningen delades projektgruppen in i tre grupper om två personer vardera,
+en för varje enhetstyp.
+
+\textbf{Centralenheten}: Gruppens uppgift var att kunna styra
+periferienheterna från centralenheten samt implementera CAN och USART.
+
+\textbf{Dörrenheten}: Dörrenheten ansvarar för att alla dörrar skall vara uppkopplade och larmade.
+
+\textbf{Rörelseenheten}: Rörelseenheten utvecklar mjukvaran till
+rörelse- och vibrationssensorerna för larmning av t.ex. fönster och värdefulla föremål.
+
+
 \subsection{Tillvägagångsätt}
 \label{tillvägagångsätt}
 För att säkerhetställa det bästa möjliga resultatet för larmsystemet har det mesta arbetet bedrivits i samma
