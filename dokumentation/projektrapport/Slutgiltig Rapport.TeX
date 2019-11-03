@@ -98,7 +98,7 @@ I det här avsnittet beskrivs hur den tekniska utvecklingen gått till.
 
 \subsubsection{Utveckling}
 
-Utvecklingen av mjukvaran har främst skett på enhetsnivå, dvs att mjukvaran på de olika enheterna utvecklats separat från varandra. 
+Utvecklingen av mjukvaran har främst skett på enhetsnivå, dvs att mjukvaran på de olika enheterna utvecklats separat från varandra.
 När samtlliga enheter hade uppnåt majoriteten av sin tänkta funktionalitet så bytte utvecklingen fokus till att handla om att få enheterna att kommunicera med varandra via en CAN-buss.
 
 Periferienhets-grupperna byggde först system för att hantera initiering av relevanta GPIO portar samt debugfunktioner, och fortsatte med att implementera funktioner för avmätning av sensorerna. Funktionalitet byggdes på och det sista som utvecklades var kommunkiationen mellan periferienheterna och centralenheten.
@@ -140,7 +140,7 @@ I det här avsnittet presenteras teknisk information som är nödvändig för at
 \subsection{Teknisk bakgrund}
 Mjukvaran till larmsystemet körs på ett flertal MD407-enkortsdatorer, en för varje enhet.
 
-\textbf{STM32-Programbibliotek}\cite{stm} är ett programbibliotek som har generellt skrivna funktioner som 
+\textbf{STM32-Programbibliotek}\cite{stm} är ett programbibliotek som har generellt skrivna funktioner som
 redan skrivits för ARM.
 
 \textbf{Polling} är ett protokoll som frågar alla I/O Enheter kontinuerligt ifall de behöver proccesering.\subsection{Systemöversikt}
@@ -168,7 +168,7 @@ En överblick av mjukvarans tidsflöde finns i figur \ref{fig:tidsflöde}.
 \begin{figure}[H]
     \centering
     \includegraphics[width=1\textwidth]{figurer/TidsFlode.jpg}
-    \caption{En översitlig beskrivning av logik-flödet för systemets mjukvara. Övre halvan för varje enhet är en initieringsfas,
+    \caption{En översiktlig beskrivning av logik-flödet för systemets mjukvara. Övre halvan för varje enhet är en initieringsfas,
     och nedre halvan representerar enheternas 'huvudloop' som är aktiv när systemet är i drift.}
     \label{fig:tidsflöde}
 \end{figure}
@@ -243,12 +243,12 @@ Centralenheten har följande två lägen:
 \begin{description}
     \item[Startläge] Då centralenheten är i detta läge kan periferienheter ansluta sig till den genom att skicka en id-förfrågan via CAN, varpå centralenheten skickar tillbaka ett unikt id. Detta id används sedan för att adressera och identifiera periferienheten, se \ref{idbegäran} och \ref{idtilldelning}
 
-    
+
     \item[Standardläge] Enheten väntar på larm-meddelanden från periferienheterna eller användarinput via USART. Dessutom skickar den regelbundet konfigurationen för anslutna dörrar och sensorer till periferienheterna, som förväntas bekräfta konfigurationen.
     Om en enhet inte svarar efter ett antal meddelanden går larmet.
 \end{description}
 
-I båda lägena kan användaren hantera periferienheterna genom konfigurationsändringar. För lösenordsskyddade kommandon används en knappsats som låter användaren logga in med en fyrsiffrig pinkod. 
+I båda lägena kan användaren hantera periferienheterna genom konfigurationsändringar. För lösenordsskyddade kommandon används en knappsats som låter användaren logga in med en fyrsiffrig pinkod.
 
 
 \subsubsection{Dörrenheten}
@@ -302,7 +302,7 @@ Avlarmning av en specifik dörr sker via CAN-kommunikation från centralenheten.
 innebär att dess larm inte kan utlösas.
 
 Att en dörr är öppen innebär att kretsen som går via strömbrytaren på dörren inte längre är sluten.
-Om kretsen inte är sluten, och dörren inte är avlarmad, tyder det på att någonting externt har hänt 
+Om kretsen inte är sluten, och dörren inte är avlarmad, tyder det på att någonting externt har hänt
 som systemet bör ta hänsyn till. Hur lång tid systemet väntar innan det larmar lokalt konfigureras i
  10-sekunders intervall via centralenheten. Väntetiden kan vara allt från 0 sekunder till ca 40 minuter
    (maxtiden är $2^8 *10$ sekunder).
@@ -312,17 +312,17 @@ kommer skickas med intervall på en sekund tills centralenheten skickar tillbaka
  mottagits.
 
 När dörrenheten larmar lokalt tänds en lampa på dörren. Detta larmet kan kompletteras med ett  ljudljud
-genom att koppla in en högtalare på pinne A5 (port A, pinne 5). Ljudlarmet utlöses oavsett vilken dörr kopplad på enkortsdatorn som larmar. Användning av ljudlarmet sker på bekostnad av en dörr, då en dörr inte längre kan kopplas på A4-A5. 
+genom att koppla in en högtalare på pinne A5 (port A, pinne 5). Ljudlarmet utlöses oavsett vilken dörr kopplad på enkortsdatorn som larmar. Användning av ljudlarmet sker på bekostnad av en dörr, då en dörr inte längre kan kopplas på A4-A5.
 
 
 \subsubsection{Rörelseenheten}
 Denna periferienhet använder avståndsmätare av modellen HC-SR04\cite{HC-SR04} till rörelsesensorer,
  och vibrationssensorer av modellen SW-18010P\cite{SW-18010P}, som styrs av ett MD407-enkortsdator.
 
-Rörelseenheten använder fyra av enkortsdators fem GPIO-portar, port A, C, D och E. 
-Port B har många designerade pinnar till CAN med mera och är därför utesluten som 
+Rörelseenheten använder fyra av enkortsdators fem GPIO-portar, port A, C, D och E.
+Port B har många designerade pinnar till CAN med mera och är därför utesluten som
 sensorport. Portarna är uppdelade mellan port A och C till rörelsesensorerna,
-och port D och E till vibrationssensorerna. Dock har GPIO-port A har vissa designerade pinnar 
+och port D och E till vibrationssensorerna. Dock har GPIO-port A har vissa designerade pinnar
 till bland annat USART , därför går det ej att koppla sensorer till dessa (se tabell \ref{tab:Ogiltliga pinnar}).
 
 \begin{table}[htbp]
@@ -356,9 +356,9 @@ Systemet itererar nu över alla inkopplade sensorer enligt figur \ref{fig:Motion
  \label{fig:MotionFlow}
 \end{figure}
 
-Rörelseenhetens flöde bygger på polling. Polling är smidigt då avståndsmätarna skickar och tar emot pulser av olika längd 
-och behöver då ha timers som håller koll på detta. Ifall detta hade skett via fördröjningsfunktioner hade alla andra sensorer 
-inte fungerat under pulsmätningar och en säkerhetsrisk skulle uppstå. Avbrottshantering är en annan lösning på problemet, 
+Rörelseenhetens flöde bygger på polling. Polling är smidigt då avståndsmätarna skickar och tar emot pulser av olika längd
+och behöver då ha timers som håller koll på detta. Ifall detta hade skett via fördröjningsfunktioner hade alla andra sensorer
+inte fungerat under pulsmätningar och en säkerhetsrisk skulle uppstå. Avbrottshantering är en annan lösning på problemet,
 men då alla sensorer prioriteras lika är polling den simplare lösningen.
 
 
@@ -367,22 +367,22 @@ En rörelsesensor tar upp 3 pinnar och får därmed plats med 5 rörelsesensorer
 Trig- och echo-pinnen från HC-SR04 samt en LED-lampan kopplas resepktive till  pin-\textit{n}, -$(n+1)$ och -$(n+2)$.
 
 
-Sensorn aktiveras genom att MD407-enkortsdatorn skickar en hög puls till sensorn i minst 10 mikrosekunder, 
+Sensorn aktiveras genom att MD407-enkortsdatorn skickar en hög puls till sensorn i minst 10 mikrosekunder,
 varpå sensorn skickar ut ultraljudsvågor och sänder en hög puls till MD407-enkortsdatorn fram tills ultraljudsvågorna har återvänt. Avståndet till närmaste föremål beräknas genom att mäta längden på pulsen.
 HC-SR04 kan mäta avstånd upp till 400 cm och det centrala samt lokala larmavståndet är justerbart från centralenheten.
 
-Rörelsesensorn har både centralt och lokalt larm. Avståndet för centrala larmet ställs in av centralenheten via CAN-kommunikation 
-upp till 400 cm. När det centrala larmet går skickas ett CAN-meddelande till centralenheten som agerar därefter. 
-Avståndet för lokala larmet sätts automatiskt till två gånger det centrala larmavståndet. Ifall centrala larmsvtåndet är över 200 cm kommer 
-lokala larmavståndet sättas till 400. När det lokla larmet går tänds en LED-lampa tills sensorn inte längre känner av något inom 
+Rörelsesensorn har både centralt och lokalt larm. Avståndet för centrala larmet ställs in av centralenheten via CAN-kommunikation
+upp till 400 cm. När det centrala larmet går skickas ett CAN-meddelande till centralenheten som agerar därefter.
+Avståndet för lokala larmet sätts automatiskt till två gånger det centrala larmavståndet. Ifall centrala larmsvtåndet är över 200 cm kommer
+lokala larmavståndet sättas till 400. När det lokla larmet går tänds en LED-lampa tills sensorn inte längre känner av något inom
 det lokala larmavståndet.
 
 \textbf{Vibrationssensorn}:
-En vibrationssensor tar upp 2 pinnar och får därmed plats med 8 vibrationssensorer per port. 
+En vibrationssensor tar upp 2 pinnar och får därmed plats med 8 vibrationssensorer per port.
 En pinne för digital-ouput från SW-18010P och en LED-lampa kopplas till pin-\textit{n} respektive pin-$(n+1)$.
 
 Sensorn sänder kontinuerligt en hög puls till MD407-enkortsdatorn utom när den
-känner av vibrationer, då den istället sänder en låg puls. Sensorns känslighet justeras fysiskt genom en komparator på sensorn. 
+känner av vibrationer, då den istället sänder en låg puls. Sensorns känslighet justeras fysiskt genom en komparator på sensorn.
 Vibrationssensorn har endast central larm som skickas via CAN.
 
 \newpage
@@ -409,7 +409,7 @@ Vibrationssensorn har endast central larm som skickas via CAN.
      \item Test av id-tilldelning och larmmeddelande, se bilaga \ref{test:idLarm}.
      \todo{Kommer kompletteras med fler tester.}
  \end{enumerate}
- 
+
  \subsection{Dörrenheten}
  Dörrenheten har följande funktionalitet:
  \begin{enumerate}
@@ -428,7 +428,7 @@ Vibrationssensorn har endast central larm som skickas via CAN.
 \color{white}
 \item Hokus pokus jag har tappat mitt fokus.
 \end{itemize}
- 
+
  För att säkerställa att funktionalitet ovan fungerar utfördes följande tester:
  \begin{enumerate}
      \item Test av pinnar för dörrar
@@ -437,7 +437,7 @@ Vibrationssensorn har endast central larm som skickas via CAN.
  \end{enumerate}
 
  \subsection{Rörelseenheten}
-Rörelseenheten klarar av  exekvera kod för flertalet vibrations- och rörelsesensorer samtidigt, upp till 29 sensorer, 
+Rörelseenheten klarar av  exekvera kod för flertalet vibrations- och rörelsesensorer samtidigt, upp till 29 sensorer,
 och möjligheten att koppla upp flera rörelseenheter till samma centralenhet finns.
 
  Rörelseenheten har följande funktionalitet:
@@ -462,7 +462,7 @@ och möjligheten att koppla upp flera rörelseenheter till samma centralenhet fi
 	\item Konfiguration och kalibrering av rörelseenheten.\ref{test:MotionConfig}
 	\item Urkopplingslarm rörelseenheten.\ref{test:UrkopplingMotion}
  \end{enumerate}
- 
+
  \subsection{Larmsystemet som helhet}
  \todo[inline]{försöker så lite frön}
  Larmsystemet som helhet fungerar enligt uppgiftsbeskrivning. Det består av
@@ -534,5 +534,5 @@ att polling används istället för avbrott är att det endast finns 16 avbrotts
          \input{../tester/system/brusTest.tex}
          \input{../tester/system/replayer.tex}
          \input{../tester/system/sessionIDtest.tex}
-	
+
 \end{document}
