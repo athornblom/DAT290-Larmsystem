@@ -1,38 +1,38 @@
-Den inbyggda prioriteringen av meddelanden har noga avvägts vid tilldelning av de 29 bitar som finns tillgängliga i ID-fältet.
+Den inbyggda prioriteringen av meddelanden har noga avvägts vid fördelningen av de 29 bitar som finns tillgängliga i id-fältet.
 Detta fält avgör nämligen meddelandets prioritet på bussen.
-De 29 bitarna har fördelats enligt tabell \ref{tab:idbitar}. Meddelandetypen anges i de tre första bitarna då den är mest relevant för att avgöra meddelandets prioritet. Detta innebär t.ex. att ett larmmeddelande alltid har högre prioritet än alla andra typer oavsett enhetens ID och andra parametrar i fältet. Nedan följer en beskrivning av de meddelanden som används i protokollet.
+De 29 bitarna har fördelats enligt tabell \ref{tab:idbitar}. Meddelandetypen anges i de tre första bitarna då den är mest relevant för att avgöra meddelandets prioritet. Detta innebär t.ex. att ett larmmeddelande alltid har högre prioritet än alla andra typer oavsett enhetens id och andra parametrar i fältet. Nedan följer en beskrivning av de meddelanden som används i protokollet.
 
 \begin{table}[H]
 	\centering
-	\begin{tabular}{|c|p{0.8\textwidth}|}
+	\begin{tabular}{|l|p{0.8\textwidth}|}
 		\hline
 		Bitar 	& Används till \\ \hline \hline
-		28-26		& De 3 första bitarna beskriver meddelandetypen. \\ \hline
-		25		& En bit för riktning från/till centralenheten. \\ \hline
-		24-18	& Anger mottagarens eller sändarens ID, beroende på meddelandets riktning. (Centralenheten har inget ID.) \\ \hline
-		17-8 & 10 bitar för sessions-ID. Detta ID är unikt för varje session mellan två enheter och används för att förhindra replay-attack. \\ \hline
+		28-26	& Meddelandetyp. \\ \hline
+		25		& Meddelandets riktning, dvs. till eller från centralenheten. \\ \hline
+		24-18	& Mottagarens eller sändarens id, beroende på meddelandets riktning. (Centralenheten har inget id.) \\ \hline
+		17-8 & Sessions-id. Detta id är unikt för varje session mellan två enheter och används för att förhindra återspelningsattack. \\ \hline
 		7-0 & Sekvensnummer. Används bara av meddelanden som bekräftas med ack. \\ \hline
 
 	\end{tabular}
-	\caption{Hur de 29 bitarna i ID-fältet av CAN-meddelandet används.}
+	\caption{Fördelning av de 29 bitarna i ett CAN-meddelandes id-fält.}
 	\label{tab:idbitar}
 \end{table}
 
 
 \textbf{Ack}
 \begin{itemize}
-    \item Skickas som remote-meddelande
+	\item Skickas som remote-meddelande
     \item Skickas i båda riktningar
 \end{itemize}
-Detta meddelande skickas som bekräftelse för ett mottaget meddelandet. Larmmedelanden och konfigurationsmeddelanden (se nedan) är de enda meddelandetyper som bekräftas med ack. Meddelandet har samma header som det mottagna meddelandet men är av remote typ. Meddelandet innehåller inget datafält så för att urskillja vilket meddelande som beräftas används de 8 bitarna för sekvensnummer i headern (se tabell \ref{tab:idbitar}). \\
+Detta meddelande skickas som bekräftelse för ett mottaget meddelandet. Larmmedelanden och konfigurationsmeddelanden (se nedan) är de enda meddelandetyper som bekräftas med ack. Meddelandet har samma header som det mottagna meddelandet men är av typen remote. Meddelandet innehåller därför inget datafält så för att urskilja vilket meddelande som bekräftas används de 8 bitarna för sekvensnummer i headern (se tabell \ref{tab:idbitar}). \\
 
 
-\textbf{Skicka larm}
+\textbf{Larm}
 \begin{itemize}
     \item Meddelandetyp 0
     \item Skickas från periferienhet till centralenheten
 \end{itemize}
-Talar om för centralenheten om någon dörr eller sensor larmar. Detta meddelande skickas endast av periferienheterna. I datafältet skickas ID:t för sensorn som larmar. Samma ID skickas även som sekvensnummret för meddelandet.\\
+Talar om för centralenheten om någon dörr eller sensor larmar. Detta meddelande skickas endast av periferienheterna. I datafältet skickas id:t för sensorn som larmar. Samma id används även som sekvensnummer för meddelandet.\\
 
  \textbf{Konfiguration}
 \begin{itemize}
@@ -43,29 +43,40 @@ Detta meddelande används för att skicka konfigurationer till periferienheterna
 Centralenheten skickar konfiguration till periferienheten kontinuerligt under drift för att försäkra sig om att periferienheten har rätt konfiguration. Detta fungerar även som ping, då ett bestämt antal uteblivna ack tolkas som att enheten inte längre finns på nätverket.
 I så fall uppmärksammar centralenheten detta. Konfigurationsmeddelanden ser olika ut för de olika enheterna.
 
-För dörrenheten anges intervallet av dörrsensorer som konfigureras i de två första databytarna. Därefter följer fyra bytar för timrar, först för lokalt larm sedan för centralt. Båda anger fördröjningen som en multipel av 10 sekunder. I den sjunde och sista byten skickas 0 om dörren är uppställd och 1 om den ska vara låst.
+För dörrenheten anges intervallet av dörrsensorer som konfigureras i de två första databytarna. Därefter följer fyra bytar för timrar; först för lokalt larm, sedan för centralt. Båda anger fördröjningen som en multipel av 10 sekunder. I den sjunde och sista byten skickas 0 om dörren är uppställd och 1 om den ska vara låst.
+
+\textbf{Id-begäran}
+\label{idbegäran}
+\begin{itemize}
+	\item Meddelandetyp 3
+	\item Skickas från periferienhet till centralenheten
+\end{itemize}
+Detta meddelande skickas av en periferienhet innan den har tilldelats ett id. 
+De sju bitarna i id-fältet som annars ska ange periferienhetens id är bara nollor.
+I datafältets första fyra bytar skickas ett 32 bitars slumptal för att särskilja enheten från andra periferienheter som begär id.\\
 
 
-\textbf{Tilldelning av ID}
+
+
+Då periferienheten i denna fas saknar id skickar den ett tillfälligt 32-bitars slumpgenererat id i datafältet för att låta centralenheten särkilja den från andra periferienheter som saknar id.
+Om periferienheten inte tar emot sitt id och därför skickar en ny förfrågan görs detta med samma tillfälliga id, vilket låter centralenheten tilldela den samma id igen.
+När centralenheten har tagit emot en sådan förfrågan skickar den tillbaka det lägsta lediga id:t och skapar en ny instans av en struktur som representerar periferienheten och lägger den i en lista. Strukturen innehåller enhetens id, tillfälliga id och konfiguration (d.v.s. tider för varje dörr för dörrenheter respektive avstånd för varje avståndssensor och antal vibrationssensorer för rörelseenheter). 
+Det är också periferienhetens index i centralenhetens lista, vilket gör det mycket effektivt att hitta rätt enhet i listan när dess id har lästs i CAN-meddelandet.
+
+\textbf{Tilldelning av id}
+\label{idtilldelning}
 \begin{itemize}
     \item Meddelandetyp 2
     \item Skickas från centralenheten till preferienhet
 \end{itemize}
-Detta meddelande används då centralenheten tilldelar en periferienhet dess ID. Det skickas bara då centralenheten är i startläge. I de första fyra bytarna av datafältet skickas samma slumptal som periferienheten skickade i begäran. I den femte byten skickas det nya ID:t. \\
+Detta meddelande används då centralenheten tilldelar en periferienhet dess id. Det skickas bara då centralenheten är i startläge. I de första fyra bytarna av datafältet skickas samma slumptal som periferienheten skickade i begäran. I den femte byten skickas det nya id:t. \\
 
 
-\textbf{ID-begäran}
-\begin{itemize}
-    \item Meddelandetyp 3
-    \item Skickas från periferienhet till centralenheten
-\end{itemize}
-Detta meddelande skickas av en periferienhet innan den har tilldelats ett ID. 
-De sju bitarna i ID-fältet som annars ska ange periferienhetens ID är bara nollor i meddelandet.
- I datafältets första fyra bytar skickas ett slumptal som används för identifiering 
- innan enheten har fått sitt ID.\\
+
+
 \begin{table}[htb]
 	\centering
-	\begin{tabular}{|c|c|}
+	\begin{tabular}{|l|l|}
 		\hline
 		Nummer & Enhet \\ \hline \hline
 		0 & Dörrenhet \\ \hline
@@ -79,7 +90,7 @@ De sju bitarna i ID-fältet som annars ska ange periferienhetens ID är bara nol
 \todo[inline]{Behövs tabell för sensortyper?!}
 \begin{table}[htb]
 	\centering
-	\begin{tabular}{|c|c|}
+	\begin{tabular}{|l|l|}
 		\hline
 		Nummer & Sensortyp \\ \hline \hline
 		0 & Rörelsesensor \\ \hline

@@ -88,7 +88,7 @@ Röreleseenheten består av en rörelse- och en vibrationssensor. Om endera sens
 utlöses skickas ett centralt larm via en CAN-buss till centralenheten. Känsligheten
 på rörelsesensorn konfigueras från centralenheten. Vibrationssensorn konfigueras direkt på hårdvaran.
 
-Centralenheten hanterar konfiguration av de andra enheterna, samt fungerar som en
+Centralenheten hanterar konfiguration av periferienheterna, samt fungerar som en
 central för samtliga larm som utlöses i systemet. Om ett centralt larm utlöses så
 kan det endast ackkrediteras och nollställas via centralenheten.
 \subsection{Arbetsmetod} % svarar på frågan "hur har vi gått tillväga i det tekniska utvecklingsarbetet"?
@@ -203,7 +203,7 @@ Denna prioritering har använts för att ge brådskande meddelanden företräde 
 
 		\hline
 		Meddelandetyp & Används till \\ \hline \hline
-		Bekräftelse		& Bekräftelse för senast mottagna meddelandet. \\ \hline
+		Bekräftelse		& Bekräftelse för det senast mottagna meddelandet. \\ \hline
 		Skicka larm		& Talar om för centralenheten om någon dörr eller sensor larmar. \\ \hline
 		Konfiguration		& Används för att skicka sensorkonfiguration och kalibrering. \\ \hline
 		Tilldelning av id		& Används då centralenheten tilldelar en periferienhet dess id. \\ \hline
@@ -253,7 +253,7 @@ Inställningar görs via USART med kommandon enligt bilaga \ref{kommandon}, varp
 Centralenheten har följande två lägen:
 
 \begin{description}
-    \item[Startläge] Då centralenheten är i detta läge kan periferienheter ansluta sig till den genom att skicka en id-förfrågan via CAN, varpå centralenheten skickar tillbaka ett id.
+    \item[Startläge] Då centralenheten är i detta läge kan periferienheter ansluta sig till den genom att skicka en id-förfrågan via CAN, varpå centralenheten skickar tillbaka ett unikt id. Detta id används sedan för att adressera och identifiera periferienheten, se \ref{idbegäran} och \ref{idtilldelning}
 
     
     \item[Standardläge] Enheten väntar på larm-meddelanden från periferienheterna eller användarinput via USART. Dessutom skickar den regelbundet konfigurationen för anslutna dörrar och sensorer till periferienheterna, som förväntas bekräfta konfigurationen.
@@ -261,13 +261,6 @@ Centralenheten har följande två lägen:
 \end{description}
 
 I båda lägena kan användaren hantera periferienheterna genom konfigurationsändringar. För lösenordsskyddade kommandon används en knappsats som låter användaren logga in med en fyrsiffrig pinkod. 
-
-
-\todo[inline]{Hur mycket av följande stycke behövs egentligen?} 
-För att kunna adressera olika periferienheter måste centralenheten tilldela dessa varsitt unikt id.
-Detta görs i startläget genom att varje enhet som saknar id skickar en förfrågan via CAN. Då periferienheten i denna fas saknar id skickar den ett tillfälligt 32-bitars slumpgenererat id i datafältet för att låta centralenheten särkilja den från andra periferienheter som saknar id.
-När centralenheten har tagit emot en sådan förfrågan skickar den tillbaka det lägsta lediga id:t och skapar en ny instans av en struktur som representerar periferienheten och lägger den i en lista. Strukturen innehåller enhetens id, tillfälliga id och konfiguration (d.v.s. tider för varje dörr för dörrenheter respektive avstånd för varje avståndssensor och antal vibrationssensorer för rörelseenheter). Om periferienheten inte tar emot sitt id och därför skickar en ny förfrågan görs detta med samma tillfälliga id, vilket låter centralenheten tilldela den samma id igen.
-Id:t används för att adressera meddelanden till samt identifiera meddelanden från enheten. Det är också periferienhetens index i centralenhetens lista, vilket gör det mycket effektivt att hitta rätt enhet i listan när dess id har lästs i CAN-meddelandet.
 
 
 \subsubsection{Dörrenheten}
@@ -418,8 +411,8 @@ Vibrationssensorn har endast central larm som skickas via CAN.
  \end{enumerate}
  För att säkerställa att funktionalitet ovan fungerar utfördes följande tester:
  \begin{enumerate}
-     \item Test av id-tilldelning och larmmeddelnade se bilaga \ref{test:idLarm}.
-     \todo{Kommer kompleteras med fler tester.}
+     \item Test av id-tilldelning och larmmeddelande, se bilaga \ref{test:idLarm}.
+     \todo{Kommer kompletteras med fler tester.}
  \end{enumerate}
  
  \subsection{Dörrenheten}
