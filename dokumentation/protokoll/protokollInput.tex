@@ -27,7 +27,7 @@ För att motverka återuppspelningsattacker används sessions-id id fältet i id
 	\item Skickas som remote-meddelande
     \item Skickas i båda riktningar
 \end{itemize}
-Detta meddelande skickas som bekräftelse för ett mottaget meddelandet. Larmmedelanden och konfigurationsmeddelanden (se nedan) är de enda meddelandetyper som bekräftas med ack. Meddelandet har samma header som det mottagna meddelandet men är av typen remote. Meddelandet innehåller därför inget datafält så för att urskilja vilket meddelande som bekräftas används de 8 bitarna för sekvensnummer i headern (se tabell \ref{tab:idbitar}). \\
+Detta meddelande skickas som bekräftelse för ett mottaget meddelandet. Larmmedelanden och konfigurationsmeddelanden (se nedan) är de enda meddelandetyper som bekräftas med ack. Meddelandet har samma id-fält som det mottagna meddelandet men är av typen remote. Meddelandet innehåller därför inget datafält så för att urskilja vilket meddelande som bekräftas används de 8 bitarna för sekvensnummer i id-fältet (se tabell \ref{tab:idbitar}). \\
 
 \textbf{Id-begäran}
 \label{idbegäran}
@@ -60,6 +60,41 @@ Centralenheten skickar konfiguration till periferienheten kontinuerligt under dr
 I så fall uppmärksammar centralenheten detta. Konfigurationsmeddelanden ser olika ut för de olika enheterna.
 
 För dörrenheten anges intervallet av dörrsensorer som konfigureras i de två första databytarna. Därefter följer fyra bytar för timrar; först för lokalt larm, sedan för centralt. Båda anger fördröjningen som en multipel av 10 sekunder. I den sjunde och sista byten skickas 0 om dörren är uppställd och 1 om den ska vara låst.
+
+
+
+
+För rörelseenheter fördelas datafältet enligt tabell \ref{tab:rörelsekonfdata} vid konfigurering och enligt tabell \ref{tab:rörelsekaldata} vid kalibrering.
+\begin{table}[htb]
+	\centering
+	\begin{tabular}{|l|l|}
+		\hline
+		Byte & Innehåll \\ \hline \hline
+		0 & Typ av sensor (rörelse eller vibration) \\ \hline
+		1 & Anger huruvida rörelseenheten ska konfigureras eller kalibreras \\ \hline
+		2 & Id till första sensorn i intervallet \\ \hline
+		3 & Id till sista sensorn i intervallet \\ \hline
+		4 & Sensorernas tillstånd (aktiva eller inaktiva) \\ \hline
+		5-6 & Larmavstånd (endast för rörelsesensorer) \\ \hline
+		7 & Avlarmning (gör inget eller avlarma) \\ \hline
+	\end{tabular}
+	\caption{Datafältets fördelning för konfiguration av rörelseenhet.}
+	\label{tab:rörelsekonfdata}
+\end{table}
+
+\begin{table}[htb]
+	\centering
+	\begin{tabular}{|l|l|}
+		\hline
+		Byte & Innehåll \\ \hline \hline
+		1 & Anger huruvida rörelseenheten ska konfigureras eller kalibreras \\ \hline
+		2 & Sensorns id\\ \hline
+		5-6 & Upmätt avstånd\\ \hline
+	\end{tabular}
+	\caption{Datafältets fördelning för kalibrering av rörelseenhet.}
+	\label{tab:rörelsekaldata}
+\end{table}
+
 
 \textbf{Larm}
 \begin{itemize}

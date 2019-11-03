@@ -73,20 +73,20 @@ Erik Nilsson, Adam Thörnblom, Ben Wooldridge}
 \pagenumbering{arabic}
 
 \section{Inledning}
-I en undersökning\cite{brott-foretagarna} utförd av Sveriges största företagsorganisaton, \textit{Företagarna}, anger var tredje företag (n=983) att de blivit utsatta för minst ett brott någon gång under de senaste fem åren. Pontus Lindström, ansvarig för brott- och trygghetsfrågor hos Företagarna säger:
+I en undersökning\cite{brott-foretagarna} utförd av Sveriges största företagsorganisation, \textit{Företagarna}, anger var tredje företag (n=983) att de blivit utsatta för minst ett brott någon gång under de senaste fem åren. Pontus Lindström, ansvarig för brott- och trygghetsfrågor hos Företagarna säger:
 \begin{quote}
-\textit{- Undersökningen bekräftar den bild vi har. Många företagare vittnar om en ökad utsatthet och om att otryggheten ökat.}
+\textit{- Undersökningen bekräftar den bild vi har. Många företagare vittnar om en ökad utsatthet och om att otryggheten ökat.\cite{brott-foretagarna}}
 \end{quote}
 
 25\% av de företag som blivit utsatta för minst ett brott anger att de inte anmält brottet till polisen. 36\% anger att de anmält något av brotten de utsatts för. Att anmälningsgraden är så låg tyder på att att företagen inte anser att det är värt besväret att anmäla brott till polisen. Företagen i undersökningen anger också att de känner sig tvungna att satsa stora summor på larmsystem, vilket för många enskilda firmor och handelsbolag inte alltid är genomförbart av finansiella skäl.
 
-Baserat på denna undersökningen verkar det finnas ett behov för ett skalbart larmsystem där användaren kan justera omfattingen för larmet baserat på rådande nödvändighet och finansiell kapabilitet.
+Baserat på denna undersökning verkar det finnas ett behov av ett skalbart larmsystem där användaren kan justera larmsystemets omfattning baserat på rådande nödvändighet och finansiell kapabilitet.
 
 Rapporten beskriver utvecklingen av ett modulärt larmsystem som i grunden består av MD407-enkortsdatorer\cite{MD407}.
 
 \subsection{Syfte} % Svarar på frågan "Varför"?
-Projekets syfte är att utveckla ett larmsystemets som ska vara ett finansiellt dynamiskt alternativ för företag
-och organisationer som har behov av skalningsbar och anpassad larmning beroende på nuvarande nödvändighet och finansiell \\ kapabilitet.
+Projektets syfte är att utveckla ett larmsystem som ska vara ett finansiellt dynamiskt alternativ för företag
+och organisationer som har behov av skalbar och anpassad larmning beroende på nuvarande nödvändighet och finansiell \\ kapabilitet.
 Detta uppnås genom att erbjuda mindre delsystem som kan kopplas ihop till ett större centraliserat system.
 
 Systemet ökar översikten och säkerheten av användarens lokaler genom att implementera konfigurerbar larmning av dörrar, samt rörelse- och vibrationsdetektering.
@@ -108,8 +108,7 @@ utlöses skickas ett centralt larm via en CAN-buss till centralenheten. Känslig
 på rörelsesensorn konfigueras från centralenheten. Vibrationssensorn konfigueras direkt på hårdvaran.
 
 Centralenheten hanterar konfiguration av periferienheterna, samt fungerar som en
-central för samtliga larm som utlöses i systemet. Om ett centralt larm utlöses så
-kan det endast ackkrediteras och nollställas via centralenheten.
+central för samtliga \todo[]{centrala?} larm som utlöses i systemet. Om ett centralt larm utlöses kan det endast ackkrediteras och nollställas via centralenheten.
 \subsection{Arbetsmetod} % svarar på frågan "hur har vi gått tillväga i det tekniska utvecklingsarbetet"?
 
 I det här avsnittet beskrivs hur den tekniska utvecklingen gått till.
@@ -527,11 +526,14 @@ Polling har även använts till stor fördel inom rörelseenheter, med hjälp av
 Uppoffringen som görs är precision, med ett polling system är det svårt att vänta exakta tider, då det endast kollas ifall en tidsvariabel har överstigit en annan, och det går lite tid mellan att dessa villkor kollas.
 Denna tid är dock såpass liten och skillnader i väntetider är såpass osignifikanta att det inte påverkar systemets funktionalitet, se bilaga \ref{test:MotionPrestanda}.
 
+Systemet klarar av att skydda sig mot simpla uppspelningsattacker men ifall någon har lite insikt i hur systemet skyddar sig mot detta 
+skulle en attack mot systemet vara möjligt. En framtida förbättring skulle vara att implementera krypterade meddelanden för 
+att öka systemets säkerhet.
 
 Samtliga delsystem har uppnått de grundkraven som formulerades i målsättningen, men även utrustats med
 ytterligare funktionalitet som varit naturlig att implementera under projektets gång. Rörelse- och dörrenheten
 kan ha upp till 23 respektive 32 sensorer och centralenheten kan ha upp till 32 periferienheter.
-Med denna information kan vi dra slutsatsen att ett skalbart larmsystem är uppnåt.
+Med denna information kan vi dra slutsatsen att ett skalbart larmsystem är uppnåt, dock finns det rum för säkerhetsutveckling.
 % Referenser enligtIEEE.
 %För referenser
 \bibliographystyle{IEEEtran}
