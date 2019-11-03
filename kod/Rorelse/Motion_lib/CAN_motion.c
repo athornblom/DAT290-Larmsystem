@@ -81,8 +81,6 @@ void CANGetConfig_handler(CanRxMsg* msg) {
 
 		mSensor->multiple = (*measuredDistance)/mSensor->cm;
 		
-		DebugPrint("\nHej");
-		
 		CanTxMsg ackMsg;
 		encode_ack_msg(&ackMsg, msg);
 		CANsendMessage(&ackMsg);
