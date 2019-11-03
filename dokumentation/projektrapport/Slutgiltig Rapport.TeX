@@ -142,6 +142,8 @@ Mjukvaran till larmsystemet körs på ett flertal MD407-enkortsdatorer, en för 
 
 \textbf{STM32-Programbibliotek}\cite{stm} är ett programbibliotek som har generellt skrivna funktioner som
 redan skrivits för ARM.
+\todo[inline]{Mitt förslag är att ist skriva\\
+är ett programbibliotek som har vanliga funktioner som ofta används för ARM}
 
 \textbf{Polling} är ett protokoll som frågar alla I/O Enheter kontinuerligt ifall de behöver proccesering.\subsection{Systemöversikt}
 
@@ -406,6 +408,8 @@ Vibrationssensorn har endast central larm som skickas via CAN.
  När en sensor på en enhet begär ett centralt larm fortsätter den att larma tills att centralenheten har skickat ett avlarmningsmeddelande.
  Ifall en enhet larmar centralt men inte ackrediterats skickas ett nytt larm för att säkerställa att centralenheten hanterar larmet.
 
+ Efter att återspelningsenheten testats så att den fungerar som förväntat (se bilaga \ref{test:replayer}) så testades systemet mot återuppspelningsattacker (se bilaga \ref{test:sessionID}). Detta visade att systemet med hjälp av sessions-id klarar av att förhindra återuppspelningsattacker. Det faktum att återspelaren lyckades begära ett id har den enkla förklaring att meddelanden inte filtreras på sessions-id innan id-tilldelningen är färdig (se bilaga \ref{bilaga:protokoll}).
+
  \subsection{Centralenheten}
  Centralenheten har följande funktionalitet:
  \begin{enumerate}
@@ -432,8 +436,7 @@ Utöver ovan nämnda tester är centralenheten involverad i alla de testar som i
 
  \subsection{Dörrenheten}
 
-
- Dörrenheten har följande funktionalitet:
+Dörrenheten har följande funktionalitet:
  \begin{enumerate}
      \item Detektering av antalet stängda dörrar kopplade på enkortsdatorn.
      \item Signalering via LED-lampa som indikerar att dörrenhetens initiering är färdig.
@@ -443,6 +446,7 @@ Utöver ovan nämnda tester är centralenheten involverad i alla de testar som i
      \item Avlarmning av individuella dörrar från centralenheten.
      \item Dörrar kan konfigueras ifrån centralenheten.
      \item Lokal funktionalitet kräver inte uppkopplad centralenhet.
+     \item Stöd för 32 dörrar.
  \end{enumerate}
 
 
@@ -469,7 +473,7 @@ Rörelseenheten har följande funktionalitet:
  \begin{enumerate}
  	\item Automatiskt detektera antalet inkopplade rörelse- och vibrationssensorer vid uppstart.
 	\item Larma vid upptäckt av vibrationer, rörelse och urkoppling av aktiv sensor.
-    	\item Central larmning via CAN-buss.
+    \item Central larmning via CAN-buss.
 	\item Avlarmning via centralenheten.
 	\item Lokal larmning för rörelsesensorer via LED-lampa.
 	\item Konfigurerbara larmvillkor från centralenheten.
