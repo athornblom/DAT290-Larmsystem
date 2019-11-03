@@ -102,31 +102,3 @@ För rörelseenheter fördelas datafältet enligt tabell \ref{tab:rörelsekonfda
 	\item Skickas från periferienhet till centralenheten
 \end{itemize}	
 Talar om för centralenheten om någon dörr eller sensor larmar. Detta meddelande skickas endast av periferienheterna. I datafältet skickas id:t för sensorn som larmar. Samma id används även som sekvensnummer för meddelandet.\\
-
-
-\begin{table}[htb]
-	\centering
-	\begin{tabular}{|l|l|}
-		\hline
-		Nummer & Enhet \\ \hline \hline
-		0 & Dörrenhet \\ \hline
-		1 & Rörelseenhet \\ \hline
-
-	\end{tabular}
-	\caption{Nummer för enhetstyper.}
-	\label{tab:enhetstyper}
-\end{table}
-
-
-\begin{table}[htb]
-	\centering
-	\begin{tabular}{|l|l|}
-		\hline
-		Nummer & Sensortyp \\ \hline \hline
-		0 & Rörelsesensor \\ \hline
-		1 & Vibrationssensor \\ \hline
-
-	\end{tabular}
-	\caption{Numrering för sensortyper för rörelseenheter.}
-	\label{tab:sensortyper}
-\end{table}
