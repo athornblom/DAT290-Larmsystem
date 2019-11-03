@@ -93,26 +93,13 @@ central för samtliga larm som utlöses i systemet. Om ett centralt larm utlöse
 kan det endast ackkrediteras och nollställas via centralenheten.
 \subsection{Arbetsmetod} % svarar på frågan "hur har vi gått tillväga i det tekniska utvecklingsarbetet"?
 
-I det här avsnittet beskrivs hur det tekniska abretet har skett, samt hur gruppen har delat upp arbetsområden.
+I det här avsnittet beskrivs hur den tekniska utvecklingen gått till.
 
-\subsubsection{Undergrupper}
-För att jämna ut arbetsbelastningen delades projektgruppen in i tre grupper om två personer vardera,
-en för varje enhetstyp.
 
-\textbf{Centralenheten}: Gruppens uppgift var att få centralenheten att kunna konfigurera
-periferienheterna, ta emot och behandla larm, samt implementera CAN-kommunkation och USART.
+\subsubsection{Utveckling}
 
-\textbf{Dörrenheten}: Gruppen hade ansvar för att alla dörrar skall vara uppkopplade och kunna larma.
-
-\textbf{Rörelseenheten}: Gruppens uppgift var att utveckla mjukvaran till
-rörelse- och vibrationssensorerna för larmning av t.ex. fönster och värdefulla föremål.
-
-Samtliga grupper har haft ansvar att sköta implementeringen av CAN meddelande på sin egen enhet, samt att bestäma innehållet av meddelanden relevanta till enheten.
-
-\subsubsection{Tillvägagång}
-
-Utvecklingen av mjukvaran har skett till stor del på en enhetsnivå, det vill säga att mjukvaran på de olika enheterna utvecklades separat från varandra. 
-Först när alla enheter var färdigutvecklade kopplades de till varandra och arbetet fokuserade då på att implementera CAN-kommunikation.
+Utvecklingen av mjukvaran har främst skett på enhetsnivå, dvs att mjukvaran på de olika enheterna utvecklats separat från varandra. 
+När samtlliga enheter hade uppnåt majoriteten av sin tänkta funktionalitet så bytte utvecklingen fokus till att handla om att få enheterna att kommunicera med varandra via en CAN-buss.
 
 Periferienhets-grupperna byggde först system för att hantera initiering av relevanta GPIO portar samt debugfunktioner, och fortsatte med att implementera funktioner för avmätning av sensorerna. Funktionalitet byggdes på och det sista som utvecklades var kommunkiationen mellan periferienheterna och centralenheten.
 
@@ -147,10 +134,11 @@ För att se samtliga testspecifikationer, samt resultat och analys, se bilaga \r
 \subsubsection{Fildelning och versionshantering}
 Arbetsgruppen valde att använda versionshanteringstjänsten GIT för att förenkla den parallella programmeringen, och för att samla alla filer på ett ställe. GIT-filsamlingen förvarades med hjälp av tjänsten github. GIT-Tjänsten har fungerat väl och även underlättat dokumentering, då även den förvarades i filsamlingen.
 
+\newpage
 \section{Teknisk beskrivning} % Vad är utgångspunkten för i förkonstruktionsarbetet?
-I det här avsnittet presenteras teknisk information som är nödvändig för att få en djupare insikt i hur den tekniska utvecklingen gått till, samt hur de olika delsystem interagerar för att bygga upp systemet som helhet.
+I det här avsnittet presenteras teknisk information som är nödvändig för att få en djupare insikt i hur den tekniska utvecklingen gått till, samt hur de olika delsystem fungerar och interagerar för att bygga upp systemet som helhet.
 \subsection{Teknisk bakgrund}
-Mjukvaran till larmsystemet körs på ett flertal MD407-kort, ett för varje enhet.
+Mjukvaran till larmsystemet körs på ett flertal MD407-enkortsdatorer, en för varje enhet.
 
 \textbf{STM32-Programbibliotek}\cite{stm} är ett programbibliotek som har generellt skrivna funktioner som 
 redan skrivits för ARM.
@@ -376,7 +364,7 @@ men då alla sensorer prioriteras lika är polling den simplare lösningen.
 
 \textbf{Rörelsesensorn}:
 En rörelsesensor tar upp 3 pinnar och får därmed plats med 5 rörelsesensorer per port.
-Trig- och echo-pinnen från HC-SR04 samt en LED-lampan kopplas resepktive till  pin-n, -(n+1) och -(n+2).
+Trig- och echo-pinnen från HC-SR04 samt en LED-lampan kopplas resepktive till  pin-\textit{n}, -$(n+1)$ och -$(n+2)$.
 
 
 Sensorn aktiveras genom att MD407-enkortsdatorn skickar en hög puls till sensorn i minst 10 mikrosekunder, 
@@ -391,12 +379,13 @@ det lokala larmavståndet.
 
 \textbf{Vibrationssensorn}:
 En vibrationssensor tar upp 2 pinnar och får därmed plats med 8 vibrationssensorer per port. 
-En pinne för digital-ouput från SW-18010P och en LED-lampa kopplas till pin-n respektive pin-(n+1).
+En pinne för digital-ouput från SW-18010P och en LED-lampa kopplas till pin-\textit{n} respektive pin-$(n+1)$.
 
 Sensorn sänder kontinuerligt en hög puls till MD407-enkortsdatorn utom när den
 känner av vibrationer, då den istället sänder en låg puls. Sensorns känslighet justeras fysiskt genom en komparator på sensorn. 
 Vibrationssensorn har endast central larm som skickas via CAN.
 
+\newpage
  \section{Resultat}
  För kompletta testspecifikationer hänvisas till bilaga \ref{bilaga:tester}.
 
@@ -409,6 +398,12 @@ Vibrationssensorn har endast central larm som skickas via CAN.
      \item Automatisk detektering av enheter som lämnar nätverket.
      \item Larmhantering.
  \end{enumerate}
+
+ \begin{itemize}
+\color{white}
+\item Abra kadabra blankrad!
+\end{itemize}
+
  För att säkerställa att funktionalitet ovan fungerar utfördes följande tester:
  \begin{enumerate}
      \item Test av id-tilldelning och larmmeddelande, se bilaga \ref{test:idLarm}.
@@ -428,6 +423,11 @@ Vibrationssensorn har endast central larm som skickas via CAN.
      \item Lokal funktionalitet kräver inte uppkopplad centralenhet.
  \end{enumerate}
 
+
+ \begin{itemize}
+\color{white}
+\item Hokus pokus jag har tappat mitt fokus.
+\end{itemize}
  
  För att säkerställa att funktionalitet ovan fungerar utfördes följande tester:
  \begin{enumerate}
@@ -437,6 +437,9 @@ Vibrationssensorn har endast central larm som skickas via CAN.
  \end{enumerate}
 
  \subsection{Rörelseenheten}
+Rörelseenheten klarar av  exekvera kod för flertalet vibrations- och rörelsesensorer samtidigt, upp till 29 sensorer, 
+och möjligheten att koppla upp flera rörelseenheter till samma centralenhet finns.
+
  Rörelseenheten har följande funktionalitet:
  \begin{enumerate}
  	\item Automatiskt detektera antalet inkopplade rörelse- och vibrationssensorer vid uppstart.
@@ -444,14 +447,18 @@ Vibrationssensorn har endast central larm som skickas via CAN.
     	\item Central larmning via CAN-buss.
 	\item Avlarmning via centralenheten.
 	\item Lokal larmning för rörelsesensorer via LED-lampa.
-	\item Konfigurerbart larmavstånd på rörelsesensorerna.
+	\item Sensorerna är konfigurerbara från centralenheten.
 	\item Kalibrering av rörelsesensorerna via centralenheten.
  \end{enumerate}
 
+ \begin{itemize}
+\color{white}
+\item Sim sala bim, nu är det radbyte!
+\end{itemize}
 
  För att säkerställa att funktionalitet ovan fungerar utfördes följande tester:
  \begin{enumerate}
-	\item Test av portar sam lokalt och centralt larm för rörelseenheten.\ref{test:PortMotion}
+	\item Test av portar samt lokalt och centralt larm för rörelseenheten.\ref{test:PortMotion}
 	\item Konfiguration och kalibrering av rörelseenheten.\ref{test:MotionConfig}
 	\item Urkopplingslarm rörelseenheten.\ref{test:UrkopplingMotion}
  \end{enumerate}
@@ -484,7 +491,7 @@ att polling används istället för avbrott är att det endast finns 16 avbrotts
 
     \section{Kommandolista för centralenheten}
     \label{kommandon}
-        För att styra centralenheten används ett antal kommandon som beskrivs nedan. Centralenheten har två separata lägen med olika uppsättningar av kommandon.
+        För att styra centralenheten används ett antal kommandon som beskrivs nedan.
 
     \textbf{start}\\
     Startar standardläge.
@@ -496,10 +503,23 @@ att polling används istället för avbrott är att det endast finns 16 avbrotts
     Där \textbf{x, y} och \textbf{z} är tal mellan 0 och 9. Konfigurerar rörelsesensor \textbf{y} på enhet med id \textbf{x} för att larma då den detekterar ett föremål på ett avstånd mindre än \(\textbf{z} * 10\) centimeter.
 
     \textbf{avlarma y z} \\
-    Avlarmar sensor \textbf{z} på enhet med id \textbf{y}.
+    Avlarmar sensor \textbf{z} på rörelseenhetenhet med ID \textbf{y}. Detta kommando är lösenordsskyddat.
 
     \textbf{larma y z} \\
-    Larmar sensor \textbf{z} på enhet med id \textbf{y}. Alla sensorer är larmade som standard så detta kommando körs om man vill återaktivera larm efter att det avaktiverats.
+    Larmar sensor \textbf{z} på rörelseenhet med ID \textbf{y}. Alla sensorer är larmade som standard så detta kommando körs om man vill återaktivera larm efter att det avaktiverats. Detta kommando är lösenordsskyddat.
+
+    \textbf{inak y z} \\
+    Inaktiverar sensor \textbf{z} på enhet med ID \textbf{y}. Detta kommando är lösenordsskyddat.
+
+    \textbf{ak y z} \\
+    Aktiverar sensor \textbf{z} på enhet med ID \textbf{y}. Alla sensorer är aktiverade som standard så detta kommando körs om man vill återaktivera en sensor efter att den inaktiverats. Detta kommando är lösenordsskyddat.
+
+    \textbf{kal x y z} \\
+    Startar översändning av kalibreringsmeddelanden till rörelsesensor \textbf{y} på rörelseenhet med ID \textbf{x}. Det upplätta avståndet för givaren är \(\textbf{z} * 10\). Kalibrering fungerar inte om sensorn är inaktiverad.
+
+    \textbf{nokal y z} \\
+    Avslutar översändning av kalibreringsmeddelanden för sensor \textbf{z} på enhet \textbf{y}.
+
 
 	\clearpage
 	\section{Tester}
