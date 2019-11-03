@@ -220,40 +220,33 @@ enhet i listan när dess id har lästs i CAN-meddelandet.
 % - Systick?
 % - Bilder?
 
-Dörrenheten är en av systemets fristående enheter och kräver en MD407-mikrodator för drift.
+Dörrenheten är den periferienhet som sköter uppsikten över användarens dörrar. Enheten kräver en MD407-enkortsdator för drift.
 
-För att koppla upp en dörr till systemet krävs det två anslutningar till en av mikrodatorns
- GPIO-portar: en koppling som går från en strömbrytare på dörren till en av mikrodatorns jämna
-  I/O-pinnar (\textit{n}), samt en koppling från en LED-lampa på dörren till en ojämn I/O-pinne (\textit{n+1}).
+För att koppla upp en dörr till systemet krävs det två anslutningar till en av mikrodatorns GPIO-portar: en koppling som går från en strömbrytare på dörren till en av mikrodatorns jämna I/O-pinnar (\textit{n}), samt en koppling från en LED-lampa på dörren till en udda I/O-pinne (\textit{n+1}).
 
 Fyra av mikrodatorns fem portar är designerade för dörranslutningar (\textit{A,C,D,E}). \\
-Eftersom samtliga portar har 16 tillgängliga pinnar innebär detta att systemet maximalt kan stötta 32 dörrar per dörrenhet.
+Eftersom samtliga portar har 16 tillgängliga pinnar innebär det att systemet maximalt kan stötta 32 dörrar per dörrenhet.
 
 Port B är inte avsedd för dörranslutningar, utan används främst för CAN-\\kommunikationen
-med centralenheten. En LED-lampa kan även kopplas till \\ pinne 2 på port B. Denna lampa är
-till för att vid uppstart signalera när systemets initiering är färdig.
+med centralenheten. En LED-lampa kan även kopplas till \\ pinne 2 på port B. Denna lampa signalerar vid vid uppstart när systemets initiering är färdig.
 
 Vid uppstart initieras först portarna och pinnarna på mikrodatorn så att de kan adresseras
-och avläsas på rätt sätt. Därefter startas en System Timer (SysTick) som fungerar som klocka, och
-CAN som initieras för att enheten ska kunna kommunicera med en eventuell centralenhet. För att kunna identifiera sig på CAN-bussen initierar enheten även en 32 bitars slumptalsgenerator som genererar ett tillfälligt id som används tills den fått ett designerat av centralenheten. Fortsättningsvis detekterar systemet hur många dörrar som är kopplade på kortet, och på vilka pinnar de är kopplade. För att dörrarna ska kunna detekteras krävs det att de är stängda.
+och avläsas på rätt sätt. Därefter startas en SystemTimer (SysTick) som fungerar som klocka för delsystemet.
+Efter klockan är startad initieras CAN på port B som möjliggör kommunikation med centralenheten. Fortsättningsvis detekterar systemet hur många dörrar som är kopplade 
+på kortet, och på vilka pinnar de är kopplade. För att dörrarna ska kunna detekteras krävs det att
+ de är stängda.
 
 Under detekteringen skapas datarepresentationer med förinställda värden för de dörrar som systemet
-detekterar. Efter att samtliga datarepresentationer är skapade kommer systemet att försöka begära 
-ett id av en eventuell centralenhet. Ifall systemet inte får ett id inom 20 sekunder kommer systemet 
-gå in i lokal drift. Oavsett ifall systemet lyckats få ett id kommer den forsätta med att tända dörrarnas lampor
-i den ordning de initierades. Detta görs för att testa om de lokala larmen fungerar hos dörrarna.
-Efter att samtliga lampor är tända så släcker systemet dem igen.
-Slutligen tänds lampan som är kopplad till pinne 2 på port B för att signalera till användaren att enheten är redo för drift.
-Ifall systemet inte fått ett id kommer systemet kontinuerligt var 10 sekund skicka en
-id begäran på can-bussen. Vilket gör att En dörrenhet kan startas och köras i lokaldrift
-tills en centralenhet kopplas in i nätverket. När en centralenhet kopplas in på nätverket
-kommer då systemet automatiskt att dyka upp hos centralenheten utan att användaren behöver
-göra någonting på dörrenhetens sida.
+hittat. Efter att samtliga datarepresentationer är skapade kommer systemet att försöka kommunicera med centralenheten. Om en centralenhet inte svarar kommer systemet att gå in i lokal drift, vilket innebär att funktionaliteten med centrala larm uteblir.
+Fortsättningsvis så tänds lamporna på dörrarna i den ordning som dess datarepresentationer skapades. Detta görs för att testa om de lokala larmen fungerar hos dörrarna. Efter att samtliga lampor är tända släcker systemet dem igen.
+Slutligen tänds lampan som är kopplad till pinne 2 på port B för att signalera till användaren att enheten är redo för drift. Systemet kommer i fortsättningen kontinuerligt att skicka ut meddelanden till en eventuell centralenhet på CAN-nätverket med jämna mellanrum, vilket medför att en centralenhet kan kopplas in utan att systemet behöver startas om.
+
+Systemet kontrollerar nu fortlöpande alla dörrar enligt flödesdiagrammet i figur 3:
+
 
 
 \begin{figure}[H]
 \begin{flushleft}
-Systemet kontrollerar nu fortlöpande alla dörrar enligt flödesdiagrammet i figur 3: \linebreak \newline
 \end{flushleft}
 \centering
 \includegraphics[scale=0.5]{figurer/Flow-Chart.png}
@@ -266,7 +259,7 @@ som 'beslut' som anger huruvida en kontrollbit är satt till 1 (för \textit{ja}
 (för \textit{nej}). Dessa kontrollbitar sätts till 1 eller 0 beroende på externa händelser.
 
 Avlarmning av en specifik dörr sker via CAN-kommunikation från centralenheten. Att en dörr är avlarmad
-innebär att dess larm inte kan utlösas. Ifall ett larm redan har utlösts stängs det då också av.
+innebär att dess larm inte kan utlösas.
 
 Att en dörr är öppen innebär att kretsen som går via strömbrytaren på dörren inte längre är sluten.
 Om kretsen inte är sluten, och dörren inte är avlarmad, tyder det på att någonting externt har hänt 
@@ -278,15 +271,8 @@ När dörrenheten larmar centralt så skickas ett meddelande via CAN till centra
 kommer skickas med intervall på en sekund tills centralenheten skickar tillbaka en ackreditering om att larmet har
  mottagits.
 
-När dörrenheten larmar lokalt tänds en lampa för dörren, som kan kompleteras med ett tjutande ljud.
-genom att koppla in en högtalare till AUX-porten. ifall användaren väljer att koppla in en högtalare
-kommer dock enheten kunna stötta en dörr mindre. Detta är pågrund av att porten \textit{PA5} används
-till högtalaren och kan då inte längre stötta en dörr.
-
-Dörrenheten kan som tidigare nämnt köras utan uppkoppling till centralenheten. I det läget finns det dock inget centralt larm
-och dörrar kan inte konfigureras utöver standard värdena som är förinställda.
-
-
+När dörrenheten larmar lokalt tänds en lampa på dörren. Detta larmet kan kompletteras med ett  ljudljud
+genom att koppla in en högtalare på pinne A5 (port A, pinne 5). Ljudlarmet utlöses oavsett vilken dörr kopplad på enkortsdatorn som larmar. Användning av ljudlarmet sker på bekostnad av en dörr, då en dörr inte längre kan kopplas på A4-A5. 
 
 
 \subsubsection{Rörelseenheten}
