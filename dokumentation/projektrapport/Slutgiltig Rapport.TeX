@@ -93,26 +93,13 @@ central för samtliga larm som utlöses i systemet. Om ett centralt larm utlöse
 kan det endast ackkrediteras och nollställas via centralenheten.
 \subsection{Arbetsmetod} % svarar på frågan "hur har vi gått tillväga i det tekniska utvecklingsarbetet"?
 
-I det här avsnittet beskrivs hur det tekniska abretet har skett, samt hur gruppen har delat upp arbetsområden.
+I det här avsnittet beskrivs hur den tekniska utvecklingen gått till.
 
-\subsubsection{Undergrupper}
-För att jämna ut arbetsbelastningen delades projektgruppen in i tre grupper om två personer vardera,
-en för varje enhetstyp.
 
-\textbf{Centralenheten}: Gruppens uppgift var att få centralenheten att kunna konfigurera
-periferienheterna, ta emot och behandla larm, samt implementera CAN-kommunkation och USART.
+\subsubsection{Utveckling}
 
-\textbf{Dörrenheten}: Gruppen hade ansvar för att alla dörrar skall vara uppkopplade och kunna larma.
-
-\textbf{Rörelseenheten}: Gruppens uppgift var att utveckla mjukvaran till
-rörelse- och vibrationssensorerna för larmning av t.ex. fönster och värdefulla föremål.
-
-Samtliga grupper har haft ansvar att sköta implementeringen av CAN meddelande på sin egen enhet, samt att bestäma innehållet av meddelanden relevanta till enheten.
-
-\subsubsection{Tillvägagång}
-
-Utvecklingen av mjukvaran har skett till stor del på en enhetsnivå, det vill säga att mjukvaran på de olika enheterna utvecklades separat från varandra. 
-Först när alla enheter var färdigutvecklade kopplades de till varandra och arbetet fokuserade då på att implementera CAN-kommunikation.
+Utvecklingen av mjukvaran har främst skett på enhetsnivå, dvs att mjukvaran på de olika enheterna utvecklats separat från varandra. 
+När samtlliga enheter hade uppnåt majoriteten av sin tänkta funktionalitet så bytte utvecklingen fokus till att handla om att få enheterna att kommunicera med varandra via en CAN-buss.
 
 Periferienhets-grupperna byggde först system för att hantera initiering av relevanta GPIO portar samt debugfunktioner, och fortsatte med att implementera funktioner för avmätning av sensorerna. Funktionalitet byggdes på och det sista som utvecklades var kommunkiationen mellan periferienheterna och centralenheten.
 
@@ -147,6 +134,7 @@ För att se samtliga testspecifikationer, samt resultat och analys, se bilaga \r
 \subsubsection{Fildelning och versionshantering}
 Arbetsgruppen valde att använda versionshanteringstjänsten GIT för att förenkla den parallella programmeringen, och för att samla alla filer på ett ställe. GIT-filsamlingen förvarades med hjälp av tjänsten github. GIT-Tjänsten har fungerat väl och även underlättat dokumentering, då även den förvarades i filsamlingen.
 
+\newpage
 \section{Teknisk beskrivning} % Vad är utgångspunkten för i förkonstruktionsarbetet?
 I det här avsnittet presenteras teknisk information som är nödvändig för att få en djupare insikt i hur den tekniska utvecklingen gått till, samt hur de olika delsystem interagerar för att bygga upp systemet som helhet.
 \subsection{Teknisk bakgrund}
@@ -404,6 +392,7 @@ Sensorn sänder kontinuerligt en hög puls till MD407-enkortsdatorn utom när de
 känner av vibrationer, då den istället sänder en låg puls. Sensorns känslighet justeras fysiskt genom en komparator på sensorn. 
 Vibrationssensorn har endast central larm som skickas via CAN.
 
+\newpage
  \section{Resultat}
  För kompletta testspecifikationer hänvisas till bilaga \ref{bilaga:tester}.
 
