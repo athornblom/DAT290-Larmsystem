@@ -466,14 +466,10 @@ För att se samtliga testspecifikationer, samt resultat och analys, se bilaga \r
  \end{enumerate}
  
  \subsection{Larmsystemet som helhet}
-\section{Slutsats och diskussion}
+\section{Diskussion och slutsats}
 % Detta avsnitt innehåller en sammanfattning av konstruktionen och en diskussion av resultatet. Om detta är möjligt, dra slutsatser av ert projekt och identifiera förbättringsmöjligheter. (Vilka kan vara användbara för en beställare)
-\todo[]{fixa snyggt}\textbf{Polling} Utifrån prestanda testet som gjorts för dörrenheten 
-kan vi dra slutsatsen att polling fungerar bra att använda för dörrenheten då inga delayer upptäcks
-enlgit teorin kan det till och med vara så att det går snabbare än ifall vi hade använt 
-motsvarigheten intterupt. Då i polling görs det inga kontextbyten. En annan anledning till
-att polling används istället för interupt är att det finns endast 16 avbrottslinor och vi har 32 dörrar
-vilket gör att man hade ändå behövt implementera någon form av polling i avbrotts rutinerna .
+\todo[]{fixa snyggt}\textbf{Polling} Utifrån prestandatestet som gjorts för dörrenheten dras slutsatsen att polling fungerar för dörrenheten då inga fördröjningar upptäcks. Teoretiskt kan detta vara snabbare än att använda avbrott då polling inte kräver kontextbyte. En annan anledning till
+att polling används istället för avbrott är att det endast finns 16 avbrottslinor medan systemet har stöd för upp till 32 dörrar. Därav hade någon form av polling behövt implementeras i avbrottsrutinerna.
 
 \todo[inline]{inte färdig}
 
