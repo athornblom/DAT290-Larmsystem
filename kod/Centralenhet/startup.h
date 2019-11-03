@@ -11,6 +11,16 @@
 #include "delay.h"
 #include "stringFunc.h"
 
+//Lösenordslängd keypad
+#define MAXCOMMANDLENGTH 15
+
+//Aktivering av replayskydd
+#define SESSIONIDACTIVE 1
+
+//Olika lägen
+#define CONFMODE 0
+#define STDMODE 1
+
 //Maxnummer för enheter och givare
 #define max_num_of_devs 32
 #define max_num_door_sensors 32
