@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Workspace Name="Larmsystem" Database="" Version="10.0.0">
   <Project Name="Centralenhet" Path="Centralenhet/Centralenhet.project" Active="No"/>
+  <Project Name="Rorelse" Path="Rorelse/Rorelse.project" Active="No"/>
+  <Project Name="Door" Path="Door/Door.project" Active="No"/>
+  <Project Name="Periferienhet" Path="Periferienhet/Periferienhet.project" Active="No"/>
+  <Project Name="Brusfabrik" Path="Brusfabrik/Brusfabrik.project" Active="Yes"/>
   <Project Name="Replayer" Path="Replayer/Replayer.project" Active="No"/>
   <BuildMatrix>
       <Environment/>
@@ -9,7 +13,6 @@
       <Project Name="Door" ConfigName="Debug"/>
       <Project Name="Periferienhet" ConfigName="Debug"/>
       <Project Name="Brusfabrik" ConfigName="Debug"/>
-      <Project Name="Lyssnare" ConfigName="Debug"/>
       <Project Name="Replayer" ConfigName="Debug"/>
     </WorkspaceConfiguration>
     <WorkspaceConfiguration Name="Release" Selected="yes">
@@ -19,7 +22,6 @@
       <Project Name="Door" ConfigName="Release"/>
       <Project Name="Periferienhet" ConfigName="Release"/>
       <Project Name="Brusfabrik" ConfigName="Release"/>
-      <Project Name="Lyssnare" ConfigName="Release"/>
       <Project Name="Replayer" ConfigName="Release"/>
     </WorkspaceConfiguration>
   </BuildMatrix>
