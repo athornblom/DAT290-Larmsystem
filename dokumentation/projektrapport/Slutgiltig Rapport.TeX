@@ -63,7 +63,7 @@ I en undersökning\cite{brott-foretagarna} utförd av Sveriges största företag
 
 Baserat på denna undersökningen verkar det finnas ett behov för ett skalbart larmsystem där användaren kan justera omfattingen för larmet baserat på rådande nödvändighet och finansiell kapabilitet.
 
-Rapporten beskriver utvecklingen av ett modulärt larmsystem som i grunden består av MD407-enkortsdatorer.
+Rapporten beskriver utvecklingen av ett modulärt larmsystem som i grunden består av MD407-enkortsdatorer\cite{MD407}.
 
 \subsection{Syfte} % Svarar på frågan "Varför"?
 Projekets syfte är att utveckla ett larmsystemets som ska vara ett finansiellt dynamiskt alternativ för företag
@@ -418,8 +418,9 @@ För att se samtliga testspecifikationer, samt resultat och analys, se bilaga \r
      \item Går att konfiguera väntetider innan larm från centralenheten.
      \item Avlarmning av individuella dörrar från centralenheten.
      \item Lokal funktionalitet kräver inte uppkopplad centralenhet.
-
  \end{enumerate}
+
+ 
  För att säkerställa att funktionalitet ovan fungerar utfördes följande tester:
  \begin{enumerate}
      \item Test av pinnar för dörrar
@@ -431,15 +432,20 @@ För att se samtliga testspecifikationer, samt resultat och analys, se bilaga \r
  Rörelseenheten har följande funktionalitet:
  \begin{enumerate}
  	\item Automatiskt detektera antalet inkopplade rörelse- och vibrationssensorer vid uppstart.
-	\item Larma vid upptäckt av vibrationer eller rörelse.
-    \item Central larmning via CAN-buss.
-	\item LED-lampa som signalerar när ett larm skickas till centralenheten.
+	\item Larma vid upptäckt av vibrationer, rörelse och urkoppling av aktiv sensor.
+    	\item Central larmning via CAN-buss.
+	\item Avlarmning via centralenheten.
+	\item Lokal larmning för rörelsesensorer via LED-lampa.
 	\item Konfigurerbart larmavstånd på rörelsesensorerna.
-	\item Avlarmning via centralenheten
+	\item Kalibrering av rörelsesensorerna via centralenheten.
  \end{enumerate}
+
+
  För att säkerställa att funktionalitet ovan fungerar utfördes följande tester:
  \begin{enumerate}
-     \item
+	\item Test av portar sam lokalt och centralt larm för rörelseenheten.\ref{test:PortMotion}
+	\item Konfiguration och kalibrering av rörelseenheten.\ref{test:MotionConfig}
+	\item Urkopplingslarm rörelseenheten.\ref{test:UrkopplingMotion}
  \end{enumerate}
  
  \subsection{Larmsystemet som helhet}
