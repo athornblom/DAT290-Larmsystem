@@ -61,6 +61,7 @@ typedef struct{
 	uint8_t active;
     uint8_t disArm;
     uint8_t calib;
+    uint16_t calDist;
 } Dist_sensor;
 
 typedef struct{
