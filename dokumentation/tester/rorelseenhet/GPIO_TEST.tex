@@ -1,6 +1,6 @@
 \clearpage
 %Beskrivande titel av testet samt en unik label
-\subsection{Porttest rörelseenheten}
+\subsection{Test av portar samt lokalt och centralt larm för rörelseenheten}
 \label{test:PortMotion}
 
 \setlength{\columnsep}{1cm}
@@ -27,13 +27,14 @@ Rörelseenheten
 
 \subsubsection*{Testsyfte}
 %Vad ska testet visa? Är testet till följd av tidigare test?
-Säkerställa att sensorer kan kopplas in på rörelseenhetens alla portar
+Säkerställa att sensorer kan kopplas in på rörelseenhetens alla portar samt testa ifall både lokalt och centralt larm fungerar.
 
 \subsubsection*{Hjälpmedel}
 %Lista hjälpmedlen som användes i samband med testet.
 \begin{itemize}
 	\item Avståndsmätare, HC-SR04
 	\item Vibrationssensor, SW-18010P
+	\item CAN-kabel
 	\item Kopplingskabel
 	\item Kopplingsbräda
 	\item LED-lampor
@@ -43,18 +44,17 @@ Säkerställa att sensorer kan kopplas in på rörelseenhetens alla portar
 
 \subsubsection*{Utförande}
 %Hur ska testet utföras?
-Testa portarna A, C, D och E genom att koppla en rörelsesensor till port A och en till C samt en vibrationssensor till D och en till E. För rörelsesensorerna kopplas HC-SR04:s trigpin till en pinne på MD407-mikrodatorn som uppfyller 3n(alltså 0,3,6.. o.s.v.), HC-SR04:s echopin till pinne (3n + 1) och LED-lampa till pinne (3n + 2). 
-För vibrationssensorn kopplas SW-18010P:s DO-pinne till en pinne på MD407-mikrodatorn som uppfyller 2n(alltså 0,2,4.. o.s.v.) samt en LED-lampa till pinne (2n + 1). 
-Starta sedan rörelseenhetens program, rörelsesensorerna kommer när de upptäcker något närmare än 20 cm. Sätt handen framför rörelsesensorerna samt peta på vibrationssensorerna och kontrollera att tillhörande LED-lampor tänds.
-
+Testa portarna A, C, D och E genom att koppla en rörelsesensor till port A och en till C samt en vibrationssensor till D och en till E. För rörelsesensorerna kopplas HC-SR04:s trigpin till en pinne på MD407-mikrodatorn som uppfyller 3n (0,3,6.. o.s.v.), HC-SR04:s echopin till pinne (3n + 1) och LED-lampa till pinne (3n + 2). 
+För vibrationssensorn kopplas SW-18010P:s DO-pinne till en pinne på MD407-mikrodatorn som uppfyller 2n(0,2,4.. o.s.v.) samt en LED-lampa till pinne (2n + 1). 
+se till att rörelseenheten är kopplad  till centralenheten via CAN kabel. Starta centralenheten och håll den i 'startläge', starta nu rörelseenheten och kolla att centralenheten hittar en rörelsesensor på rörelseenheten. Sätt nu centralenheten i 'standardläge' så att den skickar standardkonfigurationer till rörelseenheten, 20 respektive 40 cm centralt och lokalt larmavstånd. Verifiera att LED-lampan till rörelsesensorn börjar lysa när du håller handen ca 30 cm från sensorn. Verifiera sedan att sensorn skickar larm till centralenheten när du håller handen närmare än 20 cm ifrån. Peta på vibrationssensorn och kolla ifall centralenheten får larm.
 
 \subsubsection*{Resultat}
 %Vad är testresultatet? Hittades några buggar?
-Alla LED-lampor lyste.
+Alla LED-lampor lyste och centralenheten fick larm för både rörelse- och vibratoinssensorn.
 
 
 \subsubsection*{Analys}
 %Vad innebär testets resultat? Behövs fler test av komponenten? Behöver andra komponenter testas ytterligare, och i så fall hur?
-Alla rörelseenhetens portar fungerar som de ska.
+Alla rörelseenhetens portar samt lokalt och centralt larm fungerar som de ska.
 
 
