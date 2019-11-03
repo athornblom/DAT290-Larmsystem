@@ -268,7 +268,24 @@ Denna periferienhet använder avståndsmätarer av modellen HC-SR04 till rörels
 
 Rörelseenheten använder mikrodatorns alla fem GPIO-portar, port A, B, C, D och E. 
 Portarna är uppdelade mellan rörelse- och vibrationssensorerna, port A, B och C till rörelsesensorerna, 
-och port D och E till vibrationssensorerna.
+och port D och E till vibrationssensorerna. Dock är vissa pinnar på port A och B tilldelade till bland annat 
+CAN och USART. Dessa pinnar går ej att sätta sensorer på, se dzhthtzh.
+
+\begin{table}[htbp]
+	\centering
+	\begin{tabular}{|c|c} \hline
+		GPIO-port & GPIO-pin \\ \hline \hline
+		GPIOA & 1 \\ \hline
+		GPIOA & 10 \\ \hline
+		GPIOA & 13 \\ \hline
+		GPIOB & 1 \\ \hline
+		GPIOB & 4 \\ \hline 
+		GPIOB & 7 \\ \hline
+		GPIOB & 10 \\ \hline
+	\end{tabular}
+	\caption{GPIO-pinnar på port A och B som ej går att använda.}
+	\label{tab: Ogiltliga pinnar}
+\end{table}
 
 Vid uppstart initieras först portarna och pinnarna på mikrodatorn så att de kan addresseras 
 och avläsas på rätt sätt. Därefter startas en System Timer (SysTick) vilket används som klocka. 
