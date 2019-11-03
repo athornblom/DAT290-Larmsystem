@@ -464,7 +464,15 @@ Vibrationssensorn har endast central larm som skickas via CAN.
  \end{enumerate}
  
  \subsection{Larmsystemet som helhet}
- 
+ \todo[inline]{försöker så lite frön}
+ Larmsystemet som helhet fungerar enligt uppgiftsbeskrivning. Det består utav
+ en dörrenhet, en rörelse enhet och en centralenhet. De olika enheterna kommunicerar
+ via CAN. Både dörrenheten och rörelseenheten kan skicka centrala larm till centralenheten
+ efter en tid som man kan ställa in via centralenheten. Ifall en enhet försvinner ifrån
+ nätverket märks detta och användaren varnas. Enligt tester kan vi också 
+ med "confidence" säga att även med mycket brus på can bussen går larmen 
+ fram till centralenheten. Ifall en enhet larmar centralt men inte ackkrediteras skickar
+ den ett nytt larm för att säkerhetställa att meddelanden kommer fram.
 
 \newpage
 \section{Diskussion och slutsats}
