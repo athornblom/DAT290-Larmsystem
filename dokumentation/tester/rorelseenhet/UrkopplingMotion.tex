@@ -1,0 +1,59 @@
+\clearpage
+%Beskrivande titel av testet samt en unik label
+\subsection{Urkopplingslarm rörelseenheten}
+\label{test:UrkopplingMotion}
+
+\setlength{\columnsep}{1cm}
+
+
+% Vid utförande av test fylls mallen nedan i, vilket resulterar i ett protokoll som sedan sparas som verifikation. Målet med dessa protokoll är att man utan sakkunskap ska kunna skapa sig en överblick av att systemet fungerar som det ska.
+
+
+\begin{multicols}{2}
+\subsubsection*{Test formulerat av}
+% Namn på den/de som formulerade testet.
+Erik
+
+\subsubsection*{Utfört av}
+% Namn på den/de som utförande testet.
+Filip
+
+
+\end{multicols}
+\subsubsection*{Komponent}
+%Vilken del av systemet testas?
+Rörelseenheten
+
+
+\subsubsection*{Testsyfte}
+%Vad ska testet visa? Är testet till följd av tidigare test?
+Säkerställa att aktiva sensorer som kopplas ur larmar.
+
+\subsubsection*{Hjälpmedel}
+%Lista hjälpmedlen som användes i samband med testet.
+\begin{itemize}
+	\item Avståndsmätare, HC-SR04
+	\item Vibrationssensor, SW-18010P
+	\item Kopplingskabel
+	\item Kopplingsbräda
+	\item LED-lampor
+\end{itemize}
+
+
+
+\subsubsection*{Utförande}
+%Hur ska testet utföras?
+Dra ut valfri kopplingskabel från en avståndsmätare och en vibrationssensor medan rörelseenheten är underdrift och centralenheten konfigurerat dessa sensorer till aktiva.
+Kontrollera att sensorerna larmar till centralenheten vid urkoppling.
+
+
+\subsubsection*{Resultat}
+%Vad är testresultatet? Hittades några buggar?
+Larmeddelande skickades för respektive sensor skickades till centralenheten när de kopplades ur.
+
+
+\subsubsection*{Analys}
+%Vad innebär testets resultat? Behövs fler test av komponenten? Behöver andra komponenter testas ytterligare, och i så fall hur?
+Går ej att kringå rörelseenhetens larm genom att koppla ur dess sensorer.
+
+
