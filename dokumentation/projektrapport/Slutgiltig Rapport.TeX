@@ -485,7 +485,7 @@ att polling används istället för avbrott är att det endast finns 16 avbrotts
 
     \section{Kommandolista för centralenheten}
     \label{kommandon}
-        För att styra centralenheten används ett antal kommandon som beskrivs nedan. Centralenheten har två separata lägen med olika uppsättningar av kommandon.
+        För att styra centralenheten används ett antal kommandon som beskrivs nedan.
 
     \textbf{start}\\
     Startar standardläge.
@@ -497,10 +497,22 @@ att polling används istället för avbrott är att det endast finns 16 avbrotts
     Där \textbf{x, y} och \textbf{z} är tal mellan 0 och 9. Konfigurerar rörelsesensor \textbf{y} på enhet med ID \textbf{x} för att larma då den detekterar ett föremål på ett avstånd mindre än \(\textbf{z} * 10\) centimeter.
 
     \textbf{avlarma y z} \\
-    Avlarmar sensor \textbf{z} på enhet med ID \textbf{y}.
+    Avlarmar sensor \textbf{z} på rörelseenhetenhet med ID \textbf{y}. Detta kommando är lösenordsskyddat.
 
     \textbf{larma y z} \\
-    Larmar sensor \textbf{z} på enhet med ID \textbf{y}. Alla sensorer är larmade som standard så detta kommando körs om man vill återaktivera larm efter att det avaktiverats.
+    Larmar sensor \textbf{z} på rörelseenhet med ID \textbf{y}. Alla sensorer är larmade som standard så detta kommando körs om man vill återaktivera larm efter att det avaktiverats. Detta kommando är lösenordsskyddat.
+
+    \textbf{inak y z} \\
+    Inaktiverar sensor \textbf{z} på enhet med ID \textbf{y}. Detta kommando är lösenordsskyddat.
+
+    \textbf{ak y z} \\
+    Aktiverar sensor \textbf{z} på enhet med ID \textbf{y}. Alla sensorer är aktiverade som standard så detta kommando körs om man vill återaktivera en sensor efter att den inaktiverats. Detta kommando är lösenordsskyddat.
+
+    \textbf{kal x y z} \\
+    Startar översändning av kalibreringsmeddelanden till rörelsesensor \textbf{y} på rörelseenhet med ID \textbf{x}. Det upplätta avståndet för givaren är \(\textbf{z} * 10\). Kalibrering fungerar inte om sensorn är inaktiverad.
+
+    \textbf{nokal y z} \\
+    Avslutar översändning av kalibreringsmeddelanden för sensor \textbf{z} på enhet \textbf{y}.
 
 	\clearpage
 	\section{Tester}
