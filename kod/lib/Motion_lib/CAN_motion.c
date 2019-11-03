@@ -21,8 +21,7 @@ void alarmAck_Handler(CanRxMsg* msg){
  */
 void idAssign_Handler(CanRxMsg* msg){
 	uint32_t rndID = decode_tempID(msg);
-	DebugPrint("\nrndID:");
-	DebugPrintNumBase(rndID,16);
+	
 	if(rndID == MD407_ID){
 		MD407_ID = decode_ID(msg);
 		noID = 0;
@@ -70,20 +69,24 @@ void idAssign_Handler(CanRxMsg* msg){
  * 		Byte 5+6: Uppmätta värdet från centralenheten.
  */
 void CANGetConfig_handler(CanRxMsg* msg) {
-	DebugPrint("\nconf hand\n");
-	DebugPrintRxMsg(msg, 16);
 	char *data = (char*)&(msg->Data);
 	char sensorType = *data;
 	char calibration = *(data+1);
 	char startIndex = *(data+2);
 
 	// Ska en rörelsesensor kalibreras?
-	if (calibration && sensorType) {
+	if (calibration && !(sensorType)) {
 		uint16_t* measuredDistance = (uint16_t*)&msg->Data[5];
 		MotionSensor* mSensor = &(sensors[startIndex].motion);
 
 		mSensor->multiple = (*measuredDistance)/mSensor->cm;
-
+		
+		DebugPrint("\nHej");
+		
+		CanTxMsg ackMsg;
+		encode_ack_msg(&ackMsg, msg);
+		CANsendMessage(&ackMsg);
+		
 		return;
 	}
 
@@ -92,9 +95,19 @@ void CANGetConfig_handler(CanRxMsg* msg) {
 	char active = *(data+4);
 	char disarmFlag = *(data+7);
 
-	uint16_t* setAlarmDistance = (uint16_t*)&msg->Data[5];
-	if(*setAlarmDistance > 400){
-		*setAlarmDistance = 400;
+	uint16_t* setCentralAlarmDistance = (uint16_t*)&msg->Data[5];
+	
+	// Rörelsesensorn har endast en räckvidd på 400 cm.
+	if(*setCentralAlarmDistance > 400){
+		*setCentralAlarmDistance = 400;
+	}
+	
+	uint16_t setLocalAlarmDistance;
+	if((*setCentralAlarmDistance)*2 > 400){
+		setLocalAlarmDistance = 400;
+	}
+	else{
+		setLocalAlarmDistance = (*setCentralAlarmDistance)*2;
 	}
 
 
@@ -103,24 +116,29 @@ void CANGetConfig_handler(CanRxMsg* msg) {
 		for(int i = startIndex; i <= endIndex && i >= 0 && i < connectedCounter; i++){
 			if(sensorType == (sensors[i].controlbits & bit1)){
 
-				// Ska sensorn vara aktiv?
 				if(active){
+					// Går sensorn från inaktiv till aktiv?
+					if(!(sensors[i].controlbits & bit2)){
+						sensors[i].motion.timeOut = microTicks + 500000;
+					}
+
 					sensors[i].controlbits |= bit2;	  // Aktivera sensorn.
 
 					// Är värdet på setAlarmDistance adress nollskillt?
-					if(*setAlarmDistance){
-						sensors[i].motion.alarmDistance = *setAlarmDistance;
-					}
-
-					// Ska det avlarmas?
-					if(disarmFlag){
-						disarm(&(sensors[i]));	// Avlarma
+					if(*setCentralAlarmDistance){
+						sensors[i].motion.centralAlarmDistance = *setCentralAlarmDistance;
+						sensors[i].motion.localAlarmDistance = setLocalAlarmDistance;
 					}
 				}
 
 				else{
 					sensors[i].controlbits &= ~bit2;	// Inaktivera sensorn.
 				}
+				
+				// Ska det avlarmas?
+					if(disarmFlag){
+						disarm(&(sensors[i]));	// Avlarma
+					}
 			}
 		}
 	}
@@ -128,14 +146,20 @@ void CANGetConfig_handler(CanRxMsg* msg) {
 	// Typen vibrationssensor
 	else{
 		for(int i = startIndex; i <= endIndex && i >= 0 && i < connectedCounter; i++){
-			if(sensorType == (sensors[i].controlbits & bit1) && sensors[i].controlbits & bit0){
+			if(sensors[i].controlbits & bit1 && sensors[i].controlbits & bit0){
 				if(active){
 					sensors[i].controlbits |= bit2;	// Aktivera sensorn.
+					
 				}
 
 				else{
 					sensors[i].controlbits &= ~bit2;	// Inaktivera sensorn.
 				}
+				
+				// Ska det avlarmas?
+					if(disarmFlag){
+						disarm(&(sensors[i]));	// Avlarma
+					}
 			}
 		}
 	}
@@ -176,9 +200,9 @@ void getId(){
 		CanTxMsg idRequest;
 
 		encode_motion_request_id(&idRequest, MD407_ID, nMotionSensors, nVibrationSensors);
-		DebugPrint("\nnMotionsensors:");
+		DebugPrint("\nMotion sensors:");
 		DebugPrintNum(nMotionSensors);
-		DebugPrint("\nnVibrationsensors:");
+		DebugPrint("\nVibration sensors:");
 		DebugPrintNum(nVibrationSensors);
 		while (noID) {
 			CANsendMessage(&idRequest);	// Begär ett id från Centralenheten.
@@ -196,7 +220,12 @@ void getId(){
 void alarm(Sensor* sensor) {
 
 	sensor->controlbits |= bit6 | bit7;   // Markera att larmet går
-	GPIO_SetBits(sensor->port, sensor->pinLamp); 	// Tänd lampa
+	if(sensor->controlbits & bit1){
+		GPIO_SetBits(sensor->port, sensor->pinLamp);
+	}
+	
+	DebugPrint("\nLarm sensor ID:");
+	DebugPrintNum(sensor->id);
 
 	CanTxMsg msg;
 	encode_larm_msg(&msg, MD407_ID, sensor->id);
@@ -212,5 +241,7 @@ void alarm(Sensor* sensor) {
  */
 void disarm(Sensor* sensor) {
 	sensor->controlbits &= ~bit6; 	// Markera att larmet inte längre går
-	GPIO_ResetBits(sensor->port, sensor->pinLamp);
+	if(sensor->controlbits & bit1){
+		GPIO_ResetBits(sensor->port, sensor->pinLamp);
+	}
 }

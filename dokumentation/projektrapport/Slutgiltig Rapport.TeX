@@ -328,12 +328,29 @@ och enskilda dörrar kan inte konfigureras.\\ \\
 
 
 \subsubsection{Rörelseenheten}
-Denna periferienhet använder avståndsmätarer av modellen HC-SR04 till rörelsesensor,
+Denna periferienhet använder avståndsmätare av modellen HC-SR04 till rörelsesensorer,
  och vibrationssensorer av modellen SW-18010P, som styrs av ett MD407-mikrodator.
 
 Rörelseenheten använder mikrodatorns alla fem GPIO-portar, port A, B, C, D och E.
 Portarna är uppdelade mellan port A, B och C till rörelsesensorerna,
-och port D och E till vibrationssensorerna.
+och port D och E till vibrationssensorerna. Dock har GPIO-port A och B har vissa designerade pinnar 
+till USART och CAN, därför går det ej att koppla sensorer till dessa (se tabell \ref{tab:Ogiltliga pinnar}).
+
+\begin{table}[htbp]
+	\centering
+	\begin{tabular}{|c|c|} \hline
+		GPIO-port & GPIO-pin \\ \hline \hline
+		GPIOA & 1 \\ \hline
+		GPIOA & 10 \\ \hline
+		GPIOA & 13 \\ \hline
+		GPIOB & 1 \\ \hline
+		GPIOB & 4 \\ \hline 
+		GPIOB & 7 \\ \hline
+		GPIOB & 10 \\ \hline
+	\end{tabular}
+	\caption{GPIO-pinnar på port A och B som ej går att koppla sensorer till.}
+	\label{tab:Ogiltliga pinnar}
+\end{table}
 
 Vid uppstart initieras först portarna och pinnarna på mikrodatorn så att de kan addresseras
 och avläsas på rätt sätt. Därefter startas en System Timer (SysTick) vilket används som klocka.
@@ -343,25 +360,48 @@ pinnar de är kopplade. För att vibrationssensorerna skall detekteras får de e
 Efter detekteringen skapas datarepresentationer med förinställda värden för de
 sensorer som systemet hittat. Efter att samtliga datarepresentationer är skapade skickas
 en lista av de inkopplade sensorerna till centralenheten som bestämmer vilka sensorer som ska vara aktiva
-samt sätter larmavståndet för rörelsesensorerna.
+samt sätter centrala och lokala larmavståndet för rörelsesensorerna.
 
-Båda typerna av sensorer larmar och avlarmas endast via centralenheten, dock finns en LED-lampa lokalt
-som blinkar till när ett larm går.
+\begin{flushleft}
+Systemet itererar nu över alla inkopplade sensorer enligt figur \ref{fig:MotionFlow}. \linebreak \newline
+\end{flushleft}
+
+\begin{figure}
+\centering
+\includegraphics[scale=0.3]{figurer/FlowchartMotion.png}
+\caption{Flödesschema över rörelseenheten.}
+ \label{fig:MotionFlow}
+\end{figure}
+
+Rörelseenhetens flöde bygger på polling. Polling är smidigt då avståndsmätarna skickar och tar emot pulser av olika längd 
+och behöver då ha timers som håller koll på detta. Ifall detta hade skett via fördröjningsfunktioner hade alla andra sensorer 
+inte fungerat under pulsmätningar och en säkerhetsrisk skulle uppstå. Avbrottshantering är en annan lösning på problemet, 
+men då alla sensorer prioriteras lika är polling den simplare lösningen.
+
 
 \textbf{Rörelsesensorn}:
-En rörelsesensor tar upp 3 pinnar och får därmed plats med 5 sensorer per port.
+En rörelsesensor tar upp 3 pinnar och får därmed plats med 5 rörelsesensorer per port.
 Trig- och echo-pinnen från HC-SR04 samt en LED-lampan kopplas resepktive till  pin-n, -(n+1) och -(n+2).
 
 
-Sensorn aktiveras genom att MD407-mikrodatorn skickar en hög puls till sensorn i minst 10 mikrosekunder,
- varpå sensorn skickar ut ultraljudsvågor och sänder en hög puls till MD407-mikrodatorn fram tills
-  ultraljudsvågorna har återvänt. Avståndet till närmaste föremål beräknas genom att mäta längden på pulsen.
-HC-SR04 kan mäta avstånd upp till 400 cm och larmavståndet är justerbart från centralenheten.
+Sensorn aktiveras genom att MD407-mikrodatorn skickar en hög puls till sensorn i minst 10 mikrosekunder, 
+varpå sensorn skickar ut ultraljudsvågor och sänder en hög puls till MD407-mikrodatorn fram tills 
+ultraljudsvågorna har återvänt. Avståndet till närmaste föremål beräknas genom att mäta längden på pulsen.
+HC-SR04 kan mäta avstånd upp till 400 cm och det centrala samt lokala larmavståndet är justerbart från centralenheten.
 
-\textbf{Vibrationssensorn}: Sensorn sänder kontinuerligt en hög puls till MD407-mikrodatorn utom när den
-känner av vibrationer, då den istället sänder en låg puls.
-Sensorns känslighet justeras fysiskt genom en komparator på sensorn.
+Rörelsesensorn har både centralt och lokalt larm. Avståndet för centrala larmet ställs in av centralenheten via CAN-kommunikation 
+upp till 400 cm. När det centrala larmet går skickas ett CAN-meddelande till centralenheten som agerar därefter. 
+Avståndet för lokala larmet sätts automatiskt till två gånger det centrala larmavståndet. Ifall centrala larmsvtåndet är över 200 cm kommer 
+lokala larmavståndet sättas till 400. När det lokla larmet går tänds en LED-lampa tills sensorn inte längre känner av något inom 
+det lokala larmavståndet.
 
+\textbf{Vibrationssensorn}:
+En vibrationssensor tar upp 2 pinnar och får därmed plats med 8 vibrationssensorer per port. 
+En pinne för digital-ouput från SW-18010P och en LED-lampa kopplas till pin-n respektive pin-(n+1).
+
+Sensorn sänder kontinuerligt en hög puls till MD407-mikrodatorn utom när den
+känner av vibrationer, då den istället sänder en låg puls. Sensorns känslighet justeras fysiskt genom en komparator på sensorn. 
+Vibrationssensorn har endast central larm som skickas via CAN.
 
 
 % Användarhandledning?

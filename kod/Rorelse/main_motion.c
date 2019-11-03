@@ -144,10 +144,11 @@ void init_MotionSensors(){
 					.pulseTrig	= 0,
 					.pulseEcho	= 0,
 					.pulseDelay = 0,
-					.timeOut	= 0,
+					.timeOut	= 60000000, // Högst startvärde så det inte larmar direkt.
 					.cm			= 400,
 					.multiple	= 1,
-					.alarmDistance = 0		// Värdet ska sättas av centralenheten
+					.centralAlarmDistance = 0,	// Värdet ska sättas av centralenheten.
+					.localAlarmDistance = 0		// Värdet sätts till 'centralAlarmDistance'*2.
 			};
 			
 			Sensor s = {
@@ -282,7 +283,7 @@ char motionMeasure(Sensor *sensor) {
 	
 	// Är echo låg för första gången?
 	else if (sensor->controlbits & bit3 && !GPIO_ReadInputDataBit(sensor->port, mSensor->pinEcho)) {	
-		mSensor->cm = mSensor->multiple*(microTicks - mSensor->pulseEcho)/58; 	// Tid tills echo kommer tillbaks.
+		mSensor->cm = (mSensor->multiple)*((microTicks - mSensor->pulseEcho)/58); 	// Tid tills echo kommer tillbaks.
 		sensor->controlbits &= ~bit3;	// Lågkant på echopulsen.
 	}
 	
@@ -303,15 +304,19 @@ void motionPolling(Sensor *sensor) {
 	motionMeasure(sensor);
 	
 	MotionSensor* mSensor = &(sensor->motion);
-
+	
+	
 	// Sensorn upptäcker att något är för nära eller att sensorn kopplats ut, fortsätt larma tills centralenheten skickat larm-ACK.
-	if((((mSensor->cm < mSensor->alarmDistance || mSensor->timeOut < microTicks) && !(sensor->controlbits & bit6)) || sensor->controlbits & bit7) && microTicks > sensor->alarmDelay){
-		sensor->alarmDelay = microTicks + 1000000;	// Skickar larm en gång i sekunden till det är kviterat.
-		alarm(sensor);	// Larmar centralenheten
-		
-		DebugPrint("\n Larm på sensor ID:");
-		DebugPrintNum(sensor->id);
-
+	if((((mSensor->cm < mSensor->centralAlarmDistance || mSensor->timeOut < microTicks) && !(sensor->controlbits & bit6)) || sensor->controlbits & bit7) && microTicks > sensor->alarmDelay){
+		sensor->alarmDelay = microTicks + 1000000;	// Skickar larm en gång i sekunden tills det är kviterat.
+		alarm(sensor);	// Larmar centralenheten.
+	}
+	
+	if(mSensor->cm < mSensor->localAlarmDistance){
+		GPIO_SetBits(sensor->port, sensor->pinLamp); 	// Tänd lampa
+	}
+	else{
+		GPIO_ResetBits(sensor->port, sensor->pinLamp); 	// Släck lampa
 	}
 }
 
@@ -332,11 +337,7 @@ void vibrationPolling(Sensor *sensor) {
 		&& microTicks > sensor->alarmDelay)
 	{
 		sensor->alarmDelay = microTicks + 1000000;	// Skickar larm en gång i sekunden till det är kviterat.
-		alarm(sensor);	// Larmar centralenheten
-		
-		DebugPrint("\n Larm på sensor ID:");
-		DebugPrintNum(sensor->id);
-		
+		alarm(sensor);	// Larmar centralenheten.
 	}
 }
 
