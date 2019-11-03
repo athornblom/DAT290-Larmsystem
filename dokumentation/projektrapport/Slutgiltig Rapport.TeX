@@ -155,16 +155,16 @@ Mjukvaran till larmsystemet körs på ett flertal MD407-kort, ett för varje enh
 \textbf{STM32-Programbibliotek}\cite{stm} är ett programbibliotek som har generellt skrivna funktioner som 
 redan skrivits för ARM.
 
-\textbf{Polling} är ett protokoll som frågar alla I/O Enheter kontinuerligt ifall de behöver proccesering.
-\subsection{Systemöversikt}
+\textbf{Polling} är ett protokoll som frågar alla I/O Enheter kontinuerligt ifall de behöver proccesering.\subsection{Systemöversikt}
 
-Systemet utgår från en centralenhet, kopplad till en dörrenhet och en rörelsenhet över en gemensam CAN-buss. Periferienheterna hanterar avmätning av sina respektive sensorer, samt begär larm via CAN-bussen vid behov. När det går ett centralt larm fortsätter larmet tills en användare slår av larmet via en pin-kod till centralenheten.
+Systemet utgår från en centralenhet, kopplad till ett antal dörrenheter och rörelsenheter över en gemensam CAN-buss. Periferienheterna hanterar avmätning av sina respektive sensorer, samt begär larm via CAN-bussen vid behov. När det går ett centralt larm fortsätter larmet tills en användare slår av larmet via kommandon till centralenheten.
 
 Dörrenheten är kopplad till ett antal strömbrytare/dörrsensorer, och larmar då en dörr är öppen för länge, först lokalt och sedan centralt.
-Rörelseenheten är kopplad till ett antal avstånds- och vibrationsensorer, och larmar centralt om ett föremål detekteras av en avståndsmätare inom konfigurerbart avstånd.
-Rörelseenheten larmar även centralt om en vibrationssensor mäter ett konfigurerbar antal vibrationer inom en viss tidsram. % Lite flummig beskrivning kanske, får ändra när koden är klar.
 
-En översikt av hårdvaran och hur den är kopplad finns i Figur \ref{fig:hårdvara}.
+Rörelseenheten är kopplad till ett antal avstånds- och vibrationsensorer, och larmar centralt om ett föremål detekteras av en avståndsmätare inom konfigurerbart avstånd, och lokalt ifall det dubbla värdet uppmäts.
+Rörelseenheten larmar även centralt när en vibrationssensor mäter en vibration, känsligheten för vibrationssensorn kan justeras på hårdvåran.
+
+En översikt av hårdvaran och hur den är kopplad finns i Figur \ref{fig:hårdvara}. Värt att notera i figuren är att den endast visar en enhet av varje typ, samt bara en sensor av varje typ, medan det i själva verket kan kopplas in ett flertal till systemet.
 \begin{figure}[H] % Samma figur som projektplanen, då hårdvaran fortfarande ser likadan ut, det är värt att göra en ny innan slutgiltiga rapporten.
     \centering
     \includegraphics[width=1\textwidth]{figurer/HardvaraOversikt.png}
@@ -174,14 +174,15 @@ En översikt av hårdvaran och hur den är kopplad finns i Figur \ref{fig:hårdv
 
 När centralenheten samt periferienheterna startar befinner de sig i konfigurationsläge,
  där varje enhet konfigurerar sig på lokal nivå (USART, CAN-bussen, GPIO), varpå centralenheten skickar konfigurationer till periferienheterna, som de använder för att konfigurera sina respektive sensorer.
- Efter att ha konfigurerats går enheterna in i var sin kontinuerlig loop. Periferienheterna mäter ständigt av sensorerna och skickar larm-meddelanden över CAN-bussen till centralenheten vid behov. Centralenheten skickar periodiskt konfigurationer till periferienheterna och larmar om dessa inte bekräftas.
+ Efter att ha konfigurerats går enheterna in i var sin kontinuerlig loop. Periferienheterna mäter ständigt av sensorerna och skickar larm-meddelanden över CAN-bussen till centralenheten vid behov. Centralenheten skickar periodiskt konfigurationer till periferienheterna och larmar ifall dessa inte bekräftas.
 
 En överblick av mjukvarans tidsflöde finns i figur \ref{fig:tidsflöde}.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=1\textwidth]{figurer/TidsFlode.jpg}
-    \caption{Tidsflöde Mjukvara}
+    \caption{En översitlig beskrivning av logik-flödet för systemets mjukvara. Övre halvan för varje enhet är en initieringsfas,
+    och nedre halvan representerar enheternas 'huvudloop' som är aktiv när systemet är i drift.}
     \label{fig:tidsflöde}
 \end{figure}
 
@@ -243,8 +244,7 @@ För att säkerställa att åtgärden för att hindra återspelningsattacker fun
 \begin{figure}[H]
     \centering
     \includegraphics[scale=0.4]{figurer/Centralenhet.png}
-    \caption{En översitlig beskrivning av logik-flödet för systemets mjukvara. Övre halvan för varje enhet är en initieringsfas,
-    och nedre halvan representerar enheternas 'huvudloop' som är aktiv när systemet är i drift.}
+    \caption{Flödesschema för centralenhetens mjukvara.}
     \label{fig:centralflöde}
 \end{figure}
 
