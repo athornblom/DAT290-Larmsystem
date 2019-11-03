@@ -498,11 +498,11 @@ Tidigt i projektets gång var vi tvungna att välja mellan polling eller avbrott
 
 Skulle dörrenhetens mjukvara utvecklats med avbrott hade den enda fördelen varit möjligheten att dela upp dörrarna så att de hade olika prioritet på CAN-bussen, vilket skulle kunna resultera i att vissa larm skulle kommit fram till centralenheten snabbare än de hade med polling. 
 Tiden man tjänar in handlar om millisekunder, och eftersom MD407-enkortsdatorn endast stöttar 16 avbrottslinor skulle det ändå behövas  någon form av polling ifall systemet ska ha mer än 16 dörrar. 
-Prestandatestet som utfördes visade inte på någon märkbar fördröjning, så valet med polling känns högst befogat, se bilaga \ref{test:performanceTest}
+Prestandatestet som utfördes visade inte på någon märkbar fördröjning, så valet med polling känns högst befogat, se bilaga \ref{test:prestandaTest}
 
 Polling har även använts till stor fördel inom rörelseenheter, med hjälp av polling kan flera rörelsensorer mätas av samtidigt, då det inte behövs blockerande väntetid-funktioner för att mäta/vänta en specifik tid. 
 Uppoffringen som görs är precision, med ett polling system är det svårt att vänta exakta tider, då det endast kollas ifall en tidsvariabel har överstigit en annan, och det går lite tid mellan att dessa villkor kollas.
-Denna tid är dock såpass liten och skillnader i väntetider är såpass osignifikanta att det inte påverkar systemets funktionalitet.
+Denna tid är dock såpass liten och skillnader i väntetider är såpass osignifikanta att det inte påverkar systemets funktionalitet, se bilaga \ref{test:MotionPrestanda}.
 
 
 Samtliga delsystem har uppnått de grundkraven som formulerades i målsättningen, men även utrustats med
