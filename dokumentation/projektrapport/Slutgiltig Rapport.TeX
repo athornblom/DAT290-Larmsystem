@@ -149,8 +149,9 @@ Systemet utgår från en centralenhet, kopplad till ett antal dörrenheter och r
 
 Dörrenheten är kopplad till ett antal strömbrytare/dörrsensorer, och larmar då en dörr är öppen för länge, först lokalt och sedan centralt.
 
-Rörelseenheten är kopplad till ett antal avstånds- och vibrationsensorer, och larmar centralt om ett föremål detekteras av en avståndsmätare inom konfigurerbart avstånd, och lokalt ifall det dubbla värdet uppmäts.
-Rörelseenheten larmar även centralt när en vibrationssensor mäter en vibration, känsligheten för vibrationssensorn kan justeras på hårdvåran.
+Rörelseenheten har ett antal rörelse- och vibrationsensorer inkopplade. Rörelsesensorerna har centralt samt ett lokalt larm med det dubbla avståndet 
+som larmar centralt respektive lokalt när sensorn detekterar något innaför dess larmavstånd.
+Rörelseenheten larmar även centralt när en vibrationssensor mäter en vibration.
 
 En översikt av hårdvaran och hur den är kopplad finns i Figur \ref{fig:hårdvara}. Värt att notera i figuren är att den endast visar en enhet av varje typ, samt bara en sensor av varje typ, medan det i själva verket kan kopplas in ett flertal till systemet.
 \begin{figure}[H] % Samma figur som projektplanen, då hårdvaran fortfarande ser likadan ut, det är värt att göra en ny innan slutgiltiga rapporten.
@@ -340,7 +341,7 @@ till bland annat USART , därför går det ej att koppla sensorer till dessa (se
 		GPIOA & 10 \\ \hline
 		GPIOA & 13 \\ \hline
 	\end{tabular}
-	\caption{GPIO-pinnar på port A och B som ej går att koppla sensorer till.}
+	\caption{GPIO-pinnar på port A som ej går att koppla sensorer till.}
 	\label{tab:Ogiltliga pinnar}
 \end{table}
 
@@ -375,8 +376,7 @@ Trig- och echo-pinnen från HC-SR04 samt en LED-lampan kopplas resepktive till  
 
 
 Sensorn aktiveras genom att MD407-enkortsdatorn skickar en hög puls till sensorn i minst 10 mikrosekunder, 
-varpå sensorn skickar ut ultraljudsvågor och sänder en hög puls till MD407-enkortsdatorn fram tills ultraljudsvågorna har återvänt. Avståndet till närmaste föremål beräknas genom att mäta längden på pulsen.
-HC-SR04 kan mäta avstånd upp till 400 cm och det centrala samt lokala larmavståndet är justerbart från centralenheten.
+varpå sensorn skickar ut ultraljudsvågor och sänder en hög puls till MD407-enkortsdatorn fram tills ultraljudsvågorna har återvänt. Avståndet till närmaste föremål beräknas genom att mäta längden på pulsen. HC-SR04 kan mäta avstånd upp till 400 cm.
 
 Rörelsesensorn har både centralt och lokalt larm. Avståndet för centrala larmet ställs in av centralenheten via CAN-kommunikation 
 upp till 400 cm. När det centrala larmet går skickas ett CAN-meddelande till centralenheten som agerar därefter. 
