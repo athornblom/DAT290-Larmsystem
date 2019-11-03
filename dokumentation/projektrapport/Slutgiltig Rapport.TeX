@@ -152,7 +152,7 @@ Arbetsgruppen valde att använda versionshanteringstjänsten GIT för att fören
 
 \newpage
 \section{Teknisk beskrivning} % Vad är utgångspunkten för i förkonstruktionsarbetet?
-I det här avsnittet presenteras teknisk information som är nödvändig för att få en djupare insikt i hur den tekniska utvecklingen gått till, samt hur de olika delsystem fungerar och interagerar för att bygga upp systemet som helhet.
+I detta avsnitt presenteras teknisk information som är nödvändig för att få en djupare insikt i hur den tekniska utvecklingen gått till, samt hur de olika delsystemen fungerar och interagerar för att bygga upp systemet som helhet.
 \subsection{Teknisk bakgrund}
 Mjukvaran till larmsystemet körs på ett flertal MD407-enkortsdatorer, en för varje enhet.
 
@@ -161,7 +161,7 @@ redan skrivits för ARM.
 \todo[inline]{Mitt förslag är att ist skriva\\
 är ett programbibliotek som har vanliga funktioner som ofta används för ARM}
 
-\textbf{Polling} är ett protokoll som frågar alla I/O Enheter kontinuerligt ifall de behöver proccesering.\subsection{Systemöversikt}
+\textbf{Polling} är ett protokoll som kontinuerligt frågar alla I/O-enheter om de behöver processering.\subsection{Systemöversikt}
 
 Systemet utgår från en centralenhet, kopplad till ett antal dörrenheter och rörelsenheter över en gemensam CAN-buss. Periferienheterna hanterar avmätning av sina respektive sensorer, samt begär larm via CAN-bussen vid behov. När det går ett centralt larm fortsätter larmet tills en användare slår av larmet via kommandon till centralenheten.
 
