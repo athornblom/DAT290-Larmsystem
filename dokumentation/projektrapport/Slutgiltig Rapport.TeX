@@ -261,7 +261,7 @@ Inställningar görs via USART med kommandon enligt bilaga \ref{kommandon}, varp
 Centralenheten har följande två lägen:
 
 \begin{description}
-    \item[Startläge] Då centralenheten är i detta läge kan periferienheter ansluta sig till den genom att skicka en id-förfrågan via CAN, varpå centralenheten skickar tillbaka ett unikt id. Detta id används sedan för att adressera och identifiera periferienheten, se \ref{idbegäran} och \ref{idtilldelning}
+    \item[Startläge] Då centralenheten är i detta läge kan periferienheter ansluta sig till den genom att skicka en id-förfrågan via CAN, varpå centralenheten skickar tillbaka ett unikt id. Detta id används sedan för att adressera och identifiera periferienheten, se bilaga \ref{idbegäran}.
 
 
     \item[Standardläge] Enheten väntar på larm-meddelanden från periferienheterna eller användarinput via USART. Dessutom skickar den regelbundet konfigurationen för anslutna dörrar och sensorer till periferienheterna, som förväntas bekräfta konfigurationen.
