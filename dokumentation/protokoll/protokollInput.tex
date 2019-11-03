@@ -26,25 +26,6 @@ De 29 bitarna har fördelats enligt tabell \ref{tab:idbitar}. Meddelandetypen an
 \end{itemize}
 Detta meddelande skickas som bekräftelse för ett mottaget meddelandet. Larmmedelanden och konfigurationsmeddelanden (se nedan) är de enda meddelandetyper som bekräftas med ack. Meddelandet har samma header som det mottagna meddelandet men är av typen remote. Meddelandet innehåller därför inget datafält så för att urskilja vilket meddelande som bekräftas används de 8 bitarna för sekvensnummer i headern (se tabell \ref{tab:idbitar}). \\
 
-
-\textbf{Larm}
-\begin{itemize}
-    \item Meddelandetyp 0
-    \item Skickas från periferienhet till centralenheten
-\end{itemize}
-Talar om för centralenheten om någon dörr eller sensor larmar. Detta meddelande skickas endast av periferienheterna. I datafältet skickas id:t för sensorn som larmar. Samma id används även som sekvensnummer för meddelandet.\\
-
- \textbf{Konfiguration}
-\begin{itemize}
-    \item Meddelandetyp 1
-    \item Skickas från centralenheten till preferienhet
-\end{itemize}
-Detta meddelande används för att skicka konfigurationer till periferienheterna.
-Centralenheten skickar konfiguration till periferienheten kontinuerligt under drift för att försäkra sig om att periferienheten har rätt konfiguration. Detta fungerar även som ping, då ett bestämt antal uteblivna ack tolkas som att enheten inte längre finns på nätverket.
-I så fall uppmärksammar centralenheten detta. Konfigurationsmeddelanden ser olika ut för de olika enheterna.
-
-För dörrenheten anges intervallet av dörrsensorer som konfigureras i de två första databytarna. Därefter följer fyra bytar för timrar; först för lokalt larm, sedan för centralt. Båda anger fördröjningen som en multipel av 10 sekunder. I den sjunde och sista byten skickas 0 om dörren är uppställd och 1 om den ska vara låst.
-
 \textbf{Id-begäran}
 \label{idbegäran}
 \begin{itemize}
@@ -59,12 +40,31 @@ Om periferienheten inte tar emot sitt id och därför skickar en ny begäran gö
 \textbf{Tilldelning av id}
 \label{idtilldelning}
 \begin{itemize}
-    \item Meddelandetyp 2
-    \item Skickas från centralenheten till periferienhet
+	\item Meddelandetyp 2
+	\item Skickas från centralenheten till periferienhet
 \end{itemize}
 Detta meddelande skickas då centralenheten har tagit emot en id-begäran. Det skickas endast i startläge. I de första fyra bytarna av datafältet skickas samma tillfälliga id som periferienheten skickade i begäran. I den femte byten skickas det riktiga id:t. \\
 Om det är första gången centralenheten får en id-begäran från just denna periferienhet skickar den det lägsta lediga id:t (minst 0). Om centralenheten däremot hittar det tillfälliga id:t i sin lista med periferienheter skickar den samma id igen för att förhindra att flera periferienheter tilldelas samma id.
 
+
+
+\textbf{Konfiguration}
+\begin{itemize}
+    \item Meddelandetyp 1
+    \item Skickas från centralenheten till preferienhet
+\end{itemize}	
+Detta meddelande används för att skicka konfigurationer till periferienheterna.
+Centralenheten skickar konfiguration till periferienheten kontinuerligt under drift för att försäkra sig om att periferienheten har rätt konfiguration. Detta fungerar även som ping, då ett bestämt antal uteblivna ack tolkas som att enheten inte längre finns på nätverket.
+I så fall uppmärksammar centralenheten detta. Konfigurationsmeddelanden ser olika ut för de olika enheterna.
+
+För dörrenheten anges intervallet av dörrsensorer som konfigureras i de två första databytarna. Därefter följer fyra bytar för timrar; först för lokalt larm, sedan för centralt. Båda anger fördröjningen som en multipel av 10 sekunder. I den sjunde och sista byten skickas 0 om dörren är uppställd och 1 om den ska vara låst.
+
+\textbf{Larm}
+\begin{itemize}
+	\item Meddelandetyp 0
+	\item Skickas från periferienhet till centralenheten
+\end{itemize}	
+Talar om för centralenheten om någon dörr eller sensor larmar. Detta meddelande skickas endast av periferienheterna. I datafältet skickas id:t för sensorn som larmar. Samma id används även som sekvensnummer för meddelandet.\\
 
 
 \begin{table}[htb]
