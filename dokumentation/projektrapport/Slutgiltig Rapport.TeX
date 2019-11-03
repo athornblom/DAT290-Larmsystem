@@ -91,21 +91,49 @@ på rörelsesensorn konfigueras från centralenheten. Vibrationssensorn konfigue
 Centralenheten hanterar konfiguration av de andra enheterna, samt fungerar som en
 central för samtliga larm som utlöses i systemet. Om ett centralt larm utlöses så
 kan det endast ackkrediteras och nollställas via centralenheten.
-
 \subsection{Arbetsmetod} % svarar på frågan "hur har vi gått tillväga i det tekniska utvecklingsarbetet"?
-I det här avsnittet beskrivs det hur arbetet i gruppen delades upp, och hur gruppen har hanterat
-filhantering, möten och arbetstid.
 
-\subsection{}
-Programbiblioteket STM32\cite{stm} används för:
+I det här avsnittet beskrivs hur det tekniska abretet har skett, samt hur gruppen har delat upp arbetsområden.
+
+\subsubsection{Undergrupper}
+För att jämna ut arbetsbelastningen delades projektgruppen in i tre grupper om två personer vardera,
+en för varje enhetstyp.
+
+\textbf{Centralenheten}: Gruppens uppgift var att få centralenheten att kunna konfigurera
+periferienheterna, ta emot och behandla larm, samt implementera CAN-kommunkation och USART.
+
+\textbf{Dörrenheten}: Gruppen hade ansvar för att alla dörrar skall vara uppkopplade och kunna larma.
+
+\textbf{Rörelseenheten}: Gruppens uppgift var att utveckla mjukvaran till
+rörelse- och vibrationssensorerna för larmning av t.ex. fönster och värdefulla föremål.
+
+Samtliga grupper har haft ansvar att sköta implementeringen av CAN meddelande på sin egen enhet, samt att bestäma innehållet av meddelanden relevanta till enheten.
+
+\subsubsection{Tillvägagång}
+
+Utvecklingen av mjukvaran har skett till stor del på en enhetsnivå, det vill säga att mjukvaran på de olika enheterna utvecklades separat från varandra. 
+Först när alla enheter var färdigutvecklade kopplades de till varandra och arbetet fokuserade då på att implementera CAN-kommunikation.
+
+Periferienhets-grupperna byggde först system för att hantera initiering av relevanta GPIO portar samt debugfunktioner, och fortsatte med att implementera funktioner för avmätning av sensorerna. Funktionalitet byggdes på och det sista som utvecklades var kommunkiationen mellan periferienheterna och centralenheten.
+
+På centralenheten utvecklades först USART, samt ett antal debugfunktioner som kunde användas av alla enheter. Implemteringen av CAN-kommunikation på centralenheten styrde mycket av hur CAN implementerades på de andra enheterna, då centralenheten är den som tar emot och skickar flest meddelanden.
+
+Stora majoriten av mjukvaroutvecklingen och test har utförts på hårdvaran som beskrivs i rapporten, men en del av utvecklingen har skett med hjälp av simulerad hårdvara.
+
+\subsubsection{Programbibliotek}
+\label{stm}
+Ett STM32F4-biblioteket har används för att bespara arbetstid.
+Programbiblioteket STM32F4\cite{stm} används för:
 \begin{itemize}
-    \item Initieringar av enkortsdatorernas GPIO.
+    \item Initieringar och avläsning av enkortsdatorernas GPIO portar.
     \item Implementation av en System Timer (SysTick).
     \item "Väntetid'-funktionalitet. (Delay-funktioner)
     \item Implementation av CAN-kommunikation.
 \end{itemize}
 
-\subsection{Verifikation}
+
+
+\subsubsection{Verifikation}
 \label{verifikation}
 För att utvärdera huruvida larmsystemet uppnår de mål och krav som formulerats i målet används tester.
 De tre undergrupperna har skrivit tester för sina respektive delsystem som försäkrar att
@@ -116,13 +144,8 @@ Testet för det kompletta centraliserade systemet formulerades och utfördes av 
 
 För att se samtliga testspecifikationer, samt resultat och analys, se bilaga \ref{bilaga:tester}.
 
-
-\subsection{Programbibliotek}
-\label{stm}
-
 \subsubsection{Fildelning och versionshantering}
-Arbetsgruppen valde att använda versionshanteringstjänsten GIT för att förenkla den parallella programmeringen, och för att samla alla filer och dokument på ett ställe.
-
+Arbetsgruppen valde att använda versionshanteringstjänsten GIT för att förenkla den parallella programmeringen, och för att samla alla filer på ett ställe. GIT-filsamlingen förvarades med hjälp av tjänsten github. GIT-Tjänsten har fungerat väl och även underlättat dokumentering, då även den förvarades i filsamlingen.
 
 \section{Teknisk beskrivning} % Vad är utgångspunkten för i förkonstruktionsarbetet?
 I det här avsnittet presenteras teknisk information som är nödvändig för att få en djupare insikt i hur den tekniska utvecklingen gått till, samt hur de olika delsystem interagerar för att bygga upp systemet som helhet.
@@ -220,7 +243,8 @@ För att säkerställa att åtgärden för att hindra återspelningsattacker fun
 \begin{figure}[H]
     \centering
     \includegraphics[scale=0.4]{figurer/Centralenhet.png}
-    \caption{Flödesschema för centralenhetens mjukvara.}
+    \caption{En översitlig beskrivning av logik-flödet för systemets mjukvara. Övre halvan för varje enhet är en initieringsfas,
+    och nedre halvan representerar enheternas 'huvudloop' som är aktiv när systemet är i drift.}
     \label{fig:centralflöde}
 \end{figure}
 
