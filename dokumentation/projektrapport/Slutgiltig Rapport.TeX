@@ -226,6 +226,9 @@ För att säkerställa att åtgärden för att hindra återspelningsattacker fun
 
 
 \subsection{Delsystem }
+Varje egen enhet ses som en del utav det hela systemet. Dessa tre delsystem är
+centralenheten, dörrenheten och rörelseenheten. I det här avsnittet beskrivs de
+olika delsystemen.
 \subsubsection{Centralenheten}
 \label{subsec:centralenhet}
 
@@ -390,6 +393,19 @@ Vibrationssensorn har endast central larm som skickas via CAN.
  För kompletta testspecifikationer hänvisas till bilaga \ref{bilaga:tester}.
 
  % Detta avsnitt redovisar resultatet av genomförd verifirering av systemet; dels fördelarna, dels för komplett system. Detta avsnitt redovisar även resultatet av det slutgiltiga fysiska testet när hela systemet körs i skarpt läge. Ni ska främst redovisa resultat i form av funktionalitet, men ta ocks upp prestanda aspekter om dessa är viktiga. Diskutea hur väl ni lyckats med er slutprodukt i förhållande till er projektplan.
+ \subsection{Larmsystemet som helhet}
+
+ Larmsystemet fyller all funktionalitet som beskrevs i projektplaneringen. 
+ Systemet som testats har bestått av en dörrenhet, en rörelseenhet, och en centralenhet. 
+ Det har även testats att ha en störenhet kopplad till systemet, för att testa systemet mot brusmeddelanden. 
+ Kommunikationen mellan enheterna fungerar och har skett via en CAN-buss som planerat. 
+ 
+ Periferienheterna har funktionaliteten att larma både lokalt och centralt, och kan ta emot konfigurationer till sensorerna från centralenheten. Ifall en periferienhet inte svarar på centralenhetens regelbundna konfigurationsmeddelande larmas det centralt, detta för att säkerställa att enheter inte kopplas ur systemet.
+ 
+ Tester visar med god säkerhet att larmmeddelanden når centralenheten även med mycket brus på CAN-bussen. Tester har även visat att centralenheten kan hantera att skicka stora mängder meddelanden utan att något meddelande förloras.
+ När en sensor på en enhet begär ett centralt larm fortsätter den att larma tills att centralenheten har skickat ett avlarmningsmeddelande. 
+ Ifall en enhet larmar centralt men inte ackrediterats skickas ett nytt larm för att säkerställa att centralenheten hanterar larmet.
+ 
  \subsection{Centralenheten}
  Centralenheten har följande funktionalitet:
  \begin{enumerate}
@@ -415,6 +431,8 @@ Utöver ovan nämnda tester är centralenheten involverad i alla de testar som i
 
 
  \subsection{Dörrenheten}
+
+
  Dörrenheten har följande funktionalitet:
  \begin{enumerate}
      \item Detektering av antalet stängda dörrar kopplade på enkortsdatorn.
@@ -435,23 +453,26 @@ Utöver ovan nämnda tester är centralenheten involverad i alla de testar som i
 
  För att säkerställa att funktionalitet ovan fungerar utfördes följande tester:
  \begin{enumerate}
-     \item Test av pinnar för dörrar
-     \item Test av lokal drift
-     \item Test av id-tilldelning och larm
+     \item Test av pinnar för dörrar \ref{test:portTest}
+     \item Test av lokal drift \ref{test:localDrift}
+     \item Test av id-tilldelning och larm \ref{test:idLarm}
+     \item Test av system med brus \ref{test:brusTest}
+     \item Test av återuppspelningsattack \ref{test:replayer}
  \end{enumerate}
 
  \subsection{Rörelseenheten}
 Rörelseenheten klarar av  exekvera kod för flertalet vibrations- och rörelsesensorer samtidigt, upp till 23 sensorer,
 och möjligheten att koppla upp flera rörelseenheter till samma centralenhet finns.
 
- Rörelseenheten har följande funktionalitet:
+Rörelseenheten har följande funktionalitet:
  \begin{enumerate}
  	\item Automatiskt detektera antalet inkopplade rörelse- och vibrationssensorer vid uppstart.
 	\item Larma vid upptäckt av vibrationer, rörelse och urkoppling av aktiv sensor.
     	\item Central larmning via CAN-buss.
 	\item Avlarmning via centralenheten.
 	\item Lokal larmning för rörelsesensorer via LED-lampa.
-	\item Sensorerna är konfigurerbara från centralenheten.
+	\item Konfigurerbara larmvillkor från centralenheten.
+	\item Avaktivering av sensorer.
 	\item Kalibrering av rörelsesensorerna via centralenheten.
  \end{enumerate}
 
@@ -468,19 +489,14 @@ och möjligheten att koppla upp flera rörelseenheter till samma centralenhet fi
 	\item Prestandatest rörelseenheten.\ref{test:MotionPrestanda}
  \end{enumerate}
 
- \subsection{Larmsystemet som helhet}
- \todo[inline]{försöker så lite frön}
- Larmsystemet som helhet fungerar enligt uppgiftsbeskrivning. Det består av
- en dörrenhet, en rörelseenhet och en centralenhet. De olika enheterna kommunicerar via CAN. Både dörrenheten och rörelseenheten kan skicka centrala larm till centralenheten efter en tid som kan ställas in via centralenheten. Om en enhet försvinner från nätverket upptäcker centralenheten detta och varnar användaren via terminalen. Tester visar med god säkerhet att larmmeddelanden når centralenheten även med mycket brus på CAN-bussen.
- Ifall en enhet larmar centralt men inte ackkrediteras skickar den ett nytt larm för att säkerställa att centralenheten hanterar larmet.
-
 \newpage
 \section{Diskussion och slutsats}
 % Detta avsnitt innehåller en sammanfattning av konstruktionen och en diskussion av resultatet. Om detta är möjligt, dra slutsatser av ert projekt och identifiera förbättringsmöjligheter. (Vilka kan vara användbara för en beställare)
-\todo[]{fixa snyggt}\textbf{Polling} Utifrån prestandatestet som gjorts för dörrenheten dras slutsatsen att polling fungerar för dörrenheten då inga fördröjningar upptäcks. Teoretiskt kan detta vara snabbare än att använda avbrott då polling inte kräver kontextbyte. En annan anledning till
-att polling används istället för avbrott är att det endast finns 16 avbrottslinor medan systemet har stöd för upp till 32 dörrar. Därav hade någon form av polling behövt implementeras i avbrottsrutinerna.
 
-\todo[inline]{inte färdig}
+Tidigt i projektets gång var man tvungen att välja mellan polling eller avbrott för att respondera på externa händelser för dörr- och rörelseenheten.  Polling valdes dels för att koden blir lättare att först och lättare att underhålla, men även för att tanken med systemet är att inget larm ska ha högre prioritet än någon annan dörr. 
+
+Skulle man valt att implementera mjukvaran för dörrenheten med avbrott är den enda fördelen att man hade kunnat dela upp dörrarna så att de hade olika prioritet på CAN-bussen, vilket skulle kunna resultera i att vissa larm skulle kommit fram till centralenheten snabbare än de hade med polling. Men tiden man tjänar in handlar om millisekunder, och eftersom MD407-enkortsdatorn endast stöttar 16 avbrottslinor skulle man ändå behöva använda sig av någon form av polling ifall man vill ha mer än 16 dörrar. Prestandatestet som utfördes visade inte på någon märkbar fördröjning, så valet med polling känns högst befogat,  se bilaga \ref{test:performanceTest}
+
 
 Samtliga delsystem har uppnått de grundkraven som formulerades i målsättningen, men även utrustats med 
 ytterligare funktionalitet som varit naturlig att implementera under projektets gång. Rörelse- och dörrenheten 
@@ -515,19 +531,19 @@ Med denna information kan vi dra slutsatsen att ett skalbart larmsystem är uppn
     Där \textbf{x, y} och \textbf{z} är tal mellan 0 och 9. Konfigurerar rörelsesensor \textbf{y} på enhet med id \textbf{x} för att larma då den detekterar ett föremål på ett avstånd mindre än \(\textbf{z} * 10\) centimeter.
 
     \textbf{avlarma y z} \\
-    Avlarmar sensor \textbf{z} på rörelseenhetenhet med ID \textbf{y}. Detta kommando är lösenordsskyddat.
+    Avlarmar sensor \textbf{z} på rörelseenhetenhet med id \textbf{y}. Detta kommando är lösenordsskyddat.
 
     \textbf{larma y z} \\
-    Larmar sensor \textbf{z} på rörelseenhet med ID \textbf{y}. Alla sensorer är larmade som standard så detta kommando körs om man vill återaktivera larm efter att det avaktiverats. Detta kommando är lösenordsskyddat.
+    Larmar sensor \textbf{z} på rörelseenhet med id \textbf{y}. Alla sensorer är larmade som standard så detta kommando körs om man vill återaktivera larm efter att det avaktiverats. Detta kommando är lösenordsskyddat.
 
     \textbf{inak y z} \\
-    Inaktiverar sensor \textbf{z} på enhet med ID \textbf{y}. Detta kommando är lösenordsskyddat.
+    Inaktiverar sensor \textbf{z} på enhet med id \textbf{y}. Detta kommando är lösenordsskyddat.
 
     \textbf{ak y z} \\
-    Aktiverar sensor \textbf{z} på enhet med ID \textbf{y}. Alla sensorer är aktiverade som standard så detta kommando körs om man vill återaktivera en sensor efter att den inaktiverats. Detta kommando är lösenordsskyddat.
+    Aktiverar sensor \textbf{z} på enhet med id \textbf{y}. Alla sensorer är aktiverade som standard så detta kommando körs om man vill återaktivera en sensor efter att den inaktiverats. Detta kommando är lösenordsskyddat.
 
     \textbf{kal x y z} \\
-    Startar översändning av kalibreringsmeddelanden till rörelsesensor \textbf{y} på rörelseenhet med ID \textbf{x}. Det upplätta avståndet för givaren är \(\textbf{z} * 10\). Kalibrering fungerar inte om sensorn är inaktiverad.
+    Startar översändning av kalibreringsmeddelanden till rörelsesensor \textbf{y} på rörelseenhet med id \textbf{x}. Det upplätta avståndet för givaren är \(\textbf{z} * 10\). Kalibrering fungerar inte om sensorn är inaktiverad.
 
     \textbf{nokal y z} \\
     Avslutar översändning av kalibreringsmeddelanden för sensor \textbf{z} på enhet \textbf{y}.
