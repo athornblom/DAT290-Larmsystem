@@ -16,7 +16,7 @@ Filip
 
 \subsubsection*{Utfört av}
 % Namn på den/de som utförande testet.
-
+Adam och Erik
 
 
 \end{multicols}
@@ -43,7 +43,7 @@ Kontrollera att session ID fungerar som skydd mot en återuppspelningsattack.
 
 \subsubsection*{Utförande}
 %Hur ska testet utföras?
-Utför detta test först för dörrenheten sedan för rörelseenheten.
+Utför detta test utförs för både dörrenheten och rörelseenheten separat.
 
 
 Se till att SESSIONIDACTIVE är definerat som 0 i startup.c för centralenheten.
@@ -70,11 +70,14 @@ Utför slutligen hela testet med en rörelseenhet i stället för en dörrenhet.
 
 \subsubsection*{Resultat}
 %Vad är testresultatet? Hittades några buggar?
-Rörelseenheten: Med session-ID avaktiverat lyckades återuppspelningsattacken. Med session-ID aktiverat så kunde återuppspelaren ansluta som rörelseenhet, men när centralenheten startade larmade det. 
+Rörelseenheten: Med session-ID avaktiverat lyckades återuppspelningsattacken. Med session-ID aktiverat så kunde återuppspelaren ansluta som rörelseenhet, men när centralenheten startade larmade det.
+
+Testet gav samma utfall för dörrenheten som för rörelseenheten.
 
 
 \subsubsection*{Analys}
 %Vad innebär testets resultat? Behövs fler test av komponenten? Behöver andra komponenter testas ytterligare, och i så fall hur?
+Återspelningsskyddet uppfyllde sitt syfte, dock lyckas återspelaren begära ett ID som en periferienhet.
 
 
 

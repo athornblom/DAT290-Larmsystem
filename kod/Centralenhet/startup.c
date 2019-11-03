@@ -1,12 +1,6 @@
 //Centralenhet
 #include "startup.h"
 
-
-#define MAXCOMMANDLENGTH 15
-#define SESSIONIDACTIVE 0
-#define CONFMODE 0
-#define STDMODE 1
-
 uint8_t mode;
 uint8_t next_id = 0;
 
