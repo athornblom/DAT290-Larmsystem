@@ -34,7 +34,7 @@ Detta meddelande skickas som bekräftelse för ett mottaget meddelandet. Larmmed
 \end{itemize}
 Detta meddelande skickas av en periferienhet innan den har tilldelats ett id. 
 De sju bitarna i id-fältet som annars ska ange periferienhetens id är bara nollor.
-Då periferienheten i denna fas saknar id skickar den ett tillfälligt 32-bitars slumpgenererat id i datafältets första fyra bytar, för att låta centralenheten särkilja den från andra periferienheter som saknar id.
+Då periferienheten i denna fas saknar id skickar den ett tillfälligt 32-bitars slumpgenererat id i datafältets första fyra bytar, för att låta centralenheten särkilja den från andra periferienheter som begär id.
 Om periferienheten inte tar emot sitt id och därför skickar en ny begäran görs detta med samma tillfälliga id, vilket låter centralenheten tilldela den samma id igen.
 
 \textbf{Tilldelning av id}
