@@ -148,9 +148,9 @@ För att se samtliga testspecifikationer, samt resultat och analys, se bilaga \r
 Arbetsgruppen valde att använda versionshanteringstjänsten GIT för att förenkla den parallella programmeringen, och för att samla alla filer på ett ställe. GIT-filsamlingen förvarades med hjälp av tjänsten github. GIT-Tjänsten har fungerat väl och även underlättat dokumentering, då även den förvarades i filsamlingen.
 
 \section{Teknisk beskrivning} % Vad är utgångspunkten för i förkonstruktionsarbetet?
-I det här avsnittet presenteras teknisk information som är nödvändig för att få en djupare insikt i hur den tekniska utvecklingen gått till, samt hur de olika delsystem interagerar för att bygga upp systemet som helhet.
+I det här avsnittet presenteras teknisk information som är nödvändig för att få en djupare insikt i hur den tekniska utvecklingen gått till, samt hur de olika delsystem fungerar och interagerar för att bygga upp systemet som helhet.
 \subsection{Teknisk bakgrund}
-Mjukvaran till larmsystemet körs på ett flertal MD407-kort, ett för varje enhet.
+Mjukvaran till larmsystemet körs på ett flertal MD407-enkortsdatorer, en för varje enhet.
 
 \textbf{STM32-Programbibliotek}\cite{stm} är ett programbibliotek som har generellt skrivna funktioner som 
 redan skrivits för ARM.
@@ -388,7 +388,7 @@ men då alla sensorer prioriteras lika är polling den simplare lösningen.
 
 \textbf{Rörelsesensorn}:
 En rörelsesensor tar upp 3 pinnar och får därmed plats med 5 rörelsesensorer per port.
-Trig- och echo-pinnen från HC-SR04 samt en LED-lampan kopplas resepktive till  pin-n, -(n+1) och -(n+2).
+Trig- och echo-pinnen från HC-SR04 samt en LED-lampan kopplas resepktive till  pin-\textit{n}, -$(n+1)$ och -$(n+2)$.
 
 
 Sensorn aktiveras genom att MD407-enkortsdatorn skickar en hög puls till sensorn i minst 10 mikrosekunder, 
@@ -404,7 +404,7 @@ det lokala larmavståndet.
 
 \textbf{Vibrationssensorn}:
 En vibrationssensor tar upp 2 pinnar och får därmed plats med 8 vibrationssensorer per port. 
-En pinne för digital-ouput från SW-18010P och en LED-lampa kopplas till pin-n respektive pin-(n+1).
+En pinne för digital-ouput från SW-18010P och en LED-lampa kopplas till pin-\textit{n} respektive pin-$(n+1)$.
 
 Sensorn sänder kontinuerligt en hög puls till MD407-enkortsdatorn utom när den
 känner av vibrationer, då den istället sänder en låg puls. Sensorns känslighet justeras fysiskt genom en komparator på sensorn. 
@@ -422,6 +422,12 @@ Vibrationssensorn har endast central larm som skickas via CAN.
      \item Automatisk detektering av enheter som lämnar nätverket.
      \item Larmhantering.
  \end{enumerate}
+
+ \begin{itemize}
+\color{white}
+\item Abra kadabra blankrad!
+\end{itemize}
+
  För att säkerställa att funktionalitet ovan fungerar utfördes följande tester:
  \begin{enumerate}
      \item Test av ID-tilldelning och larmmeddelnade se bilaga \ref{test:idLarm}.
@@ -441,6 +447,11 @@ Vibrationssensorn har endast central larm som skickas via CAN.
      \item Lokal funktionalitet kräver inte uppkopplad centralenhet.
  \end{enumerate}
 
+
+ \begin{itemize}
+\color{white}
+\item Hokus pokus jag har tappat mitt fokus.
+\end{itemize}
  
  För att säkerställa att funktionalitet ovan fungerar utfördes följande tester:
  \begin{enumerate}
@@ -450,6 +461,9 @@ Vibrationssensorn har endast central larm som skickas via CAN.
  \end{enumerate}
 
  \subsection{Rörelseenheten}
+Rörelseenheten klarar av  exekvera kod för flertalet vibrations- och rörelsesensorer samtidigt, upp till 29 sensorer, 
+och möjligheten att koppla upp flera rörelseenheter till samma centralenhet finns.
+
  Rörelseenheten har följande funktionalitet:
  \begin{enumerate}
  	\item Automatiskt detektera antalet inkopplade rörelse- och vibrationssensorer vid uppstart.
@@ -457,14 +471,18 @@ Vibrationssensorn har endast central larm som skickas via CAN.
     	\item Central larmning via CAN-buss.
 	\item Avlarmning via centralenheten.
 	\item Lokal larmning för rörelsesensorer via LED-lampa.
-	\item Konfigurerbart larmavstånd på rörelsesensorerna.
+	\item Sensorerna är konfigurerbara från centralenheten.
 	\item Kalibrering av rörelsesensorerna via centralenheten.
  \end{enumerate}
 
+ \begin{itemize}
+\color{white}
+\item Sim sala bim, nu är det radbyte!
+\end{itemize}
 
  För att säkerställa att funktionalitet ovan fungerar utfördes följande tester:
  \begin{enumerate}
-	\item Test av portar sam lokalt och centralt larm för rörelseenheten.\ref{test:PortMotion}
+	\item Test av portar samt lokalt och centralt larm för rörelseenheten.\ref{test:PortMotion}
 	\item Konfiguration och kalibrering av rörelseenheten.\ref{test:MotionConfig}
 	\item Urkopplingslarm rörelseenheten.\ref{test:UrkopplingMotion}
  \end{enumerate}
