@@ -461,7 +461,8 @@ Utöver ovan nämnda tester är centralenheten involverad i alla de testar som i
  \end{enumerate}
 
  \subsection{Rörelseenheten}
-Rörelseenheten klarar av  exekvera kod för flertalet vibrations- och rörelsesensorer samtidigt, upp till 23 sensorer,
+
+Rörelseenheten klarar att hantera ett flertal vibrations- och rörelsesensorer samtidigt, upp till 23 sensorer,
 och möjligheten att koppla upp flera rörelseenheter till samma centralenhet finns.
 
 Rörelseenheten har följande funktionalitet:
@@ -493,9 +494,15 @@ Rörelseenheten har följande funktionalitet:
 \section{Diskussion och slutsats}
 % Detta avsnitt innehåller en sammanfattning av konstruktionen och en diskussion av resultatet. Om detta är möjligt, dra slutsatser av ert projekt och identifiera förbättringsmöjligheter. (Vilka kan vara användbara för en beställare)
 
-Tidigt i projektets gång var man tvungen att välja mellan polling eller avbrott för att respondera på externa händelser för dörr- och rörelseenheten.  Polling valdes dels för att koden blir lättare att förstå och underhålla, men även för att tanken med systemet är att inget larm ska ha högre prioritet än någon annan larm.
+Tidigt i projektets gång var vi tvungna att välja mellan polling eller avbrott för att respondera på externa händelser för dörr- och rörelseenheten.  Polling valdes dels för att koden blir lättare att först och lättare att underhålla, men även för att tanken med systemet är att inget larm ska ha högre prioritet än något annat. 
 
-Skulle man valt att implementera mjukvaran för dörrenheten med avbrott är den enda fördelen att man hade kunnat dela upp dörrarna så att de hade olika prioritet när de larmar, vilket skulle kunna resultera i att vissa larm skulle kommit fram till centralenheten snabbare än de hade med polling. Men tiden man tjänar in hade handlat om millisekunder, och eftersom MD407-enkortsdatorn endast stöttar 16 avbrottslinor skulle man ändå behöva använda sig av någon form av polling ifall man vill ha mer än 16 dörrar. Det är heller inte säkert att avbrott hade gått snabbare då kontextbyten också tar tid. Prestandatestet som utfördes visade inte på någon märkbar fördröjning, så valet med polling känns högst befogat,  se bilaga \ref{test:prestandaTest}.
+Skulle dörrenhetens mjukvara utvecklats med avbrott hade den enda fördelen varit möjligheten att dela upp dörrarna så att de hade olika prioritet på CAN-bussen, vilket skulle kunna resultera i att vissa larm skulle kommit fram till centralenheten snabbare än de hade med polling. 
+Tiden man tjänar in handlar om millisekunder, och eftersom MD407-enkortsdatorn endast stöttar 16 avbrottslinor skulle det ändå behövas  någon form av polling ifall systemet ska ha mer än 16 dörrar. 
+Prestandatestet som utfördes visade inte på någon märkbar fördröjning, så valet med polling känns högst befogat, se bilaga \ref{test:performanceTest}
+
+Polling har även använts till stor fördel inom rörelseenheter, med hjälp av polling kan flera rörelsensorer mätas av samtidigt, då det inte behövs blockerande väntetid-funktioner för att mäta/vänta en specifik tid. 
+Uppoffringen som görs är precision, med ett polling system är det svårt att vänta exakta tider, då det endast kollas ifall en tidsvariabel har överstigit en annan, och det går lite tid mellan att dessa villkor kollas.
+Denna tid är dock såpass liten och skillnader i väntetider är såpass osignifikanta att det inte påverkar systemets funktionalitet.
 
 
 Samtliga delsystem har uppnått de grundkraven som formulerades i målsättningen, men även utrustats med
