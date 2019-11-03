@@ -26,25 +26,6 @@ De 29 bitarna har fördelats enligt tabell \ref{tab:idbitar}. Meddelandetypen an
 \end{itemize}
 Detta meddelande skickas som bekräftelse för ett mottaget meddelandet. Larmmedelanden och konfigurationsmeddelanden (se nedan) är de enda meddelandetyper som bekräftas med ack. Meddelandet har samma header som det mottagna meddelandet men är av typen remote. Meddelandet innehåller därför inget datafält så för att urskilja vilket meddelande som bekräftas används de 8 bitarna för sekvensnummer i headern (se tabell \ref{tab:idbitar}). \\
 
-
-\textbf{Larm}
-\begin{itemize}
-    \item Meddelandetyp 0
-    \item Skickas från periferienhet till centralenheten
-\end{itemize}
-Talar om för centralenheten om någon dörr eller sensor larmar. Detta meddelande skickas endast av periferienheterna. I datafältet skickas id:t för sensorn som larmar. Samma id används även som sekvensnummer för meddelandet.\\
-
- \textbf{Konfiguration}
-\begin{itemize}
-    \item Meddelandetyp 1
-    \item Skickas från centralenheten till preferienhet
-\end{itemize}
-Detta meddelande används för att skicka konfigurationer till periferienheterna.
-Centralenheten skickar konfiguration till periferienheten kontinuerligt under drift för att försäkra sig om att periferienheten har rätt konfiguration. Detta fungerar även som ping, då ett bestämt antal uteblivna ack tolkas som att enheten inte längre finns på nätverket.
-I så fall uppmärksammar centralenheten detta. Konfigurationsmeddelanden ser olika ut för de olika enheterna.
-
-För dörrenheten anges intervallet av dörrsensorer som konfigureras i de två första databytarna. Därefter följer fyra bytar för timrar; först för lokalt larm, sedan för centralt. Båda anger fördröjningen som en multipel av 10 sekunder. I den sjunde och sista byten skickas 0 om dörren är uppställd och 1 om den ska vara låst.
-
 \textbf{Id-begäran}
 \label{idbegäran}
 \begin{itemize}
@@ -53,25 +34,37 @@ För dörrenheten anges intervallet av dörrsensorer som konfigureras i de två 
 \end{itemize}
 Detta meddelande skickas av en periferienhet innan den har tilldelats ett id. 
 De sju bitarna i id-fältet som annars ska ange periferienhetens id är bara nollor.
-I datafältets första fyra bytar skickas ett 32 bitars slumptal för att särskilja enheten från andra periferienheter som begär id.\\
-
-
-
-
-Då periferienheten i denna fas saknar id skickar den ett tillfälligt 32-bitars slumpgenererat id i datafältet för att låta centralenheten särkilja den från andra periferienheter som saknar id.
-Om periferienheten inte tar emot sitt id och därför skickar en ny förfrågan görs detta med samma tillfälliga id, vilket låter centralenheten tilldela den samma id igen.
-När centralenheten har tagit emot en sådan förfrågan skickar den tillbaka det lägsta lediga id:t och skapar en ny instans av en struktur som representerar periferienheten och lägger den i en lista. Strukturen innehåller enhetens id, tillfälliga id och konfiguration (d.v.s. tider för varje dörr för dörrenheter respektive avstånd för varje avståndssensor och antal vibrationssensorer för rörelseenheter). 
-Det är också periferienhetens index i centralenhetens lista, vilket gör det mycket effektivt att hitta rätt enhet i listan när dess id har lästs i CAN-meddelandet.
+Då periferienheten i denna fas saknar id skickar den ett tillfälligt 32-bitars slumpgenererat id i datafältets första fyra bytar, för att låta centralenheten särkilja den från andra periferienheter som begär id.
+Om periferienheten inte tar emot sitt id och därför skickar en ny begäran görs detta med samma tillfälliga id, vilket låter centralenheten tilldela den samma id igen.
 
 \textbf{Tilldelning av id}
 \label{idtilldelning}
 \begin{itemize}
-    \item Meddelandetyp 2
-    \item Skickas från centralenheten till preferienhet
+	\item Meddelandetyp 2
+	\item Skickas från centralenheten till periferienhet
 \end{itemize}
-Detta meddelande används då centralenheten tilldelar en periferienhet dess id. Det skickas bara då centralenheten är i startläge. I de första fyra bytarna av datafältet skickas samma slumptal som periferienheten skickade i begäran. I den femte byten skickas det nya id:t. \\
+Detta meddelande skickas då centralenheten har tagit emot en id-begäran. Det skickas endast i startläge. I de första fyra bytarna av datafältet skickas samma tillfälliga id som periferienheten skickade i begäran. I den femte byten skickas det riktiga id:t. \\
+Om det är första gången centralenheten får en id-begäran från just denna periferienhet skickar den det lägsta lediga id:t (minst 0). Om centralenheten däremot hittar det tillfälliga id:t i sin lista med periferienheter skickar den samma id igen för att förhindra att flera periferienheter tilldelas samma id.
 
 
+
+\textbf{Konfiguration}
+\begin{itemize}
+    \item Meddelandetyp 1
+    \item Skickas från centralenheten till preferienhet
+\end{itemize}	
+Detta meddelande används för att skicka konfigurationer till periferienheterna.
+Centralenheten skickar konfiguration till periferienheten kontinuerligt under drift för att försäkra sig om att periferienheten har rätt konfiguration. Detta fungerar även som ping, då ett bestämt antal uteblivna ack tolkas som att enheten inte längre finns på nätverket.
+I så fall uppmärksammar centralenheten detta. Konfigurationsmeddelanden ser olika ut för de olika enheterna.
+
+För dörrenheten anges intervallet av dörrsensorer som konfigureras i de två första databytarna. Därefter följer fyra bytar för timrar; först för lokalt larm, sedan för centralt. Båda anger fördröjningen som en multipel av 10 sekunder. I den sjunde och sista byten skickas 0 om dörren är uppställd och 1 om den ska vara låst.
+
+\textbf{Larm}
+\begin{itemize}
+	\item Meddelandetyp 0
+	\item Skickas från periferienhet till centralenheten
+\end{itemize}	
+Talar om för centralenheten om någon dörr eller sensor larmar. Detta meddelande skickas endast av periferienheterna. I datafältet skickas id:t för sensorn som larmar. Samma id används även som sekvensnummer för meddelandet.\\
 
 
 \begin{table}[htb]
