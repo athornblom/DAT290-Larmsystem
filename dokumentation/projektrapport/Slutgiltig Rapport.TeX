@@ -141,7 +141,7 @@ En överblick av mjukvarans tidsflöde finns i Figur \ref{fig:tidsflöde}.
 \subsection{CAN-kommunikation}
 \label{can}
 \subsubsection{Beskrivning av CAN-protokollet}
-Protokollet som har skapats för kommunikationen mellan enheterna bygger på protokollet Controller Area Network (CAN).
+Protokollet som har utvecklats för kommunikationen mellan enheterna bygger på protokollet Controller Area Network (CAN).
 CAN är ett bussprotokoll som främst används för kommunikation mellan datorer och givare på fordon där det ställs höga krav på tillförlitlighet.
 För att undvika kollisioner och därmed öka tillförlitligheten har CAN en dominant logisk nivå (0) som dessutom ger automatisk prioritering av meddelanden då den dominanta nivån har företräde på bussen.
 Denna prioritering har använts för att ge brådskande meddelanden företräde över meddelanden som inte kräver kort responstid. I tabell \ref{tab:meddelandetyper} är de meddelandetyper som används kortfattat beskrivna. För en mer detaljerad beskrivning av protokollet och dess meddelandetyper, se bilaga \ref{bilaga:protokoll}.
@@ -150,7 +150,7 @@ Denna prioritering har använts för att ge brådskande meddelanden företräde 
 
 \begin{table}[H]
 	\centering
-	\begin{tabular}{|c|p{0.65\textwidth}|}
+    \begin{tabular}{|p{0.22\textwidth}|p{0.7\textwidth}|}
 		\hline
 		Meddelandetyp & Används till \\ \hline \hline
 		Bekräftelse		& Bekräftelse för senaste mottagna meddelandet. \\ \hline
@@ -187,7 +187,7 @@ För att ge möjlighet att testa systemet på ett tungt trafikerat CAN-nätverk 
 \subsubsection{Centralenheten}
 %\label{subsec:centralenhet}
 Centralenheten styr och har uppsikt över övriga enheter.
-Inställningar görs via USART med kommanodon enligt Appendix \ref{kommandon}, varpå de vidarebefordras till rätt periferienhet via CAN.
+Inställningar görs via USART med kommandon enligt Appendix \ref{kommandon}, varpå de vidarebefordras till rätt periferienhet via CAN.
 
 Centralenheten har följande två lägen:
 
@@ -195,15 +195,13 @@ Centralenheten har följande två lägen:
     \item Standardläge: Enheten väntar på larm-meddelanden från periferienheterna eller användarinput via USART. Dessutom skickar den regelbundet konfigurationen för anslutna dörrar och sensorer till periferienheterna, som förväntas bekräfta konfigurationen.
     Om en enhet inte svarar efter ett visst antal meddelanden går larmet.
     \item Konfigurationsläge: Detta är det läge enheten startar i.
-    Här kan användaren konfigurera anslutna dörr- och rörelseenheter via USART. Användaren kan sätta centralenheten i konfigurationsläge via USART för att lägga till eller konfigurera periferienheter.
+    Här kan användaren konfigurera anslutna dörr- och rörelseenheter via USART. Det är endast i detta läge som nya periferienheter kan anslutas till centralenheten. Användaren kan sätta centralenheten i konfigurationsläge via USART för att lägga till eller konfigurera periferienheter.
 \end{enumerate}
 
 För att kunna adressera olika periferienheter måste centralenheten tilldela dessa varsitt unikt id.
-Detta görs i konfigurationsläget genom att varje enhet som saknar id skickar en förfrågan via CAN.
-När centralenheten tar emot en sådan förfrågan från en periferienhet, skickar den tillbaka det
-lägsta lediga id:t och skapar en ny instans av en struktur som representerar periferienheten och lägger den i en lista. Strukturen innehåller enhetens id och konfiguration (d.v.s. tider för varje dörr för dörrenheter respektive avstånd för varje avståndssensor och antal vibrationssensorer för rörelseenheter).
-Id:t används för att adressera meddelanden till samt identifiera meddelanden från enheten. Det är också
-periferienhetens index i centralenhetens lista, vilket gör det oerhört effektivt att hitta rätt
+Detta görs i konfigurationsläget genom att varje enhet som saknar id skickar en förfrågan via CAN. Då periferienheten i denna fas saknar id skickar den med ett tillfälligt 32-bitars slumpgenererat id i datafältet för att låta centralenheten särkilja den från andra periferienheter.
+När centralenheten har tagit emot en sådan förfrågan skickar den tillbaka det lägsta lediga id:t och skapar en ny instans av en struktur som representerar periferienheten och lägger den i en lista. Strukturen innehåller enhetens id, tillfälliga id och konfiguration (d.v.s. tider för varje dörr för dörrenheter respektive avstånd för varje avståndssensor och antal vibrationssensorer för rörelseenheter). Om periferienheten inte tar emot sitt id och därför skickar en ny förfrågan görs detta med samma tillfälliga id, vilket låter centralenheten tilldela den samma id igen.
+Id:t används för att adressera meddelanden till samt identifiera meddelanden från enheten. Det är också periferienhetens index i centralenhetens lista, vilket gör det mycket effektivt att hitta rätt
 enhet i listan när dess id har lästs i CAN-meddelandet.
 
 
@@ -220,45 +218,31 @@ enhet i listan när dess id har lästs i CAN-meddelandet.
 % - Systick?
 % - Bilder?
 
-Dörrenheten är en av systemets fristående enheter och kräver en MD407-mikrodator för drift.
+Dörrenheten är den periferienhet som sköter uppsikten över användarens dörrar. Enheten kräver en MD407-enkortsdator för drift.
 
-För att koppla upp en dörr till systemet krävs det två anslutningar till en av mikrodatorns
- GPIO-portar: en koppling som går från en strömbrytare på dörren till en av mikrodatorns jämna
-  I/O-pinnar (\textit{n}), samt en koppling från en LED-lampa på dörren till en ojämn I/O-pinne (\textit{n+1}).
+För att koppla upp en dörr till systemet krävs det två anslutningar till en av mikrodatorns GPIO-portar: en koppling som går från en strömbrytare på dörren till en av mikrodatorns jämna I/O-pinnar (\textit{n}), samt en koppling från en LED-lampa på dörren till en udda I/O-pinne (\textit{n+1}).
 
 Fyra av mikrodatorns fem portar är designerade för dörranslutningar (\textit{A,C,D,E}). \\
-Eftersom samtliga portar har 16 tillgängliga pinnar innebär detta att systemet maximalt kan stötta 32 dörrar per dörrenhet.
+Eftersom samtliga portar har 16 tillgängliga pinnar innebär det att systemet maximalt kan stötta 32 dörrar per dörrenhet.
 
 Port B är inte avsedd för dörranslutningar, utan används främst för CAN-\\kommunikationen
-med centralenheten. En LED-lampa kan även kopplas till \\ pinne 2 på port B. Denna lampa är
-till för att vid uppstart signalera när systemets initiering är färdig.
+med centralenheten. En LED-lampa kan även kopplas till \\ pinne 2 på port B. Denna lampa signalerar vid vid uppstart när systemets initiering är färdig.
 
 Vid uppstart initieras först portarna och pinnarna på mikrodatorn så att de kan adresseras
-och avläsas på rätt sätt. Därefter startas en System Timer (SysTick) som fungerar som klocka, och
-Can som initieras som används för att enheten ska kunna kommunicera
-med en eventuell centralenhet. För att kunna representera sig på Can-bussen initieras även
-en 32 bitars slumptals generator som är enhetens id tills att den fått ett designerat av
-centralenheten. Fortsättningsvis detekterar systemet hur många dörrar som är kopplade 
-på kortet, och på vilka pinnar de är kopplade. För att dörrarna ska kunna detekteras krävs det att
- de är stängda.
+och avläsas på rätt sätt. Därefter startas en SystemTimer (SysTick) som fungerar som klocka för delsystemet.
+Då klockan är startad initieras CAN på port B, vilket möjliggör kommunikation med centralenheten. Fortsättningsvis detekterar systemet hur många dörrar som är kopplade på kortet, och på vilka pinnar de är kopplade. För att dörrarna ska kunna detekteras krävs det att de är stängda.
 
 Under detekteringen skapas datarepresentationer med förinställda värden för de dörrar som systemet
-detekterar. Efter att samtliga datarepresentationer är skapade kommer systemet att försöka begära 
-ett id av en eventuell centralenhet. Ifall systemet inte får ett id inom 20 sekunder kommer systemet 
-gå in i lokal drift. Oavsett ifall systemet lyckats få ett id kommer den forsätta med att tända dörrarnas lampor
-i den ordning de initierades. Detta görs för att testa om de lokala larmen fungerar hos dörrarna.
-Efter att samtliga lampor är tända så släcker systemet dem igen.
-Slutligen tänds lampan som är kopplad till pinne 2 på port B för att signalera till användaren att enheten är redo för drift.
-Ifall systemet inte fått ett id kommer systemet kontinuerligt var 10 sekund skicka en
-id begäran på can-bussen. Vilket gör att En dörrenhet kan startas och köras i lokaldrift
-tills en centralenhet kopplas in i nätverket. När en centralenhet kopplas in på nätverket
-kommer då systemet automatiskt att dyka upp hos centralenheten utan att användaren behöver
-göra någonting på dörrenhetens sida.
+hittat. Efter att samtliga datarepresentationer är skapade kommer systemet att försöka kommunicera med centralenheten. Om en centralenhet inte svarar kommer systemet att gå in i lokal drift, vilket innebär att funktionaliteten med centrala larm uteblir.
+Fortsättningsvis så tänds lamporna på dörrarna i den ordning som dess datarepresentationer skapades. Detta görs för att testa om de lokala larmen fungerar hos dörrarna. Efter att samtliga lampor är tända släcker systemet dem igen.
+Slutligen tänds lampan som är kopplad till pinne 2 på port B för att signalera till användaren att enheten är redo för drift. Systemet kommer i fortsättningen kontinuerligt att skicka ut meddelanden till en eventuell centralenhet på CAN-nätverket med jämna mellanrum, vilket medför att en centralenhet kan kopplas in utan att systemet behöver startas om.
+
+Systemet kontrollerar nu fortlöpande alla dörrar enligt flödesdiagrammet i figur 3:
+
 
 
 \begin{figure}[H]
 \begin{flushleft}
-Systemet kontrollerar nu fortlöpande alla dörrar enligt flödesdiagrammet i figur 3: \linebreak \newline
 \end{flushleft}
 \centering
 \includegraphics[scale=0.5]{figurer/Flow-Chart.png}
@@ -271,7 +255,7 @@ som 'beslut' som anger huruvida en kontrollbit är satt till 1 (för \textit{ja}
 (för \textit{nej}). Dessa kontrollbitar sätts till 1 eller 0 beroende på externa händelser.
 
 Avlarmning av en specifik dörr sker via CAN-kommunikation från centralenheten. Att en dörr är avlarmad
-innebär att dess larm inte kan utlösas. Ifall ett larm redan har utlösts stängs det då också av.
+innebär att dess larm inte kan utlösas.
 
 Att en dörr är öppen innebär att kretsen som går via strömbrytaren på dörren inte längre är sluten.
 Om kretsen inte är sluten, och dörren inte är avlarmad, tyder det på att någonting externt har hänt 
@@ -283,15 +267,8 @@ När dörrenheten larmar centralt så skickas ett meddelande via CAN till centra
 kommer skickas med intervall på en sekund tills centralenheten skickar tillbaka en ackreditering om att larmet har
  mottagits.
 
-När dörrenheten larmar lokalt tänds en lampa för dörren, som kan kompleteras med ett tjutande ljud.
-genom att koppla in en högtalare till AUX-porten. ifall användaren väljer att koppla in en högtalare
-kommer dock enheten kunna stötta en dörr mindre. Detta är pågrund av att porten \textit{PA5} används
-till högtalaren och kan då inte längre stötta en dörr.
-
-Dörrenheten kan som tidigare nämnt köras utan uppkoppling till centralenheten. I det läget finns det dock inget centralt larm
-och dörrar kan inte konfigureras utöver standard värdena som är förinställda.
-
-
+När dörrenheten larmar lokalt tänds en lampa på dörren. Detta larmet kan kompletteras med ett  ljudljud
+genom att koppla in en högtalare på pinne A5 (port A, pinne 5). Ljudlarmet utlöses oavsett vilken dörr kopplad på enkortsdatorn som larmar. Användning av ljudlarmet sker på bekostnad av en dörr, då en dörr inte längre kan kopplas på A4-A5. 
 
 
 \subsubsection{Rörelseenheten}
@@ -487,7 +464,7 @@ att polling används istället för avbrott är att det endast finns 16 avbrotts
 
     \section{Kommandolista för centralenheten}
     \label{kommandon}
-        För att styra centralenheten används ett antal kommandon som beskrivs nedan. Då centralenheten har två separata lägen.
+        För att styra centralenheten används ett antal kommandon som beskrivs nedan. Centralenheten har två separata lägen med olika uppsättningar av kommandon.
 
     \textbf{start}\\
     Startar standardläge.
