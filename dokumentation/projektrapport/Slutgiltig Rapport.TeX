@@ -85,8 +85,8 @@ Baserat på denna undersökning verkar det finnas ett behov av ett skalbart larm
 Rapporten beskriver utvecklingen av ett modulärt larmsystem som i grunden består av MD407-enkortsdatorer\cite{MD407}.
 
 \subsection{Syfte} % Svarar på frågan "Varför"?
-Projekets syfte är att utveckla ett larmsystemets som ska vara ett finansiellt dynamiskt alternativ för företag \todo{Lång mening}
-och organisationer som har behov av skalningsbar och anpassad larmning beroende på nuvarande nödvändighet och finansiell \\ kapabilitet.
+Projekets syfte är att utveckla ett larmsystemets som ska vara ett finansiellt dynamiskt alternativ för företag
+och organisationer som har behov av skalningsbar och anpassningsbar larmning beroende på nuvarande nödvändighet och finansiell \\ kapabilitet.
 Detta uppnås genom att erbjuda mindre delsystem som kan kopplas ihop till ett större centraliserat system.
 
 Systemet ökar översikten och säkerheten av användarens lokaler genom att implementera konfigurerbar larmning av dörrar, samt rörelse- och vibrationsdetektering.
@@ -121,7 +121,7 @@ När samtliga enheter hade uppnått majoriteten av sin tänkta funktionalitet s�
 
 Periferienhets-grupperna byggde först system för att hantera initiering av relevanta GPIO-portar samt debugfunktioner, och fortsatte med att implementera funktioner för avmätning av sensorerna. Funktionalitet byggdes på och det sista som utvecklades var kommunikationen mellan periferienheterna och centralenheten.
 
-På centralenheten utvecklades först USART, samt ett antal debugfunktioner som kunde användas av alla enheter. Implementeringen av CAN-kommunikation på centralenheten styrde mycket av \todo[]{påverkade i hög grad?} hur CAN implementerades på de andra enheterna, då centralenheten är den som tar emot och skickar flest meddelanden.
+På centralenheten utvecklades först USART, samt ett antal debugfunktioner som kunde användas av alla enheter. Implementeringen av CAN-kommunikation på centralenheten påverkade mycket hur CAN implementerades på de andra enheterna, då centralenheten är den som tar emot och skickar flest meddelanden.
 
 Stora majoriten av mjukvaruutvecklingen och test har utförts på hårdvaran som beskrivs i rapporten, men en del av utvecklingen har skett med hjälp av simulerad hårdvara.
 
@@ -132,15 +132,15 @@ Programbiblioteket STM32F4\cite{stm} användes för:
 \begin{itemize}
     \item Initieringar och avläsning av enkortsdatorernas GPIO-portar.
     \item Implementation av en SystemTimer (SysTick).
-    \item "Väntetid"-funktionalitet. (Delay-funktioner)\todo[]{Ändra hela raden till "Fördröjning"?}
+    \item "Väntetid"-funktionalitet. (Delay-funktioner)
     \item Implementation av CAN-kommunikation.
 \end{itemize}
 
 
 
 \subsubsection{Verifikation}
-\label{verifikation}\todo[inline]{Ändra tempus?}
-För att utvärdera huruvida larmsystemet uppnår de mål och krav som formulerats i målet \todo[]{Referens till kapitlet?} används tester.
+\label{verifikation}
+För att utvärdera huruvida larmsystemet uppnår de mål och krav som formulerats i målet används tester.
 De tre undergrupperna har skrivit tester för sina respektive delsystem som försäkrar att delsystemen fungerar enligt specifikationen. Ett test som är skrivet av en undergrupp utförs av en annan undergrupp för att minimera partiskhet i utförandet.
 
 Testet för det kompletta centraliserade systemet formulerades och utfördes av gruppen som helhet.
@@ -161,17 +161,15 @@ Mjukvaran till larmsystemet körs på ett flertal MD407-enkortsdatorer, en för 
 
 \textbf{Polling} är ett protokoll som kontinuerligt frågar alla I/O-enheter om de behöver processering.\subsection{Systemöversikt}
 
-Systemet utgår från en centralenhet, kopplad till ett antal\todo{max 32} dörrenheter och rörelsenheter över en gemensam CAN-buss. Periferienheterna hanterar avmätning av sina respektive sensorer, samt begär larm via CAN-bussen vid behov. När det går ett centralt larm fortsätter larmet tills en användare slår av larmet via kommandon till centralenheten.
+Systemet utgår från en centralenhet, kopplad till ett antal, max 32, dörrenheter och rörelsenheter över en gemensam CAN-buss. Periferienheterna hanterar avmätning av sina respektive sensorer, samt begär larm via CAN-bussen vid behov. När det går ett centralt larm fortsätter larmet tills en användare slår av larmet via kommandon till centralenheten.
 
-Dörrenheten är kopplad till ett antal strömbrytare/dörrsensorer, och larmar då en dörr är öppen för länge, först lokalt och sedan centralt.
-\todo{och när en kopplas ur}
+Dörrenheten är kopplad till ett antal strömbrytare/dörrsensorer, och larmar då en dörr är öppen för länge, först lokalt och sedan centralt. Det larmas även centralt då en dörrsensor kopplas ur.
 
 Rörelseenheten har ett antal rörelse- och vibrationsensorer inkopplade. Rörelsesensorerna har centralt samt ett lokalt larm med det dubbla avståndet
 som larmar centralt respektive lokalt när sensorn detekterar något innaför dess larmavstånd.
 Rörelseenheten larmar även centralt när en vibrationssensor mäter en vibration.
 
-En översikt av hårdvaran och hur den är kopplad finns i Figur \ref{fig:hårdvara}. Värt att notera i figuren är att den endast visar en enhet av varje typ, samt bara en sensor av varje typ, medan det i själva verket kan kopplas in ett flertal till systemet.
-\todo{max 32 enheter}
+En översikt av hårdvaran och hur den är kopplad finns i Figur \ref{fig:hårdvara}. Värt att notera i figuren är att den endast visar en enhet av varje typ, samt bara en sensor av varje typ, medan det i själva verket kan kopplas in upp till 32 enheter till systemet.
 \begin{figure}[H] % Samma figur som projektplanen, då hårdvaran fortfarande ser likadan ut, det är värt att göra en ny innan slutgiltiga rapporten.
     \centering
     \includegraphics[width=1\textwidth]{figurer/HardvaraOversikt.png}
@@ -269,8 +267,7 @@ Centralenheten har följande två lägen:
     \item[Standardläge] Enheten väntar på larm-meddelanden från periferienheterna eller användarinput via USART. Dessutom skickar den regelbundet konfigurationen för anslutna dörrar och sensorer till periferienheterna, som förväntas bekräfta konfigurationen.
     Om en enhet inte svarar efter ett antal meddelanden går larmet.
 \end{description}
-\todo{lägen istället för lägena?}
-I båda lägena kan användaren hantera periferienheterna genom konfigurationsändringar. För lösenordsskyddade kommandon används en knappsats som låter användaren logga in med en fyrsiffrig pinkod.
+I båda lägen kan användaren hantera periferienheterna genom konfigurationsändringar. För lösenordsskyddade kommandon används en knappsats som låter användaren logga in med en fyrsiffrig pinkod.
 
 
 \subsubsection{Dörrenheten}
@@ -294,8 +291,7 @@ Port B är inte avsedd för dörranslutningar, utan används främst för CAN-\\
 med centralenheten. En LED-lampa kan även kopplas till \\ pinne 2 på port B. Denna lampa signalerar vid uppstart när systemets initiering är färdig.
 
 Vid uppstart initieras först portarna och pinnarna på mikrodatorn så att de kan adresseras
-och avläsas på rätt sätt. Därefter startas en SystemTimer (SysTick) som fungerar som klocka för delsystemet.
-\todo{SystemTimer särskrivs i arbetsmetod, och inte här}
+och avläsas på rätt sätt. Därefter startas en System Timer (SysTick) som fungerar som klocka för delsystemet.
 Då klockan är startad initieras CAN på port B, vilket möjliggör kommunikation med centralenheten. Fortsättningsvis detekterar systemet hur många dörrar som är kopplade på kortet, och på vilka pinnar de är kopplade. För att dörrarna ska kunna detekteras krävs det att de är stängda.
 
 Under detekteringen skapas datarepresentationer med förinställda värden för de dörrar som systemet
@@ -367,7 +363,6 @@ Efter detekteringen skapas datarepresentationer med förinställda värden för 
 sensorer som systemet hittat. Efter att samtliga datarepresentationer är skapade skickas
 en lista av de inkopplade sensorerna till centralenheten som bestämmer vilka sensorer som ska vara aktiva
 samt sätter centrala och lokala larmavståndet för rörelsesensorerna.
-\todo{Lokala larmavståndet beräknas på rörelseenheten}
 Systemet itererar nu över alla inkopplade sensorer enligt figur \ref{fig:MotionFlow}. \newpage
 
 
@@ -382,7 +377,6 @@ Rörelseenhetens flöde bygger på polling. Polling är smidigt då avståndsmä
 och behöver då ha timers som håller koll på detta. Ifall detta hade skett via fördröjningsfunktioner hade alla andra sensorer
 inte fungerat under pulsmätningar och en säkerhetsrisk skulle uppstå. Avbrottshantering är en annan lösning på problemet,
 men då alla sensorer prioriteras lika är polling den simplare lösningen.
-\todo{Kanske bara behöver nämna alternativa lösningar i diskussion}
 
 
 \textbf{Rörelsesensorn}:
