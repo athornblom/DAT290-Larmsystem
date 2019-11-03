@@ -63,7 +63,7 @@ I en undersökning\cite{brott-foretagarna} utförd av Sveriges största företag
 
 Baserat på denna undersökningen verkar det finnas ett behov för ett skalbart larmsystem där användaren kan justera omfattingen för larmet baserat på rådande nödvändighet och finansiell kapabilitet.
 
-Rapporten beskriver utvecklingen av ett modulärt larmsystem som i grunden består av MD407-enkortsdatorer.
+Rapporten beskriver utvecklingen av ett modulärt larmsystem som i grunden består av MD407-enkortsdatorer\cite{MD407}.
 
 \subsection{Syfte} % Svarar på frågan "Varför"?
 Projekets syfte är att utveckla ett larmsystemets som ska vara ett finansiellt dynamiskt alternativ för företag
@@ -433,8 +433,9 @@ Vibrationssensorn har endast central larm som skickas via CAN.
      \item Avlarmning av individuella dörrar från centralenheten.
      \item Dörrar kan konfigueras ifrån centralenheten.
      \item Lokal funktionalitet kräver inte uppkopplad centralenhet.
-
  \end{enumerate}
+
+ 
  För att säkerställa att funktionalitet ovan fungerar utfördes följande tester:
  \begin{enumerate}
      \item Test av pinnar för dörrar
@@ -446,18 +447,32 @@ Vibrationssensorn har endast central larm som skickas via CAN.
  Rörelseenheten har följande funktionalitet:
  \begin{enumerate}
  	\item Automatiskt detektera antalet inkopplade rörelse- och vibrationssensorer vid uppstart.
-	\item Larma vid upptäckt av vibrationer eller rörelse.
-    \item Central larmning via CAN-buss.
-	\item LED-lampa som signalerar när ett larm skickas till centralenheten.
+	\item Larma vid upptäckt av vibrationer, rörelse och urkoppling av aktiv sensor.
+    	\item Central larmning via CAN-buss.
+	\item Avlarmning via centralenheten.
+	\item Lokal larmning för rörelsesensorer via LED-lampa.
 	\item Konfigurerbart larmavstånd på rörelsesensorerna.
-	\item Avlarmning via centralenheten
+	\item Kalibrering av rörelsesensorerna via centralenheten.
  \end{enumerate}
+
+
  För att säkerställa att funktionalitet ovan fungerar utfördes följande tester:
  \begin{enumerate}
-     \item
+	\item Test av portar sam lokalt och centralt larm för rörelseenheten.\ref{test:PortMotion}
+	\item Konfiguration och kalibrering av rörelseenheten.\ref{test:MotionConfig}
+	\item Urkopplingslarm rörelseenheten.\ref{test:UrkopplingMotion}
  \end{enumerate}
  
  \subsection{Larmsystemet som helhet}
+ \todo[inline]{försöker så lite frön}
+ Larmsystemet som helhet fungerar enligt uppgiftsbeskrivning. Det består utav
+ en dörrenhet, en rörelse enhet och en centralenhet. De olika enheterna kommunicerar
+ via CAN. Både dörrenheten och rörelseenheten kan skicka centrala larm till centralenheten
+ efter en tid som man kan ställa in via centralenheten. Ifall en enhet försvinner ifrån
+ nätverket märks detta och användaren varnas. Enligt tester kan vi också 
+ med "confidence" säga att även med mycket brus på can bussen går larmen 
+ fram till centralenheten. Ifall en enhet larmar centralt men inte ackkrediteras skickar
+ den ett nytt larm för att säkerhetställa att meddelanden kommer fram.
 
 \newpage
 \section{Diskussion och slutsats}
