@@ -418,6 +418,8 @@ Utöver ovan nämnda tester är centralenheten involverad i alla de testar som i
 
 
  \subsection{Dörrenheten}
+
+
  Dörrenheten har följande funktionalitet:
  \begin{enumerate}
      \item Detektering av antalet stängda dörrar kopplade på enkortsdatorn.
@@ -482,10 +484,11 @@ och möjligheten att koppla upp flera rörelseenheter till samma centralenhet fi
 \newpage
 \section{Diskussion och slutsats}
 % Detta avsnitt innehåller en sammanfattning av konstruktionen och en diskussion av resultatet. Om detta är möjligt, dra slutsatser av ert projekt och identifiera förbättringsmöjligheter. (Vilka kan vara användbara för en beställare)
-\todo[]{fixa snyggt}\textbf{Polling} Utifrån prestandatestet som gjorts för dörrenheten dras slutsatsen att polling fungerar för dörrenheten då inga fördröjningar upptäcks. Teoretiskt kan detta vara snabbare än att använda avbrott då polling inte kräver kontextbyte. En annan anledning till
-att polling används istället för avbrott är att det endast finns 16 avbrottslinor medan systemet har stöd för upp till 32 dörrar. Därav hade någon form av polling behövt implementeras i avbrottsrutinerna.
 
-\todo[inline]{inte färdig}
+Tidigt i projektets gång var man tvungen att välja mellan polling eller avbrott för att respondera på externa händelser för dörr- och rörelseenheten.  Polling valdes dels för att koden blir lättare att först och lättare att underhålla, men även för att tanken med systemet är att inget larm ska ha högre prioritet än någon annan dörr. 
+
+Skulle man valt att implementera mjukvaran för dörrenheten med avbrott är den enda fördelen att man hade kunnat dela upp dörrarna så att de hade olika prioritet på CAN-bussen, vilket skulle kunna resultera i att vissa larm skulle kommit fram till centralenheten snabbare än de hade med polling. Men tiden man tjänar in handlar om millisekunder, och eftersom MD407-enkortsdatorn endast stöttar 16 avbrottslinor skulle man ändå behöva använda sig av någon form av polling ifall man vill ha mer än 16 dörrar. Prestandatestet som utfördes visade inte på någon märkbar fördröjning, så valet med polling känns högst befogat,  se bilaga \ref{test:performanceTest}
+
 
 % Referenser enligtIEEE.
 %För referenser
