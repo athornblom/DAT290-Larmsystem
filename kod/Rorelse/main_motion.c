@@ -63,7 +63,7 @@ int validPin(GPIO_TypeDef* port, uint16_t pin){
  * @brief Konfigurera GPIO portarna
  * 
  * @note 
- * Portar A, B, och C används till rörelsesensor; D och E används till vibrationsmätare.
+ * Portar A och C används till rörelsesensor; D och E används till vibrationsmätare.
  * För rörelsesensor används pinnar 3n, 3n + 1, 3n + 2, till trigg, echo, respektive lysdioden.
  * För vibrationsmätaren används jämna pinnar till DO (Sensor avmätning), och udda till lysdioder.
  * 

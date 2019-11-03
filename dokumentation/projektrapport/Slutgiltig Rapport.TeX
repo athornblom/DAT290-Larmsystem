@@ -27,18 +27,36 @@ Erik Nilsson, Adam Thörnblom, Ben Wooldridge}
 
 
 
+\usepackage{blindtext}
+
+\makeatletter
+\renewcommand{\contentsname}{Table of Contents}
+
+\newlength{\tocheaderrulewidth}
+\setlength{\tocheaderrulewidth}{2pt}
+
+\renewcommand\tableofcontents{%
+  \begingroup
+  \parindent=0em
+  \section*{\contentsname
+        \@mkboth{%
+           \MakeUppercase\contentsname}{\MakeUppercase\contentsname}}%
+   \endgroup
+
+  \@starttoc{toc}%
+ }
+\makeatother
 
 \begin{document}
 
 %Titelsida
 \maketitle
 \pagenumbering{gobble}
-\newpage
+\clearpage
 
 \tableofcontents
-\newpage
+\clearpage
 
-\pagenumbering{arabic}
 
 \section*{Beteckningar}
 \begin{itemize}
@@ -52,6 +70,7 @@ Erik Nilsson, Adam Thörnblom, Ben Wooldridge}
     \item \textbf{AUX} - Auxiliary
 \end{itemize}
 \newpage
+\pagenumbering{arabic}
 
 \section{Inledning}
 I en undersökning\cite{brott-foretagarna} utförd av Sveriges största företagsorganisation, \textit{Företagarna}, anger var tredje företag (n=983) att de blivit utsatta för minst ett brott någon gång under de senaste fem åren. Pontus Lindström, ansvarig för brott- och trygghetsfrågor hos Företagarna säger:
@@ -61,7 +80,7 @@ I en undersökning\cite{brott-foretagarna} utförd av Sveriges största företag
 
 25\% av de företag som blivit utsatta för minst ett brott anger att de inte anmält brottet till polisen. 36\% anger att de anmält något av brotten de utsatts för. Att anmälningsgraden är så låg tyder på att att företagen inte anser att det är värt besväret att anmäla brott till polisen. Företagen i undersökningen anger också att de känner sig tvungna att satsa stora summor på larmsystem, vilket för många enskilda firmor och handelsbolag inte alltid är genomförbart av finansiella skäl.
 
-Baserat på denna undersökningen verkar det finnas ett behov för ett skalbart larmsystem där användaren kan justera omfattingen för larmet baserat på rådande nödvändighet och finansiell kapabilitet.
+Baserat på denna undersökning verkar det finnas ett behov av ett skalbart larmsystem där användaren kan justera larmsystemets omfattning baserat på rådande nödvändighet och finansiell kapabilitet.
 
 Rapporten beskriver utvecklingen av ett modulärt larmsystem som i grunden består av MD407-enkortsdatorer\cite{MD407}.
 
@@ -89,8 +108,7 @@ utlöses skickas ett centralt larm via en CAN-buss till centralenheten. Känslig
 på rörelsesensorn konfigueras från centralenheten. Vibrationssensorn konfigueras direkt på hårdvaran.
 
 Centralenheten hanterar konfiguration av periferienheterna, samt fungerar som en
-central för samtliga\todo{inte lokala larm} larm som utlöses i systemet. Om ett centralt larm utlöses så
-kan det endast ackkrediteras och nollställas via centralenheten.
+central för samtliga centrala larm som utlöses i systemet. Om ett centralt larm utlöses kan det endast ackkrediteras och nollställas via centralenheten.
 \subsection{Arbetsmetod} % svarar på frågan "hur har vi gått tillväga i det tekniska utvecklingsarbetet"?
 
 I det här avsnittet beskrivs hur den tekniska utvecklingen gått till.
@@ -98,54 +116,50 @@ I det här avsnittet beskrivs hur den tekniska utvecklingen gått till.
 
 \subsubsection{Utveckling}
 
-Utvecklingen av mjukvaran har främst skett på enhetsnivå, dvs att mjukvaran på de olika enheterna utvecklats separat från varandra.
-När samtlliga enheter hade uppnåt majoriteten av sin tänkta funktionalitet så bytte utvecklingen fokus till att handla om att få enheterna att kommunicera med varandra via en CAN-buss.
+Utvecklingen av mjukvaran har främst skett på enhetsnivå, dvs. mjukvaran på de olika enheterna har utvecklats separat från varandra.
+När samtliga enheter hade uppnått majoriteten av sin tänkta funktionalitet så bytte utvecklingen fokus till att få enheterna att kommunicera med varandra via en CAN-buss.
 
-Periferienhets-grupperna byggde först system för att hantera initiering av relevanta GPIO portar samt debugfunktioner, och fortsatte med att implementera funktioner för avmätning av sensorerna. Funktionalitet byggdes på och det sista som utvecklades var kommunkiationen mellan periferienheterna och centralenheten.
+Periferienhets-grupperna byggde först system för att hantera initiering av relevanta GPIO-portar samt debugfunktioner, och fortsatte med att implementera funktioner för avmätning av sensorerna. Funktionalitet byggdes på och det sista som utvecklades var kommunikationen mellan periferienheterna och centralenheten.
 
-På centralenheten utvecklades först USART, samt ett antal debugfunktioner som kunde användas av alla enheter. Implemteringen av CAN-kommunikation på centralenheten styrde mycket av hur CAN implementerades på de andra enheterna, då centralenheten är den som tar emot och skickar flest meddelanden.
+På centralenheten utvecklades först USART, samt ett antal debugfunktioner som kunde användas av alla enheter. Implementeringen av CAN-kommunikation på centralenheten styrde mycket av \todo[]{påverkade i hög grad?} hur CAN implementerades på de andra enheterna, då centralenheten är den som tar emot och skickar flest meddelanden.
 
 Stora majoriten av mjukvaruutvecklingen och test har utförts på hårdvaran som beskrivs i rapporten, men en del av utvecklingen har skett med hjälp av simulerad hårdvara.
 
 \subsubsection{Programbibliotek}
 \label{stm}
-Ett STM32F4-biblioteket har används för att bespara arbetstid.
-Programbiblioteket STM32F4\cite{stm} används för:
+Ett STM32F4-biblioteket har använts för att spara arbetstid.
+Programbiblioteket STM32F4\cite{stm} användes för:
 \begin{itemize}
-    \item Initieringar och avläsning av enkortsdatorernas GPIO portar.
-    \item Implementation av en System Timer (SysTick).
-    \item "Väntetid'-funktionalitet. (Delay-funktioner)
+    \item Initieringar och avläsning av enkortsdatorernas GPIO-portar.
+    \item Implementation av en SystemTimer (SysTick).
+    \item "Väntetid"-funktionalitet. (Delay-funktioner)\todo[]{Ändra hela raden till "Fördröjning"?}
     \item Implementation av CAN-kommunikation.
 \end{itemize}
 
 
 
 \subsubsection{Verifikation}
-\label{verifikation}
-För att utvärdera huruvida larmsystemet uppnår de mål och krav som formulerats i målet används tester.
-De tre undergrupperna har skrivit tester för sina respektive delsystem som försäkrar att
-delsystemen fungerar enligt specifikationen. Ett test som är skrivet av en undergrupp utförs
-av en annan undergrupp för att minimera partiskhet i utförandet.
+\label{verifikation}\todo[inline]{Ändra tempus?}
+För att utvärdera huruvida larmsystemet uppnår de mål och krav som formulerats i målet \todo[]{Referens till kapitlet?} används tester.
+De tre undergrupperna har skrivit tester för sina respektive delsystem som försäkrar att delsystemen fungerar enligt specifikationen. Ett test som är skrivet av en undergrupp utförs av en annan undergrupp för att minimera partiskhet i utförandet.
 
 Testet för det kompletta centraliserade systemet formulerades och utfördes av gruppen som helhet.
 
 För att se samtliga testspecifikationer, samt resultat och analys, se bilaga \ref{bilaga:tester}.
 
 \subsubsection{Fildelning och versionshantering}
-Arbetsgruppen valde att använda versionshanteringstjänsten GIT för att förenkla den parallella programmeringen, och för att samla alla filer på ett ställe. GIT-filsamlingen förvarades med hjälp av tjänsten github. GIT-Tjänsten har fungerat väl och även underlättat dokumentering, då även den förvarades i filsamlingen.
+Arbetsgruppen valde att använda versionshanteringstjänsten GIT för att förenkla den parallella programmeringen, och för att samla alla filer på ett ställe. GIT-filsamlingen förvarades med hjälp av tjänsten Github. GIT-tjänsten har fungerat väl och även underlättat dokumentering, då även den förvarades i filsamlingen.
 
 \newpage
 \section{Teknisk beskrivning} % Vad är utgångspunkten för i förkonstruktionsarbetet?
-I det här avsnittet presenteras teknisk information som är nödvändig för att få en djupare insikt i hur den tekniska utvecklingen gått till, samt hur de olika delsystem fungerar och interagerar för att bygga upp systemet som helhet.
+I detta avsnitt presenteras teknisk information som är nödvändig för att få en djupare insikt i hur den tekniska utvecklingen gått till, samt hur de olika delsystemen fungerar och interagerar för att bygga upp systemet som helhet.
 \subsection{Teknisk bakgrund}
 Mjukvaran till larmsystemet körs på ett flertal MD407-enkortsdatorer, en för varje enhet.
 
-\textbf{STM32-Programbibliotek}\cite{stm} är ett programbibliotek som har generellt skrivna funktioner som
-redan skrivits för ARM.
-\todo[inline]{Mitt förslag är att ist skriva\\
-är ett programbibliotek som har vanliga funktioner som ofta används för ARM}
+\textbf{STM32-Programbibliotek}\cite{stm} är ett programbibliotek som har vanliga funktioner som ofta används för ARM
 
-\textbf{Polling} är ett protokoll som frågar alla I/O Enheter kontinuerligt ifall de behöver proccesering.\subsection{Systemöversikt}
+
+\textbf{Polling} är ett protokoll som kontinuerligt frågar alla I/O-enheter om de behöver processering.\subsection{Systemöversikt}
 
 Systemet utgår från en centralenhet, kopplad till ett antal\todo{max 32} dörrenheter och rörelsenheter över en gemensam CAN-buss. Periferienheterna hanterar avmätning av sina respektive sensorer, samt begär larm via CAN-bussen vid behov. När det går ett centralt larm fortsätter larmet tills en användare slår av larmet via kommandon till centralenheten.
 
@@ -360,7 +374,7 @@ Systemet itererar nu över alla inkopplade sensorer enligt figur \ref{fig:Motion
 \begin{figure}
 \centering
 \includegraphics[scale=0.3]{figurer/FlowchartMotion.png}
-\caption{Flödesschema över rörelseenheten.}
+\caption{Flödesschema över rörelseenheten funktionalitet som visar vilka beslut systemet tar beroende på externa och interna händelser.}
  \label{fig:MotionFlow}
 \end{figure}
 
@@ -394,7 +408,7 @@ Sensorn sänder kontinuerligt en hög puls till MD407-enkortsdatorn utom när de
 känner av vibrationer, då den istället sänder en låg puls. Sensorns känslighet justeras fysiskt genom en komparator på sensorn.
 Vibrationssensorn har endast central larm som skickas via CAN.
 
-\newpage
+\clearpage
  \section{Resultat}
  För kompletta testspecifikationer hänvisas till bilaga \ref{bilaga:tester}.
 
@@ -502,21 +516,24 @@ Rörelseenheten har följande funktionalitet:
 \section{Diskussion och slutsats}
 % Detta avsnitt innehåller en sammanfattning av konstruktionen och en diskussion av resultatet. Om detta är möjligt, dra slutsatser av ert projekt och identifiera förbättringsmöjligheter. (Vilka kan vara användbara för en beställare)
 
-Tidigt i projektets gång var vi tvungna att välja mellan polling eller avbrott för att respondera på externa händelser för dörr- och rörelseenheten.  Polling valdes dels för att koden blir lättare att förstå och lättare att underhålla, men även för att tanken med systemet är att inget larm ska ha högre prioritet än något annat. 
+Tidigt i projektets gång var vi tvungna att välja mellan polling eller avbrott för att respondera på externa händelser för dörr- och rörelseenheten.  Polling valdes dels för att koden blir lättare att förstå och lättare att underhålla, men även för att tanken med systemet är att inget larm ska ha högre prioritet än något annat.
 
-Skulle dörrenhetens mjukvara utvecklats med avbrott hade den enda fördelen varit möjligheten att dela upp dörrarna så att de hade olika prioritet på CAN-bussen, vilket skulle kunna resultera i att vissa larm skulle kommit fram till centralenheten snabbare än de hade med polling. 
-Tiden man tjänar in handlar om millisekunder, och eftersom MD407-enkortsdatorn endast stöttar 16 avbrottslinor skulle det ändå behövas  någon form av polling ifall systemet ska ha mer än 16 dörrar. 
+Skulle dörrenhetens mjukvara utvecklats med avbrott hade den enda fördelen varit möjligheten att dela upp dörrarna så att de hade olika prioritet på CAN-bussen, vilket skulle kunna resultera i att vissa larm skulle kommit fram till centralenheten snabbare än de hade med polling.
+Tiden man tjänar in handlar om millisekunder, och eftersom MD407-enkortsdatorn endast stöttar 16 avbrottslinor skulle det ändå behövas  någon form av polling ifall systemet ska ha mer än 16 dörrar.
 Prestandatestet som utfördes visade inte på någon märkbar fördröjning, så valet med polling känns högst befogat, se bilaga \ref{test:prestandaTest}
 
-Polling har även använts till stor fördel inom rörelseenheter, med hjälp av polling kan flera rörelsensorer mätas av samtidigt, då det inte behövs blockerande väntetid-funktioner för att mäta/vänta en specifik tid. 
+Polling har även använts till stor fördel inom rörelseenheter, med hjälp av polling kan flera rörelsensorer mätas av samtidigt, då det inte behövs blockerande väntetid-funktioner för att mäta/vänta en specifik tid.
 Uppoffringen som görs är precision, med ett polling system är det svårt att vänta exakta tider, då det endast kollas ifall en tidsvariabel har överstigit en annan, och det går lite tid mellan att dessa villkor kollas.
 Denna tid är dock såpass liten och skillnader i väntetider är såpass osignifikanta att det inte påverkar systemets funktionalitet, se bilaga \ref{test:MotionPrestanda}.
 
+Systemet klarar av att skydda sig mot simpla uppspelningsattacker men ifall någon har lite insikt i hur systemet skyddar sig mot detta
+skulle en attack mot systemet vara möjligt. En framtida förbättring skulle vara att implementera krypterade meddelanden för
+att öka systemets säkerhet.
 
 Samtliga delsystem har uppnått de grundkrav som formulerades i målsättningen, men även utrustats med
 ytterligare funktionalitet som varit naturlig att implementera under projektets gång. Rörelse- och dörrenheten
 kan ha upp till 23 respektive 32 sensorer och centralenheten kan ha upp till 32 periferienheter.
-Med denna information kan vi dra slutsatsen att ett skalbart larmsystem är uppnåt.
+Med denna information kan vi dra slutsatsen att ett skalbart larmsystem är uppnåt, dock finns det rum för säkerhetsutveckling.
 % Referenser enligtIEEE.
 %För referenser
 \bibliographystyle{IEEEtran}
