@@ -239,11 +239,10 @@ För att säkerställa att åtgärden för att hindra återspelningsattacker fun
 
 \subsection{Delsystem }
 \subsubsection{Centralenheten}
-%\label{subsec:centralenhet}
-
+\label{subsec:centralenhet}
 \begin{figure}[H]
     \centering
-    \includegraphics[scale=0.4]{figurer/Centralenhet.png}
+    \includegraphics[scale=0.3]{figurer/Centralenhet.png}
     \caption{Flödesschema för centralenhetens mjukvara.}
     \label{fig:centralflöde}
 \end{figure}
@@ -408,7 +407,6 @@ Sensorn sänder kontinuerligt en hög puls till MD407-enkortsdatorn utom när de
 känner av vibrationer, då den istället sänder en låg puls. Sensorns känslighet justeras fysiskt genom en komparator på sensorn. 
 Vibrationssensorn har endast central larm som skickas via CAN.
 
-\newpage
  \section{Resultat}
  För kompletta testspecifikationer hänvisas till bilaga \ref{bilaga:tester}.
 
@@ -432,10 +430,11 @@ Vibrationssensorn har endast central larm som skickas via CAN.
  \begin{enumerate}
      \item Detektering av antalet stängda dörrar kopplade på enkortsdatorn.
      \item Signalering via LED-lampa som indikerar att dörrenhetens initiering är färdig.
-     \item Lokal larmning via LED-lampa.
+     \item Lokal larmning via LED-lampa och ljud.
      \item Central larmning via CAN-buss.
      \item Går att konfiguera väntetider innan larm från centralenheten.
      \item Avlarmning av individuella dörrar från centralenheten.
+     \item Dörrar kan konfigueras ifrån centralenheten.
      \item Lokal funktionalitet kräver inte uppkopplad centralenhet.
 
  \end{enumerate}
