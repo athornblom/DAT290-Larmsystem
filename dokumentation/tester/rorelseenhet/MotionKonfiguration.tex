@@ -43,17 +43,18 @@ Säkerställa att konfigurationsmeddelanden och kalibrering från centralenheten
 
 \subsubsection*{Utförande}
 %Hur ska testet utföras?
-Koppla upp rörelseenheten till centralenheten och ha en rörelsesensor och en vibrationssensor inkopplad. Skicka konfiguration från centralenheten som säger att de båda sensorerna ska vara aktiva och sätt larmavståndet för rörelsesensorn till 20 cm. Testa nu att larma de båda enheterna. Avlarma sedan båda enheterna. Inaktivera nu de båda sensorerna från centralenheten och verifiera att du ej längre kan larma dem. Aktivera nu rörelsesensorn igen. 
-Håll nu ett objekt 40 cm ifrån rörelsesensorn och kalibrera sensorn via centralenheten genom att skicka kalibreringsvärdet 20 cm. Rör sedan obejktet 1 cm närmare och verifiera att rörelsesensorn larmar.
+Koppla upp rörelseenheten till centralenheten och ha en rörelsesensor och en vibrationssensor inkopplad. Skicka konfiguration från centralenheten som säger att de båda sensorerna ska vara aktiva och sätt larmavståndet för rörelsesensorn till 20 cm. Testa nu att utlösa sensorernas larm. Avlarma sedan båda sensorerna. Inaktivera nu de båda sensorerna från centralenheten och verifiera att du ej längre kan larma dem. Aktivera nu rörelsesensorn igen. 
+Håll nu ett objekt 40 cm ifrån rörelsesensorn och kalibrera sensorn via centralenheten genom att skicka kalibreringsvärdet 20 cm. Rör sedan obejktet några centimeter närmare och verifiera att rörelsesensorn larmar.
 
 
 \subsubsection*{Resultat}
 %Vad är testresultatet? Hittades några buggar?
+Konfigurering, larmning samt avlarmning fungerade som förväntat. Vid kalibrering var det svårt att hålla reda på kommandona men när det väl löste sig så gick kalibreringen bra och sensorn larmade på ett onaturligt långt avstånd precis som förväntat.
 
 
 
 \subsubsection*{Analys}
 %Vad innebär testets resultat? Behövs fler test av komponenten? Behöver andra komponenter testas ytterligare, och i så fall hur?
-
+Konfigurering samt kalibrering fungerar för rörelsesensorn. Kommandohanteringen skulle kunna göras enklare underlätta för användaren.
 
 
