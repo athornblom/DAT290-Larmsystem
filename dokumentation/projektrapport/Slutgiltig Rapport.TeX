@@ -63,7 +63,7 @@ I en undersökning\cite{brott-foretagarna} utförd av Sveriges största företag
 
 Baserat på denna undersökningen verkar det finnas ett behov för ett skalbart larmsystem där användaren kan justera omfattingen för larmet baserat på rådande nödvändighet och finansiell kapabilitet.
 
-Rapporten beskriver utvecklingen av ett modulärt larmsystem som i grunden består av MD407-enkortsdatorer.
+Rapporten beskriver utvecklingen av ett modulärt larmsystem som i grunden består av MD407-enkortsdatorer\cite{MD407}.
 
 \subsection{Syfte} % Svarar på frågan "Varför"?
 Projekets syfte är att utveckla ett larmsystemets som ska vara ett finansiellt dynamiskt alternativ för företag
@@ -93,26 +93,13 @@ central för samtliga larm som utlöses i systemet. Om ett centralt larm utlöse
 kan det endast ackkrediteras och nollställas via centralenheten.
 \subsection{Arbetsmetod} % svarar på frågan "hur har vi gått tillväga i det tekniska utvecklingsarbetet"?
 
-I det här avsnittet beskrivs hur det tekniska abretet har skett, samt hur gruppen har delat upp arbetsområden.
+I det här avsnittet beskrivs hur den tekniska utvecklingen gått till.
 
-\subsubsection{Undergrupper}
-För att jämna ut arbetsbelastningen delades projektgruppen in i tre grupper om två personer vardera,
-en för varje enhetstyp.
 
-\textbf{Centralenheten}: Gruppens uppgift var att få centralenheten att kunna konfigurera
-periferienheterna, ta emot och behandla larm, samt implementera CAN-kommunkation och USART.
+\subsubsection{Utveckling}
 
-\textbf{Dörrenheten}: Gruppen hade ansvar för att alla dörrar skall vara uppkopplade och kunna larma.
-
-\textbf{Rörelseenheten}: Gruppens uppgift var att utveckla mjukvaran till
-rörelse- och vibrationssensorerna för larmning av t.ex. fönster och värdefulla föremål.
-
-Samtliga grupper har haft ansvar att sköta implementeringen av CAN meddelande på sin egen enhet, samt att bestäma innehållet av meddelanden relevanta till enheten.
-
-\subsubsection{Tillvägagång}
-
-Utvecklingen av mjukvaran har skett till stor del på en enhetsnivå, det vill säga att mjukvaran på de olika enheterna utvecklades separat från varandra. 
-Först när alla enheter var färdigutvecklade kopplades de till varandra och arbetet fokuserade då på att implementera CAN-kommunikation.
+Utvecklingen av mjukvaran har främst skett på enhetsnivå, dvs att mjukvaran på de olika enheterna utvecklats separat från varandra. 
+När samtlliga enheter hade uppnåt majoriteten av sin tänkta funktionalitet så bytte utvecklingen fokus till att handla om att få enheterna att kommunicera med varandra via en CAN-buss.
 
 Periferienhets-grupperna byggde först system för att hantera initiering av relevanta GPIO portar samt debugfunktioner, och fortsatte med att implementera funktioner för avmätning av sensorerna. Funktionalitet byggdes på och det sista som utvecklades var kommunkiationen mellan periferienheterna och centralenheten.
 
@@ -147,24 +134,25 @@ För att se samtliga testspecifikationer, samt resultat och analys, se bilaga \r
 \subsubsection{Fildelning och versionshantering}
 Arbetsgruppen valde att använda versionshanteringstjänsten GIT för att förenkla den parallella programmeringen, och för att samla alla filer på ett ställe. GIT-filsamlingen förvarades med hjälp av tjänsten github. GIT-Tjänsten har fungerat väl och även underlättat dokumentering, då även den förvarades i filsamlingen.
 
+\newpage
 \section{Teknisk beskrivning} % Vad är utgångspunkten för i förkonstruktionsarbetet?
-I det här avsnittet presenteras teknisk information som är nödvändig för att få en djupare insikt i hur den tekniska utvecklingen gått till, samt hur de olika delsystem interagerar för att bygga upp systemet som helhet.
+I det här avsnittet presenteras teknisk information som är nödvändig för att få en djupare insikt i hur den tekniska utvecklingen gått till, samt hur de olika delsystem fungerar och interagerar för att bygga upp systemet som helhet.
 \subsection{Teknisk bakgrund}
-Mjukvaran till larmsystemet körs på ett flertal MD407-kort, ett för varje enhet.
+Mjukvaran till larmsystemet körs på ett flertal MD407-enkortsdatorer, en för varje enhet.
 
 \textbf{STM32-Programbibliotek}\cite{stm} är ett programbibliotek som har generellt skrivna funktioner som 
 redan skrivits för ARM.
 
-\textbf{Polling} är ett protokoll som frågar alla I/O Enheter kontinuerligt ifall de behöver proccesering.
-\subsection{Systemöversikt}
+\textbf{Polling} är ett protokoll som frågar alla I/O Enheter kontinuerligt ifall de behöver proccesering.\subsection{Systemöversikt}
 
-Systemet utgår från en centralenhet, kopplad till en dörrenhet och en rörelsenhet över en gemensam CAN-buss. Periferienheterna hanterar avmätning av sina respektive sensorer, samt begär larm via CAN-bussen vid behov. När det går ett centralt larm fortsätter larmet tills en användare slår av larmet via en pin-kod till centralenheten.
+Systemet utgår från en centralenhet, kopplad till ett antal dörrenheter och rörelsenheter över en gemensam CAN-buss. Periferienheterna hanterar avmätning av sina respektive sensorer, samt begär larm via CAN-bussen vid behov. När det går ett centralt larm fortsätter larmet tills en användare slår av larmet via kommandon till centralenheten.
 
 Dörrenheten är kopplad till ett antal strömbrytare/dörrsensorer, och larmar då en dörr är öppen för länge, först lokalt och sedan centralt.
-Rörelseenheten är kopplad till ett antal avstånds- och vibrationsensorer, och larmar centralt om ett föremål detekteras av en avståndsmätare inom konfigurerbart avstånd.
-Rörelseenheten larmar även centralt om en vibrationssensor mäter ett konfigurerbar antal vibrationer inom en viss tidsram. % Lite flummig beskrivning kanske, får ändra när koden är klar.
 
-En översikt av hårdvaran och hur den är kopplad finns i Figur \ref{fig:hårdvara}.
+Rörelseenheten är kopplad till ett antal avstånds- och vibrationsensorer, och larmar centralt om ett föremål detekteras av en avståndsmätare inom konfigurerbart avstånd, och lokalt ifall det dubbla värdet uppmäts.
+Rörelseenheten larmar även centralt när en vibrationssensor mäter en vibration, känsligheten för vibrationssensorn kan justeras på hårdvåran.
+
+En översikt av hårdvaran och hur den är kopplad finns i Figur \ref{fig:hårdvara}. Värt att notera i figuren är att den endast visar en enhet av varje typ, samt bara en sensor av varje typ, medan det i själva verket kan kopplas in ett flertal till systemet.
 \begin{figure}[H] % Samma figur som projektplanen, då hårdvaran fortfarande ser likadan ut, det är värt att göra en ny innan slutgiltiga rapporten.
     \centering
     \includegraphics[width=1\textwidth]{figurer/HardvaraOversikt.png}
@@ -172,16 +160,16 @@ En översikt av hårdvaran och hur den är kopplad finns i Figur \ref{fig:hårdv
     \label{fig:hårdvara}
 \end{figure}
 
-När centralenheten samt periferienheterna startar befinner de sig i konfigurationsläge,
- där varje enhet konfigurerar sig på lokal nivå (USART, CAN-bussen, GPIO), varpå centralenheten skickar konfigurationer till periferienheterna, som de använder för att konfigurera sina respektive sensorer.
- Efter att ha konfigurerats går enheterna in i var sin kontinuerlig loop. Periferienheterna mäter ständigt av sensorerna och skickar larm-meddelanden över CAN-bussen till centralenheten vid behov. Centralenheten skickar periodiskt konfigurationer till periferienheterna och larmar om dessa inte bekräftas.
+När centralenheten samt periferienheterna startar befinner de sig i konfigurationsläge, där varje enhet konfigurerar sig på lokal nivå (USART CAN-bussen, GPIO), varpå centralenheten skickar konfigurationer till periferienheterna, som de använder för att konfigurera sina respektive sensorer.
+Efter att ha konfigurerats går enheterna in i var sin kontinuerlig loop. Periferienheterna mäter ständigt av sensorerna och skickar larm-meddelanden över CAN-bussen till centralenheten vid behov. Centralenheten skickar periodiskt konfigurationer till periferienheterna och larmar ifall dessa inte bekräftas.
 
 En överblick av mjukvarans tidsflöde finns i figur \ref{fig:tidsflöde}.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=1\textwidth]{figurer/TidsFlode.jpg}
-    \caption{Tidsflöde Mjukvara}
+    \caption{En översitlig beskrivning av logik-flödet för systemets mjukvara. Övre halvan för varje enhet är en initieringsfas,
+    och nedre halvan representerar enheternas 'huvudloop' som är aktiv när systemet är i drift.}
     \label{fig:tidsflöde}
 \end{figure}
 
@@ -206,8 +194,8 @@ Denna prioritering har använts för att ge brådskande meddelanden företräde 
 		Bekräftelse		& Bekräftelse för senast mottagna meddelandet. \\ \hline
 		Skicka larm		& Talar om för centralenheten om någon dörr eller sensor larmar. \\ \hline
 		Konfiguration		& Används för att skicka sensorkonfiguration och kalibrering. \\ \hline
-		Tilldelning av ID		& Används då centralenheten tilldelar en periferienhet dess ID. \\ \hline
-		ID-begäran		& Används för att begära ett ID. \\ \hline
+		Tilldelning av id		& Används då centralenheten tilldelar en periferienhet dess id. \\ \hline
+		Id-begäran		& Används för att begära ett id. \\ \hline
 
 	\end{tabular}
 	\caption{Meddelandetyper som används för datakommunikationen.}
@@ -238,25 +226,22 @@ För att säkerställa att åtgärden för att hindra återspelningsattacker fun
 
 \subsection{Delsystem }
 \subsubsection{Centralenheten}
-%\label{subsec:centralenhet}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[scale=0.4]{figurer/Centralenhet.png}
-    \caption{En översitlig beskrivning av logik-flödet för systemets mjukvara. Övre halvan för varje enhet är en initieringsfas,
-    och nedre halvan representerar enheternas 'huvudloop' som är aktiv när systemet är i drift.}
-    \label{fig:centralflöde}
-\end{figure}
+\label{subsec:centralenhet}
 
 Centralenheten styr och har uppsikt över periferienheterna enligt figur \ref{fig:centralflöde}.
 Inställningar görs via USART med kommandon enligt bilaga \ref{kommandon}, varpå de vidarebefordras till rätt periferienhet via CAN.
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.3]{figurer/Centralenhet.png}
+    \caption{Flödesschema för centralenhetens viktigaste funktionalitet.}
+    \label{fig:centralflöde}
+\end{figure}
+
 Centralenheten har följande två lägen:
 
 \begin{description}
-    \item[Startläge] I detta läge accepterar centralenheten sammankoppling med periferienheter genom att lyssna på deras ID-begäransmeddelanden och därefter tilldela dem ID:n.
-    
-    Då centralenheten är i detta läge kan periferienheter ansluta sig till den genom att skicka en ID-begäran via CAN, varpå centralenheten skickar tillbaka ett ID.
+    \item[Startläge] Då centralenheten är i detta läge kan periferienheter ansluta sig till den genom att skicka en id-förfrågan via CAN, varpå centralenheten skickar tillbaka ett id.
 
     
     \item[Standardläge] Enheten väntar på larm-meddelanden från periferienheterna eller användarinput via USART. Dessutom skickar den regelbundet konfigurationen för anslutna dörrar och sensorer till periferienheterna, som förväntas bekräfta konfigurationen.
@@ -267,8 +252,8 @@ I båda lägena kan användaren hantera periferienheterna genom konfigurationsä
 
 
 \todo[inline]{Hur mycket av följande stycke behövs egentligen?} 
-För att kunna adressera olika periferienheter måste centralenheten tilldela dessa varsitt unikt ID.
-Detta görs i startläget genom att varje enhet som saknar ID skickar en förfrågan via CAN. Då periferienheten i denna fas saknar id skickar den ett tillfälligt 32-bitars slumpgenererat id i datafältet för att låta centralenheten särkilja den från andra periferienheter som saknar id.
+För att kunna adressera olika periferienheter måste centralenheten tilldela dessa varsitt unikt id.
+Detta görs i startläget genom att varje enhet som saknar id skickar en förfrågan via CAN. Då periferienheten i denna fas saknar id skickar den ett tillfälligt 32-bitars slumpgenererat id i datafältet för att låta centralenheten särkilja den från andra periferienheter som saknar id.
 När centralenheten har tagit emot en sådan förfrågan skickar den tillbaka det lägsta lediga id:t och skapar en ny instans av en struktur som representerar periferienheten och lägger den i en lista. Strukturen innehåller enhetens id, tillfälliga id och konfiguration (d.v.s. tider för varje dörr för dörrenheter respektive avstånd för varje avståndssensor och antal vibrationssensorer för rörelseenheter). Om periferienheten inte tar emot sitt id och därför skickar en ny förfrågan görs detta med samma tillfälliga id, vilket låter centralenheten tilldela den samma id igen.
 Id:t används för att adressera meddelanden till samt identifiera meddelanden från enheten. Det är också periferienhetens index i centralenhetens lista, vilket gör det mycket effektivt att hitta rätt enhet i listan när dess id har lästs i CAN-meddelandet.
 
@@ -386,12 +371,11 @@ men då alla sensorer prioriteras lika är polling den simplare lösningen.
 
 \textbf{Rörelsesensorn}:
 En rörelsesensor tar upp 3 pinnar och får därmed plats med 5 rörelsesensorer per port.
-Trig- och echo-pinnen från HC-SR04 samt en LED-lampan kopplas resepktive till  pin-n, -(n+1) och -(n+2).
+Trig- och echo-pinnen från HC-SR04 samt en LED-lampan kopplas resepktive till  pin-\textit{n}, -$(n+1)$ och -$(n+2)$.
 
 
 Sensorn aktiveras genom att MD407-enkortsdatorn skickar en hög puls till sensorn i minst 10 mikrosekunder, 
-varpå sensorn skickar ut ultraljudsvågor och sänder en hög puls till MD407-enkortsdatorn fram tills 
-ultraljudsvågorna har återvänt. Avståndet till närmaste föremål beräknas genom att mäta längden på pulsen.
+varpå sensorn skickar ut ultraljudsvågor och sänder en hög puls till MD407-enkortsdatorn fram tills ultraljudsvågorna har återvänt. Avståndet till närmaste föremål beräknas genom att mäta längden på pulsen.
 HC-SR04 kan mäta avstånd upp till 400 cm och det centrala samt lokala larmavståndet är justerbart från centralenheten.
 
 Rörelsesensorn har både centralt och lokalt larm. Avståndet för centrala larmet ställs in av centralenheten via CAN-kommunikation 
@@ -402,7 +386,7 @@ det lokala larmavståndet.
 
 \textbf{Vibrationssensorn}:
 En vibrationssensor tar upp 2 pinnar och får därmed plats med 8 vibrationssensorer per port. 
-En pinne för digital-ouput från SW-18010P och en LED-lampa kopplas till pin-n respektive pin-(n+1).
+En pinne för digital-ouput från SW-18010P och en LED-lampa kopplas till pin-\textit{n} respektive pin-$(n+1)$.
 
 Sensorn sänder kontinuerligt en hög puls till MD407-enkortsdatorn utom när den
 känner av vibrationer, då den istället sänder en låg puls. Sensorns känslighet justeras fysiskt genom en komparator på sensorn. 
@@ -416,14 +400,20 @@ Vibrationssensorn har endast central larm som skickas via CAN.
  \subsection{Centralenheten}
  Centralenheten har följande funktionalitet:
  \begin{enumerate}
-     \item Tilldelning av ID till periferienheter.
+     \item Tilldelning av id till periferienheter.
      \item Konfiguration av periferienheter via USART.
      \item Automatisk detektering av enheter som lämnar nätverket.
      \item Larmhantering.
  \end{enumerate}
+
+ \begin{itemize}
+\color{white}
+\item Abra kadabra blankrad!
+\end{itemize}
+
  För att säkerställa att funktionalitet ovan fungerar utfördes följande tester:
  \begin{enumerate}
-     \item Test av ID-tilldelning och larmmeddelnade se bilaga \ref{test:idLarm}.
+     \item Test av id-tilldelning och larmmeddelnade se bilaga \ref{test:idLarm}.
      \todo{Kommer kompleteras med fler tester.}
  \end{enumerate}
  
@@ -432,36 +422,59 @@ Vibrationssensorn har endast central larm som skickas via CAN.
  \begin{enumerate}
      \item Detektering av antalet stängda dörrar kopplade på enkortsdatorn.
      \item Signalering via LED-lampa som indikerar att dörrenhetens initiering är färdig.
-     \item Lokal larmning via LED-lampa.
+     \item Lokal larmning via LED-lampa och ljud.
      \item Central larmning via CAN-buss.
      \item Går att konfiguera väntetider innan larm från centralenheten.
      \item Avlarmning av individuella dörrar från centralenheten.
+     \item Dörrar kan konfigueras ifrån centralenheten.
      \item Lokal funktionalitet kräver inte uppkopplad centralenhet.
-
  \end{enumerate}
+
+
+ \begin{itemize}
+\color{white}
+\item Hokus pokus jag har tappat mitt fokus.
+\end{itemize}
+ 
  För att säkerställa att funktionalitet ovan fungerar utfördes följande tester:
  \begin{enumerate}
      \item Test av pinnar för dörrar
      \item Test av lokal drift
-     \item Test av ID-tilldelning och larm
+     \item Test av id-tilldelning och larm
  \end{enumerate}
 
  \subsection{Rörelseenheten}
+Rörelseenheten klarar av  exekvera kod för flertalet vibrations- och rörelsesensorer samtidigt, upp till 29 sensorer, 
+och möjligheten att koppla upp flera rörelseenheter till samma centralenhet finns.
+
  Rörelseenheten har följande funktionalitet:
  \begin{enumerate}
  	\item Automatiskt detektera antalet inkopplade rörelse- och vibrationssensorer vid uppstart.
-	\item Larma vid upptäckt av vibrationer eller rörelse.
-    \item Central larmning via CAN-buss.
-	\item LED-lampa som signalerar när ett larm skickas till centralenheten.
-	\item Konfigurerbart larmavstånd på rörelsesensorerna.
-	\item Avlarmning via centralenheten
+	\item Larma vid upptäckt av vibrationer, rörelse och urkoppling av aktiv sensor.
+    	\item Central larmning via CAN-buss.
+	\item Avlarmning via centralenheten.
+	\item Lokal larmning för rörelsesensorer via LED-lampa.
+	\item Sensorerna är konfigurerbara från centralenheten.
+	\item Kalibrering av rörelsesensorerna via centralenheten.
  \end{enumerate}
+
+ \begin{itemize}
+\color{white}
+\item Sim sala bim, nu är det radbyte!
+\end{itemize}
+
  För att säkerställa att funktionalitet ovan fungerar utfördes följande tester:
  \begin{enumerate}
-     \item
+	\item Test av portar samt lokalt och centralt larm för rörelseenheten.\ref{test:PortMotion}
+	\item Konfiguration och kalibrering av rörelseenheten.\ref{test:MotionConfig}
+	\item Urkopplingslarm rörelseenheten.\ref{test:UrkopplingMotion}
  \end{enumerate}
  
  \subsection{Larmsystemet som helhet}
+ \todo[inline]{försöker så lite frön}
+ Larmsystemet som helhet fungerar enligt uppgiftsbeskrivning. Det består av
+ en dörrenhet, en rörelseenhet och en centralenhet. De olika enheterna kommunicerar via CAN. Både dörrenheten och rörelseenheten kan skicka centrala larm till centralenheten efter en tid som kan ställas in via centralenheten. Om en enhet försvinner från nätverket upptäcker centralenheten detta och varnar användaren via terminalen. Tester visar med god säkerhet att larmmeddelanden når centralenheten även med mycket brus på CAN-bussen.
+ Ifall en enhet larmar centralt men inte ackkrediteras skickar den ett nytt larm för att säkerställa att centralenheten hanterar larmet.
 
 \newpage
 \section{Diskussion och slutsats}
@@ -491,10 +504,10 @@ att polling används istället för avbrott är att det endast finns 16 avbrotts
     Startar standardläge.
 
     \textbf{dor v x y z}\\
-    Där \textbf{v, x, y} och \textbf{z} är tal mellan 0 och 9. Konfigurerar dörr \textbf{x} på enhet med ID \textbf{v} med timer för lokalt larm på  \(\textbf{y} * 10\) sekunder samt en fördröjning till centralt larm på \(\textbf{z} * 10\) sekunder.
+    Där \textbf{v, x, y} och \textbf{z} är tal mellan 0 och 9. Konfigurerar dörr \textbf{x} på enhet med id \textbf{v} med timer för lokalt larm på  \(\textbf{y} * 10\) sekunder samt en fördröjning till centralt larm på \(\textbf{z} * 10\) sekunder.
 
     \textbf{ror x y z}\\
-    Där \textbf{x, y} och \textbf{z} är tal mellan 0 och 9. Konfigurerar rörelsesensor \textbf{y} på enhet med ID \textbf{x} för att larma då den detekterar ett föremål på ett avstånd mindre än \(\textbf{z} * 10\) centimeter.
+    Där \textbf{x, y} och \textbf{z} är tal mellan 0 och 9. Konfigurerar rörelsesensor \textbf{y} på enhet med id \textbf{x} för att larma då den detekterar ett föremål på ett avstånd mindre än \(\textbf{z} * 10\) centimeter.
 
     \textbf{avlarma y z} \\
     Avlarmar sensor \textbf{z} på rörelseenhetenhet med ID \textbf{y}. Detta kommando är lösenordsskyddat.
@@ -513,6 +526,9 @@ att polling används istället för avbrott är att det endast finns 16 avbrotts
 
     \textbf{nokal y z} \\
     Avslutar översändning av kalibreringsmeddelanden för sensor \textbf{z} på enhet \textbf{y}.
+
+    \textbf{larma y z} \\
+    Larmar sensor \textbf{z} på enhet med id \textbf{y}. Alla sensorer är larmade som standard så detta kommando körs om man vill återaktivera larm efter att det avaktiverats.
 
 	\clearpage
 	\section{Tester}
