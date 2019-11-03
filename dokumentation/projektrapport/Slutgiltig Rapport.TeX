@@ -149,7 +149,7 @@ Systemet utgår från en centralenhet, kopplad till ett antal dörrenheter och r
 
 Dörrenheten är kopplad till ett antal strömbrytare/dörrsensorer, och larmar då en dörr är öppen för länge, först lokalt och sedan centralt.
 
-Rörelseenheten har ett antal rörelse- och vibrationsensorer inkopplade. Rörelsesensorerna har centralt samt ett lokalt larm med det dubbla avståndet 
+Rörelseenheten har ett antal rörelse- och vibrationsensorer inkopplade. Rörelsesensorerna har centralt samt ett lokalt larm med det dubbla avståndet
 som larmar centralt respektive lokalt när sensorn detekterar något innaför dess larmavstånd.
 Rörelseenheten larmar även centralt när en vibrationssensor mäter en vibration.
 
@@ -370,8 +370,8 @@ En rörelsesensor tar upp 3 pinnar och får därmed plats med 5 rörelsesensorer
 Trig- och echo-pinnen från HC-SR04 samt en LED-lampan kopplas resepktive till  pin-\textit{n}, -$(n+1)$ och -$(n+2)$.
 
 
-Sensorn aktiveras genom att MD407-enkortsdatorn skickar en hög puls till sensorn i minst 10 mikrosekunder, 
-varpå sensorn skickar ut ultraljudsvågor och sänder en hög puls till MD407-enkortsdatorn fram tills ultraljudsvågorna har återvänt. 
+Sensorn aktiveras genom att MD407-enkortsdatorn skickar en hög puls till sensorn i minst 10 mikrosekunder,
+varpå sensorn skickar ut ultraljudsvågor och sänder en hög puls till MD407-enkortsdatorn fram tills ultraljudsvågorna har återvänt.
 Avståndet till närmaste föremål beräknas genom att mäta längden på pulsen. HC-SR04 kan mäta avstånd upp till 400 cm.
 
 Rörelsesensorn har både centralt och lokalt larm. Avståndet för centrala larmet ställs in av centralenheten via CAN-kommunikation
@@ -485,9 +485,9 @@ och möjligheten att koppla upp flera rörelseenheter till samma centralenhet fi
 \section{Diskussion och slutsats}
 % Detta avsnitt innehåller en sammanfattning av konstruktionen och en diskussion av resultatet. Om detta är möjligt, dra slutsatser av ert projekt och identifiera förbättringsmöjligheter. (Vilka kan vara användbara för en beställare)
 
-Tidigt i projektets gång var man tvungen att välja mellan polling eller avbrott för att respondera på externa händelser för dörr- och rörelseenheten.  Polling valdes dels för att koden blir lättare att förstå och underhålla, men även för att tanken med systemet är att inget larm ska ha högre prioritet än någon annan larm. 
+Tidigt i projektets gång var man tvungen att välja mellan polling eller avbrott för att respondera på externa händelser för dörr- och rörelseenheten.  Polling valdes dels för att koden blir lättare att förstå och underhålla, men även för att tanken med systemet är att inget larm ska ha högre prioritet än någon annan larm.
 
-Skulle man valt att implementera mjukvaran för dörrenheten med avbrott är den enda fördelen att man hade kunnat dela upp dörrarna så att de hade olika prioritet när de larmar, vilket skulle kunna resultera i att vissa larm skulle kommit fram till centralenheten snabbare än de hade med polling. Men tiden man tjänar in hade handlat om millisekunder, och eftersom MD407-enkortsdatorn endast stöttar 16 avbrottslinor skulle man ändå behöva använda sig av någon form av polling ifall man vill ha mer än 16 dörrar. Det är heller inte säkert att avbrott hade gått snabbare då kontextbyten också tar tid. Prestandatestet som utfördes visade inte på någon märkbar fördröjning, så valet med polling känns högst befogat,  se bilaga \ref{test:performanceTest}.
+Skulle man valt att implementera mjukvaran för dörrenheten med avbrott är den enda fördelen att man hade kunnat dela upp dörrarna så att de hade olika prioritet när de larmar, vilket skulle kunna resultera i att vissa larm skulle kommit fram till centralenheten snabbare än de hade med polling. Men tiden man tjänar in hade handlat om millisekunder, och eftersom MD407-enkortsdatorn endast stöttar 16 avbrottslinor skulle man ändå behöva använda sig av någon form av polling ifall man vill ha mer än 16 dörrar. Det är heller inte säkert att avbrott hade gått snabbare då kontextbyten också tar tid. Prestandatestet som utfördes visade inte på någon märkbar fördröjning, så valet med polling känns högst befogat,  se bilaga \ref{test:prestandaTest}.
 
 
 % Referenser enligtIEEE.
