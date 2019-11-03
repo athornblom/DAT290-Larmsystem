@@ -49,6 +49,7 @@ Erik Nilsson, Adam Thörnblom, Ben Wooldridge}
     \item \textbf{GPIO} - General-purpose input/output
     \item \textbf{USART} - Universal asynchronous receiver-transmitter
     \item \textbf{LED} - Light-emitting diode
+    \item \textbf{AUX} - Auxiliary
 \end{itemize}
 \newpage
 
@@ -253,18 +254,29 @@ med centralenheten. En LED-lampa kan även kopplas till \\ pinne 2 på port B. D
 till för att vid uppstart signalera när systemets initiering är färdig.
 
 Vid uppstart initieras först portarna och pinnarna på mikrodatorn så att de kan adresseras
-och avläsas på rätt sätt. Därefter startas en System Timer (SysTick) som fungerar som klocka.
-Fortsättningsvis detekterar systemet hur många dörrar som är kopplade på kortet, och på vilka
-pinnar de är kopplade. För att dörrarna ska kunna detekteras krävs det att de är stängda.
+och avläsas på rätt sätt. Därefter startas en System Timer (SysTick) som fungerar som klocka, och
+Can som initieras som används för att enheten ska kunna kommunicera
+med en eventuell centralenhet. För att kunna representera sig på Can-bussen initieras även
+en 32 bitars slumptals generator som är enhetens id tills att den fått ett designerat av
+centralenheten. Fortsättningsvis detekterar systemet hur många dörrar som är kopplade 
+på kortet, och på vilka pinnar de är kopplade. För att dörrarna ska kunna detekteras krävs det att
+ de är stängda.
 
-Efter detekteringen skapas datarepresentationer med förinställda värden för de dörrar som systemet
-hittade. Efter att samtliga datarepresentationer är skapade kommer systemet att tända dörrarnas lampor
+Under detekteringen skapas datarepresentationer med förinställda värden för de dörrar som systemet
+detekterar. Efter att samtliga datarepresentationer är skapade kommer systemet att försöka begära 
+ett id av en eventuell centralenhet. Ifall systemet inte får ett id inom 20 sekunder kommer systemet 
+gå in i lokal drift. Oavsett ifall systemet lyckats få ett id kommer den forsätta med att tända dörrarnas lampor
 i den ordning de initierades. Detta görs för att testa om de lokala larmen fungerar hos dörrarna.
 Efter att samtliga lampor är tända så släcker systemet dem igen.
 Slutligen tänds lampan som är kopplad till pinne 2 på port B för att signalera till användaren att enheten är redo för drift.
-\newpage
+Ifall systemet inte fått ett id kommer systemet kontinuerligt var 10 sekund skicka en
+id begäran på can-bussen. Vilket gör att En dörrenhet kan startas och köras i lokaldrift
+tills en centralenhet kopplas in i nätverket. När en centralenhet kopplas in på nätverket
+kommer då systemet automatiskt att dyka upp hos centralenheten utan att användaren behöver
+göra någonting på dörrenhetens sida.
 
-\begin{figure}
+
+\begin{figure}[H]
 \begin{flushleft}
 Systemet kontrollerar nu fortlöpande alla dörrar enligt flödesdiagrammet i figur 3: \linebreak \newline
 \end{flushleft}
@@ -272,22 +284,33 @@ Systemet kontrollerar nu fortlöpande alla dörrar enligt flödesdiagrammet i fi
 \includegraphics[scale=0.5]{figurer/Flow-Chart.png}
 \caption{Flödesschema över dörrenhetens funktionalitet som visar vilka beslut systemet tar beroende på externa och interna händelser.}
 \end{figure}
-Polling kan gå snabbare än avbrott. Vid avbrottshantering måste man göra ett kontextbyte, vilket normalt sett kräver att man sparar de flesta eller alla register, vilket blir cirka 80-100 instruktioner. Polling behöver inga kontextbyten. 
 
-Dörrenhetens flöde bygger på polling. Samtliga dörrar har i sina datarepresentationer ett antal kontrollbitar. I flödesschemat i figur 3 är dessa kontrollbitar representerade som 'beslut' som anger huruvida en kontrollbit är satt till 1 (för \textit{ja}) eller 0 (för \textit{nej}). Dessa kontrollbitar sätts till 1 eller 0 beroende på externa händelser.
+Dörrenhetens flöde bygger på polling. Samtliga dörrar har i sina datarepresentationer
+ett antal kontrollbitar. I flödesschemat i figur 3 är dessa kontrollbitar representerade
+som 'beslut' som anger huruvida en kontrollbit är satt till 1 (för \textit{ja}) eller 0
+(för \textit{nej}). Dessa kontrollbitar sätts till 1 eller 0 beroende på externa händelser.
 
 Avlarmning av en specifik dörr sker via CAN-kommunikation från centralenheten. Att en dörr är avlarmad
-innebär att dess larm inte kan utlösas.
+innebär att dess larm inte kan utlösas. Ifall ett larm redan har utlösts stängs det då också av.
 
 Att en dörr är öppen innebär att kretsen som går via strömbrytaren på dörren inte längre är sluten.
-Om kretsen inte är sluten, och dörren inte är avlarmad, tyder det på att någonting externt har hänt som systemet bör ta hänsyn till. Hur lång tid systemet väntar innan det larmar lokalt konfigureras i 10-sekunders intervall via centralenheten. Väntetiden kan vara allt från 0 sekunder till ca 40 minuter
+Om kretsen inte är sluten, och dörren inte är avlarmad, tyder det på att någonting externt har hänt 
+som systemet bör ta hänsyn till. Hur lång tid systemet väntar innan det larmar lokalt konfigureras i
+ 10-sekunders intervall via centralenheten. Väntetiden kan vara allt från 0 sekunder till ca 40 minuter
    (maxtiden är $2^8 *10$ sekunder).
 
 När dörrenheten larmar centralt så skickas ett meddelande via CAN till centralenheten. Meddelanden
-kommer skickas med jämna intervall tills centralenheten skickar tillbaka en ackreditering om att larmet har mottagits. Väntetiden konfigureras från centralenheten, liksom för det lokala larmet.
+kommer skickas med intervall på en sekund tills centralenheten skickar tillbaka en ackreditering om att larmet har
+ mottagits.
 
-Dörrenheten kan köras utan uppkoppling till centralenheten. I det läget finns det dock inget centralt larm
-och enskilda dörrar kan inte konfigureras.\\ \\
+När dörrenheten larmar lokalt tänds en lampa för dörren, som kan kompleteras med ett tjutande ljud.
+genom att koppla in en högtalare till AUX-porten. ifall användaren väljer att koppla in en högtalare
+kommer dock enheten kunna stötta en dörr mindre. Detta är pågrund av att porten \textit{PA5} används
+till högtalaren och kan då inte längre stötta en dörr.
+
+Dörrenheten kan som tidigare nämnt köras utan uppkoppling till centralenheten. I det läget finns det dock inget centralt larm
+och dörrar kan inte konfigureras utöver standard värdena som är förinställda.
+
 
 
 
@@ -454,6 +477,7 @@ STM används för att bespara projektgruppen jobb med att implementera \\ genere
 \section{Slutsats och diskussion}
 % Detta avsnitt innehåller en sammanfattning av konstruktionen och en diskussion av resultatet. Om detta är möjligt, dra slutsatser av ert projekt och identifiera förbättringsmöjligheter. (Vilka kan vara användbara för en beställare)
 Utifrån testresultaten kan slutsatsen dras att dörrenheten fungerar som den ska enligt målet.
+
 \todo[inline]{inte färdig}
 
 % Referenser enligtIEEE.
