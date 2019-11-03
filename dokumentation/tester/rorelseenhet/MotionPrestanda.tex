@@ -1,7 +1,7 @@
 \clearpage
 %Beskrivande titel av testet samt en unik label
-\subsection{Urkopplingslarm rörelseenheten}
-\label{test:UrkopplingMotion}
+\subsection{Prestandatest rörelseenheten}
+\label{test:MotionPrestanda}
 
 \setlength{\columnsep}{1cm}
 
@@ -16,7 +16,7 @@ Erik
 
 \subsubsection*{Utfört av}
 % Namn på den/de som utförande testet.
-Filip
+Gustav
 
 
 \end{multicols}
@@ -27,34 +27,30 @@ Rörelseenheten
 
 \subsubsection*{Testsyfte}
 %Vad ska testet visa? Är testet till följd av tidigare test?
-Säkerställa att det ej går att kringå aktiva sensorer genom att koppla ur dem.
+Säkerställa att ingen märkbar fördröjning sker vid flera inkopplade rörelsesensorer.
 
 \subsubsection*{Hjälpmedel}
 %Lista hjälpmedlen som användes i samband med testet.
 \begin{itemize}
 	\item Avståndsmätare, HC-SR04
-	\item Vibrationssensor, SW-18010P
 	\item CAN-kabel
 	\item Kopplingskabel
 	\item Kopplingsbräda
-	\item LED-lampor
 \end{itemize}
 
 
 
 \subsubsection*{Utförande}
 %Hur ska testet utföras?
-Dra ut valfri kopplingskabel från en avståndsmätare och en vibrationssensor medan rörelseenheten är underdrift och centralenheten konfigurerat dessa sensorer till aktiva.
-Kontrollera att sensorerna larmar till centralenheten vid urkoppling.
-
+Koppla först upp en rörelsesensor till rörelseenheten och koppla upp rörelseenheten till centralenheten via CAN. Starta programmen och skicka standard konfiguration på 20 cm larmavsttånd från centralenheten till rörelsesensorn. Testa att sensorn larmar på 20 cm. Starta nu om och koppla upp fyra extra rörelsesensorer. Testa ifall första sensorn som testades fortfarande larmar på 20 cm. Sensorn ska vara okalibrerad för att inte fuska fram samma värde båda gångerna.
 
 \subsubsection*{Resultat}
 %Vad är testresultatet? Hittades några buggar?
-Larmeddelande skickades för respektive sensor skickades till centralenheten när de kopplades ur.
+Sensorn larmade första gången 20.5 cm bort och larmade på samma avstånd efter det kopplats in 4 till rörelsesensorer.
 
 
 \subsubsection*{Analys}
 %Vad innebär testets resultat? Behövs fler test av komponenten? Behöver andra komponenter testas ytterligare, och i så fall hur?
-Går ej att kringå rörelseenhetens larm genom att koppla ur dess sensorer.
+Gick ej att se skillnad på larmavstånd när flera rörelsesensorer, som tar upp större delen av kod exekveringen, är inkopplade. Alltså kan vi dra slutsatsen att rörelseenheten klarar av att exekvera kod för flertalet sensorer samtidigt utan några problem. Även om larmavståndet ändrats med några procent hade detta fixats av kalibrering.
 
 
