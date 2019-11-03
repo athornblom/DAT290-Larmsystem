@@ -129,7 +129,7 @@ När centralenheten samt periferienheterna startar befinner de sig i konfigurati
  där varje enhet konfigurerar sig på lokal nivå (USART, CAN-bussen, GPIO), varpå centralenheten skickar konfigurationer till periferienheterna, som de använder för att konfigurera sina respektive sensorer.
  Efter att ha konfigurerats går enheterna in i var sin kontinuerlig loop. Periferienheterna mäter ständigt av sensorerna och skickar larm-meddelanden över CAN-bussen till centralenheten vid behov. Centralenheten skickar periodiskt konfigurationer till periferienheterna och larmar om dessa inte bekräftas.
 
-En överblick av mjukvarans tidsflöde finns i Figur \ref{fig:tidsflöde}.
+En överblick av mjukvarans tidsflöde finns i figur \ref{fig:tidsflöde}.
 
 \begin{figure}[H]
     \centering
@@ -186,7 +186,15 @@ För att ge möjlighet att testa systemet på ett tungt trafikerat CAN-nätverk 
 \subsection{Delsystem }
 \subsubsection{Centralenheten}
 %\label{subsec:centralenhet}
-Centralenheten styr och har uppsikt över övriga enheter.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.4]{figurer/Centralenhet.png}
+    \caption{Flödesschema för centralenhetens mjukvara.}
+    \label{fig:centralflöde}
+\end{figure}
+
+Centralenheten styr och har uppsikt över periferienheterna enligt figur \ref{fig:centralflöde}.
 Inställningar görs via USART med kommandon enligt Appendix \ref{kommandon}, varpå de vidarebefordras till rätt periferienhet via CAN.
 
 Centralenheten har följande två lägen:
@@ -199,10 +207,9 @@ Centralenheten har följande två lägen:
 \end{enumerate}
 
 För att kunna adressera olika periferienheter måste centralenheten tilldela dessa varsitt unikt id.
-Detta görs i konfigurationsläget genom att varje enhet som saknar id skickar en förfrågan via CAN. Då periferienheten i denna fas saknar id skickar den med ett tillfälligt 32-bitars slumpgenererat id i datafältet för att låta centralenheten särkilja den från andra periferienheter.
+Detta görs i konfigurationsläget genom att varje enhet som saknar id skickar en förfrågan via CAN. Då periferienheten i denna fas saknar id skickar den ett tillfälligt 32-bitars slumpgenererat id i datafältet för att låta centralenheten särkilja den från andra periferienheter som saknar id.
 När centralenheten har tagit emot en sådan förfrågan skickar den tillbaka det lägsta lediga id:t och skapar en ny instans av en struktur som representerar periferienheten och lägger den i en lista. Strukturen innehåller enhetens id, tillfälliga id och konfiguration (d.v.s. tider för varje dörr för dörrenheter respektive avstånd för varje avståndssensor och antal vibrationssensorer för rörelseenheter). Om periferienheten inte tar emot sitt id och därför skickar en ny förfrågan görs detta med samma tillfälliga id, vilket låter centralenheten tilldela den samma id igen.
-Id:t används för att adressera meddelanden till samt identifiera meddelanden från enheten. Det är också periferienhetens index i centralenhetens lista, vilket gör det mycket effektivt att hitta rätt
-enhet i listan när dess id har lästs i CAN-meddelandet.
+Id:t används för att adressera meddelanden till samt identifiera meddelanden från enheten. Det är också periferienhetens index i centralenhetens lista, vilket gör det mycket effektivt att hitta rätt enhet i listan när dess id har lästs i CAN-meddelandet.
 
 
 
@@ -237,7 +244,7 @@ hittat. Efter att samtliga datarepresentationer är skapade kommer systemet att 
 Fortsättningsvis så tänds lamporna på dörrarna i den ordning som dess datarepresentationer skapades. Detta görs för att testa om de lokala larmen fungerar hos dörrarna. Efter att samtliga lampor är tända släcker systemet dem igen.
 Slutligen tänds lampan som är kopplad till pinne 2 på port B för att signalera till användaren att enheten är redo för drift. Systemet kommer i fortsättningen kontinuerligt att skicka ut meddelanden till en eventuell centralenhet på CAN-nätverket med jämna mellanrum, vilket medför att en centralenhet kan kopplas in utan att systemet behöver startas om.
 
-Systemet kontrollerar nu fortlöpande alla dörrar enligt flödesdiagrammet i figur 3:
+Systemet kontrollerar nu fortlöpande alla dörrar enligt flödesdiagrammet i figur \ref{fig:dörrflöde}:
 
 
 
@@ -247,6 +254,7 @@ Systemet kontrollerar nu fortlöpande alla dörrar enligt flödesdiagrammet i fi
 \centering
 \includegraphics[scale=0.5]{figurer/Flow-Chart.png}
 \caption{Flödesschema över dörrenhetens funktionalitet som visar vilka beslut systemet tar beroende på externa och interna händelser.}
+\label{fig:dörrflöde}
 \end{figure}
 
 Dörrenhetens flöde bygger på polling. Samtliga dörrar har i sina datarepresentationer
