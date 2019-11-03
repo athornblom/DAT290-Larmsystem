@@ -128,6 +128,11 @@ systemet fungerar, och om information som kan vara nödvändig för att förstå
 helhet. 
 \subsection{Teknisk bakgrund}
 Mjukvaran till larmsystemet körs på ett flertal MD407-kort, ett för varje enhet.
+
+\textbf{STM32-Programbibliotek}\cite{stm} är ett programbibliotek som har generellt skrivna funktioner som 
+redan skrivits för ARM.
+
+\textbf{Polling} är ett protokoll som frågar alla I/O Enheter kontinuerligt ifall de behöver proccesering.
 \subsection{Systemöversikt}
 
 Systemet utgår från en centralenhet, kopplad till en dörrenhet och en rörelsenhet över en gemensam CAN-buss. Periferienheterna hanterar avmätning av sina respektive sensorer, samt begär larm via CAN-bussen vid behov. När det går ett centralt larm fortsätter larmet tills en användare slår av larmet via en pin-kod till centralenheten.
@@ -156,7 +161,6 @@ En överblick av mjukvarans tidsflöde finns i Figur \ref{fig:tidsflöde}.
     \caption{Tidsflöde Mjukvara}
     \label{fig:tidsflöde}
 \end{figure}
-
 
 \subsection{CAN-kommunikation}
 \label{can}
@@ -396,6 +400,14 @@ Vibrationssensorn har endast central larm som skickas via CAN.
 \label{tillvägagångsätt}
 För att säkerhetställa det bästa möjliga resultatet för larmsystemet har det mesta arbetet bedrivits i samma
 rum, vilket har låtit gruppen samråda om eventuella frågor eller funderningar från gruppmedlemmar.
+STM-biblioteket används för att bespara projektgruppen jobb.
+Programbiblioteket STM32\cite{stm} används för:
+\begin{itemize}
+    \item Initieringar av enkortsdatorernas GPIO.
+    \item Implementation av en System Timer (SysTick).
+    \item "Väntetid'-funktionalitet. (Delay-funktioner)
+    \item Implementation av CAN-kommunikation.
+\end{itemize}
 
 \subsection{Verifikation}
 \label{verifikation}
@@ -411,15 +423,8 @@ För att se samtliga testspecifikationer, samt resultat och analys, se bilaga \r
 
 \subsection{Programbibliotek}
 \label{stm}
-Programbiblioteket STM32\cite{stm} används för:
-\begin{itemize}
-    \item Initieringar av enkortsdatorernas GPIO.
-    \item Implementation av en System Timer (SysTick).
-    \item "Väntetid'-funktionalitet. (Delay-funktioner)
-    \item Implementation av CAN-kommunikation.
-\end{itemize}
 
-STM används för att bespara projektgruppen jobb med att implementera \\ generell funktionalitet som redan skrivits för MD407-enkortsdatorer.
+
 
  \section{Resultat}
  För kompletta testspecifikationer hänvisas till bilaga \ref{bilaga:tester}.
@@ -519,9 +524,11 @@ Utifrån testresultaten kan slutsatsen dras att dörrenheten fungerar som den sk
 	\section{Tester}
     		\label{bilaga:tester}
      	\input{../tester/dorrenhet/portTest.tex}
+	\input{../tester/rorelseenhet/GPIO_TEST.tex}
          \input{../tester/system/IDochLarm.tex}
          \input{../tester/dorrenhet/lokalDriftTest.tex}
          \input{../tester/system/brusTest.tex}
          \input{../tester/system/replayer.tex}
          \input{../tester/system/sessionIDtest.tex}
+	
 \end{document}

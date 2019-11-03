@@ -69,7 +69,7 @@ typedef struct Sensors {
 GPIO_TypeDef* ports[5];
 
 // Dessa är konfigurerbara
-GPIO_TypeDef* motionPorts[3];
+GPIO_TypeDef* motionPorts[2];
 GPIO_TypeDef* vibrationPorts[2];
 
 // Maximalt antal sensorer, använder #define för att kunna använda värden till arrayen 'sensors'.
