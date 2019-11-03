@@ -108,7 +108,7 @@ utlöses skickas ett centralt larm via en CAN-buss till centralenheten. Känslig
 på rörelsesensorn konfigueras från centralenheten. Vibrationssensorn konfigueras direkt på hårdvaran.
 
 Centralenheten hanterar konfiguration av periferienheterna, samt fungerar som en
-central för samtliga \todo[]{centrala?} larm som utlöses i systemet. Om ett centralt larm utlöses kan det endast ackkrediteras och nollställas via centralenheten.
+central för samtliga centrala larm som utlöses i systemet. Om ett centralt larm utlöses kan det endast ackkrediteras och nollställas via centralenheten.
 \subsection{Arbetsmetod} % svarar på frågan "hur har vi gått tillväga i det tekniska utvecklingsarbetet"?
 
 I det här avsnittet beskrivs hur den tekniska utvecklingen gått till.
@@ -156,10 +156,8 @@ I detta avsnitt presenteras teknisk information som är nödvändig för att få
 \subsection{Teknisk bakgrund}
 Mjukvaran till larmsystemet körs på ett flertal MD407-enkortsdatorer, en för varje enhet.
 
-\textbf{STM32-Programbibliotek}\cite{stm} är ett programbibliotek som har generellt skrivna funktioner som
-redan skrivits för ARM.
-\todo[inline]{Mitt förslag är att ist skriva\\
-är ett programbibliotek som har vanliga funktioner som ofta används för ARM}
+\textbf{STM32-Programbibliotek}\cite{stm} är ett programbibliotek som har vanliga funktioner som ofta används för ARM
+
 
 \textbf{Polling} är ett protokoll som kontinuerligt frågar alla I/O-enheter om de behöver processering.\subsection{Systemöversikt}
 
