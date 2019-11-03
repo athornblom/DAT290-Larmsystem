@@ -172,9 +172,8 @@ En översikt av hårdvaran och hur den är kopplad finns i Figur \ref{fig:hårdv
     \label{fig:hårdvara}
 \end{figure}
 
-När centralenheten samt periferienheterna startar befinner de sig i konfigurationsläge,
- där varje enhet konfigurerar sig på lokal nivå (USART, CAN-bussen, GPIO), varpå centralenheten skickar konfigurationer till periferienheterna, som de använder för att konfigurera sina respektive sensorer.
- Efter att ha konfigurerats går enheterna in i var sin kontinuerlig loop. Periferienheterna mäter ständigt av sensorerna och skickar larm-meddelanden över CAN-bussen till centralenheten vid behov. Centralenheten skickar periodiskt konfigurationer till periferienheterna och larmar ifall dessa inte bekräftas.
+När centralenheten samt periferienheterna startar befinner de sig i konfigurationsläge, där varje enhet konfigurerar sig på lokal nivå (USART CAN-bussen, GPIO), varpå centralenheten skickar konfigurationer till periferienheterna, som de använder för att konfigurera sina respektive sensorer.
+Efter att ha konfigurerats går enheterna in i var sin kontinuerlig loop. Periferienheterna mäter ständigt av sensorerna och skickar larm-meddelanden över CAN-bussen till centralenheten vid behov. Centralenheten skickar periodiskt konfigurationer till periferienheterna och larmar ifall dessa inte bekräftas.
 
 En överblick av mjukvarans tidsflöde finns i figur \ref{fig:tidsflöde}.
 
@@ -207,8 +206,8 @@ Denna prioritering har använts för att ge brådskande meddelanden företräde 
 		Bekräftelse		& Bekräftelse för senast mottagna meddelandet. \\ \hline
 		Skicka larm		& Talar om för centralenheten om någon dörr eller sensor larmar. \\ \hline
 		Konfiguration		& Används för att skicka sensorkonfiguration och kalibrering. \\ \hline
-		Tilldelning av ID		& Används då centralenheten tilldelar en periferienhet dess ID. \\ \hline
-		ID-begäran		& Används för att begära ett ID. \\ \hline
+		Tilldelning av id		& Används då centralenheten tilldelar en periferienhet dess id. \\ \hline
+		Id-begäran		& Används för att begära ett id. \\ \hline
 
 	\end{tabular}
 	\caption{Meddelandetyper som används för datakommunikationen.}
@@ -238,27 +237,23 @@ För att säkerställa att åtgärden för att hindra återspelningsattacker fun
 
 
 \subsection{Delsystem }
-Varje egen enhet ses som en del utav det hela systemet. Dessa tre delsystem är
-centralenheten, dörrenheten och rörelseenheten. I det här avsnittet beskrivs de
-olika delsystemen.
 \subsubsection{Centralenheten}
 \label{subsec:centralenhet}
-\begin{figure}[H]
-    \centering
-    \includegraphics[scale=0.3]{figurer/Centralenhet.png}
-    \caption{Flödesschema för centralenhetens mjukvara.}
-    \label{fig:centralflöde}
-\end{figure}
 
 Centralenheten styr och har uppsikt över periferienheterna enligt figur \ref{fig:centralflöde}.
 Inställningar görs via USART med kommandon enligt bilaga \ref{kommandon}, varpå de vidarebefordras till rätt periferienhet via CAN.
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.3]{figurer/Centralenhet.png}
+    \caption{Flödesschema för centralenhetens viktigaste funktionalitet.}
+    \label{fig:centralflöde}
+\end{figure}
+
 Centralenheten har följande två lägen:
 
 \begin{description}
-    \item[Startläge] I detta läge accepterar centralenheten sammankoppling med periferienheter genom att lyssna på deras ID-begäransmeddelanden och därefter tilldela dem ID:n.
-    
-    Då centralenheten är i detta läge kan periferienheter ansluta sig till den genom att skicka en ID-begäran via CAN, varpå centralenheten skickar tillbaka ett ID.
+    \item[Startläge] Då centralenheten är i detta läge kan periferienheter ansluta sig till den genom att skicka en id-förfrågan via CAN, varpå centralenheten skickar tillbaka ett id.
 
     
     \item[Standardläge] Enheten väntar på larm-meddelanden från periferienheterna eller användarinput via USART. Dessutom skickar den regelbundet konfigurationen för anslutna dörrar och sensorer till periferienheterna, som förväntas bekräfta konfigurationen.
@@ -269,8 +264,8 @@ I båda lägena kan användaren hantera periferienheterna genom konfigurationsä
 
 
 \todo[inline]{Hur mycket av följande stycke behövs egentligen?} 
-För att kunna adressera olika periferienheter måste centralenheten tilldela dessa varsitt unikt ID.
-Detta görs i startläget genom att varje enhet som saknar ID skickar en förfrågan via CAN. Då periferienheten i denna fas saknar id skickar den ett tillfälligt 32-bitars slumpgenererat id i datafältet för att låta centralenheten särkilja den från andra periferienheter som saknar id.
+För att kunna adressera olika periferienheter måste centralenheten tilldela dessa varsitt unikt id.
+Detta görs i startläget genom att varje enhet som saknar id skickar en förfrågan via CAN. Då periferienheten i denna fas saknar id skickar den ett tillfälligt 32-bitars slumpgenererat id i datafältet för att låta centralenheten särkilja den från andra periferienheter som saknar id.
 När centralenheten har tagit emot en sådan förfrågan skickar den tillbaka det lägsta lediga id:t och skapar en ny instans av en struktur som representerar periferienheten och lägger den i en lista. Strukturen innehåller enhetens id, tillfälliga id och konfiguration (d.v.s. tider för varje dörr för dörrenheter respektive avstånd för varje avståndssensor och antal vibrationssensorer för rörelseenheter). Om periferienheten inte tar emot sitt id och därför skickar en ny förfrågan görs detta med samma tillfälliga id, vilket låter centralenheten tilldela den samma id igen.
 Id:t används för att adressera meddelanden till samt identifiera meddelanden från enheten. Det är också periferienhetens index i centralenhetens lista, vilket gör det mycket effektivt att hitta rätt enhet i listan när dess id har lästs i CAN-meddelandet.
 
@@ -392,8 +387,7 @@ Trig- och echo-pinnen från HC-SR04 samt en LED-lampan kopplas resepktive till  
 
 
 Sensorn aktiveras genom att MD407-enkortsdatorn skickar en hög puls till sensorn i minst 10 mikrosekunder, 
-varpå sensorn skickar ut ultraljudsvågor och sänder en hög puls till MD407-enkortsdatorn fram tills 
-ultraljudsvågorna har återvänt. Avståndet till närmaste föremål beräknas genom att mäta längden på pulsen.
+varpå sensorn skickar ut ultraljudsvågor och sänder en hög puls till MD407-enkortsdatorn fram tills ultraljudsvågorna har återvänt. Avståndet till närmaste föremål beräknas genom att mäta längden på pulsen.
 HC-SR04 kan mäta avstånd upp till 400 cm och det centrala samt lokala larmavståndet är justerbart från centralenheten.
 
 Rörelsesensorn har både centralt och lokalt larm. Avståndet för centrala larmet ställs in av centralenheten via CAN-kommunikation 
@@ -417,14 +411,14 @@ Vibrationssensorn har endast central larm som skickas via CAN.
  \subsection{Centralenheten}
  Centralenheten har följande funktionalitet:
  \begin{enumerate}
-     \item Tilldelning av ID till periferienheter.
+     \item Tilldelning av id till periferienheter.
      \item Konfiguration av periferienheter via USART.
      \item Automatisk detektering av enheter som lämnar nätverket.
      \item Larmhantering.
  \end{enumerate}
  För att säkerställa att funktionalitet ovan fungerar utfördes följande tester:
  \begin{enumerate}
-     \item Test av ID-tilldelning och larmmeddelnade se bilaga \ref{test:idLarm}.
+     \item Test av id-tilldelning och larmmeddelnade se bilaga \ref{test:idLarm}.
      \todo{Kommer kompleteras med fler tester.}
  \end{enumerate}
  
@@ -445,7 +439,7 @@ Vibrationssensorn har endast central larm som skickas via CAN.
  \begin{enumerate}
      \item Test av pinnar för dörrar
      \item Test av lokal drift
-     \item Test av ID-tilldelning och larm
+     \item Test av id-tilldelning och larm
  \end{enumerate}
 
  \subsection{Rörelseenheten}
@@ -464,7 +458,6 @@ Vibrationssensorn har endast central larm som skickas via CAN.
  \end{enumerate}
  
  \subsection{Larmsystemet som helhet}
- 
 
 \newpage
 \section{Diskussion och slutsats}
@@ -494,16 +487,16 @@ att polling används istället för avbrott är att det endast finns 16 avbrotts
     Startar standardläge.
 
     \textbf{dor v x y z}\\
-    Där \textbf{v, x, y} och \textbf{z} är tal mellan 0 och 9. Konfigurerar dörr \textbf{x} på enhet med ID \textbf{v} med timer för lokalt larm på  \(\textbf{y} * 10\) sekunder samt en fördröjning till centralt larm på \(\textbf{z} * 10\) sekunder.
+    Där \textbf{v, x, y} och \textbf{z} är tal mellan 0 och 9. Konfigurerar dörr \textbf{x} på enhet med id \textbf{v} med timer för lokalt larm på  \(\textbf{y} * 10\) sekunder samt en fördröjning till centralt larm på \(\textbf{z} * 10\) sekunder.
 
     \textbf{ror x y z}\\
-    Där \textbf{x, y} och \textbf{z} är tal mellan 0 och 9. Konfigurerar rörelsesensor \textbf{y} på enhet med ID \textbf{x} för att larma då den detekterar ett föremål på ett avstånd mindre än \(\textbf{z} * 10\) centimeter.
+    Där \textbf{x, y} och \textbf{z} är tal mellan 0 och 9. Konfigurerar rörelsesensor \textbf{y} på enhet med id \textbf{x} för att larma då den detekterar ett föremål på ett avstånd mindre än \(\textbf{z} * 10\) centimeter.
 
     \textbf{avlarma y z} \\
-    Avlarmar sensor \textbf{z} på enhet med ID \textbf{y}.
+    Avlarmar sensor \textbf{z} på enhet med id \textbf{y}.
 
     \textbf{larma y z} \\
-    Larmar sensor \textbf{z} på enhet med ID \textbf{y}. Alla sensorer är larmade som standard så detta kommando körs om man vill återaktivera larm efter att det avaktiverats.
+    Larmar sensor \textbf{z} på enhet med id \textbf{y}. Alla sensorer är larmade som standard så detta kommando körs om man vill återaktivera larm efter att det avaktiverats.
 
 	\clearpage
 	\section{Tester}
