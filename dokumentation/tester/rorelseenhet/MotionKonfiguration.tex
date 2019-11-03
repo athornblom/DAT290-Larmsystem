@@ -1,0 +1,59 @@
+\clearpage
+%Beskrivande titel av testet samt en unik label
+\subsection{Konfiguration och kalibrering av rörelseenheten}
+\label{test:UrkopplingMotion}
+
+\setlength{\columnsep}{1cm}
+
+
+% Vid utförande av test fylls mallen nedan i, vilket resulterar i ett protokoll som sedan sparas som verifikation. Målet med dessa protokoll är att man utan sakkunskap ska kunna skapa sig en överblick av att systemet fungerar som det ska.
+
+
+\begin{multicols}{2}
+\subsubsection*{Test formulerat av}
+% Namn på den/de som formulerade testet.
+Erik
+
+\subsubsection*{Utfört av}
+% Namn på den/de som utförande testet.
+Filip
+
+
+\end{multicols}
+\subsubsection*{Komponent}
+%Vilken del av systemet testas?
+Rörelseenheten
+
+
+\subsubsection*{Testsyfte}
+%Vad ska testet visa? Är testet till följd av tidigare test?
+Säkerställa att konfigurationsmeddelanden och kalibrering från centralenheten fungerar.
+
+\subsubsection*{Hjälpmedel}
+%Lista hjälpmedlen som användes i samband med testet.
+\begin{itemize}
+	\item Avståndsmätare, HC-SR04
+	\item Vibrationssensor, SW-18010P
+	\item Kopplingskabel
+	\item Kopplingsbräda
+	\item LED-lampor
+\end{itemize}
+
+
+
+\subsubsection*{Utförande}
+%Hur ska testet utföras?
+Koppla upp rörelseenheten till centralenheten och ha en rörelsesensor och en vibrationssensor inkopplad. Skicka konfiguration från centralenheten som säger att de båda sensorerna ska vara aktiva och sätt larmavståndet för rörelsesensorn till 20 cm. Testa nu att larma de båda enheterna. Avlarma sedan båda enheterna. Inaktivera nu de båda sensorerna från centralenheten och verifiera att du ej längre kan larma dem. Aktivera nu rörelsesensorn igen. 
+Håll nu ett objekt 40 cm ifrån rörelsesensorn och kalibrera sensorn via centralenheten genom att skicka kalibreringsvärdet 20 cm. Rör sedan obejktet 1 cm närmare och verifiera att rörelsesensorn larmar.
+
+
+\subsubsection*{Resultat}
+%Vad är testresultatet? Hittades några buggar?
+
+
+
+\subsubsection*{Analys}
+%Vad innebär testets resultat? Behövs fler test av komponenten? Behöver andra komponenter testas ytterligare, och i så fall hur?
+
+
+
