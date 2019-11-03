@@ -19,24 +19,21 @@
 \BOOKMARK [3][-]{subsubsection.2.6.1}{Centralenheten}{subsection.2.6}% 19
 \BOOKMARK [3][-]{subsubsection.2.6.2}{D\366rrenheten}{subsection.2.6}% 20
 \BOOKMARK [3][-]{subsubsection.2.6.3}{R\366relseenheten}{subsection.2.6}% 21
-\BOOKMARK [1][-]{section.3}{Metoder}{}% 22
-\BOOKMARK [2][-]{subsection.3.1}{Undergrupper}{section.3}% 23
-\BOOKMARK [2][-]{subsection.3.2}{Tillv\344gag\345ngs\344tt}{section.3}% 24
-\BOOKMARK [1][-]{section.4}{Resultat}{}% 25
-\BOOKMARK [2][-]{subsection.4.1}{Centralenheten}{section.4}% 26
-\BOOKMARK [2][-]{subsection.4.2}{D\366rrenheten}{section.4}% 27
-\BOOKMARK [2][-]{subsection.4.3}{R\366relseenheten}{section.4}% 28
-\BOOKMARK [2][-]{subsection.4.4}{Larmsystemet som helhet}{section.4}% 29
-\BOOKMARK [1][-]{section.5}{Diskussion och slutsats}{}% 30
-\BOOKMARK [1][-]{appendix.A}{Utf\366rlig beskrivning av meddelandetyper kommunikationsprotokoll}{}% 31
-\BOOKMARK [1][-]{appendix.B}{Kommandolista f\366r centralenheten}{}% 32
-\BOOKMARK [1][-]{appendix.C}{Tester}{}% 33
-\BOOKMARK [2][-]{subsection.C.1}{Test av pinnar f\366r d\366rrar}{appendix.C}% 34
-\BOOKMARK [2][-]{subsection.C.2}{Porttest r\366relseenheten}{appendix.C}% 35
-\BOOKMARK [2][-]{subsection.C.3}{Urkopplingslarm r\366relseenheten}{appendix.C}% 36
-\BOOKMARK [2][-]{subsection.C.4}{Test av ID-tilldelning och larm}{appendix.C}% 37
-\BOOKMARK [2][-]{subsection.C.5}{Test av lokal drift f\366r d\366rrenhet}{appendix.C}% 38
-\BOOKMARK [2][-]{subsection.C.6}{Test av prestanda f\366r D\366rrenheten}{appendix.C}% 39
-\BOOKMARK [2][-]{subsection.C.7}{Test av systemet med brus}{appendix.C}% 40
-\BOOKMARK [2][-]{subsection.C.8}{Test av \345terspelningsenheten}{appendix.C}% 41
-\BOOKMARK [2][-]{subsection.C.9}{\305teruppspelningsattack test}{appendix.C}% 42
+\BOOKMARK [1][-]{section.3}{Resultat}{}% 22
+\BOOKMARK [2][-]{subsection.3.1}{Centralenheten}{section.3}% 23
+\BOOKMARK [2][-]{subsection.3.2}{D\366rrenheten}{section.3}% 24
+\BOOKMARK [2][-]{subsection.3.3}{R\366relseenheten}{section.3}% 25
+\BOOKMARK [2][-]{subsection.3.4}{Larmsystemet som helhet}{section.3}% 26
+\BOOKMARK [1][-]{section.4}{Diskussion och slutsats}{}% 27
+\BOOKMARK [1][-]{appendix.A}{Utf\366rlig beskrivning av meddelandetyper kommunikationsprotokoll}{}% 28
+\BOOKMARK [1][-]{appendix.B}{Kommandolista f\366r centralenheten}{}% 29
+\BOOKMARK [1][-]{appendix.C}{Tester}{}% 30
+\BOOKMARK [2][-]{subsection.C.1}{Test av pinnar f\366r d\366rrar}{appendix.C}% 31
+\BOOKMARK [2][-]{subsection.C.2}{Porttest r\366relseenheten}{appendix.C}% 32
+\BOOKMARK [2][-]{subsection.C.3}{Urkopplingslarm r\366relseenheten}{appendix.C}% 33
+\BOOKMARK [2][-]{subsection.C.4}{Test av ID-tilldelning och larm}{appendix.C}% 34
+\BOOKMARK [2][-]{subsection.C.5}{Test av lokal drift f\366r d\366rrenhet}{appendix.C}% 35
+\BOOKMARK [2][-]{subsection.C.6}{Test av prestanda f\366r D\366rrenheten}{appendix.C}% 36
+\BOOKMARK [2][-]{subsection.C.7}{Test av systemet med brus}{appendix.C}% 37
+\BOOKMARK [2][-]{subsection.C.8}{Test av \345terspelningsenheten}{appendix.C}% 38
+\BOOKMARK [2][-]{subsection.C.9}{\305teruppspelningsattack test}{appendix.C}% 39
