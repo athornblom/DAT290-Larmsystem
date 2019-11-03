@@ -31,7 +31,7 @@ uint16_t GPIO_Pins[] = {
 
 
 // Dessa är konfigurerbara
-GPIO_TypeDef* motionPorts[3] 	= {GPIOA, GPIOB, GPIOC};	// Portarna som används för rörelsesensorerna.
+GPIO_TypeDef* motionPorts[2] 	= {GPIOA, GPIOC};	// Portarna som används för rörelsesensorerna.
 GPIO_TypeDef* vibrationPorts[2] = {GPIOD, GPIOE};	// Portarna som används för vibrationssensorerna.
 
 
@@ -50,14 +50,10 @@ uint8_t nVibrationSensors = 0;	// Antalet vibrationssensorer kopplade till MD407
 
 
 
-// Kollar ifall det är en giltlig pinne en sensor kopplas till. OBS!!! Funkar endast när GPIOA och GPIOB är designerade portar för rörelsesensorer. (Detta skall ändras -Erik)
+// Kollar ifall det är en giltlig pinne en sensor kopplas till, eftersom bland annat USART använder pinnar på GPIOA.
 int validPin(GPIO_TypeDef* port, uint16_t pin){
 	if((port == GPIOA) && (pin == GPIO_Pin_1 || pin == GPIO_Pin_10 || pin == GPIO_Pin_13))
 		return 0;
-		
-	if((port == GPIOB) && (pin == GPIO_Pin_1 || pin == GPIO_Pin_4 || pin == GPIO_Pin_7 || pin == GPIO_Pin_10))
-		return 0;
-	
 	return 1;
 }
 
@@ -241,6 +237,7 @@ void init_app(){
 
 	init_Timer();
 	init_GPIO_Ports();	
+	DebugPrintInit();
 	init_Sensors();
 	init_rng();
 	can_init();
