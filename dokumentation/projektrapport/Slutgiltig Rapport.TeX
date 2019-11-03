@@ -481,7 +481,12 @@ För att se samtliga testspecifikationer, samt resultat och analys, se bilaga \r
  \subsection{Larmsystemet som helhet}
 \section{Slutsats och diskussion}
 % Detta avsnitt innehåller en sammanfattning av konstruktionen och en diskussion av resultatet. Om detta är möjligt, dra slutsatser av ert projekt och identifiera förbättringsmöjligheter. (Vilka kan vara användbara för en beställare)
-Utifrån testresultaten kan slutsatsen dras att dörrenheten fungerar som den ska enligt målet.
+\todo[]{fixa snyggt}\textbf{Polling} Utifrån prestanda testet som gjorts för dörrenheten 
+kan vi dra slutsatsen att polling fungerar bra att använda för dörrenheten då inga delayer upptäcks
+enlgit teorin kan det till och med vara så att det går snabbare än ifall vi hade använt 
+motsvarigheten intterupt. Då i polling görs det inga kontextbyten. En annan anledning till
+att polling används istället för interupt är att det finns endast 16 avbrottslinor och vi har 32 dörrar
+vilket gör att man hade ändå behövt implementera någon form av polling i avbrotts rutinerna .
 
 \todo[inline]{inte färdig}
 
@@ -527,6 +532,7 @@ Utifrån testresultaten kan slutsatsen dras att dörrenheten fungerar som den sk
 	\input{../tester/rorelseenhet/GPIO_TEST.tex}
          \input{../tester/system/IDochLarm.tex}
          \input{../tester/dorrenhet/lokalDriftTest.tex}
+         \input{../tester/dorrenhet/performanceTest.tex}
          \input{../tester/system/brusTest.tex}
          \input{../tester/system/replayer.tex}
          \input{../tester/system/sessionIDtest.tex}

@@ -1,0 +1,61 @@
+%Beskrivande titel av testet samt en unik label
+\clearpage
+\subsection{Test av prestanda för Dörrenheten}
+\label{test:prestandaTest}
+
+\setlength{\columnsep}{1cm}
+
+
+% Vid utförande av test fylls mallen nedan i, vilket resulterar i ett protokoll som sedan sparas som verifikation. Målet med dessa protokoll är att man utan sakkunskap ska kunna skapa sig en överblick av att systemet fungerar som det ska.
+
+
+\begin{multicols}{2}
+\subsubsection*{Test formulerat av}
+% Namn på den/de som formulerade testet.
+Adam
+
+\subsubsection*{Utfört av}
+% Namn på den/de som utförande testet.
+Filip
+
+
+\end{multicols}
+\subsubsection*{Komponent}
+%Vilken del av systemet testas?
+Dörrenheten
+
+
+\subsubsection*{Testsyfte}
+%Vad ska testet visa? Är testet till följd av tidigare test?
+Säkerställa att att det inte blir någon märkbar delay när man spammar larm.
+
+
+\subsubsection*{Hjälpmedel}
+%Lista hjälpmedlen som användes i samband med testet.
+\begin{itemize}
+	\item Ledlampor
+	\item Dörrbrytare
+	\item Kopplingskabel
+	\item Kopplingsbräda
+\end{itemize}
+
+
+
+\subsubsection*{Utförande}
+%Hur ska testet utföras?
+Sätt tiden för att larma lokalt till 0 så att det lokala larmet inte har någon delay. Öppna och stäng
+sensorn för larm snabbt.
+
+
+\subsubsection*{Resultat}
+%Vad är testresultatet? Hittades några buggar?
+Lamporna tänds som de ska och det lokala larmet upplevs reagera snabbt utan fördröjningar. 
+Det vill säga att så fort sensorn öppnas tändslampan och släcks när sensorn stängs.
+
+
+
+\subsubsection*{Analys}
+%Vad innebär testets resultat? Behövs fler test av komponenten? Behöver andra komponenter testas ytterligare, och i så fall hur?
+Koden exekveras tillräckligt snabbt utan att några delayer märks för det blotta ögat.
+
+
