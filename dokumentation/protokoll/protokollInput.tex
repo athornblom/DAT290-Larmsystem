@@ -1,6 +1,6 @@
 Den inbyggda prioriteringen av meddelanden har noga avvägts vid fördelningen av de 29 bitar som finns tillgängliga i id-fältet.
 Detta fält avgör nämligen meddelandets prioritet på bussen.
-De 29 bitarna har fördelats enligt tabell \ref{tab:idbitar}. Meddelandetypen anges i de tre första bitarna då den är mest relevant för att avgöra meddelandets prioritet. Detta innebär t.ex. att ett larmmeddelande alltid har högre prioritet än alla andra typer oavsett enhetens id och andra parametrar i fältet. Nedan följer en beskrivning av de meddelanden som används i protokollet.
+De 29 bitarna har fördelats enligt tabell \ref{tab:idbitar}. Meddelandetypen anges i de tre första bitarna då den är mest relevant för att avgöra meddelandets prioritet. Detta innebär t.ex. att ett larmmeddelande alltid har högre prioritet än alla andra typer oavsett enhetens id och andra parametrar i fältet.
 
 \begin{table}[H]
 	\centering
@@ -10,7 +10,7 @@ De 29 bitarna har fördelats enligt tabell \ref{tab:idbitar}. Meddelandetypen an
 		28-26	& Meddelandetyp. \\ \hline
 		25		& Meddelandets riktning, dvs. till eller från centralenheten. \\ \hline
 		24-18	& Mottagarens eller sändarens id, beroende på meddelandets riktning. (Centralenheten har inget id.) \\ \hline
-		17-8 & Sessions-id. Detta id är unikt för varje session mellan två enheter och används för att förhindra återspelningsattack. \\ \hline
+		17-8 & Sessions-id. Detta id är unikt för varje session och används för att förhindra återspelningsattack. \\ \hline
 		7-0 & Sekvensnummer. Används bara av meddelanden som bekräftas med ack. \\ \hline
 
 	\end{tabular}
@@ -19,12 +19,15 @@ De 29 bitarna har fördelats enligt tabell \ref{tab:idbitar}. Meddelandetypen an
 \end{table}
 
 
+För att motverka återuppspelningsattacker används sessions-id id fältet i id-fältet. Detta fält ingår automatiskt i filtrer för meddelanden och måste därför överenstämma med för alla meddelanden som skickas under en session. Undantaget är id-tilldelningen då sessions-id först aktiveras på periferienheten efter att de mottagit id-tilldelningsmeddelandet. För att aktiverar session-id kopierar de samma session-id som tilldelningsmeddelandet har och kan därefter kommunicera med samma sessions-id som dem andra på närverket. Nedan följer en beskrivning av de meddelanden som används i protokollet.
+
+
 \textbf{Ack}
 \begin{itemize}
 	\item Skickas som remote-meddelande
     \item Skickas i båda riktningar
 \end{itemize}
-Detta meddelande skickas som bekräftelse för ett mottaget meddelandet. Larmmedelanden och konfigurationsmeddelanden (se nedan) är de enda meddelandetyper som bekräftas med ack. Meddelandet har samma header som det mottagna meddelandet men är av typen remote. Meddelandet innehåller därför inget datafält så för att urskilja vilket meddelande som bekräftas används de 8 bitarna för sekvensnummer i headern (se tabell \ref{tab:idbitar}). \\
+Detta meddelande skickas som bekräftelse för ett mottaget meddelandet. Larmmedelanden och konfigurationsmeddelanden (se nedan) är de enda meddelandetyper som bekräftas med ack. Meddelandet har samma id-fält som det mottagna meddelandet men är av typen remote. Meddelandet innehåller därför inget datafält så för att urskilja vilket meddelande som bekräftas används de 8 bitarna för sekvensnummer i id-fältet (se tabell \ref{tab:idbitar}). \\
 
 \textbf{Id-begäran}
 \label{idbegäran}
@@ -45,7 +48,6 @@ Om periferienheten inte tar emot sitt id och därför skickar en ny begäran gö
 \end{itemize}
 Detta meddelande skickas då centralenheten har tagit emot en id-begäran. Det skickas endast i startläge. I de första fyra bytarna av datafältet skickas samma tillfälliga id som periferienheten skickade i begäran. I den femte byten skickas det riktiga id:t. \\
 Om det är första gången centralenheten får en id-begäran från just denna periferienhet skickar den det lägsta lediga id:t (minst 0). Om centralenheten däremot hittar det tillfälliga id:t i sin lista med periferienheter skickar den samma id igen för att förhindra att flera periferienheter tilldelas samma id.
-
 
 
 \textbf{Konfiguration}
