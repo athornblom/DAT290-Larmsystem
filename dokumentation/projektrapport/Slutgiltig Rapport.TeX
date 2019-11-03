@@ -27,18 +27,36 @@ Erik Nilsson, Adam Thörnblom, Ben Wooldridge}
 
 
 
+\usepackage{blindtext}
+
+\makeatletter
+\renewcommand{\contentsname}{Table of Contents}
+
+\newlength{\tocheaderrulewidth}
+\setlength{\tocheaderrulewidth}{2pt}
+
+\renewcommand\tableofcontents{%
+  \begingroup
+  \parindent=0em
+  \section*{\contentsname
+        \@mkboth{%
+           \MakeUppercase\contentsname}{\MakeUppercase\contentsname}}%
+   \endgroup
+
+  \@starttoc{toc}%
+ }
+\makeatother
 
 \begin{document}
 
 %Titelsida
 \maketitle
 \pagenumbering{gobble}
-\newpage
+\clearpage
 
 \tableofcontents
-\newpage
+\clearpage
 
-\pagenumbering{arabic}
 
 \section*{Beteckningar}
 \begin{itemize}
@@ -52,6 +70,7 @@ Erik Nilsson, Adam Thörnblom, Ben Wooldridge}
     \item \textbf{AUX} - Auxiliary
 \end{itemize}
 \newpage
+\pagenumbering{arabic}
 
 \section{Inledning}
 I en undersökning\cite{brott-foretagarna} utförd av Sveriges största företagsorganisaton, \textit{Företagarna}, anger var tredje företag (n=983) att de blivit utsatta för minst ett brott någon gång under de senaste fem åren. Pontus Lindström, ansvarig för brott- och trygghetsfrågor hos Företagarna säger:
