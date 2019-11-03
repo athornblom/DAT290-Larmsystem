@@ -35,6 +35,7 @@
 \BOOKMARK [2][-]{subsection.C.2}{Porttest r\366relseenheten}{appendix.C}% 35
 \BOOKMARK [2][-]{subsection.C.3}{Test av ID-tilldelning och larm}{appendix.C}% 36
 \BOOKMARK [2][-]{subsection.C.4}{Test av lokal drift f\366r d\366rrenhet}{appendix.C}% 37
-\BOOKMARK [2][-]{subsection.C.5}{Test av systemet med brus}{appendix.C}% 38
-\BOOKMARK [2][-]{subsection.C.6}{Test av \345terspelningsenheten}{appendix.C}% 39
-\BOOKMARK [2][-]{subsection.C.7}{\305teruppspelningsattack test}{appendix.C}% 40
+\BOOKMARK [2][-]{subsection.C.5}{Test av prestanda f\366r D\366rrenheten}{appendix.C}% 38
+\BOOKMARK [2][-]{subsection.C.6}{Test av systemet med brus}{appendix.C}% 39
+\BOOKMARK [2][-]{subsection.C.7}{Test av \345terspelningsenheten}{appendix.C}% 40
+\BOOKMARK [2][-]{subsection.C.8}{\305teruppspelningsattack test}{appendix.C}% 41
