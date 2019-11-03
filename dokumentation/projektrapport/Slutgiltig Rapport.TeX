@@ -121,7 +121,7 @@ När samtliga enheter hade uppnått majoriteten av sin tänkta funktionalitet s�
 
 Periferienhets-grupperna byggde först system för att hantera initiering av relevanta GPIO-portar samt debugfunktioner, och fortsatte med att implementera funktioner för avmätning av sensorerna. Funktionalitet byggdes på och det sista som utvecklades var kommunikationen mellan periferienheterna och centralenheten.
 
-På centralenheten utvecklades först USART, samt ett antal debugfunktioner som kunde användas av alla enheter. Implementeringen av CAN-kommunikation på centralenheten påverkade mycket hur CAN implementerades på de andra enheterna, då centralenheten är den som tar emot och skickar flest meddelanden.
+På centralenheten utvecklades först USART, samt ett antal debugfunktioner som kunde användas av alla enheter. Implementeringen av CAN-kommunikation på centralenheten påverkade i hög grad hur CAN implementerades på de andra enheterna, då centralenheten är den som tar emot och skickar flest meddelanden.
 
 Stora majoriten av mjukvaruutvecklingen och test har utförts på hårdvaran som beskrivs i rapporten, men en del av utvecklingen har skett med hjälp av simulerad hårdvara.
 
@@ -132,7 +132,7 @@ Programbiblioteket STM32F4\cite{stm} användes för:
 \begin{itemize}
     \item Initieringar och avläsning av enkortsdatorernas GPIO-portar.
     \item Implementation av en SystemTimer (SysTick).
-    \item "Väntetid"-funktionalitet. (Delay-funktioner)
+    \item "Väntetid"-funktionalitet. (Fördröjningsfunktioner)
     \item Implementation av CAN-kommunikation.
 \end{itemize}
 
