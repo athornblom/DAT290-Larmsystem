@@ -27,7 +27,7 @@ För att motverka återuppspelningsattacker används sessions-id id fältet i id
 	\item Skickas som remote-meddelande
     \item Skickas i båda riktningar
 \end{itemize}
-Detta meddelande skickas som bekräftelse för ett mottaget meddelandet. Larmmedelanden och konfigurationsmeddelanden (se nedan) är de enda meddelandetyper som bekräftas med ack. Meddelandet har samma header som det mottagna meddelandet men är av typen remote. Meddelandet innehåller därför inget datafält så för att urskilja vilket meddelande som bekräftas används de 8 bitarna för sekvensnummer i headern (se tabell \ref{tab:idbitar}). \\
+Detta meddelande skickas som bekräftelse för ett mottaget meddelandet. Larmmedelanden och konfigurationsmeddelanden (se nedan) är de enda meddelandetyper som bekräftas med ack. Meddelandet har samma id-fält som det mottagna meddelandet men är av typen remote. Meddelandet innehåller därför inget datafält så för att urskilja vilket meddelande som bekräftas används de 8 bitarna för sekvensnummer i id-fältet (se tabell \ref{tab:idbitar}). \\
 
 \textbf{Id-begäran}
 \label{idbegäran}
