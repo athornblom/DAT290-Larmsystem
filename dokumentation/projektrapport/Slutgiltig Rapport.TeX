@@ -357,7 +357,7 @@ Systemet itererar nu över alla inkopplade sensorer enligt figur \ref{fig:Motion
 \begin{figure}
 \centering
 \includegraphics[scale=0.3]{figurer/FlowchartMotion.png}
-\caption{Flödesschema över rörelseenheten.}
+\caption{Flödesschema över rörelseenheten funktionalitet som visar vilka beslut systemet tar beroende på externa och interna händelser.}
  \label{fig:MotionFlow}
 \end{figure}
 
@@ -369,7 +369,7 @@ men då alla sensorer prioriteras lika är polling den simplare lösningen.
 
 \textbf{Rörelsesensorn}:
 En rörelsesensor tar upp 3 pinnar och får därmed plats med 5 rörelsesensorer per port.
-Trig- och echo-pinnen från HC-SR04 samt en LED-lampan kopplas resepktive till  pin-\textit{n}, -$(n+1)$ och -$(n+2)$.
+Trig- och echo-pinnen från HC-SR04 samt en LED-lampan kopplas resepktive till  pin-$(3n)$, -$(3n+1)$ och -$(3n+2)$.
 
 
 Sensorn aktiveras genom att MD407-enkortsdatorn skickar en hög puls till sensorn i minst 10 mikrosekunder,
@@ -384,7 +384,7 @@ det lokala larmavståndet.
 
 \textbf{Vibrationssensorn}:
 En vibrationssensor tar upp 2 pinnar och får därmed plats med 8 vibrationssensorer per port.
-En pinne för digital-ouput från SW-18010P och en LED-lampa kopplas till pin-\textit{n} respektive pin-$(n+1)$.
+En pinne för digital-ouput från SW-18010P och en LED-lampa kopplas till pin-$(2n$ respektive pin-$(2n+1)$.
 
 Sensorn sänder kontinuerligt en hög puls till MD407-enkortsdatorn utom när den
 känner av vibrationer, då den istället sänder en låg puls. Sensorns känslighet justeras fysiskt genom en komparator på sensorn.
