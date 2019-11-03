@@ -1,4 +1,4 @@
-\documentclass{article}
+﻿\documentclass{article}
 \usepackage[swedish]{babel}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
@@ -85,8 +85,8 @@ Baserat på denna undersökning verkar det finnas ett behov av ett skalbart larm
 Rapporten beskriver utvecklingen av ett modulärt larmsystem som i grunden består av MD407-enkortsdatorer\cite{MD407}.
 
 \subsection{Syfte} % Svarar på frågan "Varför"?
-Projektets syfte är att utveckla ett larmsystem som ska vara ett finansiellt dynamiskt alternativ för företag
-och organisationer som har behov av skalbar och anpassad larmning beroende på nuvarande nödvändighet och finansiell \\ kapabilitet.
+Projekets syfte är att utveckla ett larmsystemets som ska vara ett finansiellt dynamiskt alternativ för företag \todo{Lång mening}
+och organisationer som har behov av skalningsbar och anpassad larmning beroende på nuvarande nödvändighet och finansiell \\ kapabilitet.
 Detta uppnås genom att erbjuda mindre delsystem som kan kopplas ihop till ett större centraliserat system.
 
 Systemet ökar översikten och säkerheten av användarens lokaler genom att implementera konfigurerbar larmning av dörrar, samt rörelse- och vibrationsdetektering.
@@ -123,7 +123,7 @@ Periferienhets-grupperna byggde först system för att hantera initiering av rel
 
 På centralenheten utvecklades först USART, samt ett antal debugfunktioner som kunde användas av alla enheter. Implementeringen av CAN-kommunikation på centralenheten påverkade i hög grad hur CAN implementerades på de andra enheterna, då centralenheten är den som tar emot och skickar flest meddelanden.
 
-Den stora majoriten av mjukvaruutvecklingen och testerna har utförts på hårdvaran som beskrivs i rapporten, men en del av utvecklingen har skett med hjälp av simulerad hårdvara.
+Stora majoriten av mjukvaruutvecklingen och test har utförts på hårdvaran som beskrivs i rapporten, men en del av utvecklingen har skett med hjälp av simulerad hårdvara.
 
 \subsubsection{Programbibliotek}
 \label{stm}
@@ -152,24 +152,26 @@ Arbetsgruppen valde att använda versionshanteringstjänsten GIT för att fören
 
 \newpage
 \section{Teknisk beskrivning} % Vad är utgångspunkten för i förkonstruktionsarbetet?
-I det här avsnittet presenteras teknisk information som är nödvändig för att få en djupare insikt i hur den tekniska utvecklingen gått till, samt hur de olika delsystem fungerar och interagerar för att bygga upp systemet som helhet.
+I detta avsnitt presenteras teknisk information som är nödvändig för att få en djupare insikt i hur den tekniska utvecklingen gått till, samt hur de olika delsystemen fungerar och interagerar för att bygga upp systemet som helhet.
 \subsection{Teknisk bakgrund}
 Mjukvaran till larmsystemet körs på ett flertal MD407-enkortsdatorer, en för varje enhet.
 
 \textbf{STM32-Programbibliotek}\cite{stm} är ett programbibliotek som har vanliga funktioner som ofta används för ARM
 
 
-\textbf{Polling} är ett protokoll som frågar alla I/O Enheter kontinuerligt ifall de behöver proccesering.\subsection{Systemöversikt}
+\textbf{Polling} är ett protokoll som kontinuerligt frågar alla I/O-enheter om de behöver processering.\subsection{Systemöversikt}
 
-Systemet utgår från en centralenhet, kopplad till ett antal dörrenheter och rörelsenheter över en gemensam CAN-buss. Periferienheterna hanterar avmätning av sina respektive sensorer, samt begär larm via CAN-bussen vid behov. När det går ett centralt larm fortsätter larmet tills en användare slår av larmet via kommandon till centralenheten.
+Systemet utgår från en centralenhet, kopplad till ett antal\todo{max 32} dörrenheter och rörelsenheter över en gemensam CAN-buss. Periferienheterna hanterar avmätning av sina respektive sensorer, samt begär larm via CAN-bussen vid behov. När det går ett centralt larm fortsätter larmet tills en användare slår av larmet via kommandon till centralenheten.
 
 Dörrenheten är kopplad till ett antal strömbrytare/dörrsensorer, och larmar då en dörr är öppen för länge, först lokalt och sedan centralt.
+\todo{och när en kopplas ur}
 
 Rörelseenheten har ett antal rörelse- och vibrationsensorer inkopplade. Rörelsesensorerna har centralt samt ett lokalt larm med det dubbla avståndet
 som larmar centralt respektive lokalt när sensorn detekterar något innaför dess larmavstånd.
 Rörelseenheten larmar även centralt när en vibrationssensor mäter en vibration.
 
 En översikt av hårdvaran och hur den är kopplad finns i Figur \ref{fig:hårdvara}. Värt att notera i figuren är att den endast visar en enhet av varje typ, samt bara en sensor av varje typ, medan det i själva verket kan kopplas in ett flertal till systemet.
+\todo{max 32 enheter}
 \begin{figure}[H] % Samma figur som projektplanen, då hårdvaran fortfarande ser likadan ut, det är värt att göra en ny innan slutgiltiga rapporten.
     \centering
     \includegraphics[width=1\textwidth]{figurer/HardvaraOversikt.png}
@@ -177,7 +179,7 @@ En översikt av hårdvaran och hur den är kopplad finns i Figur \ref{fig:hårdv
     \label{fig:hårdvara}
 \end{figure}
 
-När centralenheten samt periferienheterna startar befinner de sig i konfigurationsläge, där varje enhet konfigurerar sig på lokal nivå (USART CAN-bussen, GPIO), varpå centralenheten skickar konfigurationer till periferienheterna, som de använder för att konfigurera sina respektive sensorer.
+När centralenheten samt periferienheterna startar befinner de sig i konfigurationsläge, där varje enhet konfigurerar sig på lokal nivå (USART, CAN-bussen, GPIO), varpå centralenheten skickar konfigurationer till periferienheterna, som de använder för att konfigurera sina respektive sensorer.
 Efter att ha konfigurerats går enheterna in i var sin kontinuerlig loop. Periferienheterna mäter ständigt av sensorerna och skickar larm-meddelanden över CAN-bussen till centralenheten vid behov. Centralenheten skickar periodiskt konfigurationer till periferienheterna och larmar ifall dessa inte bekräftas.
 
 En överblick av mjukvarans tidsflöde finns i figur \ref{fig:tidsflöde}.
@@ -192,7 +194,7 @@ En överblick av mjukvarans tidsflöde finns i figur \ref{fig:tidsflöde}.
 
 \subsection{CAN-kommunikation}
 \label{can}
-Här presenteras protokollet som har utvecklats för informationsutbyte mellan enheterna därefter förljer en implementationsbeskrivning.
+Här presenteras protokollet som har utvecklats för informationsutbyte mellan enheterna därefter följer en implementationsbeskrivning.
 
 \subsubsection{Beskrivning av CAN-protokollet}
 Protokollet som har utvecklats för kommunikationen mellan enheterna bygger på protokollet Controller Area Network (CAN).
@@ -238,7 +240,7 @@ För att ge användaren möjlighet att interagera med systemet har Universal asy
 För att ge möjlighet att testa systemet på ett tungt trafikerat CAN-nätverk har en störenhet utvecklats. Störenheten skickar frekvent meddelanden med slumpartat innehåll. Hastigheten är reglerbar via USART. Utöver att generera brus kan enheten också fungera som en lyssnare med avaktiverad störfunktion.
 
 \subsection{Återspelningsenhet}
-För att säkerställa att åtgärden för att hindra återspelningsattacker fungerar som den ska har en återspelningsenhet tagits fram. Enheten kopplas upp på bussen och kan därefter spela in den trafik som skickas. Inspelningsbuffern har möjlighet att lagra 1000 meddelanden som på begäran kan skickad på nytt när en attack vill simuleras. Enheten kan sköta inspelning och uppspelning samtidigt och har dessutom inställningsmöjlighet för att återupprepa uppspelningen då man spelat upp alla meddelanden.
+För att säkerställa att åtgärden för att hindra återspelningsattacker fungerar som den ska har en återspelningsenhet tagits fram. Enheten kopplas upp på bussen och kan därefter spela in den trafik som skickas. Inspelningsbuffern har möjlighet att lagra 1000 meddelanden som på begäran kan skickas på nytt när en attack vill simuleras. Enheten kan sköta inspelning och uppspelning samtidigt och har dessutom inställningsmöjlighet för att återupprepa uppspelningen då man spelat upp alla meddelanden.
 
 
 \subsection{Delsystem }
@@ -267,7 +269,7 @@ Centralenheten har följande två lägen:
     \item[Standardläge] Enheten väntar på larm-meddelanden från periferienheterna eller användarinput via USART. Dessutom skickar den regelbundet konfigurationen för anslutna dörrar och sensorer till periferienheterna, som förväntas bekräfta konfigurationen.
     Om en enhet inte svarar efter ett antal meddelanden går larmet.
 \end{description}
-
+\todo{lägen istället för lägena?}
 I båda lägena kan användaren hantera periferienheterna genom konfigurationsändringar. För lösenordsskyddade kommandon används en knappsats som låter användaren logga in med en fyrsiffrig pinkod.
 
 
@@ -289,10 +291,11 @@ Fyra av mikrodatorns fem portar är designerade för dörranslutningar (\textit{
 Eftersom samtliga portar har 16 tillgängliga pinnar innebär det att systemet maximalt kan stötta 32 dörrar per dörrenhet.
 
 Port B är inte avsedd för dörranslutningar, utan används främst för CAN-\\kommunikationen
-med centralenheten. En LED-lampa kan även kopplas till \\ pinne 2 på port B. Denna lampa signalerar vid vid uppstart när systemets initiering är färdig.
+med centralenheten. En LED-lampa kan även kopplas till \\ pinne 2 på port B. Denna lampa signalerar vid uppstart när systemets initiering är färdig.
 
 Vid uppstart initieras först portarna och pinnarna på mikrodatorn så att de kan adresseras
 och avläsas på rätt sätt. Därefter startas en SystemTimer (SysTick) som fungerar som klocka för delsystemet.
+\todo{SystemTimer särskrivs i arbetsmetod, och inte här}
 Då klockan är startad initieras CAN på port B, vilket möjliggör kommunikation med centralenheten. Fortsättningsvis detekterar systemet hur många dörrar som är kopplade på kortet, och på vilka pinnar de är kopplade. För att dörrarna ska kunna detekteras krävs det att de är stängda.
 
 Under detekteringen skapas datarepresentationer med förinställda värden för de dörrar som systemet
@@ -300,7 +303,7 @@ hittat. Efter att samtliga datarepresentationer är skapade kommer systemet att 
 Fortsättningsvis så tänds lamporna på dörrarna i den ordning som dess datarepresentationer skapades. Detta görs för att testa om de lokala larmen fungerar hos dörrarna. Efter att samtliga lampor är tända släcker systemet dem igen.
 Slutligen tänds lampan som är kopplad till pinne 2 på port B för att signalera till användaren att enheten är redo för drift. Systemet kommer i fortsättningen kontinuerligt att skicka ut meddelanden till en eventuell centralenhet på CAN-nätverket med jämna mellanrum, vilket medför att en centralenhet kan kopplas in utan att systemet behöver startas om.
 
-Systemet kontrollerar nu fortlöpande alla dörrar enligt flödesdiagrammet i figur \ref{fig:dörrflöde}:
+Systemet kontrollerar fortlöpande alla dörrar enligt flödesdiagrammet i figur \ref{fig:dörrflöde}:
 
 
 
@@ -331,7 +334,7 @@ När dörrenheten larmar centralt så skickas ett meddelande via CAN till centra
 kommer skickas med intervall på en sekund tills centralenheten skickar tillbaka en ackreditering om att larmet har
  mottagits.
 
-När dörrenheten larmar lokalt tänds en lampa på dörren. Detta larmet kan kompletteras med ett  ljudljud
+När dörrenheten larmar lokalt tänds en lampa på dörren. Detta larmet kan kompletteras med ett  ljud
 genom att koppla in en högtalare på pinne A5 (port A, pinne 5). Ljudlarmet utlöses oavsett vilken dörr kopplad på enkortsdatorn som larmar. Användning av ljudlarmet sker på bekostnad av en dörr, då en dörr inte längre kan kopplas på A4-A5.
 
 
@@ -364,8 +367,8 @@ Efter detekteringen skapas datarepresentationer med förinställda värden för 
 sensorer som systemet hittat. Efter att samtliga datarepresentationer är skapade skickas
 en lista av de inkopplade sensorerna till centralenheten som bestämmer vilka sensorer som ska vara aktiva
 samt sätter centrala och lokala larmavståndet för rörelsesensorerna.
-
-Systemet itererar nu över alla inkopplade sensorer enligt figur \ref{fig:MotionFlow}. \clearpage
+\todo{Lokala larmavståndet beräknas på rörelseenheten}
+Systemet itererar nu över alla inkopplade sensorer enligt figur \ref{fig:MotionFlow}. \newpage
 
 
 \begin{figure}
@@ -379,11 +382,12 @@ Rörelseenhetens flöde bygger på polling. Polling är smidigt då avståndsmä
 och behöver då ha timers som håller koll på detta. Ifall detta hade skett via fördröjningsfunktioner hade alla andra sensorer
 inte fungerat under pulsmätningar och en säkerhetsrisk skulle uppstå. Avbrottshantering är en annan lösning på problemet,
 men då alla sensorer prioriteras lika är polling den simplare lösningen.
+\todo{Kanske bara behöver nämna alternativa lösningar i diskussion}
 
 
 \textbf{Rörelsesensorn}:
-En rörelsesensor tar upp 3 pinnar och får därmed plats med 5 rörelsesensorer per port.
-Trig- och echo-pinnen från HC-SR04 samt en LED-lampan kopplas resepktive till  pin-$(3n)$, -$(3n+1)$ och -$(3n+2)$.
+En rörelsesensor tar upp 3 pinnar och det får därmed plats med 5 rörelsesensorer per port.
+Trig- och echo-pinnen från HC-SR04 samt en LED-lampan kopplas respektive till  pin-\textit{n}, -$(n+1)$ och -$(n+2)$.
 
 
 Sensorn aktiveras genom att MD407-enkortsdatorn skickar en hög puls till sensorn i minst 10 mikrosekunder,
@@ -393,12 +397,12 @@ Avståndet till närmaste föremål beräknas genom att mäta längden på pulse
 Rörelsesensorn har både centralt och lokalt larm. Avståndet för centrala larmet ställs in av centralenheten via CAN-kommunikation
 upp till 400 cm. När det centrala larmet går skickas ett CAN-meddelande till centralenheten som agerar därefter.
 Avståndet för lokala larmet sätts automatiskt till två gånger det centrala larmavståndet. Ifall centrala larmsvtåndet är över 200 cm kommer
-lokala larmavståndet sättas till 400. När det lokla larmet går tänds en LED-lampa tills sensorn inte längre känner av något inom
+lokala larmavståndet sättas till 400. När det lokala larmet går tänds en LED-lampa tills sensorn inte längre känner av något inom
 det lokala larmavståndet.
 
 \textbf{Vibrationssensorn}:
 En vibrationssensor tar upp 2 pinnar och får därmed plats med 8 vibrationssensorer per port.
-En pinne för digital-ouput från SW-18010P och en LED-lampa kopplas till pin-$(2n$ respektive pin-$(2n+1)$.
+En pinne för digital-output från SW-18010P och en LED-lampa kopplas till pin-\textit{n} respektive pin-$(n+1)$.
 
 Sensorn sänder kontinuerligt en hög puls till MD407-enkortsdatorn utom när den
 känner av vibrationer, då den istället sänder en låg puls. Sensorns känslighet justeras fysiskt genom en komparator på sensorn.
@@ -512,21 +516,21 @@ Rörelseenheten har följande funktionalitet:
 \section{Diskussion och slutsats}
 % Detta avsnitt innehåller en sammanfattning av konstruktionen och en diskussion av resultatet. Om detta är möjligt, dra slutsatser av ert projekt och identifiera förbättringsmöjligheter. (Vilka kan vara användbara för en beställare)
 
-Tidigt i projektets gång var vi tvungna att välja mellan polling eller avbrott för att respondera på externa händelser för dörr- och rörelseenheten.  Polling valdes dels för att koden blir lättare att först och lättare att underhålla, men även för att tanken med systemet är att inget larm ska ha högre prioritet än något annat. 
+Tidigt i projektets gång var vi tvungna att välja mellan polling eller avbrott för att respondera på externa händelser för dörr- och rörelseenheten.  Polling valdes dels för att koden blir lättare att förstå och lättare att underhålla, men även för att tanken med systemet är att inget larm ska ha högre prioritet än något annat.
 
-Skulle dörrenhetens mjukvara utvecklats med avbrott hade den enda fördelen varit möjligheten att dela upp dörrarna så att de hade olika prioritet på CAN-bussen, vilket skulle kunna resultera i att vissa larm skulle kommit fram till centralenheten snabbare än de hade med polling. 
-Tiden man tjänar in handlar om millisekunder, och eftersom MD407-enkortsdatorn endast stöttar 16 avbrottslinor skulle det ändå behövas  någon form av polling ifall systemet ska ha mer än 16 dörrar. 
+Skulle dörrenhetens mjukvara utvecklats med avbrott hade den enda fördelen varit möjligheten att dela upp dörrarna så att de hade olika prioritet på CAN-bussen, vilket skulle kunna resultera i att vissa larm skulle kommit fram till centralenheten snabbare än de hade med polling.
+Tiden man tjänar in handlar om millisekunder, och eftersom MD407-enkortsdatorn endast stöttar 16 avbrottslinor skulle det ändå behövas  någon form av polling ifall systemet ska ha mer än 16 dörrar.
 Prestandatestet som utfördes visade inte på någon märkbar fördröjning, så valet med polling känns högst befogat, se bilaga \ref{test:prestandaTest}
 
-Polling har även använts till stor fördel inom rörelseenheter, med hjälp av polling kan flera rörelsensorer mätas av samtidigt, då det inte behövs blockerande väntetid-funktioner för att mäta/vänta en specifik tid. 
+Polling har även använts till stor fördel inom rörelseenheter, med hjälp av polling kan flera rörelsensorer mätas av samtidigt, då det inte behövs blockerande väntetid-funktioner för att mäta/vänta en specifik tid.
 Uppoffringen som görs är precision, med ett polling system är det svårt att vänta exakta tider, då det endast kollas ifall en tidsvariabel har överstigit en annan, och det går lite tid mellan att dessa villkor kollas.
 Denna tid är dock såpass liten och skillnader i väntetider är såpass osignifikanta att det inte påverkar systemets funktionalitet, se bilaga \ref{test:MotionPrestanda}.
 
-Systemet klarar av att skydda sig mot simpla uppspelningsattacker men ifall någon har lite insikt i hur systemet skyddar sig mot detta 
-skulle en attack mot systemet vara möjligt. En framtida förbättring skulle vara att implementera krypterade meddelanden för 
+Systemet klarar av att skydda sig mot simpla uppspelningsattacker men ifall någon har lite insikt i hur systemet skyddar sig mot detta
+skulle en attack mot systemet vara möjligt. En framtida förbättring skulle vara att implementera krypterade meddelanden för
 att öka systemets säkerhet.
 
-Samtliga delsystem har uppnått de grundkraven som formulerades i målsättningen, men även utrustats med
+Samtliga delsystem har uppnått de grundkrav som formulerades i målsättningen, men även utrustats med
 ytterligare funktionalitet som varit naturlig att implementera under projektets gång. Rörelse- och dörrenheten
 kan ha upp till 23 respektive 32 sensorer och centralenheten kan ha upp till 32 periferienheter.
 Med denna information kan vi dra slutsatsen att ett skalbart larmsystem är uppnåt, dock finns det rum för säkerhetsutveckling.
