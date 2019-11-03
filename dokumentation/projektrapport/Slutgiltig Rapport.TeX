@@ -195,15 +195,13 @@ Centralenheten har följande två lägen:
     \item Standardläge: Enheten väntar på larm-meddelanden från periferienheterna eller användarinput via USART. Dessutom skickar den regelbundet konfigurationen för anslutna dörrar och sensorer till periferienheterna, som förväntas bekräfta konfigurationen.
     Om en enhet inte svarar efter ett visst antal meddelanden går larmet.
     \item Konfigurationsläge: Detta är det läge enheten startar i.
-    Här kan användaren konfigurera anslutna dörr- och rörelseenheter via USART. Användaren kan sätta centralenheten i konfigurationsläge via USART för att lägga till eller konfigurera periferienheter.
+    Här kan användaren konfigurera anslutna dörr- och rörelseenheter via USART. Det är endast i detta läge som nya periferienheter kan anslutas till centralenheten. Användaren kan sätta centralenheten i konfigurationsläge via USART för att lägga till eller konfigurera periferienheter.
 \end{enumerate}
 
 För att kunna adressera olika periferienheter måste centralenheten tilldela dessa varsitt unikt id.
-Detta görs i konfigurationsläget genom att varje enhet som saknar id skickar en förfrågan via CAN.
-När centralenheten tar emot en sådan förfrågan från en periferienhet, skickar den tillbaka det
-lägsta lediga id:t och skapar en ny instans av en struktur som representerar periferienheten och lägger den i en lista. Strukturen innehåller enhetens id och konfiguration (d.v.s. tider för varje dörr för dörrenheter respektive avstånd för varje avståndssensor och antal vibrationssensorer för rörelseenheter).
-Id:t används för att adressera meddelanden till samt identifiera meddelanden från enheten. Det är också
-periferienhetens index i centralenhetens lista, vilket gör det mycket effektivt att hitta rätt
+Detta görs i konfigurationsläget genom att varje enhet som saknar id skickar en förfrågan via CAN. Då periferienheten i denna fas saknar id skickar den med ett tillfälligt 32-bitars slumpgenererat id i datafältet för att låta centralenheten särkilja den från andra periferienheter.
+När centralenheten har tagit emot en sådan förfrågan skickar den tillbaka det lägsta lediga id:t och skapar en ny instans av en struktur som representerar periferienheten och lägger den i en lista. Strukturen innehåller enhetens id, tillfälliga id och konfiguration (d.v.s. tider för varje dörr för dörrenheter respektive avstånd för varje avståndssensor och antal vibrationssensorer för rörelseenheter). Om periferienheten inte tar emot sitt id och därför skickar en ny förfrågan görs detta med samma tillfälliga id, vilket låter centralenheten tilldela den samma id igen.
+Id:t används för att adressera meddelanden till samt identifiera meddelanden från enheten. Det är också periferienhetens index i centralenhetens lista, vilket gör det mycket effektivt att hitta rätt
 enhet i listan när dess id har lästs i CAN-meddelandet.
 
 
@@ -232,9 +230,7 @@ med centralenheten. En LED-lampa kan även kopplas till \\ pinne 2 på port B. D
 
 Vid uppstart initieras först portarna och pinnarna på mikrodatorn så att de kan adresseras
 och avläsas på rätt sätt. Därefter startas en SystemTimer (SysTick) som fungerar som klocka för delsystemet.
-Efter klockan är startad initieras CAN på port B som möjliggör kommunikation med centralenheten. Fortsättningsvis detekterar systemet hur många dörrar som är kopplade 
-på kortet, och på vilka pinnar de är kopplade. För att dörrarna ska kunna detekteras krävs det att
- de är stängda.
+Då klockan är startad initieras CAN på port B, vilket möjliggör kommunikation med centralenheten. Fortsättningsvis detekterar systemet hur många dörrar som är kopplade på kortet, och på vilka pinnar de är kopplade. För att dörrarna ska kunna detekteras krävs det att de är stängda.
 
 Under detekteringen skapas datarepresentationer med förinställda värden för de dörrar som systemet
 hittat. Efter att samtliga datarepresentationer är skapade kommer systemet att försöka kommunicera med centralenheten. Om en centralenhet inte svarar kommer systemet att gå in i lokal drift, vilket innebär att funktionaliteten med centrala larm uteblir.
