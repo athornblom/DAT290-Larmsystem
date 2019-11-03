@@ -75,9 +75,9 @@ Systemet ökar översikten och säkerheten av användarens lokaler genom att imp
 \subsection{Mål} % Svarar på frågan "Vad"?
 % I detta avsnitt beskrivs koncist samtliga övergripande tekniska mål med projektet, det vill säga, vad som ska konstrueras. De mål som anges här kommer att styra projektets utveckling. När projektet närmar sig sitt slut och den slutliga projektrapporten lämnas in kommer beställaren att kritiskt analysera hur väl projektet lyckats genom att jämföra planens mål med den tekniska konstruktion som redovisas i projektrapporten.
 Ett komplett larmsystem i minimal form består av tre enheter: en dörrenhet, en rörelseenhet, och en centralenhet.
-
 Samtliga enheter kräver varsin MD407-enkortsdator för individuell drift. För att koppla samman
-fristående enheter till ett centraliserat system krävs en CAN-buss.
+fristående enheter till ett centraliserat system används en CAN-buss.
+CAN-kommunikationen bygger på ett fåtal meddelanden som sköter den informationsdelning som systemet kräver. Informationen som skickas på CAN-nätverket skyddas från återuppspelningsattack där tidigare inspelad trafik återuppspelas vid ett senare tillfälle.
 
 Dörrenheten hanterar detektering och larmning av dörrar. Vid systemuppstart kontrollerar
 dörrenheten antalet dörrar kopplade på enkortsdatorn. Datarepresentationer av dessa dörrar skapas, vilket möjliggör för dörrarna att efter en förutbestämd tid utlösa lokala larm genom att en LED-lampa på den larmande dörren tänds.
@@ -91,14 +91,61 @@ på rörelsesensorn konfigueras från centralenheten. Vibrationssensorn konfigue
 Centralenheten hanterar konfiguration av de andra enheterna, samt fungerar som en
 central för samtliga larm som utlöses i systemet. Om ett centralt larm utlöses så
 kan det endast ackkrediteras och nollställas via centralenheten.
-
 \subsection{Arbetsmetod} % svarar på frågan "hur har vi gått tillväga i det tekniska utvecklingsarbetet"?
-I det här avsnittet beskrivs det hur arbetet i gruppen delades upp, och hur gruppen har hanterat
-filhantering, möten och arbetstid.
+
+I det här avsnittet beskrivs hur det tekniska abretet har skett, samt hur gruppen har delat upp arbetsområden.
+
+\subsubsection{Undergrupper}
+För att jämna ut arbetsbelastningen delades projektgruppen in i tre grupper om två personer vardera,
+en för varje enhetstyp.
+
+\textbf{Centralenheten}: Gruppens uppgift var att få centralenheten att kunna konfigurera
+periferienheterna, ta emot och behandla larm, samt implementera CAN-kommunkation och USART.
+
+\textbf{Dörrenheten}: Gruppen hade ansvar för att alla dörrar skall vara uppkopplade och kunna larma.
+
+\textbf{Rörelseenheten}: Gruppens uppgift var att utveckla mjukvaran till
+rörelse- och vibrationssensorerna för larmning av t.ex. fönster och värdefulla föremål.
+
+Samtliga grupper har haft ansvar att sköta implementeringen av CAN meddelande på sin egen enhet, samt att bestäma innehållet av meddelanden relevanta till enheten.
+
+\subsubsection{Tillvägagång}
+
+Utvecklingen av mjukvaran har skett till stor del på en enhetsnivå, det vill säga att mjukvaran på de olika enheterna utvecklades separat från varandra. 
+Först när alla enheter var färdigutvecklade kopplades de till varandra och arbetet fokuserade då på att implementera CAN-kommunikation.
+
+Periferienhets-grupperna byggde först system för att hantera initiering av relevanta GPIO portar samt debugfunktioner, och fortsatte med att implementera funktioner för avmätning av sensorerna. Funktionalitet byggdes på och det sista som utvecklades var kommunkiationen mellan periferienheterna och centralenheten.
+
+På centralenheten utvecklades först USART, samt ett antal debugfunktioner som kunde användas av alla enheter. Implemteringen av CAN-kommunikation på centralenheten styrde mycket av hur CAN implementerades på de andra enheterna, då centralenheten är den som tar emot och skickar flest meddelanden.
+
+Stora majoriten av mjukvaroutvecklingen och test har utförts på hårdvaran som beskrivs i rapporten, men en del av utvecklingen har skett med hjälp av simulerad hårdvara.
+
+\subsubsection{Programbibliotek}
+\label{stm}
+Ett STM32F4-biblioteket har används för att bespara arbetstid.
+Programbiblioteket STM32F4\cite{stm} används för:
+\begin{itemize}
+    \item Initieringar och avläsning av enkortsdatorernas GPIO portar.
+    \item Implementation av en System Timer (SysTick).
+    \item "Väntetid'-funktionalitet. (Delay-funktioner)
+    \item Implementation av CAN-kommunikation.
+\end{itemize}
+
+
+
+\subsubsection{Verifikation}
+\label{verifikation}
+För att utvärdera huruvida larmsystemet uppnår de mål och krav som formulerats i målet används tester.
+De tre undergrupperna har skrivit tester för sina respektive delsystem som försäkrar att
+delsystemen fungerar enligt specifikationen. Ett test som är skrivet av en undergrupp utförs
+av en annan undergrupp för att minimera partiskhet i utförandet.
+
+Testet för det kompletta centraliserade systemet formulerades och utfördes av gruppen som helhet.
+
+För att se samtliga testspecifikationer, samt resultat och analys, se bilaga \ref{bilaga:tester}.
 
 \subsubsection{Fildelning och versionshantering}
-Arbetsgruppen valde att använda versionshanteringstjänsten GIT för att förenkla den parallella programmeringen, och för att samla alla filer och dokument på ett ställe.
-
+Arbetsgruppen valde att använda versionshanteringstjänsten GIT för att förenkla den parallella programmeringen, och för att samla alla filer på ett ställe. GIT-filsamlingen förvarades med hjälp av tjänsten github. GIT-Tjänsten har fungerat väl och även underlättat dokumentering, då även den förvarades i filsamlingen.
 
 \section{Teknisk beskrivning} % Vad är utgångspunkten för i förkonstruktionsarbetet?
 I det här avsnittet presenteras teknisk information som är nödvändig för att få en djupare insikt i hur den tekniska utvecklingen gått till, samt hur de olika delsystem interagerar för att bygga upp systemet som helhet.
@@ -108,16 +155,16 @@ Mjukvaran till larmsystemet körs på ett flertal MD407-kort, ett för varje enh
 \textbf{STM32-Programbibliotek}\cite{stm} är ett programbibliotek som har generellt skrivna funktioner som 
 redan skrivits för ARM.
 
-\textbf{Polling} är ett protokoll som frågar alla I/O Enheter kontinuerligt ifall de behöver proccesering.
-\subsection{Systemöversikt}
+\textbf{Polling} är ett protokoll som frågar alla I/O Enheter kontinuerligt ifall de behöver proccesering.\subsection{Systemöversikt}
 
-Systemet utgår från en centralenhet, kopplad till en dörrenhet och en rörelsenhet över en gemensam CAN-buss. Periferienheterna hanterar avmätning av sina respektive sensorer, samt begär larm via CAN-bussen vid behov. När det går ett centralt larm fortsätter larmet tills en användare slår av larmet via en pin-kod till centralenheten.
+Systemet utgår från en centralenhet, kopplad till ett antal dörrenheter och rörelsenheter över en gemensam CAN-buss. Periferienheterna hanterar avmätning av sina respektive sensorer, samt begär larm via CAN-bussen vid behov. När det går ett centralt larm fortsätter larmet tills en användare slår av larmet via kommandon till centralenheten.
 
 Dörrenheten är kopplad till ett antal strömbrytare/dörrsensorer, och larmar då en dörr är öppen för länge, först lokalt och sedan centralt.
-Rörelseenheten är kopplad till ett antal avstånds- och vibrationsensorer, och larmar centralt om ett föremål detekteras av en avståndsmätare inom konfigurerbart avstånd.
-Rörelseenheten larmar även centralt om en vibrationssensor mäter ett konfigurerbar antal vibrationer inom en viss tidsram. % Lite flummig beskrivning kanske, får ändra när koden är klar.
 
-En översikt av hårdvaran och hur den är kopplad finns i Figur \ref{fig:hårdvara}.
+Rörelseenheten är kopplad till ett antal avstånds- och vibrationsensorer, och larmar centralt om ett föremål detekteras av en avståndsmätare inom konfigurerbart avstånd, och lokalt ifall det dubbla värdet uppmäts.
+Rörelseenheten larmar även centralt när en vibrationssensor mäter en vibration, känsligheten för vibrationssensorn kan justeras på hårdvåran.
+
+En översikt av hårdvaran och hur den är kopplad finns i Figur \ref{fig:hårdvara}. Värt att notera i figuren är att den endast visar en enhet av varje typ, samt bara en sensor av varje typ, medan det i själva verket kan kopplas in ett flertal till systemet.
 \begin{figure}[H] % Samma figur som projektplanen, då hårdvaran fortfarande ser likadan ut, det är värt att göra en ny innan slutgiltiga rapporten.
     \centering
     \includegraphics[width=1\textwidth]{figurer/HardvaraOversikt.png}
@@ -127,33 +174,37 @@ En översikt av hårdvaran och hur den är kopplad finns i Figur \ref{fig:hårdv
 
 När centralenheten samt periferienheterna startar befinner de sig i konfigurationsläge,
  där varje enhet konfigurerar sig på lokal nivå (USART, CAN-bussen, GPIO), varpå centralenheten skickar konfigurationer till periferienheterna, som de använder för att konfigurera sina respektive sensorer.
- Efter att ha konfigurerats går enheterna in i var sin kontinuerlig loop. Periferienheterna mäter ständigt av sensorerna och skickar larm-meddelanden över CAN-bussen till centralenheten vid behov. Centralenheten skickar periodiskt konfigurationer till periferienheterna och larmar om dessa inte bekräftas.
+ Efter att ha konfigurerats går enheterna in i var sin kontinuerlig loop. Periferienheterna mäter ständigt av sensorerna och skickar larm-meddelanden över CAN-bussen till centralenheten vid behov. Centralenheten skickar periodiskt konfigurationer till periferienheterna och larmar ifall dessa inte bekräftas.
 
-En överblick av mjukvarans tidsflöde finns i Figur \ref{fig:tidsflöde}.
+En överblick av mjukvarans tidsflöde finns i figur \ref{fig:tidsflöde}.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=1\textwidth]{figurer/TidsFlode.jpg}
-    \caption{Tidsflöde Mjukvara}
+    \caption{En översitlig beskrivning av logik-flödet för systemets mjukvara. Övre halvan för varje enhet är en initieringsfas,
+    och nedre halvan representerar enheternas 'huvudloop' som är aktiv när systemet är i drift.}
     \label{fig:tidsflöde}
 \end{figure}
 
 \subsection{CAN-kommunikation}
 \label{can}
+Här presenteras protokollet som har utvecklats för informationsutbyte mellan enheterna därefter förljer en implementationsbeskrivning.
+
 \subsubsection{Beskrivning av CAN-protokollet}
 Protokollet som har utvecklats för kommunikationen mellan enheterna bygger på protokollet Controller Area Network (CAN).
 CAN är ett bussprotokoll som främst används för kommunikation mellan datorer och givare på fordon där det ställs höga krav på tillförlitlighet.
 För att undvika kollisioner och därmed öka tillförlitligheten har CAN en dominant logisk nivå (0) som dessutom ger automatisk prioritering av meddelanden då den dominanta nivån har företräde på bussen.
-Denna prioritering har använts för att ge brådskande meddelanden företräde över meddelanden som inte kräver kort responstid. I tabell \ref{tab:meddelandetyper} är de meddelandetyper som används kortfattat beskrivna. För en mer detaljerad beskrivning av protokollet och dess meddelandetyper, se bilaga \ref{bilaga:protokoll}.
+Denna prioritering har använts för att ge brådskande meddelanden företräde över meddelanden som inte kräver kort responstid. I tabell \ref{tab:meddelandetyper} är de meddelandetyper som används kortfattat beskrivna. För en mer detaljerad beskrivning av protokollet och dess meddelandetyper, se bilaga \ref{bilaga:protokoll}. För att motverka en återuppspelningsattack beskriver en del av meddelandet vilken session som meddelandet tillhör. Om det sedan skickas ett meddelande för en annan session så ignoreras det.
 
 
 
 \begin{table}[H]
 	\centering
-    \begin{tabular}{|p{0.22\textwidth}|p{0.7\textwidth}|}
+    \begin{tabular}{|l|p{0.7\textwidth}|}
+
 		\hline
 		Meddelandetyp & Används till \\ \hline \hline
-		Bekräftelse		& Bekräftelse för senaste mottagna meddelandet. \\ \hline
+		Bekräftelse		& Bekräftelse för senast mottagna meddelandet. \\ \hline
 		Skicka larm		& Talar om för centralenheten om någon dörr eller sensor larmar. \\ \hline
 		Konfiguration		& Används för att skicka sensorkonfiguration och kalibrering. \\ \hline
 		Tilldelning av ID		& Används då centralenheten tilldelar en periferienhet dess ID. \\ \hline
@@ -182,30 +233,46 @@ För att ge användaren möjlighet att interagera med systemet har Universal asy
 \subsection{Störenhet}
 För att ge möjlighet att testa systemet på ett tungt trafikerat CAN-nätverk har en störenhet utvecklats. Störenheten skickar frekvent meddelanden med slumpartat innehåll. Hastigheten är reglerbar via USART. Utöver att generera brus kan enheten också fungera som en lyssnare med avaktiverad störfunktion.
 
+\subsection{Återspelningsenhet}
+För att säkerställa att åtgärden för att hindra återspelningsattacker fungerar som den ska har en återspelningsenhet tagits fram. Enheten kopplas upp på bussen och kan därefter spela in den trafik som skickas. Inspelningsbuffern har möjlighet att lagra 1000 meddelanden som på begäran kan skickad på nytt när en attack vill simuleras. Enheten kan sköta inspelning och uppspelning samtidigt och har dessutom inställningsmöjlighet för att återupprepa uppspelningen då man spelat upp alla meddelanden.
+
 
 \subsection{Delsystem }
+Varje egen enhet ses som en del utav det hela systemet. Dessa tre delsystem är
+centralenheten, dörrenheten och rörelseenheten. I det här avsnittet beskrivs de
+olika delsystemen.
 \subsubsection{Centralenheten}
-%\label{subsec:centralenhet}
-Centralenheten styr och har uppsikt över övriga enheter.
-Inställningar görs via USART med kommandon enligt Appendix \ref{kommandon}, varpå de vidarebefordras till rätt periferienhet via CAN.
+\label{subsec:centralenhet}
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.3]{figurer/Centralenhet.png}
+    \caption{Flödesschema för centralenhetens mjukvara.}
+    \label{fig:centralflöde}
+\end{figure}
+
+Centralenheten styr och har uppsikt över periferienheterna enligt figur \ref{fig:centralflöde}.
+Inställningar görs via USART med kommandon enligt bilaga \ref{kommandon}, varpå de vidarebefordras till rätt periferienhet via CAN.
 
 Centralenheten har följande två lägen:
 
-\begin{enumerate}
-    \item Standardläge: Enheten väntar på larm-meddelanden från periferienheterna eller användarinput via USART. Dessutom skickar den regelbundet konfigurationen för anslutna dörrar och sensorer till periferienheterna, som förväntas bekräfta konfigurationen.
-    Om en enhet inte svarar efter ett visst antal meddelanden går larmet.
-    \item Konfigurationsläge: Detta är det läge enheten startar i.
-    Här kan användaren konfigurera anslutna dörr- och rörelseenheter via USART. Det är endast i detta läge som nya periferienheter kan anslutas till centralenheten. Användaren kan sätta centralenheten i konfigurationsläge via USART för att lägga till eller konfigurera periferienheter.
-\end{enumerate}
+\begin{description}
+    \item[Startläge] I detta läge accepterar centralenheten sammankoppling med periferienheter genom att lyssna på deras ID-begäransmeddelanden och därefter tilldela dem ID:n.
+    
+    Då centralenheten är i detta läge kan periferienheter ansluta sig till den genom att skicka en ID-begäran via CAN, varpå centralenheten skickar tillbaka ett ID.
 
-För att kunna adressera olika periferienheter måste centralenheten tilldela dessa varsitt unikt id.
-Detta görs i konfigurationsläget genom att varje enhet som saknar id skickar en förfrågan via CAN. Då periferienheten i denna fas saknar id skickar den med ett tillfälligt 32-bitars slumpgenererat id i datafältet för att låta centralenheten särkilja den från andra periferienheter.
+    
+    \item[Standardläge] Enheten väntar på larm-meddelanden från periferienheterna eller användarinput via USART. Dessutom skickar den regelbundet konfigurationen för anslutna dörrar och sensorer till periferienheterna, som förväntas bekräfta konfigurationen.
+    Om en enhet inte svarar efter ett antal meddelanden går larmet.
+\end{description}
+
+I båda lägena kan användaren hantera periferienheterna genom konfigurationsändringar. För lösenordsskyddade kommandon används en knappsats som låter användaren logga in med en fyrsiffrig pinkod. 
+
+
+\todo[inline]{Hur mycket av följande stycke behövs egentligen?} 
+För att kunna adressera olika periferienheter måste centralenheten tilldela dessa varsitt unikt ID.
+Detta görs i startläget genom att varje enhet som saknar ID skickar en förfrågan via CAN. Då periferienheten i denna fas saknar id skickar den ett tillfälligt 32-bitars slumpgenererat id i datafältet för att låta centralenheten särkilja den från andra periferienheter som saknar id.
 När centralenheten har tagit emot en sådan förfrågan skickar den tillbaka det lägsta lediga id:t och skapar en ny instans av en struktur som representerar periferienheten och lägger den i en lista. Strukturen innehåller enhetens id, tillfälliga id och konfiguration (d.v.s. tider för varje dörr för dörrenheter respektive avstånd för varje avståndssensor och antal vibrationssensorer för rörelseenheter). Om periferienheten inte tar emot sitt id och därför skickar en ny förfrågan görs detta med samma tillfälliga id, vilket låter centralenheten tilldela den samma id igen.
-Id:t används för att adressera meddelanden till samt identifiera meddelanden från enheten. Det är också periferienhetens index i centralenhetens lista, vilket gör det mycket effektivt att hitta rätt
-enhet i listan när dess id har lästs i CAN-meddelandet.
-
-
-
+Id:t används för att adressera meddelanden till samt identifiera meddelanden från enheten. Det är också periferienhetens index i centralenhetens lista, vilket gör det mycket effektivt att hitta rätt enhet i listan när dess id har lästs i CAN-meddelandet.
 
 
 \subsubsection{Dörrenheten}
@@ -237,7 +304,7 @@ hittat. Efter att samtliga datarepresentationer är skapade kommer systemet att 
 Fortsättningsvis så tänds lamporna på dörrarna i den ordning som dess datarepresentationer skapades. Detta görs för att testa om de lokala larmen fungerar hos dörrarna. Efter att samtliga lampor är tända släcker systemet dem igen.
 Slutligen tänds lampan som är kopplad till pinne 2 på port B för att signalera till användaren att enheten är redo för drift. Systemet kommer i fortsättningen kontinuerligt att skicka ut meddelanden till en eventuell centralenhet på CAN-nätverket med jämna mellanrum, vilket medför att en centralenhet kan kopplas in utan att systemet behöver startas om.
 
-Systemet kontrollerar nu fortlöpande alla dörrar enligt flödesdiagrammet i figur 3:
+Systemet kontrollerar nu fortlöpande alla dörrar enligt flödesdiagrammet i figur \ref{fig:dörrflöde}:
 
 
 
@@ -247,6 +314,7 @@ Systemet kontrollerar nu fortlöpande alla dörrar enligt flödesdiagrammet i fi
 \centering
 \includegraphics[scale=0.5]{figurer/Flow-Chart.png}
 \caption{Flödesschema över dörrenhetens funktionalitet som visar vilka beslut systemet tar beroende på externa och interna händelser.}
+\label{fig:dörrflöde}
 \end{figure}
 
 Dörrenhetens flöde bygger på polling. Samtliga dörrar har i sina datarepresentationer
@@ -342,54 +410,6 @@ Sensorn sänder kontinuerligt en hög puls till MD407-enkortsdatorn utom när de
 känner av vibrationer, då den istället sänder en låg puls. Sensorns känslighet justeras fysiskt genom en komparator på sensorn. 
 Vibrationssensorn har endast central larm som skickas via CAN.
 
-
-% Användarhandledning?
-
-\section{Metoder}
-
-\subsubsection{Undergrupper}
-För att jämna ut arbetsbelastningen delades projektgruppen in i tre grupper om två personer vardera,
-en för varje enhetstyp.
-
-\textbf{Centralenheten}: Gruppens uppgift var att kunna styra
-periferienheterna från centralenheten samt implementera CAN och USART.
-
-\textbf{Dörrenheten}: Dörrenheten ansvarar för att alla dörrar skall vara uppkopplade och larmade.
-
-\textbf{Rörelseenheten}: Rörelseenheten utvecklar mjukvaran till
-rörelse- och vibrationssensorerna för larmning av t.ex. fönster och värdefulla föremål.
-
-
-\subsection{Tillvägagångsätt}
-\label{tillvägagångsätt}
-För att säkerhetställa det bästa möjliga resultatet för larmsystemet har det mesta arbetet bedrivits i samma
-rum, vilket har låtit gruppen samråda om eventuella frågor eller funderningar från gruppmedlemmar.
-STM-biblioteket används för att bespara projektgruppen jobb.
-Programbiblioteket STM32\cite{stm} används för:
-\begin{itemize}
-    \item Initieringar av enkortsdatorernas GPIO.
-    \item Implementation av en System Timer (SysTick).
-    \item "Väntetid'-funktionalitet. (Delay-funktioner)
-    \item Implementation av CAN-kommunikation.
-\end{itemize}
-
-\subsection{Verifikation}
-\label{verifikation}
-För att utvärdera huruvida larmsystemet uppnår de mål och krav som formulerats i målet används tester.
-De tre undergrupperna har skrivit tester för sina respektive delsystem som försäkrar att
-delsystemen fungerar enligt specifikationen. Ett test som är skrivet av en undergrupp utförs
-av en annan undergrupp för att minimera partiskhet i utförandet.
-
-Testet för det kompletta centraliserade systemet formulerades och utfördes av gruppen som helhet.
-
-För att se samtliga testspecifikationer, samt resultat och analys, se bilaga \ref{bilaga:tester}.
-
-
-\subsection{Programbibliotek}
-\label{stm}
-
-
-
  \section{Resultat}
  För kompletta testspecifikationer hänvisas till bilaga \ref{bilaga:tester}.
 
@@ -413,10 +433,11 @@ För att se samtliga testspecifikationer, samt resultat och analys, se bilaga \r
  \begin{enumerate}
      \item Detektering av antalet stängda dörrar kopplade på enkortsdatorn.
      \item Signalering via LED-lampa som indikerar att dörrenhetens initiering är färdig.
-     \item Lokal larmning via LED-lampa.
+     \item Lokal larmning via LED-lampa och ljud.
      \item Central larmning via CAN-buss.
      \item Går att konfiguera väntetider innan larm från centralenheten.
      \item Avlarmning av individuella dörrar från centralenheten.
+     \item Dörrar kan konfigueras ifrån centralenheten.
      \item Lokal funktionalitet kräver inte uppkopplad centralenhet.
  \end{enumerate}
 
@@ -449,6 +470,17 @@ För att se samtliga testspecifikationer, samt resultat och analys, se bilaga \r
  \end{enumerate}
  
  \subsection{Larmsystemet som helhet}
+ \todo[inline]{försöker så lite frön}
+ Larmsystemet som helhet fungerar enligt uppgiftsbeskrivning. Det består utav
+ en dörrenhet, en rörelse enhet och en centralenhet. De olika enheterna kommunicerar
+ via CAN. Både dörrenheten och rörelseenheten kan skicka centrala larm till centralenheten
+ efter en tid som man kan ställa in via centralenheten. Ifall en enhet försvinner ifrån
+ nätverket märks detta och användaren varnas. Enligt tester kan vi också 
+ med "confidence" säga att även med mycket brus på can bussen går larmen 
+ fram till centralenheten. Ifall en enhet larmar centralt men inte ackkrediteras skickar
+ den ett nytt larm för att säkerhetställa att meddelanden kommer fram.
+
+\newpage
 \section{Diskussion och slutsats}
 % Detta avsnitt innehåller en sammanfattning av konstruktionen och en diskussion av resultatet. Om detta är möjligt, dra slutsatser av ert projekt och identifiera förbättringsmöjligheter. (Vilka kan vara användbara för en beställare)
 \todo[]{fixa snyggt}\textbf{Polling} Utifrån prestandatestet som gjorts för dörrenheten dras slutsatsen att polling fungerar för dörrenheten då inga fördröjningar upptäcks. Teoretiskt kan detta vara snabbare än att använda avbrott då polling inte kräver kontextbyte. En annan anledning till

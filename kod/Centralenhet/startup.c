@@ -697,7 +697,7 @@ uint8_t Command(uint8_t *command){
                 if (0 <= deviceID && deviceID <= 9 && 0 <= sensorID  && sensorID <= 9 &&
                     deviceID < next_id){
                         if (devices[deviceID].type == motion_unit){
-                            USARTPrint("\nAvlarmar sensor ");
+                            USARTPrint("\nLarmar sensor ");
                             USARTPrintNum(sensorID);
                             USARTPrint(" pa rorelseenhet med ID ");
                             USARTPrintNum(deviceID);
