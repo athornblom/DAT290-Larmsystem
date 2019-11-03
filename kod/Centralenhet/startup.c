@@ -778,49 +778,73 @@ uint8_t Command(uint8_t *command){
 
     //Detta kommando behöver itereras flera gånger för att hämta input osv
     else if (strStartsWith(command, "ror")) {
-        if (mode == CONFMODE){
+        //SORRY endast enheter med id 0-9 och sensorer 0-9 TODO
+        uint8_t deviceID = command[4] - '0';
+        uint8_t sensorID = command[6] - '0';
+        uint8_t dist = command[8] - '0';
+        if (0 <= deviceID && deviceID <= 9 && 0 <= sensorID  && sensorID <= 9 && 0 <= dist && dist <= 9 &&
+            deviceID < next_id && devices[deviceID].type == motion_unit && sensorID < motion_devs[deviceID].num_of_motion_sensors){
+                USARTPrint("\nKonfigurerar rorelse ");
+                USARTPrintNum(sensorID);
+                USARTPrint(" pa enhet med ID ");
+                USARTPrintNum(deviceID);
+                USARTPrint("\nmed dist ");
+                USARTPrintNum(dist * 10);
+                USARTPrint(" cm\n");
+                motion_devs[deviceID].dist_sensors[sensorID].dist = dist * 10;
+        } else {
+            USARTPrint("\nmisslyckades\n");
+        }
+        
+        return OK;
+    }
+        
+    //kalibrerar rörelsesensor
+    //Detta kommando behöver itereras flera gånger för att hämta input osv
+    else if (strStartsWith(command, "kal")) {
+        if (mode == STDMODE){
             //SORRY endast enheter med id 0-9 och sensorer 0-9 TODO
             uint8_t deviceID = command[4] - '0';
             uint8_t sensorID = command[6] - '0';
             uint8_t dist = command[8] - '0';
+            
             if (0 <= deviceID && deviceID <= 9 && 0 <= sensorID  && sensorID <= 9 && 0 <= dist && dist <= 9 &&
                 deviceID < next_id && devices[deviceID].type == motion_unit && sensorID < motion_devs[deviceID].num_of_motion_sensors){
-                    USARTPrint("\nKonfigurerar rorelse ");
+                    USARTPrint("\nKalibrerar rorelsesensor ");
                     USARTPrintNum(sensorID);
                     USARTPrint(" pa enhet med ID ");
                     USARTPrintNum(deviceID);
-                    USARTPrint("\nmed dist ");
+                    USARTPrint(" som avstand ");
                     USARTPrintNum(dist * 10);
-                    USARTPrint(" cm\n");
-                    motion_devs[deviceID].dist_sensors[sensorID].dist = dist * 10;
+                    USARTPrint("cm\n");
+                    motion_devs[deviceID].dist_sensors[sensorID].calib = CALEBRATING;
+                    motion_devs[deviceID].dist_sensors[sensorID].calDist = dist * 10;
             } else {
                 USARTPrint("\nmisslyckades\n");
             }
 
             return OK;
         }
-        //Vi är inte i conf läge så kommandot är ogiltigt
+        
+        //Vi är inte i stanard läge så kommandot är ogiltigt
         return NOCMD;
     }
-
+    
+    //Avaktiverar kalibrering
     //Detta kommando behöver itereras flera gånger för att hämta input osv
-    else if (strStartsWith(command, "cal")) {
-        if (mode == CONFMODE){
+    else if (strStartsWith(command, "noKal")) {
+        if (mode == STDMODE){
             //SORRY endast enheter med id 0-9 och sensorer 0-9 TODO
-            uint8_t deviceID = command[4] - '0';
-            uint8_t sensorID = command[6] - '0';
-            uint8_t dist = command[8] - '0';
-            if (0 <= deviceID && deviceID <= 9 && 0 <= sensorID  && sensorID <= 9 &&
-                0 <= dist && dist <= 9 && deviceID < next_id && devices[deviceID].type == motion_sensor && sensorID < motion_devs[deviceID].num_of_motion_sensors){
-                    USARTPrint("\nCalibrerar rorelsesensor ");
+            uint8_t deviceID = command[6] - '0';
+            uint8_t sensorID = command[8] - '0';
+            if (0 <= deviceID && deviceID <= 9 && 0 <= sensorID  && sensorID <= 9  &&
+                deviceID < next_id && devices[deviceID].type == motion_unit && sensorID < motion_devs[deviceID].num_of_motion_sensors){
+                    USARTPrint("\nAvslutar kalibrering rorelsesensor ");
                     USARTPrintNum(sensorID);
                     USARTPrint(" pa enhet med ID ");
                     USARTPrintNum(deviceID);
-                    USARTPrint("\nmed dist ");
-                    USARTPrintNum(dist * 10);
-                    USARTPrint(" cm\n");
-                    motion_devs[deviceID].dist_sensors[sensorID].calib = CALEBRATING;
-                    motion_devs[deviceID].dist_sensors[sensorID].dist = dist * 10;
+                    USARTPrint("\n");
+                    motion_devs[deviceID].dist_sensors[sensorID].calib = NOCALEBRATING;
             } else {
                 USARTPrint("\nmisslyckades\n");
             }
@@ -933,14 +957,17 @@ uint8_t send_door_configs(uint8_t id, uint8_t first_door_ID, uint8_t *return_doo
             //USARTPrint("No mailbox 1\n");
             *return_door_ID = first_door_ID;
             return 0;
+        } else {
+            if(devices[id].num_of_unacked >= OFFNETWORK){
+                USARTPrint("Enhet med id ");
+                USARTPrintNum(id);
+                USARTPrint(" har lamnat natverket\n");
+            } else {
+                devices[id].num_of_unacked++;
+            }
         }
     }
-    devices[id].num_of_unacked++;
-    if(devices[id].num_of_unacked >= OFFNETWORK){
-        USARTPrint("Enhet med id ");
-        USARTPrintNum(id);
-        USARTPrint(" har lamnat natverket\n");
-    }
+
     return 1;
 }
 
@@ -972,8 +999,11 @@ uint8_t send_motion_configs(uint8_t id, uint8_t first_ID, uint8_t *return_ID){
                 break;
             }
         }
-
-        encode_motion_config(&msg, id, motion_sensor, first_dist.calib, first_ID, last_ID - 1, first_dist.active, first_dist.dist, first_dist.disArm);
+        
+        //Kollar om vi kalibrerar eller inte
+        uint16_t dist = (first_dist.calib == CALEBRATING) ? first_dist.calDist : first_dist.dist;
+        
+        encode_motion_config(&msg, id, motion_sensor, first_dist.calib, first_ID, last_ID - 1, first_dist.active, dist, first_dist.disArm);
 
         if (CANsendMessage(&msg) == CAN_TxStatus_NoMailBox){
             *return_ID = first_ID;
@@ -998,6 +1028,14 @@ uint8_t send_motion_configs(uint8_t id, uint8_t first_ID, uint8_t *return_ID){
         if (CANsendMessage(&msg) == CAN_TxStatus_NoMailBox){
             *return_ID = first_ID;
             return 0;
+        } else {
+            if(devices[id].num_of_unacked >= OFFNETWORK){
+                USARTPrint("Enhet med id ");
+                USARTPrintNum(id);
+                USARTPrint(" har lamnat natverket\n");
+            } else {
+                devices[id].num_of_unacked++;
+            }
         }
     }
 
