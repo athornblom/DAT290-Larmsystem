@@ -97,7 +97,7 @@ void check_door_sound()
     annydoorLarm = checkV;
 }
 // ================================== LIGHTS =========================================================
-//bara för cool-het's faktorn.
+//LLampor som används vid uppstart för detektering
 void startup_lights()
 {
 

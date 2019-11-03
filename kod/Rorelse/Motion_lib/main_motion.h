@@ -26,9 +26,9 @@
 
 // Struct för motionsensorer
 typedef struct MotionSensors {
-	uint16_t pinTrig, pinEcho;							// Pinnar för trig, echo t.ex GPIO_Pin_4, GPIO_Pin_5.
-	uint32_t pulseTrig, pulseEcho, pulseDelay, timeOut;	// Längd på triggerpuls(10µs), tid tills pulsen kommer tillbaks, fördröjning mellan pulser och timeOut ifall sensorn blir ifrånkopplad under drift.
-	float cm, alarmDistance, multiple;					// Avstånd till föremål och larmavstånd, multipel av avstånded för kalibrering.
+	uint16_t pinTrig, pinEcho;	// Pinnar för trig, echo t.ex GPIO_Pin_4, GPIO_Pin_5.
+	uint32_t pulseTrig, pulseEcho, pulseDelay, timeOut;	  // Längd på triggerpuls(10µs), tid tills pulsen kommer tillbaks, fördröjning mellan pulser och timeOut ifall sensorn blir ifrånkopplad under drift.
+	float cm, multiple, centralAlarmDistance, localAlarmDistance;	// Avstånd till föremål samt centralt- och lokaltlarmavstånd, multipel av avstånded för kalibrering. 
 } MotionSensor;
 
 
@@ -45,7 +45,7 @@ typedef struct VibrationSensors{
  * 				1: 0 = Motionssensor, 1 = Vibrationssensor
  * 				2: Aktiv eller ej?
  * 				3: (Motion) Stigande kant på echo puls mätning
- * 				4-5: @todo
+ * 				4-5: Används ej
  *				6: Sensorn larmar
  *				7: Har centralenheten fått larmet?
  * @var		VibrationSensor: struct av vibrationssensor med vibrationssensor konfiguration. (pinDO)

@@ -74,7 +74,7 @@ int validPin(GPIO_TypeDef* port, uint16_t pin){
  * Det finns stöd för 5 rörelsesensor per port och 8 vibrationsmätare per port.
  */
 void init_GPIO_Ports(){
-	// Initiera klockar för alla portar, todo: behöv detta?
+	// Initiera klockar för alla portar
 	uint32_t portClocks[5] = {RCC_AHB1Periph_GPIOA, RCC_AHB1Periph_GPIOB, RCC_AHB1Periph_GPIOC, RCC_AHB1Periph_GPIOD, RCC_AHB1Periph_GPIOE}; 
 	for (int i=0; i*sizeof(portClocks[0]) < sizeof(portClocks); i++) {
 		RCC_AHB1PeriphClockCmd(portClocks[i], ENABLE);
@@ -144,10 +144,11 @@ void init_MotionSensors(){
 					.pulseTrig	= 0,
 					.pulseEcho	= 0,
 					.pulseDelay = 0,
-					.timeOut	= 0,
+					.timeOut	= 60000000, // Högst startvärde så det inte larmar direkt.
 					.cm			= 400,
 					.multiple	= 1,
-					.alarmDistance = 0		// Värdet ska sättas av centralenheten
+					.centralAlarmDistance = 0,	// Värdet ska sättas av centralenheten.
+					.localAlarmDistance = 0		// Värdet sätts till 'centralAlarmDistance'*2.
 			};
 			
 			Sensor s = {
@@ -240,7 +241,6 @@ void init_app(){
 
 	init_Timer();
 	init_GPIO_Ports();	
-	DebugPrintInit(); // Todo: ta bort innan slutprodukt
 	init_Sensors();
 	init_rng();
 	can_init();
@@ -282,7 +282,7 @@ char motionMeasure(Sensor *sensor) {
 	
 	// Är echo låg för första gången?
 	else if (sensor->controlbits & bit3 && !GPIO_ReadInputDataBit(sensor->port, mSensor->pinEcho)) {	
-		mSensor->cm = mSensor->multiple*(microTicks - mSensor->pulseEcho)/58; 	// Tid tills echo kommer tillbaks.
+		mSensor->cm = (mSensor->multiple)*((microTicks - mSensor->pulseEcho)/58); 	// Tid tills echo kommer tillbaks.
 		sensor->controlbits &= ~bit3;	// Lågkant på echopulsen.
 	}
 	
@@ -303,15 +303,19 @@ void motionPolling(Sensor *sensor) {
 	motionMeasure(sensor);
 	
 	MotionSensor* mSensor = &(sensor->motion);
-
+	
+	
 	// Sensorn upptäcker att något är för nära eller att sensorn kopplats ut, fortsätt larma tills centralenheten skickat larm-ACK.
-	if((((mSensor->cm < mSensor->alarmDistance || mSensor->timeOut < microTicks) && !(sensor->controlbits & bit6)) || sensor->controlbits & bit7) && microTicks > sensor->alarmDelay){
-		sensor->alarmDelay = microTicks + 1000000;	// Skickar larm en gång i sekunden till det är kviterat.
-		alarm(sensor);	// Larmar centralenheten
-		
-		DebugPrint("\n Larm på sensor ID:");
-		DebugPrintNum(sensor->id);
-
+	if((((mSensor->cm < mSensor->centralAlarmDistance || mSensor->timeOut < microTicks) && !(sensor->controlbits & bit6)) || sensor->controlbits & bit7) && microTicks > sensor->alarmDelay){
+		sensor->alarmDelay = microTicks + 1000000;	// Skickar larm en gång i sekunden tills det är kviterat.
+		alarm(sensor);	// Larmar centralenheten.
+	}
+	
+	if(mSensor->cm < mSensor->localAlarmDistance){
+		GPIO_SetBits(sensor->port, sensor->pinLamp); 	// Tänd lampa
+	}
+	else{
+		GPIO_ResetBits(sensor->port, sensor->pinLamp); 	// Släck lampa
 	}
 }
 
@@ -332,11 +336,7 @@ void vibrationPolling(Sensor *sensor) {
 		&& microTicks > sensor->alarmDelay)
 	{
 		sensor->alarmDelay = microTicks + 1000000;	// Skickar larm en gång i sekunden till det är kviterat.
-		alarm(sensor);	// Larmar centralenheten
-		
-		DebugPrint("\n Larm på sensor ID:");
-		DebugPrintNum(sensor->id);
-		
+		alarm(sensor);	// Larmar centralenheten.
 	}
 }
 

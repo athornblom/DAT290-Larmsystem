@@ -43,11 +43,9 @@ Kontrollera att systemet fungerar även om CAN-bussen är tungt belastad av brus
 
 \subsubsection*{Utförande}
 %Hur ska testet utföras?
-Testet utförs först med rörelseenheten och därefter görs samma test en gång till för dörrenheten.
+Testet utförs först med rörelseenheten och dörrenheten inviduellt därefter testas båda enheterna samtidigt.
 
-Koppla upp centralenhet, periferienheten och brusenheten på ett CAN-nätverk. Starta brusenheten och dess brusgenerering med en hög fördröjning på 64 millisekunder. Starta nu periferienheten samt centralenheten och starta systemet som det vanligtvis görs. Efter initiering kontrolleras så att larm fungerar. Fungerar detta kan intensiteten på bruset ökas genom att minska fördröjningen. Upprepa därefter samma procedur som tidigare tills det slutar att fungera eller om maximal intensitet uppnåtts.
-
-Efter att dörrenheten har testats utförs samma test för rörelseenheten.
+Koppla upp centralenhet, periferienheten med minst en aktiv sensor och brusenheten på ett CAN-nätverk. Starta brusenheten och dess brusgenerering med en hög fördröjning på 64 millisekunder. Starta nu periferienheten samt centralenheten och starta systemet som det vanligtvis görs. Efter initiering kontrolleras så att larm fungerar. Fungerar detta kan intensiteten på bruset ökas genom att minska fördröjningen. Upprepa därefter samma procedur som tidigare tills det slutar att fungera eller om maximal intensitet uppnåtts.
 
 
 \subsubsection*{Resultat}

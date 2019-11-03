@@ -80,8 +80,6 @@ void keyPad_IRQ(void){
         for (int col = 0; col < KEYPAD_COLS; col++){
             if (activeCols & colPins[col]){
                 bufferPut(keyBuffer, keyMatrix[row][col]);
-                //TODO REMOVE
-                //USARTPrint("FOUND*");
             }
         }
 

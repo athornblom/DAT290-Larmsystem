@@ -6,6 +6,10 @@
         "core_cm4.h": "c"
     },
     "files.exclude": {
-        "./toc": true
+        "./toc": true,
+        "**/.classpath": true,
+        "**/.project": true,
+        "**/.settings": true,
+        "**/.factorypath": true
     }
 }

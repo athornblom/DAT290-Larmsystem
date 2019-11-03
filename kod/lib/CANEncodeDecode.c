@@ -58,7 +58,7 @@ uint8_t encode_door_config(CanTxMsg *msg, uint8_t id, uint8_t door_id_0, uint8_t
  * sensor_id_1: id till sista sensorn i samma intervall
  * active: 0 för att avaktivera, 1 för att aktivera
  * distance: avstånd för rörelsesensorer
- * disArm: TODO Jag vet inte vad den gör så nån annan får gärna skriva det här
+ * disArm: Ifall sensorn skall avlarmas
  */
 uint8_t encode_motion_config(CanTxMsg *msg, uint8_t id, uint8_t sensor_type, uint8_t calibration, uint8_t sensor_id_0, uint8_t sensor_id_1, uint8_t active, uint16_t distance, uint8_t disArm){
     Header header = empty_header;
