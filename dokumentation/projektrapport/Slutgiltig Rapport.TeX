@@ -96,6 +96,30 @@ kan det endast ackkrediteras och nollställas via centralenheten.
 I det här avsnittet beskrivs det hur arbetet i gruppen delades upp, och hur gruppen har hanterat
 filhantering, möten och arbetstid.
 
+\subsection{}
+Programbiblioteket STM32\cite{stm} används för:
+\begin{itemize}
+    \item Initieringar av enkortsdatorernas GPIO.
+    \item Implementation av en System Timer (SysTick).
+    \item "Väntetid'-funktionalitet. (Delay-funktioner)
+    \item Implementation av CAN-kommunikation.
+\end{itemize}
+
+\subsection{Verifikation}
+\label{verifikation}
+För att utvärdera huruvida larmsystemet uppnår de mål och krav som formulerats i målet används tester.
+De tre undergrupperna har skrivit tester för sina respektive delsystem som försäkrar att
+delsystemen fungerar enligt specifikationen. Ett test som är skrivet av en undergrupp utförs
+av en annan undergrupp för att minimera partiskhet i utförandet.
+
+Testet för det kompletta centraliserade systemet formulerades och utfördes av gruppen som helhet.
+
+För att se samtliga testspecifikationer, samt resultat och analys, se bilaga \ref{bilaga:tester}.
+
+
+\subsection{Programbibliotek}
+\label{stm}
+
 \subsubsection{Fildelning och versionshantering}
 Arbetsgruppen valde att använda versionshanteringstjänsten GIT för att förenkla den parallella programmeringen, och för att samla alla filer och dokument på ett ställe.
 
@@ -351,7 +375,7 @@ Vibrationssensorn har endast central larm som skickas via CAN.
 
 \section{Metoder}
 
-\subsubsection{Undergrupper}
+\subsection{Undergrupper}
 För att jämna ut arbetsbelastningen delades projektgruppen in i tre grupper om två personer vardera,
 en för varje enhetstyp.
 
@@ -368,32 +392,10 @@ rörelse- och vibrationssensorerna för larmning av t.ex. fönster och värdeful
 \label{tillvägagångsätt}
 För att säkerhetställa det bästa möjliga resultatet för larmsystemet har det mesta arbetet bedrivits i samma
 rum, vilket har låtit gruppen samråda om eventuella frågor eller funderningar från gruppmedlemmar.
-STM-biblioteket används för att bespara projektgruppen jobb.
-Programbiblioteket STM32\cite{stm} används för:
-\begin{itemize}
-    \item Initieringar av enkortsdatorernas GPIO.
-    \item Implementation av en System Timer (SysTick).
-    \item "Väntetid'-funktionalitet. (Delay-funktioner)
-    \item Implementation av CAN-kommunikation.
-\end{itemize}
-
-\subsection{Verifikation}
-\label{verifikation}
-För att utvärdera huruvida larmsystemet uppnår de mål och krav som formulerats i målet används tester.
-De tre undergrupperna har skrivit tester för sina respektive delsystem som försäkrar att
-delsystemen fungerar enligt specifikationen. Ett test som är skrivet av en undergrupp utförs
-av en annan undergrupp för att minimera partiskhet i utförandet.
-
-Testet för det kompletta centraliserade systemet formulerades och utfördes av gruppen som helhet.
-
-För att se samtliga testspecifikationer, samt resultat och analys, se bilaga \ref{bilaga:tester}.
-
-
-\subsection{Programbibliotek}
-\label{stm}
 
 
 
+\newpage
  \section{Resultat}
  För kompletta testspecifikationer hänvisas till bilaga \ref{bilaga:tester}.
 
