@@ -43,7 +43,6 @@ Kontrollera att session ID fungerar som skydd mot en återuppspelningsattack.
 
 \subsubsection*{Utförande}
 %Hur ska testet utföras?
-\todo[inline]{Förtydliga hur man accepterar standardkonfiguratioen från periferienheten.}
 Utför detta test först för dörrenheten sedan för rörelseenheten.
 
 
@@ -52,14 +51,13 @@ Om inte ändra så att den är och kompilera om.
 Koppla upp ett CAN-nätverk med centralenhet, periferienhet samt återspelare.
 Starta inspelning på återspelaren och starta därefter de andra enheterna.
 Initiera standardkonfigurationen för enheten och övergå till standadläge på centralenheten genom att köra kommandot start.
-Låt nu systemet köra i några minuter (typ 3-5) utan att något larm går.
+Låt nu systemet köra i en minut utan att något larm går.
 Skulle något larm gå startas testet för periferienheten om.
 Avsluta inspelningen på återspelaren men frånkoppla inte matningen, då försvinner de inspelade meddelandesekvensen.
 
 
 Stäng av de övriga enheterna och låt nu endast centralenheten och återspelaren vara inkopplade på nätverket.
-Starta återuppspelning av den inspelade sekvensen.
-Starta seden centralenheten och kontrollera att en periferienhet ansluter trots att den saknas på nätverket.
+Starta centralenheten och sedan återuppspelning av den inspelade sekvensen. Kontrollera att en periferienhet ansluter trots att den saknas på nätverket.
 Godkänn standardkonfigurationen och övergå sedan till standardläge på centralenheten.
 Om centralenheten nu tror att den kommunicerar med en periferienhet utan att larma har en återuppspelningsattack utförts.
 Stäng av alla enhter.
