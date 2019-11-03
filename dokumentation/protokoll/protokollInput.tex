@@ -59,8 +59,22 @@ Detta meddelande används för att skicka konfigurationer till periferienheterna
 Centralenheten skickar konfiguration till periferienheten kontinuerligt under drift för att försäkra sig om att periferienheten har rätt konfiguration. Detta fungerar även som ping, då ett bestämt antal uteblivna ack tolkas som att enheten inte längre finns på nätverket.
 I så fall uppmärksammar centralenheten detta. Konfigurationsmeddelanden ser olika ut för de olika enheterna.
 
-För dörrenheten anges intervallet av dörrsensorer som konfigureras i de två första databytarna. Därefter följer fyra bytar för timrar; först för lokalt larm, sedan för centralt. Båda anger fördröjningen som en multipel av 10 sekunder. I den sjunde och sista byten skickas 0 om dörren är uppställd och 1 om den ska vara låst.
+För dörrenheter fördelas datafältet enligt tabell \ref{dörrkonfdata}
 
+\begin{table}[htb]
+	\centering
+	\begin{tabular}{|l|l|}
+		\hline
+		Byte & Innehåll \\ \hline \hline
+		0 & Id till första dörren i intervallet \\ \hline
+		1 & Id till sista dörren i intervallet \\ \hline
+		2-3 & Fördröjning för lokalt larm (multipel av 10 sekunder) \\ \hline
+		4-5 & Fördröjning för centralt larm (multipel av 10 sekunder) \\ \hline
+		6 & Tillstånd (uppställd eller låst) \\ \hline
+	\end{tabular}
+	\caption{Datafältets fördelning för konfiguration av dörrenhet.}
+	\label{tab:dörrkonfdata}
+\end{table}
 
 
 
