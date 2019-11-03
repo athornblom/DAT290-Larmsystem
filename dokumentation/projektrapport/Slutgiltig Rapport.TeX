@@ -404,11 +404,15 @@ Vibrationssensorn har endast central larm som skickas via CAN.
 \item Abra kadabra blankrad!
 \end{itemize}
 
- För att säkerställa att funktionalitet ovan fungerar utfördes följande tester:
+ För att säkerställa ovan nämnda funktionalitet utfördes följande tester:
  \begin{enumerate}
-     \item Test av id-tilldelning och larmmeddelande, se bilaga \ref{test:idLarm}.
-     \todo{Kommer kompletteras med fler tester.}
- \end{enumerate}
+     \item Test av id-begäran och larmmeddelnade, se bilagor \ref{test:UrkopplingMotion} och \ref{test:idLarm}.
+     \item Konfigurering av rörelseenhet, se bilaga \ref{test:MotionConfig}
+\end{enumerate}
+
+Utöver ovan nämnda tester är centralenheten involverad i alla de testar som inkluderar kommunikation mellan enheter. Även i de systemövergripande testerna (\ref{test:brusTest} och \ref{test:replayer}) har centralenheten presterat som förväntat. Centralenheten har klarat att kommunicera med periferienheter trots mycket trafik på CAN-bussen och även förhindrat återuppspelningsattack genom sessions-id. Allt som allt klarar centralenheten det som förväntas. Dock skulle  ett mer användarvänligt kommandogränssnitt vara önskvärt då det nuvarande kan upplevas som klumpigt.
+
+
 
  \subsection{Dörrenheten}
  Dörrenheten har följande funktionalitet:
@@ -496,6 +500,9 @@ att polling används istället för avbrott är att det endast finns 16 avbrotts
 
     \textbf{start}\\
     Startar standardläge.
+
+    \textbf{list}\\
+    Skriver ut alla periferienheter i terminalen och anger varje sensors konfiguration. Detta kommando används med fördel för att ta reda på vilka värden som är lämpliga för kommandona dor och ror (se nedan).
 
     \textbf{dor v x y z}\\
     Där \textbf{v, x, y} och \textbf{z} är tal mellan 0 och 9. Konfigurerar dörr \textbf{x} på enhet med id \textbf{v} med timer för lokalt larm på  \(\textbf{y} * 10\) sekunder samt en fördröjning till centralt larm på \(\textbf{z} * 10\) sekunder.
