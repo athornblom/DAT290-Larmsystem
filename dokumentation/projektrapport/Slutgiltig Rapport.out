@@ -23,16 +23,18 @@
 \BOOKMARK [2][-]{subsection.3.2}{Verifikation}{section.3}% 23
 \BOOKMARK [2][-]{subsection.3.3}{Programbibliotek}{section.3}% 24
 \BOOKMARK [1][-]{section.4}{Resultat}{}% 25
-\BOOKMARK [2][-]{subsection.4.1}{Dörrenheten}{section.4}% 26
-\BOOKMARK [2][-]{subsection.4.2}{Rörelseenheten}{section.4}% 27
-\BOOKMARK [2][-]{subsection.4.3}{Centralenheten}{section.4}% 28
+\BOOKMARK [2][-]{subsection.4.1}{Centralenheten}{section.4}% 26
+\BOOKMARK [2][-]{subsection.4.2}{Dörrenheten}{section.4}% 27
+\BOOKMARK [2][-]{subsection.4.3}{Rörelseenheten}{section.4}% 28
 \BOOKMARK [2][-]{subsection.4.4}{Larmsystemet\040som\040helhet}{section.4}% 29
 \BOOKMARK [1][-]{section.5}{Slutsats\040och\040diskussion}{}% 30
 \BOOKMARK [1][-]{section*.5}{Referenser}{}% 31
 \BOOKMARK [1][-]{appendix.A}{Utförlig beskrivning av meddelandetyper kommunikationsprotokoll}{}% 32
-\BOOKMARK [1][-]{appendix.B}{Tester}{}% 33
-\BOOKMARK [2][-]{subsection.B.1}{Test av pinnar för dörrar}{appendix.B}% 34
-\BOOKMARK [2][-]{subsection.B.2}{Test\040av\040ID-tilldelning\040och\040larm}{appendix.B}% 35
-\BOOKMARK [2][-]{subsection.B.3}{Test av lokal drift för dörrenhet}{appendix.B}% 36
-\BOOKMARK [2][-]{subsection.B.4}{Test av återspelningsenheten}{appendix.B}% 37
-\BOOKMARK [2][-]{subsection.B.5}{Återuppspelningsattack test}{appendix.B}% 38
+\BOOKMARK [1][-]{appendix.B}{Kommandolista för centralenheten}{}% 33
+\BOOKMARK [1][-]{appendix.C}{Tester}{}% 34
+\BOOKMARK [2][-]{subsection.C.1}{Test av pinnar för dörrar}{appendix.C}% 35
+\BOOKMARK [2][-]{subsection.C.2}{Test\040av\040ID-tilldelning\040och\040larm}{appendix.C}% 36
+\BOOKMARK [2][-]{subsection.C.3}{Test av lokal drift för dörrenhet}{appendix.C}% 37
+\BOOKMARK [2][-]{subsection.C.4}{Test\040av\040systemet\040med\040brus}{appendix.C}% 38
+\BOOKMARK [2][-]{subsection.C.5}{Test av återspelningsenheten}{appendix.C}% 39
+\BOOKMARK [2][-]{subsection.C.6}{Återuppspelningsattack test}{appendix.C}% 40

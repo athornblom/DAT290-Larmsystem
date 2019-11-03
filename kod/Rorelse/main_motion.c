@@ -74,7 +74,7 @@ int validPin(GPIO_TypeDef* port, uint16_t pin){
  * Det finns stöd för 5 rörelsesensor per port och 8 vibrationsmätare per port.
  */
 void init_GPIO_Ports(){
-	// Initiera klockar för alla portar, todo: behöv detta?
+	// Initiera klockar för alla portar
 	uint32_t portClocks[5] = {RCC_AHB1Periph_GPIOA, RCC_AHB1Periph_GPIOB, RCC_AHB1Periph_GPIOC, RCC_AHB1Periph_GPIOD, RCC_AHB1Periph_GPIOE}; 
 	for (int i=0; i*sizeof(portClocks[0]) < sizeof(portClocks); i++) {
 		RCC_AHB1PeriphClockCmd(portClocks[i], ENABLE);
@@ -241,7 +241,6 @@ void init_app(){
 
 	init_Timer();
 	init_GPIO_Ports();	
-	DebugPrintInit(); // Todo: ta bort innan slutprodukt
 	init_Sensors();
 	init_rng();
 	can_init();

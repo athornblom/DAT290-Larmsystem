@@ -45,7 +45,7 @@ typedef struct VibrationSensors{
  * 				1: 0 = Motionssensor, 1 = Vibrationssensor
  * 				2: Aktiv eller ej?
  * 				3: (Motion) Stigande kant på echo puls mätning
- * 				4-5: @todo
+ * 				4-5: Används ej
  *				6: Sensorn larmar
  *				7: Har centralenheten fått larmet?
  * @var		VibrationSensor: struct av vibrationssensor med vibrationssensor konfiguration. (pinDO)

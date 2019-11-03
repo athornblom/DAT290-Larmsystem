@@ -5,7 +5,15 @@
 #include "stm32f4xx_rcc.h"
 #include "stm32f4xx_gpio.h"
 
-
+/*
+ * msg: meddelande att koda
+ * id: dörrenhetens id
+ * door_id_0: id till första dörren i intervallet av dörrar som ska konfigureras
+ * door_id_1: id till sista dörren i samma intervall
+ * time_0: tid för lokalt larm i 10-sekundersintervall
+ * time_1: tid för centralt larm i 10-sekundersintervall
+ * locked: 0 för upplåst, 1  för låst
+ */
 uint8_t encode_door_config(CanTxMsg *msg, uint8_t id, uint8_t door_id_0, uint8_t door_id_1, uint16_t time_0, uint16_t time_1, uint8_t locked){
     if(door_id_0 > door_id_1 || door_id_1 > 31){
         return 0;
@@ -30,10 +38,10 @@ uint8_t encode_door_config(CanTxMsg *msg, uint8_t id, uint8_t door_id_0, uint8_t
     
     
     //De två tidsvärdena skrivs till bit 16-47
-    *(data_pointer + 2) = time_0;
-    *(data_pointer + 3) = time_0 >> 8;
-    *(data_pointer + 4) = time_1;
-    *(data_pointer + 5) = time_1 >> 8;
+    *(data_pointer + 2) = time_0 >> 8;
+    *(data_pointer + 3) = time_0;
+    *(data_pointer + 4) = time_1 >> 8;
+    *(data_pointer + 5) = time_1;
     
     //Låsflagga skrivs till bit 48-55
     *(data_pointer + 6) = locked;
@@ -41,6 +49,17 @@ uint8_t encode_door_config(CanTxMsg *msg, uint8_t id, uint8_t door_id_0, uint8_t
     return 1;
 }
 
+/*
+ * msg: meddelande att koda
+ * id: rörelseenhetens id
+ * sensor_type: 0 för rörelsesensor, 1 för vibrationssensor
+ * calibration: 0 för konfiguration, 1 för kalibrering
+ * sensor_id_0: id till första sensorn i intervallet av sensorer som ska konfigureras
+ * sensor_id_1: id till sista sensorn i samma intervall
+ * active: 0 för att avaktivera, 1 för att aktivera
+ * distance: avstånd för rörelsesensorer
+ * disArm: Ifall sensorn skall avlarmas
+ */
 uint8_t encode_motion_config(CanTxMsg *msg, uint8_t id, uint8_t sensor_type, uint8_t calibration, uint8_t sensor_id_0, uint8_t sensor_id_1, uint8_t active, uint16_t distance, uint8_t disArm){
     Header header = empty_header;
     header.msgType = conf_msg_type;
@@ -64,9 +83,10 @@ uint8_t encode_motion_config(CanTxMsg *msg, uint8_t id, uint8_t sensor_type, uin
     msg->Data[5] = distance;
     msg->Data[6] = distance << 8;
     
-    msg->Data[7] = 0;
+    msg->Data[7] = disArm;
 }
 
+// Kodar meddelande för att skicka uppmätt avstånd från rörelseenhet till centralenhet
 uint8_t encode_distance_value(CanTxMsg *msg, uint8_t sensor_id, uint8_t distance){
     uint8_t *data_pointer = (uint8_t*)&(msg->Data);
     
@@ -87,11 +107,11 @@ uint8_t encode_distance_value(CanTxMsg *msg, uint8_t sensor_id, uint8_t distance
 }
 
 /*
- * CanTxMsg *msg: förslagsvis tomt meddeleande som görs till id-förfrågan
- * uint32_t temp_id: temporärt, förslagsvis slumpgenererat id
- * uint8_t device_type: 0 för dörrenhet, 1 för rörelseenhet
- * uint8_t value_0: antal dörrar eller rörelsesensorer
- * uint8_t value_1: antal vibrationssensorer
+ * msg: meddelande att koda
+ * temp_id: temporärt, förslagsvis slumpgenererat id
+ * device_type: 0 för dörrenhet, 1 för rörelseenhet
+ * value_0: antal dörrar eller rörelsesensorer
+ * value_1: antal vibrationssensorer
  */
 void encode_request_id(CanTxMsg *msg, uint32_t temp_id, uint8_t device_type, uint8_t value_0, uint8_t value_1){
     Header header = empty_header;
@@ -114,34 +134,31 @@ void encode_request_id(CanTxMsg *msg, uint32_t temp_id, uint8_t device_type, uin
     msg->Data[6] = value_1;
 }
 
-/*
- *  * skapar meddelnade för IDbegäran för dörr
- * CanTxMsg *msg: förslagsvis tomt meddeleande som görs till id-förfrågan
- * uint32_t temp_id: temporärt, förslagsvis slumpgenererat id
- * uint32_t tmpID slumptal för idbegäran
- * uint8_t nDoors: antal dörrar
+/* Skapar meddelande för id-begäran för dörrenhet
+ * msg: meddelande att koda
+ * tmpID: temporärt, förslagsvis slumpgenererat id
+ * nDoors: antal dörrar
  */
 void encode_door_request_id(CanTxMsg *msg, uint32_t tmpID, uint8_t nDoors){
     encode_request_id(msg,tmpID,door_unit,nDoors,0);
 }
 
-/*
- * skapar meddelande för idbegäran rörelse
- * CanTxMsg *msg: förslagsvis tomt meddeleande som görs till id-förfrågan
- * uint32_t temp_id: temporärt, förslagsvis slumpgenererat id
- * uint32_t tmpID slumptal för idbegäran
+/* Skapar meddelande för id-begäran för rörelseenhet
+ * msg: meddelande att koda
+ * tmpID: temporärt, förslagsvis slumpgenererat id
  * uint8_t nMotion: antal rörelsesensorer
- * uint8_t nvib: antalet vibrationssensorer
+ * uint8_t nvib: antal vibrationssensorer
  */
 void encode_motion_request_id(CanTxMsg *msg, uint32_t tmpID, uint8_t nMotion, uint8_t nVib){
     encode_request_id(msg, tmpID, motion_unit, nMotion, nVib);
 }
 
-//Encodar en id-tilldelning
-//msg är en pekare till meddelande som ska skickas
-//request är en pekare till förfrågan
-//id är id man tilldelar enheten
-//Returnerar 1 om det lyckade 0 annars
+/* Kodar meddelande för id-tilldelning
+ * Returnerar 1 om det lyckas, 0 annars
+ * msg: meddelande att koda
+ * request: meddelande id-begäran
+ * id: id att tilldela enheten
+*/
 uint8_t encode_assign_id(CanTxMsg *msg, CanRxMsg *request, uint8_t id){
     //Kollar så längden av request stämmer för idReq
     if (request->DLC == reqID_msg_length){
@@ -170,18 +187,19 @@ uint8_t encode_assign_id(CanTxMsg *msg, CanRxMsg *request, uint8_t id){
 
 
 
-//Encodar ett larmmeddelande
-//msg är en pekare till meddelandet som ska skickas
-//unitID är enhetens egna ID
-//id är idt till sensorn som larmar 
-//För rörelseenheten ligger ID för rörelse och vibrationssensorer efter varandra.
-//första röresesensorerna har ID 0 sista ID är antalet rörelsesensorer -1
-//Första vibrationssensorn har ID antal rörelsesensorer och sista antalt rörelsesensorer +
-//antalet vibrationssensorer - 1
-void encode_larm_msg(CanTxMsg *msg, uint8_t uinitID, uint8_t id){
+/* Kodar ett larmmeddelande
+ * För rörelseenheten ligger ID för rörelse och vibrationssensorer efter varandra.
+ * första röresesensorerna har ID 0 sista ID är antalet rörelsesensorer -1
+ * Första vibrationssensorn har ID antal rörelsesensorer och sista antalt rörelsesensorer +
+ * antalet vibrationssensorer - 1
+ * msg: meddelande att koda
+ * deviceID: enhetens ID
+ * id: id:t till sensorn som larmar 
+ */
+void encode_larm_msg(CanTxMsg *msg, uint8_t deviceID, uint8_t id){
     Header header = empty_header;
     header.msgType = larm_msg_type;
-    header.ID = uinitID;
+    header.ID = deviceID;
     header.toCentral = 1;
     //msgNum är givarens index. används när vi sedan ackar
     //och periferienheten då vet vilket id acket är för
@@ -195,9 +213,9 @@ void encode_larm_msg(CanTxMsg *msg, uint8_t uinitID, uint8_t id){
     msg->Data[0] = id;
 }
 
-//Encodar ackmeddelande
-//ackMsg är en pekare till meddelandet som ska skickas
-//recievedMsg är en pekare till meddelandet som ska ackas
+/* Kodar ackmeddelande
+ * ackMsg: meddelande att koda
+ * recievedMsg: meddelandet som ska ackas */
 void encode_ack_msg(CanTxMsg *ackMsg, CanRxMsg *recievedMsg){
     ackMsg->ExtId = recievedMsg->ExtId;
     ackMsg->DLC = recievedMsg->DLC;
@@ -229,22 +247,22 @@ uint8_t decode_ID(CanRxMsg *msg){
     return msg->Data[4];
 }
 
-//Returnerar antalet dörrar i en idbegäran
+//Returnerar antalet dörrar i en id-begäran
 uint8_t decode_doorNum(CanRxMsg *msg){
     return msg->Data[5];
 }
 
-//Returnerar enhetstypen i en idbegäran
+//Returnerar enhetstypen i en id-begäran
 uint8_t decode_deviceType(CanRxMsg *msg){
     return msg->Data[4];
 }
 
-//Returnerar antalet rörelsesensorer i en idbegäran
+//Returnerar antalet rörelsesensorer i en id-begäran
 uint8_t decode_motionSensNum(CanRxMsg *msg){
     return msg->Data[5];
 }
 
-//Returnerar antalet vibrationssensorer i en idbegäran
+//Returnerar antalet vibrationssensorer i en id-begäran
 uint8_t decode_vibSensNum(CanRxMsg *msg){
     return msg->Data[6];
 }

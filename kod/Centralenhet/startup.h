@@ -33,7 +33,7 @@
 //innan enheten klassas som förlorad på nätverket
 #define OFFNETWORK 10
 
-//För larm on/om rörelseenhet
+//För larm on/off rörelseenhet
 #define LARMON 0
 #define LARMOFF 1
 
@@ -61,6 +61,7 @@ typedef struct{
 	uint8_t active;
     uint8_t disArm;
     uint8_t calib;
+    uint16_t calDist;
 } Dist_sensor;
 
 typedef struct{
