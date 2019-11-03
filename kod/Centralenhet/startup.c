@@ -928,9 +928,7 @@ uint8_t send_door_configs(uint8_t id, uint8_t first_door_ID, uint8_t *return_doo
         }
 
         encode_door_config(&msg, id, first_door_ID, last_door_ID - 1, first_door.time_local_larm, first_door.time_central_larm, first_door.locked);
-        //print_door(door_first);
         if (CANsendMessage(&msg) == CAN_TxStatus_NoMailBox){
-            //USARTPrint("No mailbox 1\n");
             *return_door_ID = first_door_ID;
             return 0;
         } else {
