@@ -429,19 +429,6 @@ uint8_t Command(uint8_t *command){
         return OK;
     }
 
-    if (strEqual(command, "help")){
-        if (mode == CONFMODE){
-            USARTPrint("Help config-mode:\n");
-            USARTPrint("start for att overga till standard-mode\n");
-            USARTPrint("list for att lista enheter\n");
-        } else if (mode == STDMODE){
-            USARTPrint("Help standard-mode:\n");
-            USARTPrint("avlarma for att avlarma en larmade sensor\n");
-            USARTPrint("list for att lista enheter\n");
-        }
-        return OK;
-    }
-
     else if (strEqual(command, "start")){
         if (mode == CONFMODE){
             if (enterStdMode()){
@@ -745,35 +732,30 @@ uint8_t Command(uint8_t *command){
 
     //Detta kommando behöver itereras flera gånger för att hämta input osv
     else if (strStartsWith(command, "dor")) {
-        if (mode == CONFMODE){
-            //SORRY endast enheter med id 0-9 och sensorer 0-9 TODO
-            uint8_t deviceID = command[4] - '0';
-            uint8_t sensorID = command[6] - '0';
-            uint8_t localTime = command[8] - '0';
-            uint8_t centralTime = command[10] - '0';
-            if (0 <= deviceID && deviceID <= 9 && 0 <= sensorID  && sensorID <= 9 &&
-                0 <= localTime && localTime <= 9 && 0 <= centralTime  && centralTime <= 9 &&
-                deviceID < next_id && devices[deviceID].type == door_unit){
-                    USARTPrint("\nKonfigurerar dorr ");
-                    USARTPrintNum(sensorID);
-                    USARTPrint(" pa enhet med ID ");
-                    USARTPrintNum(deviceID);
-                    USARTPrint("\nmed local t ");
-                    USARTPrintNum(localTime);
-                    USARTPrint(" och central t ");
-                    USARTPrintNum(centralTime);
-                    USARTPrint("\n");
-                    door_devs[deviceID].doors[sensorID].time_local_larm = localTime;
-                    door_devs[deviceID].doors[sensorID].time_central_larm = centralTime;
-            } else {
-                USARTPrint("\nmisslyckades\n");
-            }
-
-            return OK;
+        //SORRY endast enheter med id 0-9 och sensorer 0-9 TODO
+        uint8_t deviceID = command[4] - '0';
+        uint8_t sensorID = command[6] - '0';
+        uint8_t localTime = command[8] - '0';
+        uint8_t centralTime = command[10] - '0';
+        if (0 <= deviceID && deviceID <= 9 && 0 <= sensorID  && sensorID <= 9 &&
+            0 <= localTime && localTime <= 9 && 0 <= centralTime  && centralTime <= 9 &&
+            deviceID < next_id && devices[deviceID].type == door_unit){
+                USARTPrint("\nKonfigurerar dorr ");
+                USARTPrintNum(sensorID);
+                USARTPrint(" pa enhet med ID ");
+                USARTPrintNum(deviceID);
+                USARTPrint("\nmed local t ");
+                USARTPrintNum(localTime);
+                USARTPrint(" och central t ");
+                USARTPrintNum(centralTime);
+                USARTPrint("\n");
+                door_devs[deviceID].doors[sensorID].time_local_larm = localTime;
+                door_devs[deviceID].doors[sensorID].time_central_larm = centralTime;
+        } else {
+            USARTPrint("\nmisslyckades\n");
         }
 
-        //Vi är inte i konfig läge så kommandot är ogiltigt
-        return NOCMD;
+        return OK;
     }
 
     //Detta kommando behöver itereras flera gånger för att hämta input osv
@@ -832,7 +814,7 @@ uint8_t Command(uint8_t *command){
     
     //Avaktiverar kalibrering
     //Detta kommando behöver itereras flera gånger för att hämta input osv
-    else if (strStartsWith(command, "noKal")) {
+    else if (strStartsWith(command, "nokal")) {
         if (mode == STDMODE){
             //SORRY endast enheter med id 0-9 och sensorer 0-9 TODO
             uint8_t deviceID = command[6] - '0';
@@ -944,7 +926,7 @@ uint8_t send_door_configs(uint8_t id, uint8_t first_door_ID, uint8_t *return_doo
     //Följande loop samlar största möjliga intervall av dörrar med samma värden och skickar ett meddelande per intervall
     for(; first_door_ID < door_devs[id].num_of_doors; first_door_ID = last_door_ID){
         Door first_door = door_devs[id].doors[first_door_ID];
-        for(last_door_ID = first_door_ID; last_door_ID < door_devs[id].num_of_doors; last_door_ID++){
+        for(last_door_ID = first_door_ID + 1; last_door_ID < door_devs[id].num_of_doors; last_door_ID++){
             Door last_door = door_devs[id].doors[last_door_ID];
             if(!doors_equal(first_door, last_door)){
                 break;
@@ -971,9 +953,12 @@ uint8_t send_door_configs(uint8_t id, uint8_t first_door_ID, uint8_t *return_doo
     return 1;
 }
 
-//Kollar om två rörelsesensorer är identiska bortsett från id
+//Kollar om två rörelsesensorer lika, 1 om det är 0 annars
 uint8_t dists_equal(Dist_sensor dist_0, Dist_sensor dist_1){
-    return dist_0.dist == dist_1.dist && dist_0.active == dist_1.active && dist_0.disArm == dist_1.disArm && dist_0.calib == dist_1.calib;
+    if (dist_0.calib == CALEBRATING || dist_1.calib == CALEBRATING){
+        return 0;
+    }
+    return dist_0.dist == dist_1.dist && dist_0.active == dist_1.active && dist_0.disArm == dist_1.disArm;
 }
 //Kollar om två vibrationssensorer är identiska bortsett från id
 uint8_t vibs_equal(Vib_sensor vib_0, Vib_sensor vib_1){
@@ -991,13 +976,13 @@ uint8_t send_motion_configs(uint8_t id, uint8_t first_ID, uint8_t *return_ID){
     //Följande loop samlar största möjliga intervall av rörelsesensorer med samma värden och skickar ett meddelande per intervall
     for(; first_ID < nMotionSensors; first_ID = last_ID){
         Dist_sensor first_dist = motion_devs[id].dist_sensors[first_ID];
-
-        for(; last_ID < nMotionSensors; last_ID++){
+        
+        for(last_ID = first_ID + 1; last_ID < nMotionSensors; last_ID++){
             Dist_sensor last_dist = motion_devs[id].dist_sensors[last_ID];
 
             if(!dists_equal(first_dist, last_dist)){
                 break;
-            }
+            } 
         }
         
         //Kollar om vi kalibrerar eller inte
@@ -1008,6 +993,14 @@ uint8_t send_motion_configs(uint8_t id, uint8_t first_ID, uint8_t *return_ID){
         if (CANsendMessage(&msg) == CAN_TxStatus_NoMailBox){
             *return_ID = first_ID;
             return 0;
+        } else {
+            if(devices[id].num_of_unacked >= OFFNETWORK){
+                USARTPrint("Enhet med id ");
+                USARTPrintNum(id);
+                USARTPrint(" har lamnat natverket\n");
+            } else {
+                devices[id].num_of_unacked++;
+            }
         }
     }
 
@@ -1015,7 +1008,7 @@ uint8_t send_motion_configs(uint8_t id, uint8_t first_ID, uint8_t *return_ID){
     for(; first_ID - nMotionSensors < nVibSens; first_ID = last_ID){
         Vib_sensor first_vib = motion_devs[id].vib_sensors[first_ID - nMotionSensors];
 
-        for(; last_ID  - nMotionSensors < nVibSens; last_ID++){
+        for(last_ID = first_ID + 1; last_ID  - nMotionSensors < nVibSens; last_ID++){
             Vib_sensor last_vib = motion_devs[id].vib_sensors[last_ID - nMotionSensors];
 
             if(!vibs_equal(first_vib, last_vib)){
