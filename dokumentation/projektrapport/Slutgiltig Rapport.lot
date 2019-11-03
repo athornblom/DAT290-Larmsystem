@@ -1,6 +1,0 @@
-\babel@toc {swedish}{}
-\contentsline {table}{\numberline {1}{\ignorespaces Meddelandetyper som används för datakommunikationen.}}{8}{table.1}% 
-\contentsline {table}{\numberline {2}{\ignorespaces GPIO-pinnar på port A som ej går att koppla sensorer till.}}{13}{table.2}% 
-\contentsline {table}{\numberline {3}{\ignorespaces Fördelning av de 29 bitarna i ett CAN-meddelandes id-fält.}}{20}{table.3}% 
-\contentsline {table}{\numberline {4}{\ignorespaces Nummer för enhetstyper.}}{22}{table.4}% 
-\contentsline {table}{\numberline {5}{\ignorespaces Numrering för sensortyper för rörelseenheter.}}{22}{table.5}% 
