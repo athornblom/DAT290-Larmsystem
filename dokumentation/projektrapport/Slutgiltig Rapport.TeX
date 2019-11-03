@@ -13,7 +13,7 @@
 \usepackage{hyperref}
 \usepackage{multicol}
 
-\title{Larmsystem baserat på MD407-mikrodatorer}
+\title{Utveckling av modulärt larmsystem baserat på MD407-enkortsdatorer}
 
 \author{\large Grupp 13\\Filip Borg, Gustav Fåhraeus, Josef Karlsson,\\
 Erik Nilsson, Adam Thörnblom, Ben Wooldridge}
@@ -54,32 +54,29 @@ Erik Nilsson, Adam Thörnblom, Ben Wooldridge}
 \newpage
 
 \section{Inledning}
-Rapporten beskriver utvecklingen av ett modulärt larmsystem som i grunden består av ARM-baserade MD407-enkortsdatorer.
-
-
 I en undersökning\cite{brott-foretagarna} utförd av Sveriges största företagsorganisaton, \textit{Företagarna}, anger var tredje företag (n=983) att de blivit utsatta för minst ett brott någon gång under de senaste fem åren. Pontus Lindström, ansvarig för brott- och trygghetsfrågor hos Företagarna säger:
 \begin{quote}
 \textit{- Undersökningen bekräftar den bild vi har. Många företagare vittnar om en ökad utsatthet och om att otryggheten ökat.}
 \end{quote}
 
-25\% av de företag som blivit utsatta för minst ett brott anger att de inte anmält brottet till polisen. 36\% anger att de anmält något brott de utsatts för, men inte alla. Den låga anmälningsgraden tyder på att företagen inte tycker att anmälningarna ger någonting.  Företagen anger att de känner sig tvungna att satsa stora summor på larmsystem, vilket finansiellt inte alltid är en lätt investering att göra, speciellt inte för små företagare utan kapital.
+25\% av de företag som blivit utsatta för minst ett brott anger att de inte anmält brottet till polisen. 36\% anger att de anmält något av brotten de utsatts för. Att anmälningsgraden är så låg tyder på att att företagen inte anser att det är värt besväret att anmäla brott till polisen. Företagen i undersökningen anger också att de känner sig tvungna att satsa stora summor på larmsystem, vilket för många enskilda firmor och handelsbolag inte alltid är genomförbart av finansiella skäl.
+
+Baserat på denna undersökningen verkar det finnas ett behov för ett skalbart larmsystem där användaren kan justera omfattingen för larmet baserat på rådande nödvändighet och finansiell kapabilitet.
+
+Rapporten beskriver utvecklingen av ett modulärt larmsystem som i grunden består av MD407-enkortsdatorer.
 
 \subsection{Syfte} % Svarar på frågan "Varför"?
-Larmsystemets syfte är att vara ett finansiellt dynamiskt alternativ för företag
-och organisationer som har behov av anpassad larmning beroende på rådande behov.
+Projekets syfte är att utveckla ett larmsystemets som ska vara ett finansiellt dynamiskt alternativ för företag
+och organisationer som har behov av skalningsbar och anpassad larmning beroende på nuvarande nödvändighet och finansiell \\ kapabilitet.
 Detta uppnås genom att erbjuda mindre delsystem som kan kopplas ihop till ett större centraliserat system.
 
 Systemet ökar översikten och säkerheten av användarens lokaler genom att implementera konfigurerbar larmning av dörrar, samt rörelse- och vibrationsdetektering.
 
 \subsection{Mål} % Svarar på frågan "Vad"?
 % I detta avsnitt beskrivs koncist samtliga övergripande tekniska mål med projektet, det vill säga, vad som ska konstrueras. De mål som anges här kommer att styra projektets utveckling. När projektet närmar sig sitt slut och den slutliga projektrapporten lämnas in kommer beställaren att kritiskt analysera hur väl projektet lyckats genom att jämföra planens mål med den tekniska konstruktion som redovisas i projektrapporten.
-Ett komplett larmsystem i minimal form består av 3 enheter:
-\begin{itemize}
-    \item 1st Dörrenhet
-    \item 1st Rörelseenhet
-    \item 1st Centralenhet
-\end{itemize}
-Samtliga enheter kräver en MD407-mikrodator för individuell drift. För att koppla samman
+Ett komplett larmsystem i minimal form består av tre enheter: en dörrenhet, en rörelseenhet, och en centralenhet.
+
+Samtliga enheter kräver varsin MD407-enkortsdator för individuell drift. För att koppla samman
 fristående enheter till ett centraliserat system krävs en CAN-buss.
 
 Dörrenheten hanterar detektering och larmning av dörrar. Vid systemuppstart kontrollerar
@@ -481,7 +478,12 @@ För att se samtliga testspecifikationer, samt resultat och analys, se bilaga \r
  \subsection{Larmsystemet som helhet}
 \section{Slutsats och diskussion}
 % Detta avsnitt innehåller en sammanfattning av konstruktionen och en diskussion av resultatet. Om detta är möjligt, dra slutsatser av ert projekt och identifiera förbättringsmöjligheter. (Vilka kan vara användbara för en beställare)
-Utifrån testresultaten kan slutsatsen dras att dörrenheten fungerar som den ska enligt målet.
+\todo[]{fixa snyggt}\textbf{Polling} Utifrån prestanda testet som gjorts för dörrenheten 
+kan vi dra slutsatsen att polling fungerar bra att använda för dörrenheten då inga delayer upptäcks
+enlgit teorin kan det till och med vara så att det går snabbare än ifall vi hade använt 
+motsvarigheten intterupt. Då i polling görs det inga kontextbyten. En annan anledning till
+att polling används istället för interupt är att det finns endast 16 avbrottslinor och vi har 32 dörrar
+vilket gör att man hade ändå behövt implementera någon form av polling i avbrotts rutinerna .
 
 \todo[inline]{inte färdig}
 
@@ -500,10 +502,6 @@ Utifrån testresultaten kan slutsatsen dras att dörrenheten fungerar som den sk
     \section{Kommandolista för centralenheten}
     \label{kommandon}
         För att styra centralenheten används ett antal kommandon som beskrivs nedan. Då centralenheten har två separata lägen.
-
-    
-    \textbf{help}\\
-    Används för att se de tillgängliga kommandona för det aktiva läget (standard eller konfiguration).
 
     \textbf{start}\\
     Startar standardläge.
@@ -527,6 +525,7 @@ Utifrån testresultaten kan slutsatsen dras att dörrenheten fungerar som den sk
 	\input{../tester/rorelseenhet/GPIO_TEST.tex}
          \input{../tester/system/IDochLarm.tex}
          \input{../tester/dorrenhet/lokalDriftTest.tex}
+         \input{../tester/dorrenhet/performanceTest.tex}
          \input{../tester/system/brusTest.tex}
          \input{../tester/system/replayer.tex}
          \input{../tester/system/sessionIDtest.tex}
