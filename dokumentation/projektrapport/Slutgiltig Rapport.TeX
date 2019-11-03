@@ -405,13 +405,13 @@ Vibrationssensorn har endast central larm som skickas via CAN.
 \item Abra kadabra blankrad!
 \end{itemize}
 
- För att säkerställa att funktionalitet ovan fungerar utfördes följande tester:
+ För att säkerställa ovan nämnda funktionalitet utfördes följande tester:
  \begin{enumerate}
-     \item Test av id-begäran och larmmeddelnade se bilagor \ref{test:UrkopplingMotion} och \ref{test:idLarm}.
-     \item Konfigurering av rörelseenhet se bilaga \ref{test:MotionConfig}
+     \item Test av id-begäran och larmmeddelnade, se bilagor \ref{test:UrkopplingMotion} och \ref{test:idLarm}.
+     \item Konfigurering av rörelseenhet, se bilaga \ref{test:MotionConfig}
 \end{enumerate}
 
-Utöver de ovan nämnda testerna så är centralenheten involverad i alla dem testarna som inkluderar kommunikation mellan enheter. Och även här i de systemövergirpande testerna (\ref{test:brusTest} och \ref{test:replayer}) har centralenheten presterat som förväntat. Centralenheten har klarata av att sköta kommunikationen med periferienheter trots mycket traffik på CAN-bussen och även förhindrat återuppspelningsattack genom session id. Allt som allt ger det en centralenhet som klarar av det som förväntas, dock skulle man önska ett mer användarvänligt kommandogränssnitt då detta upplevs som klumpigt.
+Utöver ovan nämnda tester är centralenheten involverad i alla de testar som inkluderar kommunikation mellan enheter. Även i de systemövergripande testerna (\ref{test:brusTest} och \ref{test:replayer}) har centralenheten presterat som förväntat. Centralenheten har klarat att kommunicera med periferienheter trots mycket trafik på CAN-bussen och även förhindrat återuppspelningsattack genom sessions-id. Allt som allt klarar centralenheten det som förväntas. Dock skulle  ett mer användarvänligt kommandogränssnitt vara önskvärt då det nuvarande kan upplevas som klumpigt.
 
 
 
