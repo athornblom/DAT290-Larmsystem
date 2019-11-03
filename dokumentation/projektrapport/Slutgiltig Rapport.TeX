@@ -406,6 +406,8 @@ Vibrationssensorn har endast central larm som skickas via CAN.
  När en sensor på en enhet begär ett centralt larm fortsätter den att larma tills att centralenheten har skickat ett avlarmningsmeddelande.
  Ifall en enhet larmar centralt men inte ackrediterats skickas ett nytt larm för att säkerställa att centralenheten hanterar larmet.
 
+ Efter att återspelningsenheten testats så att den fungerar som förväntat (se bilaga \ref{test:replayer}) så testades systemet mot återuppspelningsattacker (se bilaga \ref{test:sessionID}). Detta visade att systemet med hjälp av sessions-id klarar av att förhindra återuppspelningsattacker. Det faktum att återspelaren lyckades begära ett id har den enkla förklaring att meddelanden inte filtreras på sessions-id innan id-tilldelningen är färdig (se bilaga \ref{bilaga:protokoll}).
+
  \subsection{Centralenheten}
  Centralenheten har följande funktionalitet:
  \begin{enumerate}
